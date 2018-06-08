@@ -4,19 +4,16 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -81,7 +78,7 @@ public class GalleryActivity extends BaseActivity
             toolbar.setNavigationIcon(null);
         }
         navigationView.setNavigationItemSelectedListener(this);
-        recycler.setLayoutManager(new LinearLayoutManager(this));
+        recycler.setLayoutManager(new GridLayoutManager(this,Global.getColumnCount()));
         recycler.setAdapter(new GalleryAdapter(this,gallery));
     }
 
@@ -115,7 +112,7 @@ public class GalleryActivity extends BaseActivity
         Global.setTint(menu.findItem(R.id.load_internet).getIcon());
         Global.setTint(menu.findItem(R.id.change_view).getIcon());
         menu.findItem(R.id.download_gallery).setVisible(!isLocal);
-        menu.findItem(R.id.load_internet).setVisible(isLocal);
+        menu.findItem(R.id.load_internet).setVisible(isLocal&&gallery.getId()!=-1);
         updateColumnCount(false);
         return true;
     }

@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<LinearLayout android:orientation="vertical"
     android:background="?android:attr/colorPrimary"
     android:alpha="0.75"
-    android:id="@+id/page_switcher"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:weightSum="9"
-    android:gravity="center"
-    android:orientation="horizontal"
+    android:id="@+id/page_switcher"
     android:layout_alignParentBottom="true"
     android:layout_alignParentStart="true"
     xmlns:android="http://schemas.android.com/apk/res/android">
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="9"
+    android:orientation="horizontal">
     <ImageButton
         android:id="@+id/prev"
         android:layout_width="0dp"
@@ -21,7 +22,11 @@
         android:tint="?android:attr/colorForeground"
         android:src="@drawable/ic_arrow_back"
         android:contentDescription="@string/prev" />
-    <EditText
+    <TextView
+        android:text="999/999"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:inputType="none"
         android:focusable="false"
         android:id="@+id/pages"
@@ -34,6 +39,7 @@
         android:contentDescription="@string/app_name"
         android:visibility="gone"
         android:labelFor="@+id/pages"
+        android:id="@+id/page_seek"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <ImageButton
@@ -45,4 +51,15 @@
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_arrow_forward"
         android:contentDescription="@string/next" />
+
+</LinearLayout>
+    <SeekBar
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:id="@+id/seekBar"
+        android:layout_width="match_parent"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:layout_height="wrap_content"
+        />
 </LinearLayout>

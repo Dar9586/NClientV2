@@ -132,4 +132,16 @@ public class LocalGallery extends GenericGallery{
         result = 31 * result + directory.hashCode();
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "LocalGallery{" +
+                "id=" + id +
+                ", min=" + min +
+                ", max=" + max +
+                ", title='" + title + '\'' +
+                ", directory=" + directory +
+                ", valid=" + valid +
+                '}';
+    }
 }

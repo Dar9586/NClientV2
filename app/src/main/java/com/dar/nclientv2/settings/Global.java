@@ -18,14 +18,13 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.enums.TitleType;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.io.BufferedReader;
@@ -40,6 +39,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import okhttp3.OkHttpClient;
+
 public final class Global {
     public enum ThemeScheme{LIGHT,DARK,BLACK}
     public static final String LOGTAG="NCLIENTLOG";
@@ -50,6 +51,7 @@ public final class Global {
     private static final ArrayList<Integer>downloadingManga=new ArrayList<>();
     private static List<Tag> accepted=new ArrayList<>(),avoided=new ArrayList<>();
     private static ThemeScheme theme;
+    public static final OkHttpClient client=new OkHttpClient();
     private static int notificationId,columnCount,minTagCount;
     public static void     initTitleType    (@NonNull Context context){titleType=TitleType.values()[context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_title_type),1)];}
     public static void     initByPopular    (@NonNull Context context){byPopular=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_by_popular),false);}
@@ -170,14 +172,14 @@ public final class Global {
     private static int getLogo(){
         return theme==ThemeScheme.LIGHT?R.drawable.ic_logo_dark:R.drawable.ic_logo;
     }
-    public static void loadImage(Context context, String url, ImageView imageView){
-        if(loadImages) Picasso.get().load(url).placeholder(getLogo()).into(imageView);
+    public static void loadImage(final Context context, String url, final ImageView imageView){
+        if(loadImages)Picasso.get().load(url).memoryPolicy(MemoryPolicy.NO_CACHE,MemoryPolicy.NO_STORE).placeholder(getLogo()).into(imageView);
         else Picasso.get().load(getLogo()).placeholder(getLogo()).into(imageView);
         //if(isLoadImages()) GlideApp.with(context).load(url).placeholder(R.mipmap.ic_launcher).diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(imageView);
         //else Glide.with(context).load(context.getDrawable(R.mipmap.ic_launcher)).into(imageView);
     }
     public static void loadImage(Context context, File file, ImageView imageView){
-        Picasso.get().load(file).placeholder(getLogo()).into(imageView);
+        Picasso.get().load(file).memoryPolicy(MemoryPolicy.NO_CACHE,MemoryPolicy.NO_STORE).placeholder(getLogo()).into(imageView);
         //GlideApp.with(context).load(file).placeholder(R.mipmap.ic_launcher).diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(imageView);
     }
     public static void loadImage(Context context, @DrawableRes int drawable, ImageView imageView){

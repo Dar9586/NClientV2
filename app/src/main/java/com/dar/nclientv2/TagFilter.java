@@ -3,21 +3,20 @@ package com.dar.nclientv2;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TabLayout;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,7 +35,6 @@ import com.dar.nclientv2.settings.Global;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 public class TagFilter extends AppCompatActivity implements CustomResultReceiver.Receiver{
 
@@ -171,7 +169,7 @@ public class TagFilter extends AppCompatActivity implements CustomResultReceiver
 
     }
     private void loadDialog(){
-        final int maxValue=50;
+        final int maxValue=100;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.minium_tag_count)).setIcon(R.drawable.ic_hashtag);
         View v=View.inflate(this, R.layout.page_changer, null);
@@ -190,11 +188,11 @@ public class TagFilter extends AppCompatActivity implements CustomResultReceiver
                 edt.setProgress(edt.getProgress()+1);
             }
         });
-        edt.setMax(maxValue);
+        edt.setMax(maxValue-1);
         edt.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                pag.setText(getString(R.string.page_format,edt.getProgress(),maxValue));
+                pag.setText(getString(R.string.page_format,edt.getProgress()+1,maxValue));
             }
 
             @Override
@@ -204,11 +202,10 @@ public class TagFilter extends AppCompatActivity implements CustomResultReceiver
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
         edt.setProgress(Global.getMinTagCount()-1);
-        pag.setText(String.format(Locale.US,"%d / %d",edt.getProgress()+1,maxValue));
+        pag.setText(getString(R.string.page_format,edt.getProgress()+1,maxValue));
         builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                Global.updateMinTagCount(TagFilter.this,edt.getProgress());
-                dialog.cancel();
+                Global.updateMinTagCount(TagFilter.this,edt.getProgress()+1);
             }
         });
         builder.setNegativeButton(getString(R.string.cancel), null);

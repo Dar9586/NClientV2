@@ -7,6 +7,7 @@ import android.util.JsonToken;
 import android.util.Log;
 
 import com.dar.nclientv2.GalleryActivity;
+import com.dar.nclientv2.MainActivity;
 import com.dar.nclientv2.adapters.ListAdapter;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.enums.ApiRequestType;
@@ -67,7 +68,8 @@ public class Inspector {
                     public void run() {
                         activity.getRefresher().setRefreshing(false);
                         galleries=new ArrayList<>(1);
-                        activity.getRecycler().setAdapter(new ListAdapter(activity,Inspector.this));
+                        if(activity instanceof MainActivity)activity.getRecycler().setAdapter(new ListAdapter(activity,Inspector.this));
+                        else if(activity instanceof GalleryActivity)activity.getRefresher().setEnabled(false);
                     }
                 });
             }
@@ -174,7 +176,7 @@ public class Inspector {
                 break;
         }
         if (page > 1) builder.append("page=").append(page);
-        if (byPopular) builder.append("&sort=popular");
+        if (byPopular&&requestType!=ApiRequestType.BYSINGLE) builder.append("&sort=popular");
         url = builder.toString().replace(' ','+');
     }
 

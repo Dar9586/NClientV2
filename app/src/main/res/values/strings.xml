@@ -91,9 +91,15 @@
     <string name="key_theme_select">theme_select</string>
     <string name="change_theme">Change theme</string>
     <string name="theme_summary">Select theme colors</string>
+    <string name="thumbnail">Thumbnail</string>
     <string-array name="theme">
         <item>Light</item>
         <item>Dark</item>
         <item>Black</item>
+    </string-array>
+    <string-array name="theme_data">
+        <item>light</item>
+        <item>dark</item>
+        <item>black</item>
     </string-array>
 </resources>

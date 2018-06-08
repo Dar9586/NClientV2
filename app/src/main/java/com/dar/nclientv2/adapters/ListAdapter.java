@@ -116,6 +116,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
                 }
             });
             holder.editText.setText(String.format(Locale.US,"%d/%d",mDataset.getPage(),mDataset.getPageCount()));
+
         }
     }
     private void updatePage() {
@@ -138,7 +139,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     }
     @Override
     public int getItemCount() {
-        return getDataset().size()+1;
+        return getDataset().size()==0?0:getDataset().size()+1;
     }
 
     private List<Gallery> getDataset() {

@@ -18,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -28,7 +27,6 @@ import com.dar.nclientv2.components.CustomViewPager;
 import com.dar.nclientv2.settings.Global;
 import com.github.chrisbanes.photoview.OnMatrixChangedListener;
 import com.github.chrisbanes.photoview.PhotoView;
-
 
 import java.io.File;
 import java.util.Locale;
@@ -58,9 +56,10 @@ public class ZoomActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private CustomViewPager mViewPager;
-    private EditText pageManager;
+    private TextView pageManager;
     private File directory;
     private View pageSwitcher;
+    private SeekBar seekBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +76,8 @@ public class ZoomActivity extends AppCompatActivity {
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         pageSwitcher =findViewById(R.id.page_switcher);
+        pageManager=findViewById(R.id.pages);
+        seekBar=findViewById(R.id.seekBar);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -86,10 +87,12 @@ public class ZoomActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 pageManager.setText(getString(R.string.page_format,position+1,gallery.getPageCount()));
+                seekBar.setProgress(position);
                 if(!gallery.isLocal()){
                     Gallery gallery=(Gallery)ZoomActivity.this.gallery;
                     if(position<gallery.getPageCount()-1)Global.preloadImage(ZoomActivity.this,gallery.getPage(position+1).getUrl());
                     if(position>0)Global.preloadImage(ZoomActivity.this,gallery.getPage(position-1).getUrl());
+
                 }
             }
 
@@ -97,6 +100,7 @@ public class ZoomActivity extends AppCompatActivity {
             public void onPageScrollStateChanged(int state) { }
         });
         paddingBottom=pageSwitcher.getPaddingBottom();
+
         changeLayout(getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE);
         /*ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams) findViewById(R.id.page_switcher).setPadding(findViewById(R.id.page_switcher).getPa).getLayoutParams();
         lp.setMargins(0,0,0,Global.getNavigationBarHeight(this));
@@ -113,15 +117,26 @@ public class ZoomActivity extends AppCompatActivity {
                 if(mViewPager.getCurrentItem()<(mViewPager.getAdapter().getCount()-1))changePage(mViewPager.getCurrentItem()+1);
             }
         });
-        pageManager=findViewById(R.id.pages);
-        pageManager.setOnClickListener(new View.OnClickListener() {
+
+        final int page=getIntent().getExtras().getInt(getPackageName()+".PAGE",0);
+
+        seekBar.setMax(gallery.getPageCount()-1);
+        changePage(page);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onClick(View v) {
-                loadDialog();
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(fromUser)pageManager.setText(getString(R.string.page_format,progress+1,gallery.getPageCount()));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                changePage(seekBar.getProgress());
             }
         });
-        int page=getIntent().getExtras().getInt(getPackageName()+".PAGE",0);
-        changePage(page);
         pageManager.setText(getString(R.string.page_format,page+1,gallery.getPageCount()));
 
     }
@@ -145,6 +160,7 @@ public class ZoomActivity extends AppCompatActivity {
 
     private void changePage(int newPage){
         mViewPager.setCurrentItem(newPage);
+        seekBar.setProgress(newPage);
     }
     private void loadDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
