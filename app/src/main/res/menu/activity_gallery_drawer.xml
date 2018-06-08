@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <item android:title="@string/unknown">   <menu><group android:orderInCategory="0" android:id="@+id/unknown"    android:checkableBehavior="none"/></menu></item>
+    <item android:title="@string/parodies">  <menu><group android:orderInCategory="1" android:id="@+id/parodies"   android:checkableBehavior="none"/></menu></item>
+    <item android:title="@string/characters"><menu><group android:orderInCategory="2" android:id="@+id/characters" android:checkableBehavior="none"/></menu></item>
+    <item android:title="@string/tags">      <menu><group android:orderInCategory="3" android:id="@+id/tags"       android:checkableBehavior="none"/></menu></item>
+    <item android:title="@string/artists">   <menu><group android:orderInCategory="4" android:id="@+id/artists"    android:checkableBehavior="none"/></menu></item>
+    <item android:title="@string/groups">    <menu><group android:orderInCategory="5" android:id="@+id/groups"     android:checkableBehavior="none"/></menu></item>
+    <item android:title="@string/languages"> <menu><group android:orderInCategory="6" android:id="@+id/languages"  android:checkableBehavior="none"/></menu></item>
+    <item android:title="@string/categories"><menu><group android:orderInCategory="7" android:id="@+id/categories" android:checkableBehavior="none"/></menu></item>
+</menu>

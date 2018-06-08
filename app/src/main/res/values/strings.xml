@@ -1,0 +1,99 @@
+<resources>
+    <string name="app_name">NClientV2</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_subtitle">NHentai unofficial client</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="image">Image</string>
+    <string name="key_title_type">title_type</string>
+    <string name="key_by_popular">is_by_popular</string>
+    <string name="key_load_images">load_images</string>
+    <string name="key_column_count">column_count</string>
+    <string name="key_only_language">only_language</string>
+    <string name="title_activity_gallery">Gallery</string>
+    <string name="prev_page">Previous page</string>
+    <string name="next_page">Next page</string>
+    <string name="only_english">Only english</string>
+    <string name="only_japanese">Only japanese</string>
+    <string name="only_chinese">Only chinese</string>
+    <string name="only_other">Only other languages</string>
+    <string name="all_languages">All languages</string>
+    <string name="go_to">Go to&#8230;</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="pretty_title">Pretty</string>
+    <string name="english_title">English</string>
+    <string name="japanese_title">Japanese</string>
+    <string name="title_type">Title type</string>
+    <string name="downloaded_manga">Downloaded manga</string>
+    <string name="sort_popular">Sort by Popular</string>
+    <string name="sort_type">Sort type</string>
+    <string name="title_activity_zoom">ZoomActivity</string>
+    <string name="parodies">Parodies</string>
+    <string name="characters">Characters</string>
+    <string name="tags">Tags</string>
+    <string name="artists">Artists</string>
+    <string name="groups">Groups</string>
+    <string name="languages">Languages</string>
+    <string name="categories">Categories</string>
+    <string name="unknown">Unknown</string>
+    <string name="prev">Previous</string>
+    <string name="next">Next</string>
+    <string name="change_page">Change page:</string>
+    <string name="load_images">Load images</string>
+    <string name="channel_name">Download Gallery</string>
+    <string name="channel_description">Used to show progress of the download of a gallery</string>
+    <string name="tag_format" formatted="true">%s (%d)</string>
+    <string name="page_format" formatted="true">%d/%d</string>
+    <string name="notification_title">Downloading gallery:</string>
+    <string name="download_gallery">Download gallery</string>
+    <string name="download_completed">Download completed</string>
+    <string name="change_view">Change view</string>
+    <string name="download_path" formatted="true">%s/NClientV2/%s</string>
+    <string name="go_online">Go online</string>
+    <string name="search">Search</string>
+    <string name="key_scraped_characters">scraped_characters</string>
+    <string name="key_scraped_artists">scraped_artists</string>
+    <string name="key_scraped_tags">scraped_tags</string>
+    <string name="key_scraped_parodies">scraped_parodies</string>
+    <string name="key_scraped_group">scraped_group</string>
+    <string name="key_accepted_tags">accepted_tags</string>
+    <string name="key_tag_order">tag_order</string>
+    <string name="key_avoided_tags">avoided_tags</string>
+    <string name="key_min_tag_count">min_tag_count</string>
+    <string name="title_activity_tag_filter">TagFilter</string>
+    <string name="tab_tags">Tags</string>
+    <string name="tab_artists">Artists</string>
+    <string name="tab_characters">Characters</string>
+    <string name="tab_parodies">Parodies</string>
+    <string name="tab_groups">Groups</string>
+    <string name="tag_preference">Tag preference</string>
+    <string name="manage_tags">Manage Tags</string>
+    <string name="change_min_tag">Change minimum tags count</string>
+    <string name="applied_filters">Applied Filters</string>
+    <string name="refresh">Refresh</string>
+    <string name="reset_tags">Reset all tags</string>
+    <string name="reset_tags_long">Reset all tags to default value?</string>
+    <string name="reload_tags">Reload all tags?</string>
+    <string name="long_time_toast">It may require a long time. Please wait</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="min_count">Minimum count</string>
+    <string name="yes">Yes</string>
+    <string name="downlaod_canceled">Download canceled</string>
+    <string name="no">No</string>
+    <string name="minium_tag_count">Minium tag count:</string>
+    <string name="stop">Stop</string>
+    <string name="delete_gallery">Delete gallery?</string>
+    <string name="delete_gallery_format" formatted="true">Do you want to delete the gallery:\n%s</string>
+    <string name="setting_on_load">The images will be loaded from Internet</string>
+    <string name="setting_off_load">The images won\'t be loaded from Internet</string>
+    <string name="key_theme_select">theme_select</string>
+    <string name="change_theme">Change theme</string>
+    <string name="theme_summary">Select theme colors</string>
+    <string-array name="theme">
+        <item>Light</item>
+        <item>Dark</item>
+        <item>Black</item>
+    </string-array>
+</resources>

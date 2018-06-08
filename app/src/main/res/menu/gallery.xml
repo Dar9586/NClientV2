@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/download_gallery"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_file_download_black_24dp"
+        android:title="@string/download_gallery"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/load_internet"
+        android:orderInCategory="150"
+        android:icon="@drawable/ic_world"
+        android:title="@string/go_online"
+        app:showAsAction="ifRoom" />
+    <item
+    android:id="@+id/change_view"
+    android:orderInCategory="200"
+    android:icon="@drawable/ic_view_1"
+    android:title="@string/change_view"
+    app:showAsAction="ifRoom" />
+
+</menu>

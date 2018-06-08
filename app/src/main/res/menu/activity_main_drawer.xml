@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group android:checkableBehavior="none">
+        <item
+            android:id="@+id/downloaded"
+            android:icon="@drawable/ic_file"
+            android:title="@string/downloaded_manga" />
+        <item
+            android:id="@+id/tag_manager"
+            android:icon="@drawable/ic_hashtag"
+            android:title="@string/manage_tags" />
+        <item
+            android:icon="@null"
+            android:id="@+id/only_language"
+            android:title="@string/all_languages"/>
+    </group>
+    <item android:title="@string/sort_type">
+        <menu>
+    <group android:checkableBehavior="none">
+        <item
+            android:id="@+id/by_popular"
+            android:title="@string/sort_popular"/>
+    </group>
+        </menu>
+    </item>
+    <item android:title="@string/title_type">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/pretty_title"
+                    android:title="@string/pretty_title" />
+                <item
+                    android:id="@+id/english_title"
+                    android:title="@string/english_title" />
+                <item
+                    android:id="@+id/japanese_title"
+                    android:title="@string/japanese_title" />
+            </group>
+        </menu>
+    </item>
+
+
+
+</menu>

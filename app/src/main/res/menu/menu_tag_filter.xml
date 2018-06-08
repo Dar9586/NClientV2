@@ -1,0 +1,29 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.dar.nclientv2.TagFilter">
+    <item
+        android:id="@+id/search"
+        android:icon="@drawable/ic_search"
+        android:title="@string/search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="ifRoom|collapseActionView" />
+    <item android:id="@+id/order_type"
+        android:title="@string/sort_type"
+        android:icon="@drawable/ic_sort_by_alpha_black_24dp"
+        app:showAsAction="ifRoom|collapseActionView"/>
+    <item
+        android:id="@+id/change_min"
+        android:titleCondensed="@string/min_count"
+        android:title="@string/change_min_tag"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/reset_tags"
+        android:title="@string/reset_tags"
+        app:showAsAction="never"
+        />
+    <item
+        android:id="@+id/refresh"
+        android:title="@string/refresh"
+        app:showAsAction="never" />
+</menu>

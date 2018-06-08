@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.dar.nclientv2">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application
+        android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_content"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/LightTheme">
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/app_name"
+            android:theme="@style/DarkTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".GalleryActivity"
+            android:label="@string/title_activity_gallery"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/DarkTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.dar.nclientv2.MainActivity" />
+        </activity>
+        <activity
+            android:name=".ZoomActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_zoom"
+            android:parentActivityName=".GalleryActivity"
+            android:theme="@style/DarkTheme.NoTitle" />
+
+        <service
+            android:name=".async.DownloadGallery"
+            android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name=".api.scraper.Scraper"
+            android:enabled="true"
+            android:exported="false" />
+
+        <activity
+            android:name=".LocalActivity"
+            android:configChanges="orientation|screenSize"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/DarkTheme" />
+        <activity
+            android:name=".TagFilter"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_tag_filter"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/DarkTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.dar.nclientv2.MainActivity" />
+        </activity>
+        <activity android:name=".SettingsActivity"></activity>
+    </application>
+
+</manifest>
