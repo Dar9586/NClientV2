@@ -10,7 +10,7 @@
         app:showAsAction="ifRoom|collapseActionView" />
     <item android:id="@+id/order_type"
         android:title="@string/sort_type"
-        android:icon="@drawable/ic_sort_by_alpha_black_24dp"
+        android:icon="@drawable/ic_sort_by_alpha"
         app:showAsAction="ifRoom|collapseActionView"/>
     <item
         android:id="@+id/change_min"

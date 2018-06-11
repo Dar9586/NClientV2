@@ -33,7 +33,6 @@ import java.util.Locale;
 
 public class ZoomActivity extends AppCompatActivity {
     private GenericGallery gallery;
-    private int paddingBottom;
     private final static int hideFlags=View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
             | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -99,8 +98,6 @@ public class ZoomActivity extends AppCompatActivity {
             @Override
             public void onPageScrollStateChanged(int state) { }
         });
-        paddingBottom=pageSwitcher.getPaddingBottom();
-
         changeLayout(getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE);
         /*ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams) findViewById(R.id.page_switcher).setPadding(findViewById(R.id.page_switcher).getPa).getLayoutParams();
         lp.setMargins(0,0,0,Global.getNavigationBarHeight(this));

@@ -4,9 +4,12 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,13 +19,44 @@ import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.settings.Global;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> {
+public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> implements Filterable{
     private final Context context;
     private final List<Tag> tags;
-    private final List<Tag> filterTags;
+    private List<Tag> filterTags;
+    private String lastQuery=null;
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String x=constraint.toString().toLowerCase(Locale.US);
+                Log.d(Global.LOGTAG,"FILTER:\""+x+"\",\""+lastQuery+"\"="+(x.equals(lastQuery)));
+                FilterResults results=new FilterResults();
+
+                if(!x.equals(lastQuery)) {
+                    lastQuery=x;
+                    List<Tag> y = new ArrayList<>();
+                    for (Tag t : tags) if (t.getName().contains(x)) y.add(t);
+                    results.values = y;
+                    results.count = y.size();
+                }else{results.count=-1;}
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                if(results.count!=-1) filterTags=(List<Tag>)results.values;
+                sortDataset(orderByPopular);
+                notifyDataSetChanged();
+            }
+        };
+    }
+
     static class ViewHolder extends RecyclerView.ViewHolder {
         final ImageView imgView;
         final TextView title,count;
@@ -35,11 +69,13 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> {
             master=v.findViewById(R.id.master_layout);
         }
     }
-
-    public TagsAdapter(Context cont, List<Tag> tags) {
+    private boolean orderByPopular;
+    public TagsAdapter(Context cont, List<Tag> tags,String query,boolean orderByPopular) {
         this.context=cont;
         this.tags=tags;
-        filterTags=new ArrayList<>(tags);
+        this.orderByPopular=!orderByPopular;
+        filterTags=tags;
+        getFilter().filter(query);
     }
 
     @NonNull
@@ -77,9 +113,23 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> {
     public List<Tag> getDataset() {
         return filterTags;
     }
-    public void filter(String query){
-        filterTags.clear();
-        for(Tag x:tags)if(x.getName().toLowerCase(Locale.US).contains(query.toLowerCase(Locale.US)))filterTags.add(x);
+    public void sortDataset(boolean byPopular){
+        Log.d(Global.LOGTAG,"SORT: "+(byPopular==orderByPopular));
+        if(byPopular==orderByPopular)return;
+        orderByPopular=byPopular;
+        if(orderByPopular) Collections.sort(filterTags, new Comparator<Tag>() {
+            @Override
+            public int compare(Tag o1, Tag o2) {
+                return o2.getCount()-o1.getCount();
+            }
+        });
+        else Collections.sort(filterTags, new Comparator<Tag>() {
+            @Override
+            public int compare(Tag o1, Tag o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
         notifyDataSetChanged();
     }
+
 }

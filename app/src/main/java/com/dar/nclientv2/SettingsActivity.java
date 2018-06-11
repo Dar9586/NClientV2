@@ -1,11 +1,12 @@
 package com.dar.nclientv2;
 
+import android.content.DialogInterface;
+import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 
 import com.dar.nclientv2.settings.Global;
 
@@ -35,6 +36,22 @@ public class SettingsActivity extends AppCompatActivity {
                 public boolean onPreferenceChange(Preference preference, Object o) {
                     act.recreate();
                     return true;
+                }
+            });
+            findPreference(getString(R.string.key_cache)).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
+                    builder.setTitle(R.string.clear_cache);
+                    builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Global.recursiveDelete(getActivity().getCacheDir());
+                        }
+                    }).setNegativeButton(R.string.no,null).setCancelable(true);
+                    builder.show();
+
+                    return false;
                 }
             });
             setHasOptionsMenu(true);

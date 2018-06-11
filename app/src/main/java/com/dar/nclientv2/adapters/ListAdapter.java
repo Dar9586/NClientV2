@@ -1,11 +1,7 @@
 package com.dar.nclientv2.adapters;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
 import android.view.LayoutInflater;
@@ -14,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.dar.nclientv2.GalleryActivity;
@@ -34,13 +29,11 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     static class ViewHolder extends RecyclerView.ViewHolder {
         final ImageView imgView,flag;
         final TextView title,pages;
-        final ConstraintLayout layout;
+        final View layout;
         final ImageButton prev,next;
         final EditText editText;
-        final boolean last;
-        ViewHolder(View v,boolean last) {
+        ViewHolder(View v) {
             super(v);
-            this.last=last;
             imgView = v.findViewById(R.id.image);
             title = v.findViewById(R.id.title);
             pages = v.findViewById(R.id.pages);
@@ -60,13 +53,10 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     @NonNull
     @Override
     public ListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return viewType==0?
-                new ListAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.entry_layout, parent, false),false):
-                new ListAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.page_switcher, parent, false),true);
+        return new ListAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.entry_layout, parent, false));
     }
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        if(!holder.last) {
             final Gallery ent = getDataset().get(holder.getAdapterPosition());
             Global.loadImage(context,ent.getThumbnail().getUrl(),holder.imgView);
             holder.title.setText(ent.getTitle(Global.getTitleType()));
@@ -95,59 +85,13 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
                     context.startActivity(intent);
                 }
             });
-        }else{
-            holder.prev.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(mDataset.getPage()>1)new Inspector(context,mDataset.getPage()-1,mDataset.getQuery(),mDataset.getRequestType());
-                }
-            });
-            holder.next.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(mDataset.getPage()<mDataset.getPageCount())new Inspector(context,mDataset.getPage()+1,mDataset.getQuery(),mDataset.getRequestType());
-
-                }
-            });
-            holder.editText.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    updatePage();
-                }
-            });
-            holder.editText.setText(String.format(Locale.US,"%d/%d",mDataset.getPage(),mDataset.getPageCount()));
-
-        }
-    }
-    private void updatePage() {
-
-        final NumberPicker numberPicker = new NumberPicker(context);
-        numberPicker.setMaxValue(mDataset.getPageCount());
-        numberPicker.setMinValue(1);
-        numberPicker.setValue(((GridLayoutManager)context.getRecycler().getLayoutManager()).findFirstCompletelyVisibleItemPosition());
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setView(numberPicker);
-        builder.setTitle(context.getString(R.string.go_to));
-        builder.setPositiveButton(context.getString(R.string.ok), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                if(numberPicker.getValue()!=mDataset.getPage())new Inspector(context,numberPicker.getValue(),mDataset.getQuery(),mDataset.getRequestType());
-                dialog.dismiss();
-            }
-        });
-        builder.setCancelable(true);
-        builder.show();
     }
     @Override
     public int getItemCount() {
-        return getDataset().size()==0?0:getDataset().size()+1;
+        return getDataset().size();
     }
 
     private List<Gallery> getDataset() {
         return mDataset.getGalleries();
     }
-    @Override
-    public int getItemViewType(int position) {
-        return position<getDataset().size()?0:1;
-    }
-
 }

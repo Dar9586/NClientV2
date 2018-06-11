@@ -1,0 +1,80 @@
+package com.dar.nclientv2.api;
+
+import android.support.annotation.NonNull;
+import android.util.JsonReader;
+import android.util.Log;
+
+import com.dar.nclientv2.RandomActivity;
+import com.dar.nclientv2.api.components.Gallery;
+import com.dar.nclientv2.settings.Global;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+public class RandomLoader {
+    private static final int MAXLOADED=3;
+    private List<Gallery> galleries;
+    private RandomActivity activity;
+    private boolean hasRequested;
+    private OkHttpClient client;
+    private Random random;
+    public RandomLoader(RandomActivity activity) {
+        this.activity = activity;
+        random=new Random(System.nanoTime());
+        galleries=new ArrayList<>(MAXLOADED);
+        client=new OkHttpClient();
+        hasRequested=false;
+        for(int a=0;a<MAXLOADED;a++)loadRandomGallery();
+
+    }
+    private void loadRandomGallery(){
+        if(galleries.size()==MAXLOADED)return;
+        final int id=random.nextInt(Global.getMaxId())+1;
+            client.newCall(new Request.Builder().url("https://nhentai.net/api/gallery/" + id).build()).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+
+                }
+
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    Log.d(Global.LOGTAG,"Random: "+id);
+                    Gallery x = new Gallery(new JsonReader(response.body().charStream()));
+                    if (x.isValid()) {
+                        loadRandomGallery();
+                        return;
+                    }
+                    galleries.add(x);
+                    Global.preloadImage(activity, x.getThumbnail().getUrl());
+                    if (hasRequested) {
+                        hasRequested = false;
+                        requestGallery();
+                    }
+                }
+            });
+    }
+    public void requestGallery(){
+        if(galleries.size()==0){
+            loadRandomGallery();
+            hasRequested=true;
+        }else{
+            loadRandomGallery();
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Gallery x=galleries.remove(0);
+                    activity.loadGallery(x);
+                }
+            });
+
+        }
+    }
+}

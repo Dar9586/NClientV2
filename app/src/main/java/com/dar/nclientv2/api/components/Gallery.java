@@ -16,7 +16,12 @@ import com.dar.nclientv2.settings.Global;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings("unused")
 public class Gallery extends GenericGallery{
@@ -31,13 +36,16 @@ public class Gallery extends GenericGallery{
     private Image cover,thumbnail;
     private Page pages[];
     private Language language= Language.UNKNOWN;
+    private boolean valid;
 
-
-
+    @Override
+    public boolean isValid() {
+        return valid;
+    }
 
     public Gallery(JsonReader jr) throws IOException {
         jr.beginObject();
-        while(jr.peek()!= JsonToken.END_OBJECT)
+        while(jr.peek()!= JsonToken.END_OBJECT){
             switch(jr.nextName()){
                 case "upload_date":uploadDate=new Date(jr.nextLong()*1000);break;
                 case "num_favorites":favoriteCount=jr.nextInt();break;
@@ -48,7 +56,10 @@ public class Gallery extends GenericGallery{
                 case "tags":readTags(jr);break;
                 case "id":id=jr.nextInt();break;
                 case "num_pages":pageCount=jr.nextInt();break;
+                case "error":valid=jr.nextBoolean();
+
             }
+        }
         jr.endObject();
     }
 

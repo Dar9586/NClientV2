@@ -7,19 +7,19 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.dar.nclientv2.api.Inspector;
@@ -27,7 +27,10 @@ import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.components.BaseActivity;
+import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
+
+import java.util.Locale;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -41,8 +44,10 @@ public class MainActivity extends BaseActivity
         Global.initOnlyLanguage(this);
         Global.initColumnCount(this);
         Global.initTagSets(this);
+        Global.initTagPreferencesSets(this);
         Global.initTagOrder(this);
         Global.initMinTagCount(this);
+        Global.initMaxId(this);
         Global.loadTheme(this);
         Global.loadNotificationChannel(this);
         setContentView(R.layout.activity_main);
@@ -75,6 +80,27 @@ public class MainActivity extends BaseActivity
             @Override
             public void onRefresh() {
                 new Inspector(MainActivity.this,Inspector.getActualPage(),Inspector.getActualQuery(),Inspector.getActualRequestType());
+            }
+        });
+        findViewById(R.id.prev).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (actualPage > 1)
+                    new Inspector(MainActivity.this, actualPage - 1, Inspector.getActualQuery(), Inspector.getActualRequestType());
+            }
+        });
+        findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (actualPage < totalPage)
+                    new Inspector(MainActivity.this, actualPage + 1, Inspector.getActualQuery(), Inspector.getActualRequestType());
+
+            }
+        });
+        findViewById(R.id.page_index).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadDialog();
             }
         });
 
@@ -133,6 +159,29 @@ public class MainActivity extends BaseActivity
             super.onBackPressed();
         }
     }
+    public void hidePageSwitcher(){
+        findViewById(R.id.page_switcher).setVisibility(View.GONE);
+    }
+    public void showPageSwitcher(final int actualPage,final int totalPage){
+        findViewById(R.id.page_switcher).setVisibility(totalPage==1?View.GONE:View.VISIBLE);
+        this.actualPage=actualPage;
+        this.totalPage=totalPage;
+        EditText text=findViewById(R.id.page_index);
+        text.setText(String.format(Locale.US, "%d/%d", actualPage, totalPage));
+    }
+    private int actualPage,totalPage;
+    private void loadDialog(){
+        DefaultDialogs.pageChangerDialog(
+                new DefaultDialogs.Builder(this).setActual(actualPage).setMax(totalPage).setDialogs(new DefaultDialogs.DialogResults() {
+                    @Override
+                    public void positive(int actual) {
+                        new Inspector(MainActivity.this,actual,Inspector.getActualQuery(),Inspector.getActualRequestType());
+                    }
+                    @Override
+                    public void negative() {}
+                }).setTitle(R.string.change_page).setDrawable(R.drawable.ic_find_in_page)
+        );
+    }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -147,13 +196,7 @@ public class MainActivity extends BaseActivity
         final int count=landscape?4:2;
         RecyclerView.Adapter adapter=recycler.getAdapter();
         GridLayoutManager gridLayoutManager=new GridLayoutManager(this,count);
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                return position<(recycler.getAdapter().getItemCount()-1)?1:count;
 
-            }
-        });
         recycler.setLayoutManager(gridLayoutManager);
         recycler.setAdapter(adapter);
     }
@@ -187,6 +230,7 @@ public class MainActivity extends BaseActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         Global.setTint(menu.findItem(R.id.search).getIcon());
+        Global.setTint(menu.findItem(R.id.random).getIcon());
 
         final SearchView searchView=(SearchView)menu.findItem(R.id.search).getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -218,12 +262,18 @@ public class MainActivity extends BaseActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Intent i = new Intent(this, SettingsActivity.class);
-            startActivity(i);
+        Intent i;
+        switch (id){
+            case R.id.action_settings:
+                i = new Intent(this, SettingsActivity.class);
+                startActivity(i);
+                break;
+            case R.id.random:
+                i = new Intent(this, RandomActivity.class);
+                startActivity(i);
+                break;
         }
+
         return super.onOptionsItemSelected(item);
     }
 

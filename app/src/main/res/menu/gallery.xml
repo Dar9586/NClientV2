@@ -4,7 +4,7 @@
     <item
         android:id="@+id/download_gallery"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_file_download_black_24dp"
+        android:icon="@drawable/ic_file_download"
         android:title="@string/download_gallery"
         app:showAsAction="ifRoom" />
     <item

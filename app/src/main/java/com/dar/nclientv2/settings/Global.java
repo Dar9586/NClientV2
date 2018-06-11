@@ -13,6 +13,7 @@ import android.os.Environment;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.Log;
@@ -24,7 +25,6 @@ import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.enums.TitleType;
-import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.io.BufferedReader;
@@ -39,8 +39,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import okhttp3.OkHttpClient;
-
 public final class Global {
     public enum ThemeScheme{LIGHT,DARK,BLACK}
     public static final String LOGTAG="NCLIENTLOG";
@@ -51,20 +49,28 @@ public final class Global {
     private static final ArrayList<Integer>downloadingManga=new ArrayList<>();
     private static List<Tag> accepted=new ArrayList<>(),avoided=new ArrayList<>();
     private static ThemeScheme theme;
-    public static final OkHttpClient client=new OkHttpClient();
-    private static int notificationId,columnCount,minTagCount;
+    private static int notificationId,columnCount,minTagCount,maxId;
+    private static List<Tag>[] sets= new List[5];
+    public static void initTagSets(@NonNull Context context){
+        sets[0]=getSet(context,getScraperId(TagType.TAG));
+        sets[1]=getSet(context,getScraperId(TagType.ARTIST));
+        sets[2]=getSet(context,getScraperId(TagType.GROUP));
+        sets[3]=getSet(context,getScraperId(TagType.PARODY));
+        sets[4]=getSet(context,getScraperId(TagType.CHARACTER));
+    }
     public static void     initTitleType    (@NonNull Context context){titleType=TitleType.values()[context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_title_type),1)];}
     public static void     initByPopular    (@NonNull Context context){byPopular=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_by_popular),false);}
     public static void     initTagOrder     (@NonNull Context context){tagOrder=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_tag_order),true);}
     public static boolean  initLoadImages   (@NonNull Context context){loadImages=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_load_images),true);return loadImages;}
     public static void     initOnlyLanguage (@NonNull Context context){int x=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_only_language),-1);onlyLanguage=x==-1?null:Language.values()[x];}
     public static void     initColumnCount  (@NonNull Context context){columnCount=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_column_count),1);}
-    public static void     initMinTagCount  (@NonNull Context context){minTagCount=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.minium_tag_count),10);}
+    public static void     initMinTagCount  (@NonNull Context context){minTagCount=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_min_tag_count),10);}
+    public static void     initMaxId        (@NonNull Context context){maxId=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_max_id),236000);}
     private static ThemeScheme initTheme(Context context){
         String h=context.getSharedPreferences("Settings",0).getString(context.getString(R.string.key_theme_select),"light");
         return theme=h.equals("light")?ThemeScheme.LIGHT:h.equals("dark")?ThemeScheme.DARK:ThemeScheme.BLACK;
     }
-    public static void  initTagSets      (@NonNull Context context){
+    public static void  initTagPreferencesSets      (@NonNull Context context){
         accepted=Tag.toArrayList(context.getSharedPreferences("TagPreferences", 0).getStringSet(context.getString(R.string.key_accepted_tags),new HashSet<String>()));
         avoided=Tag.toArrayList(context.getSharedPreferences("TagPreferences", 0).getStringSet(context.getString(R.string.key_avoided_tags),new HashSet<String>()));
     }
@@ -92,6 +98,10 @@ public final class Global {
 
     public static int getColumnCount() {
         return columnCount;
+    }
+
+    public static int getMaxId() {
+        return maxId;
     }
 
     public static boolean isLoadImages() {
@@ -139,7 +149,8 @@ public final class Global {
     public static boolean  updateTagOrder(@NonNull Context context,boolean order){context.getSharedPreferences("Settings", 0).edit().putBoolean(context.getString((R.string.key_tag_order)),order).apply();tagOrder=order; return tagOrder;}
     public static boolean  updateLoadImages(@NonNull Context context,boolean load){context.getSharedPreferences("Settings", 0).edit().putBoolean(context.getString((R.string.key_load_images)),load).apply();loadImages=load; return loadImages;}
     public static void updateColumnCount(@NonNull Context context, int count){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_column_count)),count).apply();columnCount=count; }
-    public static void updateMinTagCount(@NonNull Context context, int count){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.minium_tag_count)),count).apply();minTagCount=count; }
+    public static void updateMaxId(@NonNull Context context, int id){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_max_id)),id).apply();maxId=id; }
+    public static void updateMinTagCount(@NonNull Context context, int count){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_min_tag_count)),count).apply();minTagCount=count; }
 
     public static int getNavigationBarHeight(Context context){
         Resources resources = context.getResources();
@@ -173,14 +184,11 @@ public final class Global {
         return theme==ThemeScheme.LIGHT?R.drawable.ic_logo_dark:R.drawable.ic_logo;
     }
     public static void loadImage(final Context context, String url, final ImageView imageView){
-        if(loadImages)Picasso.get().load(url).memoryPolicy(MemoryPolicy.NO_CACHE,MemoryPolicy.NO_STORE).placeholder(getLogo()).into(imageView);
+        if(loadImages)Picasso.get().load(url).placeholder(getLogo()).into(imageView);
         else Picasso.get().load(getLogo()).placeholder(getLogo()).into(imageView);
-        //if(isLoadImages()) GlideApp.with(context).load(url).placeholder(R.mipmap.ic_launcher).diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(imageView);
-        //else Glide.with(context).load(context.getDrawable(R.mipmap.ic_launcher)).into(imageView);
     }
     public static void loadImage(Context context, File file, ImageView imageView){
-        Picasso.get().load(file).memoryPolicy(MemoryPolicy.NO_CACHE,MemoryPolicy.NO_STORE).placeholder(getLogo()).into(imageView);
-        //GlideApp.with(context).load(file).placeholder(R.mipmap.ic_launcher).diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(imageView);
+        Picasso.get().load(file).placeholder(getLogo()).into(imageView);
     }
     public static void loadImage(Context context, @DrawableRes int drawable, ImageView imageView){
         Picasso.get().load(drawable).into(imageView);
@@ -250,8 +258,9 @@ public final class Global {
         }
         return null;
     }
-    public static List<Tag> getSet(@NonNull Context context, TagType type){
-        Set<String>x= context.getSharedPreferences("ScrapedTags", 0).getStringSet(context.getString(getScraperId(type)),new HashSet<String>());
+
+    private static List<Tag> getSet(@NonNull Context context, @StringRes int res){
+        Set<String>x= context.getSharedPreferences("ScrapedTags", 0).getStringSet(context.getString(res),new HashSet<String>());
         List<Tag>tags=new ArrayList<>(x.size());
         for(String y:x){
             tags.add(new Tag(y));
@@ -264,7 +273,17 @@ public final class Global {
         });
         return tags;
     }
-    public static void updateSet(@NonNull Context context, Set<Tag>tags , TagType type){
+    public static List<Tag>getTagSet(TagType type){
+        switch (type){
+            case TAG:return sets[0];
+            case ARTIST:return sets[1];
+            case GROUP:return sets[2];
+            case PARODY:return sets[3];
+            case CHARACTER:return sets[4];
+        }
+        return null;
+    }
+    public static void updateSet(@NonNull Context context, List<Tag>tags , TagType type){
         Set<String>x=new HashSet<>(tags.size());
         for(Tag y:tags){
             x.add(y.toScrapedString());
@@ -294,5 +313,6 @@ public final class Global {
         for(File x:file.listFiles())recursiveDelete(x);
         file.delete();
     }
+
 
 }

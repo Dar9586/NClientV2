@@ -65,7 +65,7 @@ public class LocalGallery extends GenericGallery{
     public boolean isLocal() {
         return true;
     }
-
+    @Override
     public boolean isValid() {
         return valid;
     }

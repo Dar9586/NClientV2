@@ -92,6 +92,12 @@
     <string name="change_theme">Change theme</string>
     <string name="theme_summary">Select theme colors</string>
     <string name="thumbnail">Thumbnail</string>
+    <string name="clear_cache">Clear cache</string>
+    <string name="key_max_id">max_id</string>
+    <string name="random_manga">Random manga</string>
+    <string name="key_cache">cache</string>
+    <string name="page_count_format" formatted="true">%d Pages</string>
+    <string name="page_Switcher_placeholder">0/0</string>
     <string-array name="theme">
         <item>Light</item>
         <item>Dark</item>

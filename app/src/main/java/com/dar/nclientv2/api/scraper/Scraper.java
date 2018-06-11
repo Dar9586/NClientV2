@@ -19,7 +19,6 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import okhttp3.Call;
@@ -90,7 +89,7 @@ public class Scraper extends IntentService {
                 }
             }
         }
-        Global.updateSet(this,new HashSet<>(tags),TagType.values()[intent.getIntExtra(getPackageName()+".TAGTYPE",3)/*Tag di default*/]);
+        Global.updateSet(this,tags,TagType.values()[intent.getIntExtra(getPackageName()+".TAGTYPE",3)/*Tag di default*/]);
         Bundle b=new Bundle();
         b.putBoolean(getPackageName()+".FINISH",true);
         b.putInt(getPackageName()+".PAGE",intent.getIntExtra(getPackageName()+".PAGE",1));

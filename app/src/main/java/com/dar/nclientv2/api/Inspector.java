@@ -15,7 +15,7 @@ import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Global;
 
 import java.io.IOException;
-import java.io.StringReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,7 +68,10 @@ public class Inspector {
                     public void run() {
                         activity.getRefresher().setRefreshing(false);
                         galleries=new ArrayList<>(1);
-                        if(activity instanceof MainActivity)activity.getRecycler().setAdapter(new ListAdapter(activity,Inspector.this));
+                        if(activity instanceof MainActivity){
+                            activity.getRecycler().setAdapter(new ListAdapter(activity,Inspector.this));
+                            ((MainActivity)activity).hidePageSwitcher();
+                        }
                         else if(activity instanceof GalleryActivity)activity.getRefresher().setEnabled(false);
                     }
                 });
@@ -77,11 +80,15 @@ public class Inspector {
             @Override
             public void onResponse(@NonNull Call call,@NonNull Response response) throws IOException {
                 Log.d(Global.LOGTAG,"Response of "+url);
-                parseGalleries(response.body().string());
+                parseGalleries(response.body().charStream());
+                for (Gallery x:galleries)if(x.getId()>Global.getMaxId())Global.updateMaxId(activity,x.getId());
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(requestType!=ApiRequestType.BYSINGLE)activity.getRecycler().setAdapter(new ListAdapter(activity,Inspector.this));
+                        if(requestType!=ApiRequestType.BYSINGLE){
+                            activity.getRecycler().setAdapter(new ListAdapter(activity,Inspector.this));
+                            ((MainActivity)activity).showPageSwitcher(Inspector.this.page,Inspector.this.pageCount);
+                        }
                         else{
                             Intent intent=new Intent(activity, GalleryActivity.class);
                             intent.putExtra(activity.getPackageName()+".GALLERY",galleries.get(0));
@@ -109,33 +116,37 @@ public class Inspector {
                 '}';
     }
 
-    private void parseGalleries(String s) throws IOException {
-        if (requestType == ApiRequestType.BYSINGLE) s = "{\"result\":[" + s + "],\"num_pages\":1,\"per_page\":25}";
-        switch (requestType) {
-            case BYSINGLE:
-                galleries = new ArrayList<>(1);
-                break;
-            case RELATED:
-                galleries = new ArrayList<>(5);
-                break;
-            default:
-                galleries = new ArrayList<>(25);
-        }
-        JsonReader reader = new JsonReader(new StringReader(s));
-        reader.beginObject();
-        while (reader.peek() != JsonToken.END_OBJECT) {
-            switch (reader.nextName()) {
-                case "error":reader.skipValue();break;
-                case "result":
-                    reader.beginArray();
-                    while (reader.hasNext()) galleries.add(new Gallery(reader));
-                    reader.endArray();
+    private void parseGalleries(Reader s) throws IOException {
+        JsonReader reader=new JsonReader(s);
+        if (requestType == ApiRequestType.BYSINGLE){
+            galleries = new ArrayList<>(1);
+            galleries.add(new Gallery(reader));
+            pageCount=1;
+        } else {
+            switch (requestType) {
+                case RELATED:
+                    galleries = new ArrayList<>(5);
                     break;
-                case "num_pages":
-                    pageCount = reader.nextInt();
-                    break;
-                case "per_page":
-                    reader.skipValue();
+                default:
+                    galleries = new ArrayList<>(25);
+            }
+            reader.beginObject();
+            while (reader.peek() != JsonToken.END_OBJECT) {
+                switch (reader.nextName()) {
+                    case "error":
+                        reader.skipValue();
+                        break;
+                    case "result":
+                        reader.beginArray();
+                        while (reader.hasNext()) galleries.add(new Gallery(reader));
+                        reader.endArray();
+                        break;
+                    case "num_pages":
+                        pageCount = reader.nextInt();
+                        break;
+                    case "per_page":
+                        reader.skipValue();
+                }
             }
         }
         reader.close();

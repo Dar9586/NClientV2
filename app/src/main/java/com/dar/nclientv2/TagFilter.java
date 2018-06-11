@@ -17,23 +17,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SeekBar;
-import android.widget.TextView;
 
 import com.dar.nclientv2.adapters.TagsAdapter;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.scraper.Scraper;
 import com.dar.nclientv2.components.CustomResultReceiver;
+import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class TagFilter extends AppCompatActivity implements CustomResultReceiver.Receiver{
@@ -78,7 +76,7 @@ public class TagFilter extends AppCompatActivity implements CustomResultReceiver
             public void onPageSelected(int position) {
                 Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + position);
                 if (page != null) {
-                    ((PlaceholderFragment)page).applyAdapter();
+                    ((PlaceholderFragment)page).updateDataset();
                 }
             }
 
@@ -96,6 +94,7 @@ public class TagFilter extends AppCompatActivity implements CustomResultReceiver
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_tag_filter, menu);
+        menu.findItem(R.id.order_type).setIcon(PlaceholderFragment.orderByPopular?R.drawable.ic_sort:R.drawable.ic_sort_by_alpha);
         Global.setTint(menu.findItem(R.id.order_type).getIcon());
         searchView=(android.support.v7.widget.SearchView)menu.findItem(R.id.search).getActionView();
         searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
@@ -108,7 +107,7 @@ public class TagFilter extends AppCompatActivity implements CustomResultReceiver
             public boolean onQueryTextChange(String newText) {
                 Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
                 if (page != null) {
-                    ((TagsAdapter)((PlaceholderFragment)page).recyclerView.getAdapter()).filter(newText);
+                    ((PlaceholderFragment)page).filterDataset();
                 }
                 return true;
             }
@@ -148,7 +147,7 @@ public class TagFilter extends AppCompatActivity implements CustomResultReceiver
             case R.id.reset_tags:createDialog(false);break;
             case R.id.order_type:PlaceholderFragment.orderByPopular=Global.updateTagOrder(this,!PlaceholderFragment.orderByPopular);
             if(page!=null)((PlaceholderFragment)page).sortDataset();
-                item.setIcon(PlaceholderFragment.orderByPopular?R.drawable.ic_sort:R.drawable.ic_sort_by_alpha_black_24dp);
+                item.setIcon(PlaceholderFragment.orderByPopular?R.drawable.ic_sort:R.drawable.ic_sort_by_alpha);
                 Global.setTint(item.getIcon());
             break;
         }
@@ -169,49 +168,18 @@ public class TagFilter extends AppCompatActivity implements CustomResultReceiver
 
     }
     private void loadDialog(){
-        final int maxValue=100;
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.minium_tag_count)).setIcon(R.drawable.ic_hashtag);
-        View v=View.inflate(this, R.layout.page_changer, null);
-        builder.setView(v);
-        final SeekBar edt=v.findViewById(R.id.seekBar);
-        final TextView pag=v.findViewById(R.id.page);
-        v.findViewById(R.id.prev).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                edt.setProgress(edt.getProgress()-1);
-            }
-        });
-        v.findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                edt.setProgress(edt.getProgress()+1);
-            }
-        });
-        edt.setMax(maxValue-1);
-        edt.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                pag.setText(getString(R.string.page_format,edt.getProgress()+1,maxValue));
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
-        edt.setProgress(Global.getMinTagCount()-1);
-        pag.setText(getString(R.string.page_format,edt.getProgress()+1,maxValue));
-        builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                Global.updateMinTagCount(TagFilter.this,edt.getProgress()+1);
-            }
-        });
-        builder.setNegativeButton(getString(R.string.cancel), null);
-        builder.setCancelable(true);
-        builder.show();
+        DefaultDialogs.pageChangerDialog(
+                new DefaultDialogs.Builder(this).setActual(Global.getMinTagCount()).setMax(100).setDialogs(new DefaultDialogs.DialogResults() {
+                    @Override
+                    public void positive(int actual) {
+                        Global.updateMinTagCount(TagFilter.this,actual);
+                    }
+                    @Override
+                    public void negative() {}
+                }).setTitle(R.string.minium_tag_count).setDrawable(R.drawable.ic_hashtag)
+        );
     }
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -273,7 +241,7 @@ public class TagFilter extends AppCompatActivity implements CustomResultReceiver
              tag=getArguments().getInt("TAGTYPE");
              page=getArguments().getInt("PAGE");
              List<Tag> x=null;
-             if(tag!=-1)x=Global.getSet(getContext(),TagType.values()[tag]);
+             if(tag!=-1)x=Global.getTagSet(TagType.values()[tag]);
             if(tag==-1||x.size()>1) applyAdapter();
             else loadTags();
             return rootView;
@@ -290,33 +258,24 @@ public class TagFilter extends AppCompatActivity implements CustomResultReceiver
         }
 
         private void applyAdapter(){
+            String query=((TagFilter)getActivity()).searchView==null?"":((TagFilter)getActivity()).searchView.getQuery().toString();
             recyclerView.setLayoutManager(new GridLayoutManager(getContext(), getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE?4:2));
-            if(tag!=-1) recyclerView.setAdapter(new TagsAdapter(getContext(),Global.getSet(getContext(),TagType.values()[tag])));
-            else recyclerView.setAdapter(new TagsAdapter(getContext(),Global.getListPrefer()));
+            if(tag!=-1) recyclerView.setAdapter(new TagsAdapter(getContext(),Global.getTagSet(TagType.values()[tag]),query,orderByPopular));
+            else recyclerView.setAdapter(new TagsAdapter(getContext(),Global.getListPrefer(),query,orderByPopular));
+        }
+        private void filterDataset(){
             if(((TagFilter)getActivity()).searchView!=null)
-            ((TagsAdapter)recyclerView.getAdapter()).filter(((TagFilter)getActivity()).searchView.getQuery().toString());
-            sortDataset();
+                ((TagsAdapter)recyclerView.getAdapter()).getFilter().filter(((TagFilter)getActivity()).searchView.getQuery());
 
         }
         private void sortDataset(){
-            if(orderByPopular){
-                Collections.sort(((TagsAdapter) recyclerView.getAdapter()).getDataset(), new Comparator<Tag>() {
-                    @Override
-                    public int compare(Tag o1, Tag o2) {
-                        return o2.getCount()-o1.getCount();
-                    }
-                });
-            }else{
-                Collections.sort(((TagsAdapter) recyclerView.getAdapter()).getDataset(), new Comparator<Tag>() {
-                    @Override
-                    public int compare(Tag o1, Tag o2) {
-                        return o1.getName().compareTo(o2.getName());
-                    }
-                });
-            }
-            recyclerView.getAdapter().notifyDataSetChanged();
+            ((TagsAdapter)recyclerView.getAdapter()).sortDataset(orderByPopular);
         }
 
+        public void updateDataset() {
+            filterDataset();
+            sortDataset();
+        }
     }
 
     /**
@@ -331,6 +290,7 @@ public class TagFilter extends AppCompatActivity implements CustomResultReceiver
 
         @Override
         public Fragment getItem(int position) {
+            Log.d(Global.LOGTAG,"creating at: "+position);
             return PlaceholderFragment.newInstance(position);
         }
 
