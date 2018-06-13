@@ -1,12 +1,10 @@
 package com.dar.nclientv2;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -25,14 +23,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.dar.nclientv2.adapters.TagsAdapter;
-import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagType;
-import com.dar.nclientv2.api.scraper.Scraper;
 import com.dar.nclientv2.components.CustomResultReceiver;
 import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
-
-import java.util.List;
 
 public class TagFilter extends AppCompatActivity implements CustomResultReceiver.Receiver{
 
@@ -43,6 +37,10 @@ public class TagFilter extends AppCompatActivity implements CustomResultReceiver
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+
+    public ViewPager getViewPager() {
+        return mViewPager;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,8 +157,6 @@ public class TagFilter extends AppCompatActivity implements CustomResultReceiver
     public void onReceiveResult(int resultCode, Bundle resultData) {
         if(resultData.getBoolean(getPackageName()+".FINISH",true)){
             Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + resultData.getInt(getPackageName()+".PAGE",1));
-            // based on the current position you can then cast the page to the correct
-            // class and call the method:
             if (page != null) {
                 ((PlaceholderFragment)page).applyAdapter();
             }
@@ -240,41 +236,42 @@ public class TagFilter extends AppCompatActivity implements CustomResultReceiver
              recyclerView=rootView.findViewById(R.id.recycler);
              tag=getArguments().getInt("TAGTYPE");
              page=getArguments().getInt("PAGE");
-             List<Tag> x=null;
-             if(tag!=-1)x=Global.getTagSet(TagType.values()[tag]);
-            if(tag==-1||x.size()>1) applyAdapter();
-            else loadTags();
+            applyAdapter();
+
             return rootView;
         }
 
         private void loadTags() {
             if(tag==-1){applyAdapter();return;}
-            Snackbar.make(((TagFilter)getActivity()).mViewPager, R.string.long_time_toast, Snackbar.LENGTH_LONG).show();
-            Intent intent=new Intent(getContext().getApplicationContext(), Scraper.class);
-            intent.putExtra(getContext().getPackageName()+".TAGTYPE",tag);
-            intent.putExtra(getContext().getPackageName()+".PAGE",page);
-            intent.putExtra(getContext().getPackageName()+".RECEIVER", ((TagFilter)getActivity()).mReceiver);
-            getContext().startService(intent);
+            TagsAdapter adapter=(TagsAdapter)recyclerView.getAdapter();
+            adapter.resetDataset(TagType.values()[tag]);
         }
 
         private void applyAdapter(){
             String query=((TagFilter)getActivity()).searchView==null?"":((TagFilter)getActivity()).searchView.getQuery().toString();
             recyclerView.setLayoutManager(new GridLayoutManager(getContext(), getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE?4:2));
-            if(tag!=-1) recyclerView.setAdapter(new TagsAdapter(getContext(),Global.getTagSet(TagType.values()[tag]),query,orderByPopular));
-            else recyclerView.setAdapter(new TagsAdapter(getContext(),Global.getListPrefer(),query,orderByPopular));
+            if(tag!=-1){
+                TagsAdapter adapter=new TagsAdapter((TagFilter)getActivity(),Global.getTagSet(TagType.values()[tag]),query,orderByPopular);
+                recyclerView.setAdapter(adapter);
+                if(adapter.getTrueDataset().size()==0)loadTags();
+            }
+            else recyclerView.setAdapter(new TagsAdapter((TagFilter)getActivity(),Global.getListPrefer(),query,orderByPopular));
         }
         private void filterDataset(){
-            if(((TagFilter)getActivity()).searchView!=null)
+            if(((TagFilter)getActivity()).searchView!=null&&recyclerView.getAdapter()!=null)
                 ((TagsAdapter)recyclerView.getAdapter()).getFilter().filter(((TagFilter)getActivity()).searchView.getQuery());
 
         }
         private void sortDataset(){
-            ((TagsAdapter)recyclerView.getAdapter()).sortDataset(orderByPopular);
+            if(recyclerView.getAdapter()!=null) ((TagsAdapter)recyclerView.getAdapter()).sortDataset(orderByPopular);
         }
 
         public void updateDataset() {
-            filterDataset();
-            sortDataset();
+            if(tag==-1)applyAdapter();
+            else {
+                filterDataset();
+                sortDataset();
+            }
         }
     }
 

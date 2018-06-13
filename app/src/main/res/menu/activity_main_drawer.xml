@@ -8,17 +8,21 @@
             android:icon="@drawable/ic_file"
             android:title="@string/downloaded_manga" />
         <item
+            android:id="@+id/favorite_manager"
+            android:icon="@drawable/ic_favorite"
+            android:title="@string/favorite_manga" />
+        <item
             android:id="@+id/tag_manager"
             android:icon="@drawable/ic_hashtag"
             android:title="@string/manage_tags" />
-        <item
-            android:icon="@null"
-            android:id="@+id/only_language"
-            android:title="@string/all_languages"/>
+
     </group>
-    <item android:title="@string/sort_type">
+    <item android:title="@string/filters">
         <menu>
     <group android:checkableBehavior="none">
+        <item
+            android:id="@+id/only_language"
+            android:title="@string/all_languages"/>
         <item
             android:id="@+id/by_popular"
             android:title="@string/sort_popular"/>

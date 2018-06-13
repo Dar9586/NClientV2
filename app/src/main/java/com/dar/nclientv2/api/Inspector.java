@@ -69,7 +69,7 @@ public class Inspector {
                         activity.getRefresher().setRefreshing(false);
                         galleries=new ArrayList<>(1);
                         if(activity instanceof MainActivity){
-                            activity.getRecycler().setAdapter(new ListAdapter(activity,Inspector.this));
+                            activity.getRecycler().setAdapter(new ListAdapter(activity,galleries));
                             ((MainActivity)activity).hidePageSwitcher();
                         }
                         else if(activity instanceof GalleryActivity)activity.getRefresher().setEnabled(false);
@@ -86,7 +86,7 @@ public class Inspector {
                     @Override
                     public void run() {
                         if(requestType!=ApiRequestType.BYSINGLE){
-                            activity.getRecycler().setAdapter(new ListAdapter(activity,Inspector.this));
+                            activity.getRecycler().setAdapter(new ListAdapter(activity,galleries));
                             ((MainActivity)activity).showPageSwitcher(Inspector.this.page,Inspector.this.pageCount);
                         }
                         else{

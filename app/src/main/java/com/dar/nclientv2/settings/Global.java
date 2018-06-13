@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.support.annotation.DrawableRes;
@@ -19,12 +20,17 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.dar.nclientv2.FavoriteActivity;
 import com.dar.nclientv2.R;
+import com.dar.nclientv2.adapters.FavoriteAdapter;
+import com.dar.nclientv2.api.components.Gallery;
+import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.enums.TitleType;
+import com.dar.nclientv2.async.LoadFavorite;
 import com.squareup.picasso.Picasso;
 
 import java.io.BufferedReader;
@@ -35,6 +41,7 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,6 +57,9 @@ public final class Global {
     private static List<Tag> accepted=new ArrayList<>(),avoided=new ArrayList<>();
     private static ThemeScheme theme;
     private static int notificationId,columnCount,minTagCount,maxId;
+    private static int totalFavorite;
+    public static final int MAXFAVORITE=10000;
+    public static final int MAXTAGS=100;
     private static List<Tag>[] sets= new List[5];
     public static void initTagSets(@NonNull Context context){
         sets[0]=getSet(context,getScraperId(TagType.TAG));
@@ -64,7 +74,7 @@ public final class Global {
     public static boolean  initLoadImages   (@NonNull Context context){loadImages=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_load_images),true);return loadImages;}
     public static void     initOnlyLanguage (@NonNull Context context){int x=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_only_language),-1);onlyLanguage=x==-1?null:Language.values()[x];}
     public static void     initColumnCount  (@NonNull Context context){columnCount=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_column_count),1);}
-    public static void     initMinTagCount  (@NonNull Context context){minTagCount=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_min_tag_count),10);}
+    public static void     initMinTagCount  (@NonNull Context context){minTagCount=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_min_tag_count),25);}
     public static void     initMaxId        (@NonNull Context context){maxId=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_max_id),236000);}
     private static ThemeScheme initTheme(Context context){
         String h=context.getSharedPreferences("Settings",0).getString(context.getString(R.string.key_theme_select),"light");
@@ -137,6 +147,7 @@ public final class Global {
             context.getSharedPreferences("TagPreferences",0).edit().putStringSet(context.getString(R.string.key_avoided_tags),Tag.toStringSet(avoided)).apply();
             return TagStatus.DEFAULT;
         }
+        if(maxTagReached())return TagStatus.DEFAULT;
         accepted.add(tag);
         context.getSharedPreferences("TagPreferences",0).edit().putStringSet(context.getString(R.string.key_accepted_tags),Tag.toStringSet(accepted)).apply();
         return TagStatus.ACCEPTED;
@@ -313,6 +324,56 @@ public final class Global {
         for(File x:file.listFiles())recursiveDelete(x);
         file.delete();
     }
-
+    public static void loadFavorites(FavoriteActivity context,FavoriteAdapter adapter){
+        new LoadFavorite(adapter).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,context);
+    }
+    public static boolean addFavorite(Context context,Gallery gallery){
+        if(totalFavorite>=MAXFAVORITE)return false;
+        Set<String> x=context.getSharedPreferences("FavoriteList", 0).getStringSet(context.getString(R.string.key_favorite_list),new HashSet<String>());
+        try {
+            x.add(gallery.writeGallery());
+        }catch (IOException e){
+            Log.e(LOGTAG,e.getLocalizedMessage(),e);
+        }
+        context.getSharedPreferences("FavoriteList", 0).edit().putStringSet(context.getString(R.string.key_favorite_list),x).apply();
+        totalFavorite++;
+        return true;
+    }
+    public static boolean removeFavorite(Context context,GenericGallery gallery){
+        try {
+            Set<String> x = context.getSharedPreferences("FavoriteList", 0).getStringSet(context.getString(R.string.key_favorite_list), new HashSet<String>());
+            for (String y : x) {
+                try {
+                    if (Integer.parseInt(y.substring(1, y.indexOf(','))) == gallery.getId())
+                        x.remove(y);
+                } catch (NumberFormatException e) {
+                    Log.e(LOGTAG, e.getLocalizedMessage(), e);
+                }
+            }
+            context.getSharedPreferences("FavoriteList", 0).edit().putStringSet(context.getString(R.string.key_favorite_list), x).apply();
+            totalFavorite--;
+            return true;
+        }catch (ConcurrentModificationException e){
+            Log.e(LOGTAG,e.getLocalizedMessage(),e);
+            return false;
+        }
+    }
+    public static boolean isFavorite(Context context,GenericGallery gallery){
+        Set<String> x=context.getSharedPreferences("FavoriteList", 0).getStringSet(context.getString(R.string.key_favorite_list),new HashSet<String>());
+        for(String y:x){
+            try{
+                if(Integer.parseInt(y.substring(1,y.indexOf(',')))==gallery.getId())return true;
+            }catch (NumberFormatException e){
+                Log.e(LOGTAG,e.getLocalizedMessage(),e);
+            }
+        }
+        return false;
+    }
+    public static void countFavorite(Context context){
+        totalFavorite=context.getSharedPreferences("FavoriteList", 0).getStringSet(context.getString(R.string.key_favorite_list),new HashSet<String>()).size();
+    }
+    public static boolean maxTagReached(){
+        return accepted.size()+avoided.size()>=MAXTAGS;
+    }
 
 }

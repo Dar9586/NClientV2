@@ -247,7 +247,7 @@ public class Gallery extends GenericGallery{
         return titles;
     }
 
-    public Image getCover() {
+    private Image getCover() {
         return cover;
     }
 
@@ -258,11 +258,11 @@ public class Gallery extends GenericGallery{
         return getTagCount(type.ordinal());
     }
 
-    public int getTagCount(int type) {
+    private int getTagCount(int type) {
         if(type<0||type>tags.length||tags[type]==null)return 0;
         return tags[type].length;
     }
-    public Tag getTag(int type,int index){
+    private Tag getTag(int type,int index){
         if(type<0||index<0||type>tags.length||tags[type]==null||index>tags[type].length)return null;
         return tags[type][index];
     }
@@ -272,7 +272,7 @@ public class Gallery extends GenericGallery{
     public Page getPage(int index){
         return pages[index];
     }
-    public String toJSON() throws IOException{
+    private String toJSON() throws IOException{
         StringWriter sw=new StringWriter();
         JsonWriter jw=new JsonWriter(sw);
         jw.beginObject();
@@ -321,5 +321,69 @@ public class Gallery extends GenericGallery{
             default:
                 jw.beginObject().name("t").value((type==ImageType.COVER?cover:thumbnail).jpg?"j":"p").endObject();
         }
+    }
+    public String writeGallery() throws IOException{
+        StringWriter stringWriter=new StringWriter();
+        JsonWriter jw=new JsonWriter(stringWriter);
+        jw.beginArray();
+        jw.value(id).value(mediaId).value(language.ordinal()).value(favoriteCount).value(pageCount).value(uploadDate.getTime()).value(scanlator);
+        jw.value(titles[0]).value(titles[1]).value(titles[2]);
+        jw.value(getThumbnail().jpg?"j":"p").value(getCover().jpg?"j":"p");
+        boolean allPng=true,allJpg=true;
+        StringBuilder builder=new StringBuilder(pageCount);
+        for(Page p:pages){
+            if(p.jpg)allPng=false;
+            else allJpg=false;
+            builder.append(p.jpg?"j":"p");
+        }
+        if(!allPng&&!allJpg){
+            jw.value(builder.toString());
+        }else jw.value(allJpg?"j":"p");
+        for(Tag[] array:tags){
+            jw.beginArray();
+            if(array!=null)
+                for(Tag x:array) {
+                    jw.value(x.getName()).value(x.getCount()).value(x.getId());
+                }
+            jw.endArray();
+        }
+        String fin=stringWriter.toString();
+        stringWriter.close();
+        return fin;
+    }
+    public Gallery(String x) throws IOException{
+        //Vero inizio
+        JsonReader jr=new JsonReader(new StringReader("{\"f\":"+x+"]}"));
+        jr.beginObject();
+        jr.skipValue();
+        jr.beginArray();
+        id=jr.nextInt();
+        mediaId=jr.nextInt();
+        language=Language.values()[jr.nextInt()];
+        favoriteCount=jr.nextInt();
+        pageCount=jr.nextInt();
+        uploadDate=new Date(jr.nextLong());
+        scanlator=jr.nextString();
+        titles[0]=jr.nextString();
+        titles[1]=jr.nextString();
+        titles[2]=jr.nextString();
+        thumbnail=new Image(jr.nextString().equals("j"),mediaId,ImageType.THUMBNAIL);
+        cover=new Image(jr.nextString().equals("j"),mediaId,ImageType.COVER);
+        pages=new Page[pageCount];
+        String pagstr=jr.nextString();
+        if(pagstr.length()==1){
+            for(int a=0;a<pageCount;a++)pages[a]=new Page(pagstr.equals("j"),mediaId,a+1);
+        }else for(int a=0;a<pageCount;a++)pages[a]=new Page(pagstr.charAt(a)=='j',mediaId,a+1);
+        tags=new Tag[TagType.values().length][];
+        for(int a=0;a<TagType.values().length;a++){
+            List<Tag>list=new ArrayList<>();
+            jr.beginArray();
+            while (jr.hasNext()) {
+                list.add(new Tag(jr.nextString(),jr.nextInt(),jr.nextInt(),TagType.values()[a]));
+            }
+            if(list.size()>0) tags[a]=list.toArray(new Tag[0]);
+            jr.endArray();
+        }
+        jr.close();
     }
 }

@@ -13,6 +13,10 @@ public class Page extends Image {
         super(jr, galleryId, ImageType.PAGE);
         this.page=page;
     }
+    Page(boolean jpg, int galleryId, int page) throws IOException {
+        super(jpg, galleryId, ImageType.PAGE);
+        this.page=page;
+    }
 
     @Override
     public String getUrl() {

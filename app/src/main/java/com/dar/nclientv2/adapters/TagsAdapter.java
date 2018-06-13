@@ -1,8 +1,8 @@
 package com.dar.nclientv2.adapters;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,8 +14,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dar.nclientv2.R;
+import com.dar.nclientv2.TagFilter;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagStatus;
+import com.dar.nclientv2.api.enums.TagType;
+import com.dar.nclientv2.async.ScrapeTags;
 import com.dar.nclientv2.settings.Global;
 
 import java.util.ArrayList;
@@ -25,7 +28,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> implements Filterable{
-    private final Context context;
+    private final TagFilter context;
     private final List<Tag> tags;
     private List<Tag> filterTags;
     private String lastQuery=null;
@@ -70,11 +73,11 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         }
     }
     private boolean orderByPopular;
-    public TagsAdapter(Context cont, List<Tag> tags,String query,boolean orderByPopular) {
+    public TagsAdapter(TagFilter cont, List<Tag> tags,String query,boolean orderByPopular) {
         this.context=cont;
         this.tags=tags;
         this.orderByPopular=!orderByPopular;
-        filterTags=tags;
+        filterTags=new ArrayList<>(tags);
         getFilter().filter(query);
     }
 
@@ -92,7 +95,8 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         holder.master.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateLogo(holder.imgView, Global.updateStatus(context,ent));
+                if(!Global.maxTagReached()||Global.getStatus(ent)!=TagStatus.DEFAULT) updateLogo(holder.imgView, Global.updateStatus(context,ent));
+                else Snackbar.make(context.getViewPager(),context.getString(R.string.tags_max_reached,Global.MAXTAGS),Snackbar.LENGTH_LONG).show();
             }
         });
         updateLogo(holder.imgView,Global.getStatus(ent));
@@ -113,6 +117,9 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
     public List<Tag> getDataset() {
         return filterTags;
     }
+    public List<Tag> getTrueDataset() {
+        return tags;
+    }
     public void sortDataset(boolean byPopular){
         Log.d(Global.LOGTAG,"SORT: "+(byPopular==orderByPopular));
         if(byPopular==orderByPopular)return;
@@ -130,6 +137,25 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
             }
         });
         notifyDataSetChanged();
+    }
+    public void addItem(Tag tag){
+        tags.add(tag);
+        if(tag.getName().contains(lastQuery)){
+            filterTags.add(tag);
+            context.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    notifyItemInserted(filterTags.size()-1);
+                }
+            });
+
+        }
+    }
+    public void resetDataset(TagType type){
+        tags.clear();
+        filterTags=new ArrayList<>();
+        notifyDataSetChanged();
+        new ScrapeTags(context,this,type).start();
     }
 
 }
