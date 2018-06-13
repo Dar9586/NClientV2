@@ -65,7 +65,7 @@ public class ZoomActivity extends AppCompatActivity {
         Global.loadTheme(this);
         setContentView(R.layout.activity_zoom);
         gallery=getIntent().getParcelableExtra(getPackageName()+".GALLERY");
-        directory=Global.findGalleryFolder(gallery.getId());
+        directory=Global.hasStoragePermission(this)?Global.findGalleryFolder(gallery.getId()):null;
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                         | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,

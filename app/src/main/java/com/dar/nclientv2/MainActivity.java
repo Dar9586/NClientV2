@@ -12,8 +12,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -48,6 +46,7 @@ public class MainActivity extends BaseActivity
         Global.initTagOrder(this);
         Global.initMinTagCount(this);
         Global.initMaxId(this);
+        Global.countFavorite(this);
         Global.loadTheme(this);
         Global.loadNotificationChannel(this);
         setContentView(R.layout.activity_main);
@@ -183,23 +182,6 @@ public class MainActivity extends BaseActivity
         );
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            changeLayout(true);
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            changeLayout(false);
-        }
-    }
-    private void changeLayout(boolean landscape){
-        final int count=landscape?4:2;
-        RecyclerView.Adapter adapter=recycler.getAdapter();
-        GridLayoutManager gridLayoutManager=new GridLayoutManager(this,count);
-
-        recycler.setLayoutManager(gridLayoutManager);
-        recycler.setAdapter(adapter);
-    }
     private Setting setting=null;
     private class Setting{
         Global.ThemeScheme theme;
@@ -280,6 +262,7 @@ public class MainActivity extends BaseActivity
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
+        Intent intent;
         int id = item.getItemId();
         switch (id){
             case R.id.pretty_title:Global.updateTitleType(this, TitleType.PRETTY);recycler.getAdapter().notifyDataSetChanged();break;
@@ -288,8 +271,12 @@ public class MainActivity extends BaseActivity
             case R.id.by_popular:item.setIcon(Global.updateByPopular(this,!Global.isByPopular())?R.drawable.ic_check:R.drawable.ic_close);new Inspector(this,1,Inspector.getActualQuery(),Inspector.getActualRequestType());break;
             case R.id.only_language:updateLanguageIcon(item,true);break;
             case R.id.downloaded:if(Global.hasStoragePermission(this))startLocalActivity();else requestStorage();break;
+            case R.id.favorite_manager:
+                intent=new Intent(this,FavoriteActivity.class);
+                startActivity(intent);
+                break;
             case R.id.tag_manager:
-                Intent intent=new Intent(this,TagFilter.class);
+                intent=new Intent(this,TagFilter.class);
                 startActivity(intent);
                 break;
         }

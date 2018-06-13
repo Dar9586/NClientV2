@@ -1,19 +1,17 @@
 package com.dar.nclientv2;
 
 import android.content.res.Configuration;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
 
-import com.dar.nclientv2.adapters.LocalAdapter;
-import com.dar.nclientv2.api.local.FakeInspector;
+import com.dar.nclientv2.adapters.FavoriteAdapter;
 import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Global;
 
-public class LocalActivity extends BaseActivity {
+public class FavoriteActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,18 +22,21 @@ public class LocalActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getSupportActionBar().setTitle(R.string.downloaded_manga);
+        getSupportActionBar().setTitle(R.string.favorite_manga);
         findViewById(R.id.page_switcher).setVisibility(View.GONE);
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
+        changeLayout(getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE);
+        FavoriteAdapter adapter=new FavoriteAdapter(this);
+        recycler.setAdapter(adapter);
+        refresher.setRefreshing(true);
+        Global.loadFavorites(this,adapter);
         refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new FakeInspector().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,LocalActivity.this);
+
             }
         });
-        changeLayout(getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE);
-        new FakeInspector().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,this);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -52,7 +53,7 @@ public class LocalActivity extends BaseActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(recycler.getAdapter()!=null)((LocalAdapter)recycler.getAdapter()).getFilter().filter(newText);
+                if(recycler.getAdapter()!=null)((FavoriteAdapter)recycler.getAdapter()).getFilter().filter(newText);
                 return true;
             }
         });

@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -103,7 +104,7 @@ public class GalleryActivity extends BaseActivity
             super.onBackPressed();
         }
     }
-
+    private boolean isFavorite;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -111,6 +112,9 @@ public class GalleryActivity extends BaseActivity
         Global.setTint(menu.findItem(R.id.download_gallery).getIcon());
         Global.setTint(menu.findItem(R.id.load_internet).getIcon());
         Global.setTint(menu.findItem(R.id.change_view).getIcon());
+        menu.findItem(R.id.favorite_manager).setIcon((isFavorite=Global.isFavorite(this,gallery))?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
+        Global.setTint(menu.findItem(R.id.favorite_manager).getIcon());
+        menu.findItem(R.id.favorite_manager).setVisible(!isLocal||isFavorite);
         menu.findItem(R.id.download_gallery).setVisible(!isLocal);
         menu.findItem(R.id.load_internet).setVisible(isLocal&&gallery.getId()!=-1);
         updateColumnCount(false);
@@ -135,6 +139,17 @@ public class GalleryActivity extends BaseActivity
             case R.id.download_gallery:if(Global.hasStoragePermission(this))downloadGallery();else{requestStorage();}break;
             case R.id.change_view:updateColumnCount(true);Global.setTint(item.getIcon()); break;
             case R.id.load_internet:toInternet();break;
+            case R.id.favorite_manager:
+                if(isFavorite){
+                    if(Global.removeFavorite(this,gallery)) isFavorite=!isFavorite;
+                }else if(Global.addFavorite(this,(Gallery) gallery)){
+                    isFavorite=!isFavorite;
+                }else{
+                    Snackbar.make(recycler,getString(R.string.favorite_max_reached,Global.MAXFAVORITE),Snackbar.LENGTH_LONG).show();
+                }
+                item.setIcon(isFavorite?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
+                Global.setTint(item.getIcon());
+            break;
         }
 
         return super.onOptionsItemSelected(item);

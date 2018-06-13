@@ -44,6 +44,8 @@
     <string name="load_images">Load images</string>
     <string name="channel_name">Download Gallery</string>
     <string name="channel_description">Used to show progress of the download of a gallery</string>
+    <string name="favorite_max_reached" formatted="true">You can have a maximum of %d favorite manga.</string>
+    <string name="tags_max_reached" formatted="true">You can have a maximum of %d selected tags.</string>
     <string name="tag_format" formatted="true">%s (%d)</string>
     <string name="page_format" formatted="true">%d/%d</string>
     <string name="notification_title">Downloading gallery:</string>
@@ -97,6 +99,9 @@
     <string name="random_manga">Random manga</string>
     <string name="key_cache">cache</string>
     <string name="page_count_format" formatted="true">%d Pages</string>
+    <string name="key_favorite_list">favorite_list</string>
+    <string name="favorite_manga">Favorite manga</string>
+    <string name="filters">Filters</string>
     <string name="page_Switcher_placeholder">0/0</string>
     <string-array name="theme">
         <item>Light</item>

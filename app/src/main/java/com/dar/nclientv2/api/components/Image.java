@@ -21,6 +21,11 @@ public class Image {
         }
         jr.endObject();
     }
+    Image(boolean jpg, int galleryId, ImageType type) {
+        this.galleryId=galleryId;
+        this.type=type;
+        this.jpg=jpg;
+    }
     public String getUrl() {
         return type==ImageType.COVER?
                 String.format(Locale.US,"https://t.nhentai.net/galleries/%d/cover.%s",galleryId,jpg?"jpg":"png"):

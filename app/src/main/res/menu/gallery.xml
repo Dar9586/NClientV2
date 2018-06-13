@@ -8,6 +8,12 @@
         android:title="@string/download_gallery"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/favorite_manager"
+        android:orderInCategory="125"
+        android:icon="@drawable/ic_favorite_border"
+        android:title="@string/download_gallery"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/load_internet"
         android:orderInCategory="150"
         android:icon="@drawable/ic_world"

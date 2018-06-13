@@ -1,13 +1,10 @@
-package com.dar.nclientv2.api.scraper;
+package com.dar.nclientv2.async;
 
-import android.app.IntentService;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.ResultReceiver;
+import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.dar.nclientv2.adapters.TagsAdapter;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.settings.Global;
@@ -27,17 +24,41 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class Scraper extends IntentService {
+public class ScrapeTags extends Thread {
+    private TagsAdapter adapter;
     private TagType tagType;
+    private OkHttpClient client=new OkHttpClient();
+    private final List<Tag> tags=new ArrayList<>();
     private int maxPage;
-    private final List<Tag> tags;
+    private final  Object lock=new Object();
     private static final List<TagType>updating=new ArrayList<>();
-    private final Object lock=new Object();
-    private final OkHttpClient client;
-    public Scraper() {
-        super("Scraper");
-        client=new OkHttpClient();
-        tags=new ArrayList<>();
+    private final Context context;
+    public ScrapeTags(Context context, TagsAdapter adapter, TagType tagType){
+        this.adapter=adapter;
+        this.tagType=tagType;
+        this.context=context.getApplicationContext();
+    }
+    @Override
+    public void run() {
+        super.run();
+        if(updating.contains(tagType))return;
+        updating.add(tagType);
+        maxPage=1;
+        for(int a=1;a<=maxPage;a++){
+            retrivePage(a);
+            synchronized (lock){
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
+                    maxPage=-1;
+                }
+            }
+        }
+        Global.updateSet(context,tags,tagType);
+
+        updating.remove(tagType);
+
     }
     private static String getSingleName(TagType type){
         switch (type){
@@ -55,46 +76,6 @@ public class Scraper extends IntentService {
             case CHARACTER: case TAG: case ARTIST: case GROUP: return getSingleName(type)+"s";
         }
         return null;
-    }
-
-
-
-    public TagType getTagType() {
-        return tagType;
-    }
-
-    public int getMaxPage() {
-        return maxPage;
-    }
-
-    public List<Tag> getTags() {
-        return tags;
-    }
-
-    @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
-        ResultReceiver receiver=intent.getParcelableExtra(getPackageName()+".RECEIVER");
-        tagType=TagType.values()[intent.getIntExtra(getPackageName()+".TAGTYPE",3)/*Tag di default*/];
-        if(updating.contains(tagType))return;
-        updating.add(tagType);
-        maxPage=1;
-        for(int a=1;a<=maxPage;a++){
-            retrivePage(a);
-            synchronized (lock){
-                try {
-                    lock.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    maxPage=-1;
-                }
-            }
-        }
-        Global.updateSet(this,tags,TagType.values()[intent.getIntExtra(getPackageName()+".TAGTYPE",3)/*Tag di default*/]);
-        Bundle b=new Bundle();
-        b.putBoolean(getPackageName()+".FINISH",true);
-        b.putInt(getPackageName()+".PAGE",intent.getIntExtra(getPackageName()+".PAGE",1));
-        receiver.send(0,b);
-        updating.remove(tagType);
     }
     private void retrivePage(int page) {
         String url="https://nhentai.net/"+getMultipleName(tagType)+"/popular?page="+page;
@@ -127,6 +108,7 @@ public class Scraper extends IntentService {
                     return;
                 }
                 tags.add(t);
+                adapter.addItem(t);
             }
 
         }
@@ -144,7 +126,5 @@ public class Scraper extends IntentService {
             lock.notify();
         }
     }
-    public boolean hasFailed(){
-        return maxPage==-1;
-    }
+
 }

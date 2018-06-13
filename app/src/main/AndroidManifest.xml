@@ -46,10 +46,6 @@
             android:name=".async.DownloadGallery"
             android:enabled="true"
             android:exported="false" />
-        <service
-            android:name=".api.scraper.Scraper"
-            android:enabled="true"
-            android:exported="false" />
 
         <activity
             android:name=".LocalActivity"
@@ -67,7 +63,12 @@
                 android:value="com.dar.nclientv2.MainActivity" />
         </activity>
         <activity android:name=".SettingsActivity" />
-        <activity android:name=".RandomActivity"></activity>
+        <activity android:name=".RandomActivity" />
+        <activity android:name=".FavoriteActivity"
+            android:configChanges="orientation|screenSize"
+            android:parentActivityName=".MainActivity"
+
+            />
     </application>
 
 </manifest>

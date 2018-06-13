@@ -7,14 +7,9 @@ import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.R;
-import com.dar.nclientv2.api.Inspector;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Global;
@@ -22,42 +17,24 @@ import com.dar.nclientv2.settings.Global;
 import java.util.List;
 import java.util.Locale;
 
-public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
+public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder> {
 
-    private final Inspector mDataset;
+    private final List<Gallery> mDataset;
     private final BaseActivity context;
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        final ImageView imgView,flag;
-        final TextView title,pages;
-        final View layout;
-        final ImageButton prev,next;
-        final EditText editText;
-        ViewHolder(View v) {
-            super(v);
-            imgView = v.findViewById(R.id.image);
-            title = v.findViewById(R.id.title);
-            pages = v.findViewById(R.id.pages);
-            layout = v.findViewById(R.id.master_layout);
-            next=v.findViewById(R.id.next);
-            prev=v.findViewById(R.id.prev);
-            editText=v.findViewById(R.id.page_index);
-            flag=v.findViewById(R.id.flag);
-        }
-    }
 
-    public ListAdapter(BaseActivity cont, Inspector myDataset) {
+    public ListAdapter(BaseActivity cont, List<Gallery> myDataset) {
         this.context=cont;
         this.mDataset = myDataset;
     }
 
     @NonNull
     @Override
-    public ListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ListAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.entry_layout, parent, false));
+    public GenericAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new GenericAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.entry_layout, parent, false));
     }
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-            final Gallery ent = getDataset().get(holder.getAdapterPosition());
+    public void onBindViewHolder(@NonNull final GenericAdapter.ViewHolder holder, int position) {
+            final Gallery ent = mDataset.get(holder.getAdapterPosition());
             Global.loadImage(context,ent.getThumbnail().getUrl(),holder.imgView);
             holder.title.setText(ent.getTitle(Global.getTitleType()));
             switch (ent.getLanguage()){
@@ -88,10 +65,10 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     }
     @Override
     public int getItemCount() {
-        return getDataset().size();
+        return mDataset.size();
     }
 
     private List<Gallery> getDataset() {
-        return mDataset.getGalleries();
+        return mDataset;
     }
 }

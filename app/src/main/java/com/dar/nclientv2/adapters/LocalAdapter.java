@@ -4,14 +4,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.LocalActivity;
@@ -23,39 +17,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> {
-    private final ArrayList<LocalGallery> mDataset,filterDataset;
+public class LocalAdapter extends GenericAdapter<LocalGallery>{
     private final LocalActivity context;
-    static class ViewHolder extends RecyclerView.ViewHolder {
-
-        final ImageView imgView,flag;
-        final TextView title,pages;
-        final ConstraintLayout layout;
-        ViewHolder(View v) {
-            super(v);
-            imgView = v.findViewById(R.id.image);
-            title = v.findViewById(R.id.title);
-            pages = v.findViewById(R.id.pages);
-            layout = v.findViewById(R.id.master_layout);
-            flag=v.findViewById(R.id.flag);
-        }
-    }
 
     public LocalAdapter(LocalActivity cont, ArrayList<LocalGallery> myDataset) {
+        super(myDataset);
         this.context=cont;
-        this.mDataset = myDataset;
-        filterDataset=new ArrayList<>();
-        filterDataset.addAll(mDataset);
     }
 
-    @NonNull
     @Override
-    public LocalAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new LocalAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.entry_layout, parent, false));
-    }
-    @Override
-    public void onBindViewHolder(@NonNull final LocalAdapter.ViewHolder holder, int position) {
-        final LocalGallery ent = filterDataset.get(holder.getAdapterPosition());
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+        final LocalGallery ent = filter.get(holder.getAdapterPosition());
         holder.flag.setVisibility(View.GONE);
         Global.loadImage(context,ent.getPage(ent.getMin()),holder.imgView);
         holder.title.setText(ent.getTitle());
@@ -86,17 +58,17 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
                 return true;
             }
         });
-
     }
+
     private void showDialog(final int pos){
-        final LocalGallery gallery=filterDataset.get(pos);
+        final LocalGallery gallery=filter.get(pos);
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         builder.setTitle(R.string.delete_gallery).setMessage(context.getString(R.string.delete_gallery_format,gallery.getTitle()));
         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                filterDataset.remove(gallery);
-                mDataset.remove(gallery);
+                filter.remove(gallery);
+                dataset.remove(gallery);
                 Global.recursiveDelete(gallery.getDirectory());
                 notifyItemRemoved(pos);
             }
@@ -106,15 +78,10 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
     }
     @Override
     public int getItemCount() {
-        return filterDataset.size();
+        return filter.size();
     }
 
     private List<LocalGallery> getDataset() {
-        return filterDataset;
-    }
-    public void filter(String query){
-        filterDataset.clear();
-        for(LocalGallery x:mDataset)if(x.getTitle().toLowerCase(Locale.US).contains(query.toLowerCase(Locale.US)))filterDataset.add(x);
-        notifyDataSetChanged();
+        return filter;
     }
 }
