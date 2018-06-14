@@ -8,7 +8,6 @@ import android.util.Log;
 
 import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.MainActivity;
-import com.dar.nclientv2.ZoomActivity;
 import com.dar.nclientv2.adapters.ListAdapter;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.enums.ApiRequestType;
@@ -93,14 +92,10 @@ public class Inspector {
                         else{
                             Intent intent=new Intent(activity, GalleryActivity.class);
                             intent.putExtra(activity.getPackageName()+".GALLERY",galleries.get(0));
+                            intent.putExtra(activity.getPackageName()+".ZOOM",page-1);
                             activity.startActivity(intent);
                             activity.getRefresher().setEnabled(false);
-                            if(page>0){
-                                intent = new Intent(activity, ZoomActivity.class);
-                                intent.putExtra(activity.getPackageName()+".GALLERY",galleries.get(0));
-                                intent.putExtra(activity.getPackageName()+".PAGE",page-1);
-                                activity.startActivity(intent);
-                            }
+                            activity.finish();
                         }
                         activity.getRefresher().setRefreshing(false);
                     }

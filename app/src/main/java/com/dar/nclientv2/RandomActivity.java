@@ -25,6 +25,7 @@ public class RandomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
+        Global.initTagPreferencesSets(this);
         setContentView(R.layout.activity_random);
         shuffle=findViewById(R.id.shuffle);
         language=findViewById(R.id.language);

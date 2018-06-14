@@ -63,6 +63,9 @@ public final class Global {
     public static final int MAXTAGS=100;
     private static List<Tag>[] sets= new List[5];
     public static void initTagSets(@NonNull Context context){
+        boolean already=true;
+        for(int a=0;a<5;a++)if(sets[a]==null){already=false;break;}
+        if(already)return;
         sets[0]=getSet(context,getScraperId(TagType.TAG));
         sets[1]=getSet(context,getScraperId(TagType.ARTIST));
         sets[2]=getSet(context,getScraperId(TagType.GROUP));
@@ -85,6 +88,7 @@ public final class Global {
         return theme=h.equals("light")?ThemeScheme.LIGHT:h.equals("dark")?ThemeScheme.DARK:ThemeScheme.BLACK;
     }
     public static void  initTagPreferencesSets(@NonNull Context context){
+        if(accepted!=null&&avoided!=null)return;
         SharedPreferences preferences=context.getSharedPreferences("TagPreferences", 0);
         accepted=Tag.toArrayList(preferences.getStringSet(context.getString(R.string.key_accepted_tags),new HashSet<String>()));
         avoided=Tag.toArrayList(preferences.getStringSet(context.getString(R.string.key_avoided_tags),new HashSet<String>()));

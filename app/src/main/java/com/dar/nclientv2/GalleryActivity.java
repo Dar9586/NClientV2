@@ -40,6 +40,9 @@ public class GalleryActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
+        Global.initColumnCount(this);
+        Global.initTagSets(this);
+        Global.initTagPreferencesSets(this);
         setContentView(R.layout.activity_gallery);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -48,6 +51,7 @@ public class GalleryActivity extends BaseActivity
         gallery= getIntent().getParcelableExtra(getPackageName()+".GALLERY");
         if(getIntent().getBooleanExtra(getPackageName()+".INSTANTDOWNLOAD",false))downloadGallery();
         isLocal=getIntent().getBooleanExtra(getPackageName()+".ISLOCAL",false);
+        int zoom=getIntent().getIntExtra(getPackageName()+".ZOOM",0);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -65,7 +69,6 @@ public class GalleryActivity extends BaseActivity
         if(data != null && data.getPathSegments().size() >= 2){
             List<String> params = data.getPathSegments();
             for(String x:params)Log.i(Global.LOGTAG,x);
-            Log.i(Global.LOGTAG,params.size()+","+params.get(2));
             if(params.size()>2){
                 try{
                     isZoom=Integer.parseInt(params.get(2));
@@ -73,13 +76,11 @@ public class GalleryActivity extends BaseActivity
                     Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
                 }
             }
-            Log.i(Global.LOGTAG,params.size()+","+params.get(2));
             new Inspector(this,isZoom,params.get(1),ApiRequestType.BYSINGLE);
-            finish();
-        }else loadGallery(gallery);
+        }else loadGallery(gallery,zoom);
 
     }
-    private void loadGallery(GenericGallery gall) {
+    private void loadGallery(GenericGallery gall,int zoom) {
         NavigationView navigationView = findViewById(R.id.nav_view);
         Toolbar toolbar = findViewById(R.id.toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -111,6 +112,12 @@ public class GalleryActivity extends BaseActivity
             toolbar.setNavigationIcon(null);
         }
         recycler.setAdapter(new GalleryAdapter(this,gallery));
+        if(zoom>0){
+            Intent intent = new Intent(this, ZoomActivity.class);
+            intent.putExtra(getPackageName()+".GALLERY",this.gallery);
+            intent.putExtra(getPackageName()+".PAGE",zoom);
+            startActivity(intent);
+        }
     }
 
     private int getIdFromTagType(TagType type){

@@ -2,6 +2,7 @@ package com.dar.nclientv2;
 
 import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -26,6 +27,8 @@ import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
 
+import java.util.List;
+
 public class TagFilter extends AppCompatActivity{
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -43,6 +46,8 @@ public class TagFilter extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
+        Global.initTagOrder(this);
+        Global.initMinTagCount(this);
         setContentView(R.layout.activity_tag_filter);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -78,9 +83,25 @@ public class TagFilter extends AppCompatActivity{
             }
         });
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-
+        mViewPager.setCurrentItem(getPage());
     }
-
+    private int getPage(){
+        Uri data = getIntent().getData();
+        if(data != null){
+            List<String> params = data.getPathSegments();
+            for(String x:params)Log.i(Global.LOGTAG,x);
+            if(params.size()>0){
+                switch (params.get(0)){
+                    case "tags":return 1;
+                    case "artists":return 2;
+                    case "characters":return 3;
+                    case "parodies":return 4;
+                    case "groups":return 5;
+                }
+            }
+        }
+        return 0;
+    }
     private android.support.v7.widget.SearchView searchView;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
