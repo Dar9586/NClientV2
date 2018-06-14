@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.MainActivity;
+import com.dar.nclientv2.ZoomActivity;
 import com.dar.nclientv2.adapters.ListAdapter;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.enums.ApiRequestType;
@@ -52,7 +53,7 @@ public class Inspector {
     private static final OkHttpClient client=new OkHttpClient();
 
 
-    public Inspector(final BaseActivity activity, int page, String query, final ApiRequestType requestType) {
+    public Inspector(final BaseActivity activity, final int page, String query, final ApiRequestType requestType) {
         client.dispatcher().cancelAll();
         activity.getRefresher().setRefreshing(true);
         this.byPopular = Global.isByPopular();
@@ -94,6 +95,12 @@ public class Inspector {
                             intent.putExtra(activity.getPackageName()+".GALLERY",galleries.get(0));
                             activity.startActivity(intent);
                             activity.getRefresher().setEnabled(false);
+                            if(page>0){
+                                intent = new Intent(activity, ZoomActivity.class);
+                                intent.putExtra(activity.getPackageName()+".GALLERY",galleries.get(0));
+                                intent.putExtra(activity.getPackageName()+".PAGE",page-1);
+                                activity.startActivity(intent);
+                            }
                         }
                         activity.getRefresher().setRefreshing(false);
                     }
@@ -188,7 +195,7 @@ public class Inspector {
                 builder.append('&');
                 break;
         }
-        if (page > 1) builder.append("page=").append(page);
+        if (page > 1&&requestType!=ApiRequestType.BYSINGLE) builder.append("page=").append(page);
         if (byPopular&&requestType!=ApiRequestType.BYSINGLE) builder.append("&sort=popular");
         url = builder.toString().replace(' ','+');
     }

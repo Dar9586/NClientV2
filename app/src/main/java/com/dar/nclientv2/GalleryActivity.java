@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -29,6 +30,8 @@ import com.dar.nclientv2.async.DownloadGallery;
 import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Global;
 
+import java.util.List;
+
 public class GalleryActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private GenericGallery gallery;
@@ -42,12 +45,9 @@ public class GalleryActivity extends BaseActivity
         setSupportActionBar(toolbar);
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
-
         gallery= getIntent().getParcelableExtra(getPackageName()+".GALLERY");
         if(getIntent().getBooleanExtra(getPackageName()+".INSTANTDOWNLOAD",false))downloadGallery();
         isLocal=getIntent().getBooleanExtra(getPackageName()+".ISLOCAL",false);
-        getSupportActionBar().setTitle(gallery.getTitle());
-        Log.d(Global.LOGTAG,gallery+"");
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -55,6 +55,37 @@ public class GalleryActivity extends BaseActivity
         toggle.syncState();
         refresher.setEnabled(false);
         NavigationView navigationView = findViewById(R.id.nav_view);
+        recycler.setLayoutManager(new GridLayoutManager(this,Global.getColumnCount()));
+
+        navigationView.setNavigationItemSelectedListener(this);
+
+
+        Uri data = getIntent().getData();
+        int isZoom=0;
+        if(data != null && data.getPathSegments().size() >= 2){
+            List<String> params = data.getPathSegments();
+            for(String x:params)Log.i(Global.LOGTAG,x);
+            Log.i(Global.LOGTAG,params.size()+","+params.get(2));
+            if(params.size()>2){
+                try{
+                    isZoom=Integer.parseInt(params.get(2));
+                }catch (NumberFormatException e){
+                    Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
+                }
+            }
+            Log.i(Global.LOGTAG,params.size()+","+params.get(2));
+            new Inspector(this,isZoom,params.get(1),ApiRequestType.BYSINGLE);
+            finish();
+        }else loadGallery(gallery);
+
+    }
+    private void loadGallery(GenericGallery gall) {
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+
+        this.gallery=gall;
+        getSupportActionBar().setTitle(gallery.getTitle());
         if(!gallery.isLocal()) {
             final Gallery gallery=(Gallery) this.gallery;
             for (TagType x : TagType.values()) {
@@ -79,8 +110,6 @@ public class GalleryActivity extends BaseActivity
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             toolbar.setNavigationIcon(null);
         }
-        navigationView.setNavigationItemSelectedListener(this);
-        recycler.setLayoutManager(new GridLayoutManager(this,Global.getColumnCount()));
         recycler.setAdapter(new GalleryAdapter(this,gallery));
     }
 
@@ -114,12 +143,12 @@ public class GalleryActivity extends BaseActivity
         Global.setTint(menu.findItem(R.id.load_internet).getIcon());
         Global.setTint(menu.findItem(R.id.change_view).getIcon());
         Global.setTint(menu.findItem(R.id.share).getIcon());
-        menu.findItem(R.id.share).setVisible(gallery.isValid());
+        menu.findItem(R.id.share).setVisible(gallery!=null&&gallery.isValid());
         menu.findItem(R.id.favorite_manager).setIcon((isFavorite=Global.isFavorite(this,gallery))?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
         Global.setTint(menu.findItem(R.id.favorite_manager).getIcon());
         menu.findItem(R.id.favorite_manager).setVisible(!isLocal||isFavorite);
         menu.findItem(R.id.download_gallery).setVisible(!isLocal);
-        menu.findItem(R.id.load_internet).setVisible(isLocal&&gallery.getId()!=-1);
+        menu.findItem(R.id.load_internet).setVisible(isLocal&&gallery!=null&&gallery.getId()!=-1);
         updateColumnCount(false);
         return true;
     }
@@ -185,7 +214,7 @@ public class GalleryActivity extends BaseActivity
 
     private void toInternet() {
         refresher.setEnabled(true);
-        new Inspector(this,1,Integer.toString(gallery.getId()), ApiRequestType.BYSINGLE);
+        new Inspector(this,0,Integer.toString(gallery.getId()), ApiRequestType.BYSINGLE);
     }
 
     @TargetApi(23)

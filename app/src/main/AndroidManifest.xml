@@ -22,7 +22,12 @@
             android:theme="@style/DarkTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <data android:scheme="http"/>
+                <data android:scheme="https"/>
+                <data android:host="nhentai.net" android:path="/"/>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -31,6 +36,14 @@
             android:label="@string/title_activity_gallery"
             android:parentActivityName=".MainActivity"
             android:theme="@style/DarkTheme">
+            <intent-filter>
+                <data android:scheme="http"/>
+                <data android:scheme="https"/>
+                <data android:host="nhentai.net" android:pathPattern="/g/.*" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.dar.nclientv2.MainActivity" />

@@ -396,6 +396,7 @@ public final class Global {
         }
     }
     public static boolean isFavorite(Context context,GenericGallery gallery){
+        if(gallery==null)return false;
         Set<String> x=context.getSharedPreferences("FavoriteList", 0).getStringSet(context.getString(R.string.key_favorite_list),new HashSet<String>());
         for(String y:x){
             try{
