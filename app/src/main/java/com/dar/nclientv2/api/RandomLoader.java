@@ -31,12 +31,12 @@ public class RandomLoader {
         random=new Random(System.nanoTime());
         galleries=new ArrayList<>(MAXLOADED);
         client=new OkHttpClient();
-        hasRequested=false;
+        hasRequested=RandomActivity.loadedGallery==null;
         for(int a=0;a<MAXLOADED;a++)loadRandomGallery();
 
     }
     private void loadRandomGallery(){
-        if(galleries.size()==MAXLOADED)return;
+        if(galleries.size()>=MAXLOADED)return;
         final int id=random.nextInt(Global.getMaxId())+1;
             client.newCall(new Request.Builder().url("https://nhentai.net/api/gallery/" + id).build()).enqueue(new Callback() {
                 @Override
@@ -48,12 +48,12 @@ public class RandomLoader {
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                     Log.d(Global.LOGTAG,"Random: "+id);
                     Gallery x = new Gallery(new JsonReader(response.body().charStream()));
-                    if (x.isValid()) {
+                    if (!x.isValid()) {
                         loadRandomGallery();
                         return;
                     }
                     galleries.add(x);
-                    Global.preloadImage(activity, x.getThumbnail().getUrl());
+                    Global.preloadImage(x.getThumbnail().getUrl());
                     if (hasRequested) {
                         hasRequested = false;
                         requestGallery();
@@ -62,11 +62,8 @@ public class RandomLoader {
             });
     }
     public void requestGallery(){
-        if(galleries.size()==0){
-            loadRandomGallery();
-            hasRequested=true;
-        }else{
-            loadRandomGallery();
+        if(galleries.size()==0) hasRequested=true;
+        else{
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -74,7 +71,7 @@ public class RandomLoader {
                     activity.loadGallery(x);
                 }
             });
-
         }
+        loadRandomGallery();
     }
 }

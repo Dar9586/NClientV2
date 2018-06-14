@@ -39,9 +39,10 @@ public class GalleryActivity extends BaseActivity
         Global.loadTheme(this);
         setContentView(R.layout.activity_gallery);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
-        setSupportActionBar(toolbar);
+
         gallery= getIntent().getParcelableExtra(getPackageName()+".GALLERY");
         if(getIntent().getBooleanExtra(getPackageName()+".INSTANTDOWNLOAD",false))downloadGallery();
         isLocal=getIntent().getBooleanExtra(getPackageName()+".ISLOCAL",false);
@@ -112,6 +113,8 @@ public class GalleryActivity extends BaseActivity
         Global.setTint(menu.findItem(R.id.download_gallery).getIcon());
         Global.setTint(menu.findItem(R.id.load_internet).getIcon());
         Global.setTint(menu.findItem(R.id.change_view).getIcon());
+        Global.setTint(menu.findItem(R.id.share).getIcon());
+        menu.findItem(R.id.share).setVisible(gallery.isValid());
         menu.findItem(R.id.favorite_manager).setIcon((isFavorite=Global.isFavorite(this,gallery))?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
         Global.setTint(menu.findItem(R.id.favorite_manager).getIcon());
         menu.findItem(R.id.favorite_manager).setVisible(!isLocal||isFavorite);
@@ -125,6 +128,7 @@ public class GalleryActivity extends BaseActivity
     protected void onResume() {
         super.onResume();
         updateColumnCount(false);
+        if(isLocal)supportInvalidateOptionsMenu();
     }
 
     @Override
@@ -137,8 +141,11 @@ public class GalleryActivity extends BaseActivity
         //noinspection SimplifiableIfStatement
         switch (id){
             case R.id.download_gallery:if(Global.hasStoragePermission(this))downloadGallery();else{requestStorage();}break;
-            case R.id.change_view:updateColumnCount(true);Global.setTint(item.getIcon()); break;
+            case R.id.change_view:updateColumnCount(true); break;
             case R.id.load_internet:toInternet();break;
+            case R.id.share:
+                Global.shareGallery(this,gallery);
+                break;
             case R.id.favorite_manager:
                 if(isFavorite){
                     if(Global.removeFavorite(this,gallery)) isFavorite=!isFavorite;
@@ -165,12 +172,14 @@ public class GalleryActivity extends BaseActivity
         RecyclerView.Adapter adapter=recycler.getAdapter();
         recycler.setLayoutManager(new GridLayoutManager(this,x));
         if(adapter!=null)recycler.setAdapter(adapter);
-        if(item!=null)
-        switch (x){
-            case 1:item.setIcon(R.drawable.ic_view_1);break;
-            case 2:item.setIcon(R.drawable.ic_view_2);break;
-            case 3:item.setIcon(R.drawable.ic_view_3);break;
-            case 4:item.setIcon(R.drawable.ic_view_4);break;
+        if(item!=null) {
+            switch (x) {
+                case 1: item.setIcon(R.drawable.ic_view_1);break;
+                case 2: item.setIcon(R.drawable.ic_view_2);break;
+                case 3: item.setIcon(R.drawable.ic_view_3);break;
+                case 4: item.setIcon(R.drawable.ic_view_4);break;
+            }
+            Global.setTint(item.getIcon());
         }
     }
 

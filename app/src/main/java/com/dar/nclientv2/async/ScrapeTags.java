@@ -83,7 +83,7 @@ public class ScrapeTags extends Thread {
         client.newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                e.printStackTrace();
+                Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
                 stopExecution();
             }
             @Override

@@ -109,7 +109,7 @@ public class DefaultDialogs {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
-        editText.setText(String.format(Locale.US,"%d",Global.getMinTagCount()));
+        editText.setText(String.format(Locale.US,"%d",builder.actual));
         edt.setProgress(builder.actual-1);
         pag.setText(String.format(Locale.US,"/%d",builder.max));
         InputFilter[] filterArray = new InputFilter[1];

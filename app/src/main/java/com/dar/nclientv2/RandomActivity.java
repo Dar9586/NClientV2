@@ -18,9 +18,9 @@ import com.dar.nclientv2.settings.Global;
 public class RandomActivity extends AppCompatActivity {
     FloatingActionButton shuffle;
     ImageView language;
-    ImageButton thumbnail;
+    ImageButton thumbnail,share,favorite;
     TextView title,page;
-    RandomLoader loader;
+    RandomLoader loader=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,16 +29,18 @@ public class RandomActivity extends AppCompatActivity {
         shuffle=findViewById(R.id.shuffle);
         language=findViewById(R.id.language);
         thumbnail=findViewById(R.id.thumbnail);
+        share=findViewById(R.id.share);
+        favorite=findViewById(R.id.favorite);
         title=findViewById(R.id.title);
         page=findViewById(R.id.pages);
         loader=new RandomLoader(this);
+        if(loadedGallery!=null)loadGallery(loadedGallery);
         shuffle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 loader.requestGallery();
             }
         });
-        loader.requestGallery();
         thumbnail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -49,20 +51,53 @@ public class RandomActivity extends AppCompatActivity {
                 }
             }
         });
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(loadedGallery!=null&&loadedGallery.isValid())Global.shareGallery(RandomActivity.this,loadedGallery);
+            }
+        });
+        favorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(loadedGallery!=null&&loadedGallery.isValid()){
+                    if(isFavorite){
+                        if(Global.removeFavorite(RandomActivity.this,loadedGallery)){
+                            isFavorite=false;
+                            favorite.setImageResource(R.drawable.ic_favorite_border);
+                        }
+                    }else{
+                        if(Global.addFavorite(RandomActivity.this,loadedGallery)){
+                            isFavorite=true;
+                            favorite.setImageResource(R.drawable.ic_favorite);
+                        }
+                    }
+                }
+            }
+        });
         shuffle.setImageTintList(ColorStateList.valueOf(Global.getTheme()== Global.ThemeScheme.LIGHT? Color.WHITE:Color.BLACK));
         Global.setTint(shuffle.getContentBackground());
     }
-    private Gallery loadedGallery=null;
+    public static Gallery loadedGallery=null;
+    private boolean isFavorite;
     public void loadGallery(Gallery gallery){
         loadedGallery=gallery;
-        Global.loadImage(this,gallery.getThumbnail().getUrl(),thumbnail);
+        Global.loadImage(gallery.getThumbnail().getUrl(),thumbnail);
         switch (gallery.getLanguage()){
             case CHINESE :language.setImageResource(R.drawable.ic_cn);break;
             case ENGLISH :language.setImageResource(R.drawable.ic_gb);break;
             case JAPANESE:language.setImageResource(R.drawable.ic_jp);break;
             case UNKNOWN :language.setImageResource(R.drawable.ic_help);break;
         }
+        isFavorite=Global.isFavorite(this,loadedGallery);
+        favorite.setImageResource(isFavorite?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
         title.setText(gallery.getTitle());
         page.setText(getString(R.string.page_count_format,gallery.getPageCount()));
+    }
+
+    @Override
+    public void onBackPressed() {
+        loadedGallery=null;
+        super.onBackPressed();
     }
 }

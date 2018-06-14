@@ -183,7 +183,9 @@ public class Inspector {
                 else builder.append("search?query=").append(appendedLanguage()).append(tagQuery).append('&');
                 break;
             case BYSEARCH:case BYTAG:
-                builder.append("search?query=").append(query).append('+').append(appendedLanguage()).append(tagQuery).append('&');
+                builder.append("search?query=").append(query).append('+').append(appendedLanguage());
+                if(requestType!=ApiRequestType.BYTAG||!Global.isOnlyTag())builder.append(tagQuery);
+                builder.append('&');
                 break;
         }
         if (page > 1) builder.append("page=").append(page);

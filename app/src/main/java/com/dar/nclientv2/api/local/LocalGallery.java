@@ -32,12 +32,12 @@ public class LocalGallery extends GenericGallery{
                 int x = Integer.parseInt(f.getName().substring(0, 3));
                 if(x>max)max=x;
                 if(x<min)min=x;
-            }catch (NumberFormatException e){e.printStackTrace();}
+            }catch (NumberFormatException e){Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);}
         }
 
         this.max=max;
         this.min=min;
-        valid=max<1000&&min>0;
+        valid=max<1000&&min>0&&id!=-1;
     }
 
     private LocalGallery(Parcel in) {

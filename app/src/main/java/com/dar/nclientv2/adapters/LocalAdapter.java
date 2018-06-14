@@ -29,7 +29,7 @@ public class LocalAdapter extends GenericAdapter<LocalGallery>{
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final LocalGallery ent = filter.get(holder.getAdapterPosition());
         holder.flag.setVisibility(View.GONE);
-        Global.loadImage(context,ent.getPage(ent.getMin()),holder.imgView);
+        Global.loadImage(ent.getPage(ent.getMin()),holder.imgView);
         holder.title.setText(ent.getTitle());
         holder.pages.setText(String.format(Locale.US, "%d", ent.getPageCount()));
         holder.title.setOnClickListener(new View.OnClickListener() {

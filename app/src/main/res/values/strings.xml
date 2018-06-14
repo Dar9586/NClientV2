@@ -98,9 +98,23 @@
     <string name="key_max_id">max_id</string>
     <string name="random_manga">Random manga</string>
     <string name="key_cache">cache</string>
+    <string name="save_page">Save page</string>
+    <string name="key_hide_saved_images">hide_saved</string>
+    <string name="setting_on_hide_save">Saved images won\'t be shown into gallery</string>
+    <string name="setting_off_hide_save">Saved images will be shown into gallery</string>
+    <string name="hide_saved_images">Show saved images into gallery</string>
+    <string name="key_ignore_tags">ignore_tags</string>
+    <string name="setting_on_ignore_tags">Other tags won\'t be queried when a tag is selected from the gallery menu (except language)</string>
+    <string name="setting_off_ignore_tags">Other tags will be queried when a tag is selected from the gallery menu</string>
+    <string name="ignore_tags">Ignore other tags</string>
+    <string name="key_high_res_gallery">high_res_gallery</string>
+    <string name="high_res_gallery">Load image in best resolution into gallery</string>
+    <string name="setting_off_high_res">Thumbnails images will be loaded (less data)</string>
+    <string name="setting_on_high_res">Best resolution images will be loaded (more data)</string>
     <string name="page_count_format" formatted="true">%d Pages</string>
     <string name="key_favorite_list">favorite_list</string>
     <string name="favorite_manga">Favorite manga</string>
+    <string name="share">Share</string>
     <string name="filters">Filters</string>
     <string name="page_Switcher_placeholder">0/0</string>
     <string-array name="theme">

@@ -44,6 +44,7 @@ public class Gallery extends GenericGallery{
     }
 
     public Gallery(JsonReader jr) throws IOException {
+        valid=true;
         jr.beginObject();
         while(jr.peek()!= JsonToken.END_OBJECT){
             switch(jr.nextName()){
@@ -56,7 +57,7 @@ public class Gallery extends GenericGallery{
                 case "tags":readTags(jr);break;
                 case "id":id=jr.nextInt();break;
                 case "num_pages":pageCount=jr.nextInt();break;
-                case "error":valid=jr.nextBoolean();
+                case "error":jr.skipValue(); valid=false;
 
             }
         }
@@ -70,7 +71,7 @@ public class Gallery extends GenericGallery{
                 Log.d(Global.LOGTAG,"Reading to parcel");
                 return new Gallery(in);
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
             }
             return null;
         }
@@ -95,7 +96,7 @@ public class Gallery extends GenericGallery{
             Log.d(Global.LOGTAG,"Writing to parcel");
             dest.writeString(toJSON());
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
         }
     }
 
@@ -148,7 +149,8 @@ public class Gallery extends GenericGallery{
                 .append(", titles=").append(Arrays.toString(titles))
                 .append(", scanlator='").append(scanlator).append('\'')
                 .append(", tags={");
-                for(int a=0;a<tags.length;a++){
+        int len=tags.length;
+                for(int a=0;a<len;a++){
                     if(tags[a]!=null)
                         builder.append(TagType.values()[a]).append(Arrays.toString(tags[a])).append(',');
                 }
@@ -174,7 +176,8 @@ public class Gallery extends GenericGallery{
     }
     private String unescapeUnicodeString(String t){
         StringBuilder s=new StringBuilder();
-        for(int a=0;a<t.length();a++){
+        int l=t.length();
+        for(int a=0;a<l;a++){
             if(t.charAt(a)=='\\'&&t.charAt(a+1)=='u'){
                 System.out.println(t.substring(a));
                 s.append((char) Integer.parseInt( t.substring(a+2,a+6), 16 ));
@@ -374,8 +377,9 @@ public class Gallery extends GenericGallery{
         if(pagstr.length()==1){
             for(int a=0;a<pageCount;a++)pages[a]=new Page(pagstr.equals("j"),mediaId,a+1);
         }else for(int a=0;a<pageCount;a++)pages[a]=new Page(pagstr.charAt(a)=='j',mediaId,a+1);
-        tags=new Tag[TagType.values().length][];
-        for(int a=0;a<TagType.values().length;a++){
+        int len=TagType.values().length;
+        tags=new Tag[len][];
+        for(int a=0;a<len;a++){
             List<Tag>list=new ArrayList<>();
             jr.beginArray();
             while (jr.hasNext()) {

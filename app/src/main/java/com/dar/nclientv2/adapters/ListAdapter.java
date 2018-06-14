@@ -14,6 +14,7 @@ import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Global;
 
+import java.io.File;
 import java.util.List;
 import java.util.Locale;
 
@@ -21,10 +22,12 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
 
     private final List<Gallery> mDataset;
     private final BaseActivity context;
+    private final boolean storagePermission;
 
     public ListAdapter(BaseActivity cont, List<Gallery> myDataset) {
         this.context=cont;
         this.mDataset = myDataset;
+        storagePermission=Global.hasStoragePermission(context);
     }
 
     @NonNull
@@ -35,7 +38,18 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
     @Override
     public void onBindViewHolder(@NonNull final GenericAdapter.ViewHolder holder, int position) {
             final Gallery ent = mDataset.get(holder.getAdapterPosition());
-            Global.loadImage(context,ent.getThumbnail().getUrl(),holder.imgView);
+            boolean x=true;
+            if(storagePermission){
+                File f=Global.findGalleryFolder(ent.getId());
+                if(f!=null){
+                    f=new File(f,"001.jpg");
+                    if(f.exists()){
+                        x=false;
+                        Global.loadImage(f,holder.imgView);
+                    }
+                }
+            }
+            if(x)Global.loadImage(ent.getThumbnail().getUrl(),holder.imgView);
             holder.title.setText(ent.getTitle(Global.getTitleType()));
             switch (ent.getLanguage()){
                 case CHINESE :holder.flag.setImageResource(R.drawable.ic_cn);break;

@@ -17,7 +17,9 @@ public class Page extends Image {
         super(jpg, galleryId, ImageType.PAGE);
         this.page=page;
     }
-
+    public String getLowUrl(){
+        return String.format(Locale.US,"https://t.nhentai.net/galleries/%d/%dt.%s",galleryId,page,jpg?"jpg":"png");
+    }
     @Override
     public String getUrl() {
         return String.format(Locale.US,"https://i.nhentai.net/galleries/%d/%d.%s",galleryId,page,jpg?"jpg":"png");

@@ -37,6 +37,8 @@ public class MainActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.initTitleType(this);
+        Global.initHighRes(this);
+        Global.initOnlyTag(this);
         Global.initByPopular(this);
         Global.initLoadImages(this);
         Global.initOnlyLanguage(this);
@@ -46,6 +48,7 @@ public class MainActivity extends BaseActivity
         Global.initTagOrder(this);
         Global.initMinTagCount(this);
         Global.initMaxId(this);
+        Global.initHideFromGallery(this);
         Global.countFavorite(this);
         Global.loadTheme(this);
         Global.loadNotificationChannel(this);
@@ -186,7 +189,7 @@ public class MainActivity extends BaseActivity
     private class Setting{
         Global.ThemeScheme theme;
         boolean loadImages;
-        public Setting() {
+        Setting() {
             this.theme = Global.getTheme();
             this.loadImages = Global.isLoadImages();
         }
@@ -202,7 +205,8 @@ public class MainActivity extends BaseActivity
     protected void onResume() {
         super.onResume();
         if(setting!=null){
-            if(Global.initLoadImages(this)!=setting.loadImages) recycler.getAdapter().notifyDataSetChanged();
+            Global.saveNoMedia(this);Global.initHighRes(this);Global.initOnlyTag(this);
+            if(Global.initLoadImages(this)!=setting.loadImages) recycler.getAdapter().notifyItemRangeChanged(0,recycler.getAdapter().getItemCount());
             if(Global.getTheme()!=setting.theme)recreate();
         }
     }
@@ -265,9 +269,9 @@ public class MainActivity extends BaseActivity
         Intent intent;
         int id = item.getItemId();
         switch (id){
-            case R.id.pretty_title:Global.updateTitleType(this, TitleType.PRETTY);recycler.getAdapter().notifyDataSetChanged();break;
-            case R.id.english_title:Global.updateTitleType(this, TitleType.ENGLISH);recycler.getAdapter().notifyDataSetChanged();break;
-            case R.id.japanese_title:Global.updateTitleType(this, TitleType.JAPANESE);recycler.getAdapter().notifyDataSetChanged();break;
+            case R.id.pretty_title:Global.updateTitleType(this, TitleType.PRETTY);recycler.getAdapter().notifyItemRangeChanged(0,recycler.getAdapter().getItemCount());break;
+            case R.id.english_title:Global.updateTitleType(this, TitleType.ENGLISH);recycler.getAdapter().notifyItemRangeChanged(0,recycler.getAdapter().getItemCount());break;
+            case R.id.japanese_title:Global.updateTitleType(this, TitleType.JAPANESE);recycler.getAdapter().notifyItemRangeChanged(0,recycler.getAdapter().getItemCount());break;
             case R.id.by_popular:item.setIcon(Global.updateByPopular(this,!Global.isByPopular())?R.drawable.ic_check:R.drawable.ic_close);new Inspector(this,1,Inspector.getActualQuery(),Inspector.getActualRequestType());break;
             case R.id.only_language:updateLanguageIcon(item,true);break;
             case R.id.downloaded:if(Global.hasStoragePermission(this))startLocalActivity();else requestStorage();break;

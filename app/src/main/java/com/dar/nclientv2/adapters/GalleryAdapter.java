@@ -50,11 +50,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         final File file=directory==null?null:new File(directory,("000"+(holder.getAdapterPosition()+1)+".jpg").substring(Integer.toString(holder.getAdapterPosition()+1).length()));
         if(!gallery.isLocal()){
             final Page ent=((Gallery)gallery).getPage(holder.getAdapterPosition());
-            if(file==null||!file.exists())Global.loadImage(context,ent.getUrl(),holder.imgView);
-            else Global.loadImage(context,file,holder.imgView);
+            if(file==null||!file.exists())Global.loadImage(Global.isHighRes()?ent.getUrl():ent.getLowUrl(),holder.imgView);
+            else Global.loadImage(file,holder.imgView);
         }else{
-            if(file!=null&&file.exists())Global.loadImage(context,file,holder.imgView);
-            else Global.loadImage(context,R.mipmap.ic_launcher,holder.imgView);
+            if(file!=null&&file.exists())Global.loadImage(file,holder.imgView);
+            else Global.loadImage(R.mipmap.ic_launcher,holder.imgView);
         }
 
         holder.imgView.setOnClickListener(new View.OnClickListener() {

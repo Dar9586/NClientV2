@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -48,16 +50,15 @@ import java.util.Set;
 
 public final class Global {
     public enum ThemeScheme{LIGHT,DARK,BLACK}
+    public static final File GALLERYFOLDER=new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"NClientV2");
     public static final String LOGTAG="NCLIENTLOG";
     public static final String CHANNEL_ID="download_gallery";
     private static TitleType titleType=TitleType.PRETTY;
     private static Language onlyLanguage=null;
-    private static boolean byPopular=false,loadImages=true,tagOrder=true;
-    private static final ArrayList<Integer>downloadingManga=new ArrayList<>();
+    private static boolean byPopular,loadImages,tagOrder,hideFromGallery,highRes,onlyTag;
     private static List<Tag> accepted=new ArrayList<>(),avoided=new ArrayList<>();
     private static ThemeScheme theme;
-    private static int notificationId,columnCount,minTagCount,maxId;
-    private static int totalFavorite;
+    private static int notificationId,columnCount,minTagCount,maxId,totalFavorite;
     public static final int MAXFAVORITE=10000;
     public static final int MAXTAGS=100;
     private static List<Tag>[] sets= new List[5];
@@ -70,6 +71,9 @@ public final class Global {
     }
     public static void     initTitleType    (@NonNull Context context){titleType=TitleType.values()[context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_title_type),1)];}
     public static void     initByPopular    (@NonNull Context context){byPopular=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_by_popular),false);}
+    public static boolean  initHideFromGallery    (@NonNull Context context){hideFromGallery=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_hide_saved_images),false);return hideFromGallery;}
+    public static void     initHighRes    (@NonNull Context context){highRes=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_high_res_gallery),true);}
+    public static void     initOnlyTag    (@NonNull Context context){onlyTag=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_ignore_tags),true);}
     public static void     initTagOrder     (@NonNull Context context){tagOrder=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_tag_order),true);}
     public static boolean  initLoadImages   (@NonNull Context context){loadImages=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_load_images),true);return loadImages;}
     public static void     initOnlyLanguage (@NonNull Context context){int x=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_only_language),-1);onlyLanguage=x==-1?null:Language.values()[x];}
@@ -80,9 +84,10 @@ public final class Global {
         String h=context.getSharedPreferences("Settings",0).getString(context.getString(R.string.key_theme_select),"light");
         return theme=h.equals("light")?ThemeScheme.LIGHT:h.equals("dark")?ThemeScheme.DARK:ThemeScheme.BLACK;
     }
-    public static void  initTagPreferencesSets      (@NonNull Context context){
-        accepted=Tag.toArrayList(context.getSharedPreferences("TagPreferences", 0).getStringSet(context.getString(R.string.key_accepted_tags),new HashSet<String>()));
-        avoided=Tag.toArrayList(context.getSharedPreferences("TagPreferences", 0).getStringSet(context.getString(R.string.key_avoided_tags),new HashSet<String>()));
+    public static void  initTagPreferencesSets(@NonNull Context context){
+        SharedPreferences preferences=context.getSharedPreferences("TagPreferences", 0);
+        accepted=Tag.toArrayList(preferences.getStringSet(context.getString(R.string.key_accepted_tags),new HashSet<String>()));
+        avoided=Tag.toArrayList(preferences.getStringSet(context.getString(R.string.key_avoided_tags),new HashSet<String>()));
     }
 
     public static int getMinTagCount() {
@@ -96,6 +101,18 @@ public final class Global {
     @Nullable
     public static Language getOnlyLanguage() {
         return onlyLanguage;
+    }
+
+    public static boolean isHideFromGallery() {
+        return hideFromGallery;
+    }
+
+    public static boolean isHighRes() {
+        return highRes;
+    }
+
+    public static boolean isOnlyTag() {
+        return onlyTag;
     }
 
     public static boolean isByPopular() {
@@ -129,28 +146,42 @@ public final class Global {
         return builder.toString();
     }
     public static void resetAllStatus(@NonNull Context context){
-        context.getSharedPreferences("TagPreferences",0).edit()
-                .putStringSet(context.getString(R.string.key_accepted_tags),new HashSet<String>())
-                .putStringSet(context.getString(R.string.key_avoided_tags),new HashSet<String>()).apply();
+        context.getSharedPreferences("TagPreferences",0).edit().clear().apply();
         avoided.clear();accepted.clear();
     }
     public static TagStatus updateStatus(@NonNull Context context,Tag tag){
         if(accepted.contains(tag)){
             accepted.remove(tag);
-            context.getSharedPreferences("TagPreferences",0).edit().putStringSet(context.getString(R.string.key_accepted_tags),Tag.toStringSet(accepted)).apply();
             avoided.add(tag);
-            context.getSharedPreferences("TagPreferences",0).edit().putStringSet(context.getString(R.string.key_avoided_tags),Tag.toStringSet(avoided)).apply();
+            updateSharedTagPreferences(context);
             return TagStatus.AVOIDED;
         }
         if(avoided.contains(tag)){
             avoided.remove(tag);
-            context.getSharedPreferences("TagPreferences",0).edit().putStringSet(context.getString(R.string.key_avoided_tags),Tag.toStringSet(avoided)).apply();
+            updateSharedTagPreferences(context);
             return TagStatus.DEFAULT;
         }
         if(maxTagReached())return TagStatus.DEFAULT;
         accepted.add(tag);
-        context.getSharedPreferences("TagPreferences",0).edit().putStringSet(context.getString(R.string.key_accepted_tags),Tag.toStringSet(accepted)).apply();
+        updateSharedTagPreferences(context);
         return TagStatus.ACCEPTED;
+    }
+    public static void saveNoMedia(Context context) {
+        if(!hasStoragePermission(context))return;
+        Global.initHideFromGallery(context);
+        GALLERYFOLDER.mkdirs();
+        try {
+            File x=new File(GALLERYFOLDER, ".nomedia");
+            if(hideFromGallery) x.createNewFile();
+            else if(x.exists())x.delete();
+        }catch (IOException e){
+            Log.e(LOGTAG,e.getLocalizedMessage(),e);
+        }
+    }
+    private static void updateSharedTagPreferences(Context context){
+        context.getSharedPreferences("TagPreferences",0).edit().clear()
+                .putStringSet(context.getString(R.string.key_accepted_tags),Tag.toStringSet(accepted))
+                .putStringSet(context.getString(R.string.key_avoided_tags),Tag.toStringSet(avoided)).apply();
     }
     public static void updateTitleType(@NonNull Context context, TitleType type){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_title_type)),type.ordinal()).apply();titleType=type;
     }
@@ -163,6 +194,14 @@ public final class Global {
     public static void updateMaxId(@NonNull Context context, int id){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_max_id)),id).apply();maxId=id; }
     public static void updateMinTagCount(@NonNull Context context, int count){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_min_tag_count)),count).apply();minTagCount=count; }
 
+    public static int getStatusBarHeight(Context context) {
+        Resources resources = context.getResources();
+        int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            return resources.getDimensionPixelSize(resourceId);
+        }
+        return 0;
+    }
     public static int getNavigationBarHeight(Context context){
         Resources resources = context.getResources();
         int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
@@ -170,6 +209,13 @@ public final class Global {
             return resources.getDimensionPixelSize(resourceId);
         }
         return 0;
+    }
+    public static void shareGallery(Context context, GenericGallery gallery) {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT,gallery.getTitle()+":\nhttps://nhentai.net/g/"+gallery.getId());
+        sendIntent.setType("text/plain");
+        context.startActivity(sendIntent);
     }
     public static void setTint(Drawable drawable){
         DrawableCompat.setTint(drawable,theme== ThemeScheme.LIGHT?Color.BLACK:Color.WHITE);
@@ -186,7 +232,7 @@ public final class Global {
             if (notificationManager != null)notificationManager.createNotificationChannel(channel);
         }
     }
-    public static void preloadImage(Context context,String url){
+    public static void preloadImage(String url){
         if(!isLoadImages())return;
         //Glide.with(context).load(url).preload();
         Picasso.get().load(url).fetch();
@@ -194,14 +240,15 @@ public final class Global {
     private static int getLogo(){
         return theme==ThemeScheme.LIGHT?R.drawable.ic_logo_dark:R.drawable.ic_logo;
     }
-    public static void loadImage(final Context context, String url, final ImageView imageView){
-        if(loadImages)Picasso.get().load(url).placeholder(getLogo()).into(imageView);
+    public static void loadImage(String url, final ImageView imageView){loadImage(url,imageView,false);}
+    public static void loadImage(String url, final ImageView imageView,boolean force){
+        if(loadImages||force)Picasso.get().load(url).placeholder(getLogo()).into(imageView);
         else Picasso.get().load(getLogo()).placeholder(getLogo()).into(imageView);
     }
-    public static void loadImage(Context context, File file, ImageView imageView){
+    public static void loadImage(File file, ImageView imageView){
         Picasso.get().load(file).placeholder(getLogo()).into(imageView);
     }
-    public static void loadImage(Context context, @DrawableRes int drawable, ImageView imageView){
+    public static void loadImage(@DrawableRes int drawable, ImageView imageView){
         Picasso.get().load(drawable).into(imageView);
         //GlideApp.with(context).load(drawable).into(imageView);
     }
@@ -239,16 +286,6 @@ public final class Global {
             Log.e(Global.LOGTAG,e.getMessage(),e);}
         return true;
     }
-    public static void removeFromDownloadList(int id){
-        downloadingManga.remove(Integer.valueOf(id));
-    }
-    public static void addToDownloadList(int id){
-        downloadingManga.add(id);
-    }
-    public static boolean isDownloading(int id){
-        for (int x:downloadingManga)if(x==id)return true;
-        return false;
-    }
     @Nullable
     public static File findGalleryFolder(int id){
         File parent=new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/NClientV2/");
@@ -263,7 +300,7 @@ public final class Global {
                     if (h!=null&&h.equals("" + id))return tmp2.getParentFile();
 
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
                 }
             }
         }
@@ -350,7 +387,7 @@ public final class Global {
                     Log.e(LOGTAG, e.getLocalizedMessage(), e);
                 }
             }
-            context.getSharedPreferences("FavoriteList", 0).edit().putStringSet(context.getString(R.string.key_favorite_list), x).apply();
+            context.getSharedPreferences("FavoriteList", 0).edit().clear().putStringSet(context.getString(R.string.key_favorite_list), x).apply();
             totalFavorite--;
             return true;
         }catch (ConcurrentModificationException e){

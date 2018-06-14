@@ -10,13 +10,14 @@
         android:id="@+id/shuffle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginStart="8dp"
         android:clickable="true"
         android:focusable="true"
+        app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:fabSize="normal"
+        app:layout_constraintStart_toEndOf="@+id/thumbnail"
         app:srcCompat="@drawable/ic_shuffle" />
 
     <TextView
@@ -25,57 +26,56 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="32dp"
         android:ellipsize="end"
         android:gravity="center"
-        android:minLines="4"
         android:maxLines="4"
+        android:minLines="4"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/language"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/thumbnail"
+        app:layout_constraintTop_toBottomOf="@+id/language" />
 
     <ImageView
-        android:scaleType="fitCenter"
-        android:contentDescription="@string/languages"
         android:id="@+id/language"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-         />
+        android:contentDescription="@string/languages"
+        android:scaleType="fitCenter"
+        app:layout_constraintStart_toEndOf="@+id/thumbnail"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/thumbnail"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:scaleType="fitCenter"
-        android:clickable="true"
-        android:focusable="true"
-        android:background="@null"
-        android:foreground="?android:attr/selectableItemBackgroundBorderless"
         android:layout_marginTop="8dp"
+        android:background="@null"
+        android:clickable="true"
         android:contentDescription="@string/thumbnail"
-        app:layout_constraintBottom_toTopOf="@+id/pages"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="3:4"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/pages"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/shuffle"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/language"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/language"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/favorite"
@@ -90,7 +90,7 @@
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="@+id/shuffle"
         app:layout_constraintEnd_toStartOf="@+id/shuffle"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/thumbnail"
         app:layout_constraintTop_toTopOf="@+id/shuffle"
         app:srcCompat="@drawable/ic_favorite_border" />
 

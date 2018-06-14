@@ -31,7 +31,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
     private final TagFilter context;
     private final List<Tag> tags;
     private List<Tag> filterTags;
-    private String lastQuery=null;
+    private String lastQuery="nothing";
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -40,22 +40,26 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
                 String x=constraint.toString().toLowerCase(Locale.US);
                 Log.d(Global.LOGTAG,"FILTER:\""+x+"\",\""+lastQuery+"\"="+(x.equals(lastQuery)));
                 FilterResults results=new FilterResults();
-
                 if(!x.equals(lastQuery)) {
+                    results.count=filterTags.size();
                     lastQuery=x;
-                    List<Tag> y = new ArrayList<>();
-                    for (Tag t : tags) if (t.getName().contains(x)) y.add(t);
-                    results.values = y;
-                    results.count = y.size();
+                    List<Tag>filterTags=new ArrayList<>();
+                    for (Tag t : tags) if (t.getName().contains(x)) filterTags.add(t);
+                    Log.d(Global.LOGTAG,"Size: "+filterTags.size()+filterTags);
+                    results.values=filterTags;
                 }else{results.count=-1;}
                 return results;
             }
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                if(results.count!=-1) filterTags=(List<Tag>)results.values;
-                sortDataset(orderByPopular);
-                notifyDataSetChanged();
+                if(results.count!=-1) {
+                    filterTags=(List<Tag>) results.values;
+                    if(filterTags.size()>results.count)notifyItemRangeInserted(results.count,filterTags.size()-results.count);
+                    else if(filterTags.size()<results.count)notifyItemRangeRemoved(filterTags.size(),results.count-filterTags.size());
+                    sortDataset(true);
+                }else sortDataset(false);
+
             }
         };
     }
@@ -73,11 +77,11 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         }
     }
     private boolean orderByPopular;
-    public TagsAdapter(TagFilter cont, List<Tag> tags,String query,boolean orderByPopular) {
+    public TagsAdapter(TagFilter cont, List<Tag> tags,String query) {
         this.context=cont;
         this.tags=tags;
-        this.orderByPopular=!orderByPopular;
-        filterTags=new ArrayList<>(tags);
+        this.orderByPopular=!Global.isTagOrderByPopular();
+        filterTags=new ArrayList<>();
         getFilter().filter(query);
     }
 
@@ -120,9 +124,10 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
     public List<Tag> getTrueDataset() {
         return tags;
     }
-    public void sortDataset(boolean byPopular){
+    public void sortDataset(boolean force){
+        boolean byPopular=Global.isTagOrderByPopular();
         Log.d(Global.LOGTAG,"SORT: "+(byPopular==orderByPopular));
-        if(byPopular==orderByPopular)return;
+        if(byPopular==orderByPopular&&!force)return;
         orderByPopular=byPopular;
         if(orderByPopular) Collections.sort(filterTags, new Comparator<Tag>() {
             @Override
@@ -136,7 +141,8 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
                 return o1.getName().compareTo(o2.getName());
             }
         });
-        notifyDataSetChanged();
+        notifyItemRangeChanged(0,filterTags.size());
+        return;
     }
     public void addItem(Tag tag){
         tags.add(tag);
@@ -153,8 +159,9 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
     }
     public void resetDataset(TagType type){
         tags.clear();
+        int s=filterTags.size();
         filterTags=new ArrayList<>();
-        notifyDataSetChanged();
+        notifyItemRangeRemoved(0,s);
         new ScrapeTags(context,this,type).start();
     }
 

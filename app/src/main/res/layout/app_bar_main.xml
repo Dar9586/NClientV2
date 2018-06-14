@@ -11,20 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:titleEnabled="false"
-            app:toolbarId="@+id/toolbar"
-            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
-            app:contentScrim="?attr/colorPrimary">
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             app:title="@string/app_name"
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
             />
-        </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
 

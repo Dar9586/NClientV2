@@ -1,8 +1,12 @@
 package com.dar.nclientv2;
 
-import android.content.DialogInterface;
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -10,8 +14,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +25,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
@@ -29,7 +35,10 @@ import com.github.chrisbanes.photoview.OnMatrixChangedListener;
 import com.github.chrisbanes.photoview.PhotoView;
 
 import java.io.File;
-import java.util.Locale;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import okhttp3.OkHttpClient;
 
 public class ZoomActivity extends AppCompatActivity {
     private GenericGallery gallery;
@@ -59,11 +68,15 @@ public class ZoomActivity extends AppCompatActivity {
     private File directory;
     private View pageSwitcher;
     private SeekBar seekBar;
+    private final OkHttpClient client=new OkHttpClient();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
         setContentView(R.layout.activity_zoom);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        //toolbar.setPadding(toolbar.getPaddingLeft(),Global.getStatusBarHeight(this),toolbar.getPaddingRight(),toolbar.getTitleMarginBottom());
+        setSupportActionBar(toolbar);
         gallery=getIntent().getParcelableExtra(getPackageName()+".GALLERY");
         directory=Global.hasStoragePermission(this)?Global.findGalleryFolder(gallery.getId()):null;
         getWindow().setFlags(
@@ -89,8 +102,8 @@ public class ZoomActivity extends AppCompatActivity {
                 seekBar.setProgress(position);
                 if(!gallery.isLocal()){
                     Gallery gallery=(Gallery)ZoomActivity.this.gallery;
-                    if(position<gallery.getPageCount()-1)Global.preloadImage(ZoomActivity.this,gallery.getPage(position+1).getUrl());
-                    if(position>0)Global.preloadImage(ZoomActivity.this,gallery.getPage(position-1).getUrl());
+                    if(position<gallery.getPageCount()-1)Global.preloadImage(gallery.getPage(position+1).getUrl());
+                    if(position>0)Global.preloadImage(gallery.getPage(position-1).getUrl());
 
                 }
             }
@@ -99,9 +112,6 @@ public class ZoomActivity extends AppCompatActivity {
             public void onPageScrollStateChanged(int state) { }
         });
         changeLayout(getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE);
-        /*ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams) findViewById(R.id.page_switcher).setPadding(findViewById(R.id.page_switcher).getPa).getLayoutParams();
-        lp.setMargins(0,0,0,Global.getNavigationBarHeight(this));
-        findViewById(R.id.page_switcher).setLayoutParams(lp);*/
         findViewById(R.id.prev).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,6 +148,7 @@ public class ZoomActivity extends AppCompatActivity {
 
     }
 
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -159,50 +170,6 @@ public class ZoomActivity extends AppCompatActivity {
         mViewPager.setCurrentItem(newPage);
         seekBar.setProgress(newPage);
     }
-    private void loadDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.change_page)).setIcon(R.drawable.ic_find_in_page);
-        View v=View.inflate(this, R.layout.page_changer, null);
-        builder.setView(v);
-        final SeekBar edt=v.findViewById(R.id.seekBar);
-        final TextView pag=v.findViewById(R.id.page);
-        v.findViewById(R.id.prev).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                edt.setProgress(edt.getProgress()-1);
-            }
-        });
-        v.findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                edt.setProgress(edt.getProgress()+1);
-            }
-        });
-        edt.setMax(gallery.getPageCount()-1);
-        edt.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                pag.setText(getString(R.string.page_format,edt.getProgress()+1,gallery.getPageCount()));
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
-        edt.setProgress(mViewPager.getCurrentItem());
-        pag.setText(String.format(Locale.US,"%d / %d",edt.getProgress()+1,gallery.getPageCount()));
-        builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                changePage(edt.getProgress());
-                dialog.cancel();
-            }
-        });
-        builder.setNegativeButton(getString(R.string.cancel),null);
-        builder.setCancelable(true);
-        builder.show();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -217,13 +184,46 @@ public class ZoomActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch(id){
+            case R.id.save_page:
+                if(Global.hasStoragePermission(this)){
+                    downloadPage();
+                }else requestStorage();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    @TargetApi(23)
+    private void requestStorage(){
+        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},1);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode==1&&grantResults.length >0&&grantResults[0]==PackageManager.PERMISSION_GRANTED)
+            downloadPage();
+
+    }
+
+    private void downloadPage() {
+        Global.GALLERYFOLDER.mkdirs();
+        final File output=new File(Global.GALLERYFOLDER,gallery.getId()+"-"+(mViewPager.getCurrentItem()+1)+".jpg");
+        Bitmap bitmap;
+        PlaceholderFragment page =(PlaceholderFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
+        if(page!=null){
+            bitmap=((BitmapDrawable)page.photoView.getDrawable()).getBitmap();
+            try {
+                if(!output.exists())output.createNewFile();
+                FileOutputStream ostream = new FileOutputStream(output);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
+                ostream.flush();
+                ostream.close();
+                Toast.makeText(this, R.string.download_completed, Toast.LENGTH_SHORT).show();
+            }catch (IOException e){
+                Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);}
+        }
     }
 
     /**
@@ -248,12 +248,13 @@ public class ZoomActivity extends AppCompatActivity {
             fragment.setArguments(args);
             return fragment;
         }
+        PhotoView photoView;
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             final ZoomActivity x=(ZoomActivity)getActivity();
             View rootView = inflater.inflate(R.layout.fragment_zoom, container, false);
-            final PhotoView photoView =  rootView.findViewById(R.id.image);
+            photoView =  rootView.findViewById(R.id.image);
 
             photoView.setOnMatrixChangeListener(new OnMatrixChangedListener() {
                 @Override
@@ -267,6 +268,7 @@ public class ZoomActivity extends AppCompatActivity {
 
                     x.getWindow().getDecorView().setSystemUiVisibility(x.isHidden?showFlags:hideFlags);
                     x.findViewById(R.id.page_switcher).setVisibility(x.isHidden?View.VISIBLE:View.GONE);
+                    x.findViewById(R.id.appbar).setVisibility(x.isHidden?View.VISIBLE:View.GONE);
                     x.isHidden=!x.isHidden;
 
                 }
@@ -274,11 +276,11 @@ public class ZoomActivity extends AppCompatActivity {
             int page=getArguments().getInt("PAGE",0);
             File file=x.directory==null?null:new File(x.directory,("000"+(page+1)+".jpg").substring(Integer.toString(page+1).length()));
             if(file==null||!file.exists()){
-                if(x.gallery.isLocal())Global.loadImage(getContext(),R.mipmap.ic_launcher,photoView);
-                else Global.loadImage(getContext(),((Gallery)x.gallery).getPage(page).getUrl(),photoView);
+                if(x.gallery.isLocal())Global.loadImage(R.mipmap.ic_launcher,photoView);
+                else Global.loadImage(((Gallery)x.gallery).getPage(page).getUrl(),photoView,true);
 
             }
-            else Global.loadImage(getContext(),file,photoView);
+            else Global.loadImage(file,photoView);
             return rootView;
         }
     }

@@ -49,7 +49,6 @@ public class DownloadGallery extends IntentService {
         }
     }
     private void onPreExecute() {
-        Global.addToDownloadList(gallery.getId());
         Intent resultIntent = new Intent(this, GalleryActivity.class);
         resultIntent.putExtra(getPackageName()+".GALLERY",gallery);
         resultIntent.putExtra(getPackageName()+".INSTANTDOWNLOAD",true);
@@ -75,7 +74,6 @@ public class DownloadGallery extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         gallery=intent.getParcelableExtra(getPackageName()+".GALLERY");
         if(gallery==null)return;
-        if(Global.isDownloading(gallery.getId()))return;
         onPreExecute();
         Intent intent1=new Intent(this,DownloadGallery.class);
         intent1.setAction("stop");
@@ -102,7 +100,7 @@ public class DownloadGallery extends IntentService {
                 client.newCall(new Request.Builder().url(gallery.getPage(a).getUrl()).build()).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call,@NonNull IOException e) {
-                        e.printStackTrace();
+                        Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
                         downloadedPage();
                     }
                     @Override
@@ -115,8 +113,7 @@ public class DownloadGallery extends IntentService {
                     try {
                         lock.wait();
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                        Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);                    }
                 }
             }
             else {downloadedPage();}
@@ -132,7 +129,6 @@ public class DownloadGallery extends IntentService {
     }
 
     private void onPostExecute() {
-        Global.removeFromDownloadList(gallery.getId());
         notification.setProgress(0,0,false);
         notification.mActions.clear();
         notification.setContentTitle(getString(a==999?R.string.downlaod_canceled:R.string.download_completed)).setOnlyAlertOnce(false);

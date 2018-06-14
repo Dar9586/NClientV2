@@ -14,10 +14,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class LoadFavorite extends AsyncTask<FavoriteActivity,Gallery,FavoriteActivity> {
-    FavoriteAdapter adapter;
+    private FavoriteAdapter adapter;
 
     public LoadFavorite(FavoriteAdapter adapter) {
         this.adapter = adapter;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        adapter.clearGallery();
     }
 
     @Override

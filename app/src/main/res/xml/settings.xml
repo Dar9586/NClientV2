@@ -14,6 +14,24 @@
         android:summaryOn="@string/setting_on_load"
         android:summaryOff="@string/setting_off_load"
         android:title="@string/load_images" />
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/key_high_res_gallery"
+        android:summaryOn="@string/setting_on_high_res"
+        android:summaryOff="@string/setting_off_high_res"
+        android:title="@string/high_res_gallery" />
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/key_hide_saved_images"
+        android:summaryOn="@string/setting_on_hide_save"
+        android:summaryOff="@string/setting_off_hide_save"
+        android:title="@string/hide_saved_images" />
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/key_ignore_tags"
+        android:summaryOn="@string/setting_on_ignore_tags"
+        android:summaryOff="@string/setting_off_ignore_tags"
+        android:title="@string/ignore_tags" />
     <Preference android:title="@string/clear_cache"
         android:key="@string/key_cache"
         />

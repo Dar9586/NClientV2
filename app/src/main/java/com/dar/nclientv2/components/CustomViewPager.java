@@ -5,9 +5,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.dar.nclientv2.settings.Global;
 
 public class CustomViewPager extends ViewPager {
     private OnItemClickListener mOnItemClickListener;
@@ -26,7 +29,7 @@ public class CustomViewPager extends ViewPager {
             performClick();
             return super.onTouchEvent(ev);
         } catch (IllegalArgumentException ex) {
-            ex.printStackTrace();
+            Log.e(Global.LOGTAG,ex.getLocalizedMessage(),ex);
         }
         return false;
     }
@@ -36,7 +39,7 @@ public class CustomViewPager extends ViewPager {
         try {
             return super.performClick();
         } catch (IllegalArgumentException ex) {
-            ex.printStackTrace();
+            Log.e(Global.LOGTAG,ex.getLocalizedMessage(),ex);
         }
         return false;
     }

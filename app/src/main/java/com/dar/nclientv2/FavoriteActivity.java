@@ -2,7 +2,6 @@ package com.dar.nclientv2;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
@@ -29,18 +28,18 @@ public class FavoriteActivity extends BaseActivity {
         changeLayout(getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE);
         FavoriteAdapter adapter=new FavoriteAdapter(this);
         recycler.setAdapter(adapter);
-        refresher.setRefreshing(true);
-        Global.loadFavorites(this,adapter);
-        refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-
-            }
-        });
     }
+
+    @Override
+    protected void onResume() {
+        refresher.setEnabled(true);
+        refresher.setRefreshing(true);
+        Global.loadFavorites(this,(FavoriteAdapter) recycler.getAdapter());
+        super.onResume();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         menu.findItem(R.id.action_settings).setVisible(false);
         menu.findItem(R.id.random).setVisible(false);

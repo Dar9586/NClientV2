@@ -14,6 +14,8 @@ import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.GenericGallery;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -34,8 +36,14 @@ public abstract class GenericAdapter<T extends GenericGallery> extends RecyclerV
         }
     }
 
-    public GenericAdapter(List<T>dataset){
+    GenericAdapter(List<T>dataset){
         this.dataset=dataset;
+        Collections.sort(dataset, new Comparator<T>() {
+            @Override
+            public int compare(T o1, T o2) {
+                return o1.getTitle().compareTo(o2.getTitle());
+            }
+        });
         filter=new ArrayList<>(dataset);
     }
 
@@ -57,15 +65,24 @@ public abstract class GenericAdapter<T extends GenericGallery> extends RecyclerV
             protected FilterResults performFiltering(CharSequence constraint) {
                 String query=constraint.toString().toLowerCase(Locale.US);
                 if(lastQuery.equals(query))return null;
+                FilterResults results=new FilterResults();
+                results.count=filter.size();
                 lastQuery=query;
-                filter.clear();
+                List<T>filter=new ArrayList<>();
                 for(T gallery:dataset)if(gallery.getTitle().toLowerCase(Locale.US).contains(query))filter.add(gallery);
-                return new FilterResults();
+                results.values=filter;
+                return results;
             }
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                if(results!=null) notifyDataSetChanged();
+                if(results!=null){
+                    filter=(List<T>)results.values;
+                    if(filter.size()>results.count)notifyItemRangeInserted(results.count,filter.size()-results.count);
+                    else if(filter.size()<results.count)notifyItemRangeRemoved(filter.size(),results.count-filter.size());
+                    notifyItemRangeRemoved(filter.size(),results.count);
+                    notifyItemRangeChanged(0,filter.size()-1);
+                }
             }
         };
     }
