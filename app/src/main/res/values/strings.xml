@@ -102,7 +102,7 @@
     <string name="key_hide_saved_images">hide_saved</string>
     <string name="setting_on_hide_save">Saved images won\'t be shown into gallery</string>
     <string name="setting_off_hide_save">Saved images will be shown into gallery</string>
-    <string name="hide_saved_images">Show saved images into gallery</string>
+    <string name="hide_saved_images">Hide saved images into gallery</string>
     <string name="key_ignore_tags">ignore_tags</string>
     <string name="setting_on_ignore_tags">Other tags won\'t be queried when a tag is selected from the gallery menu (except language)</string>
     <string name="setting_off_ignore_tags">Other tags will be queried when a tag is selected from the gallery menu</string>

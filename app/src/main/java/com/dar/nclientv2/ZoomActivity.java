@@ -220,6 +220,7 @@ public class ZoomActivity extends AppCompatActivity {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
                 ostream.flush();
                 ostream.close();
+                if(!Global.isHideFromGallery())Global.addToGallery(this,output);
                 Toast.makeText(this, R.string.download_completed, Toast.LENGTH_SHORT).show();
             }catch (IOException e){
                 Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);}

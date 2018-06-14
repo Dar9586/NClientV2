@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
@@ -170,6 +171,13 @@ public final class Global {
         updateSharedTagPreferences(context);
         return TagStatus.ACCEPTED;
     }
+    public static void addToGallery(Context context, File file) {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        Uri contentUri = Uri.fromFile(file);
+        mediaScanIntent.setData(contentUri);
+        context.sendBroadcast(mediaScanIntent);
+    }
+
     public static void saveNoMedia(Context context) {
         if(!hasStoragePermission(context))return;
         Global.initHideFromGallery(context);

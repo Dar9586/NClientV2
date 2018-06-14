@@ -1,17 +1,27 @@
 package com.dar.nclientv2;
 
+import android.content.ContentUris;
 import android.content.DialogInterface;
-import android.media.MediaScannerConnection;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.preference.SwitchPreference;
+import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.dar.nclientv2.settings.Global;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -36,14 +46,9 @@ public class SettingsActivity extends AppCompatActivity {
             findPreference(getString(R.string.key_hide_saved_images)).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    Global.saveNoMedia(getActivity());
-                    MediaScannerConnection.scanFile(getActivity().getApplicationContext(), Global.GALLERYFOLDER.list(), new String[]{"image/jpeg"}, new MediaScannerConnection.OnScanCompletedListener() {
-                        @Override
-                        public void onScanCompleted(String path, Uri uri) {
-                            Log.d(Global.LOGTAG,path);
-                        }
-                    });
-
+                    Global.saveNoMedia(GeneralPreferenceFragment.this.getActivity());
+                    if(!((SwitchPreference)preference).isChecked())galleryAddPics();
+                    else removePic();
                     return false;
                 }
             });
@@ -72,5 +77,58 @@ public class SettingsActivity extends AppCompatActivity {
             });
             setHasOptionsMenu(true);
         }
+        private void removePic(){
+            Log.i(Global.LOGTAG,"Removing");
+            String[] retCol = {MediaStore.Images.Media._ID, MediaStore.Images.Media.DATA };
+            Cursor cur = getActivity().getContentResolver().query(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    retCol,
+                    MediaStore.MediaColumns.DATA+" LIKE  '"+Global.GALLERYFOLDER.getAbsolutePath()+"%'", null, null
+            );
+            Log.i(Global.LOGTAG,"Count: "+cur.getCount());
+            if (cur.getCount() == 0) {
+
+                return;
+            }
+            while(cur.moveToNext()){
+                Log.i(Global.LOGTAG,"DATA: "+cur.getString(1));
+                deleteId(cur.getString(1),cur.getInt(0));
+            }
+            cur.close();
+        }
+        private void deleteId(String file,int id){
+            try{
+                File f = new File(file);
+                File dest=File.createTempFile("temp",".jpg");
+                copyFile(f,dest);
+                Uri uri = ContentUris.withAppendedId(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id
+                );
+                getActivity().getContentResolver().delete(uri, null, null);
+                copyFile(dest,f);
+                dest.delete();
+            } catch (IOException e) {
+                Log.e(Global.LOGTAG, e.getLocalizedMessage(), e);
+            }
+
+        }
+        private void copyFile(File source,File dest) throws IOException{
+            try (FileChannel sourceChannel = new FileInputStream(source).getChannel(); FileChannel destChannel = new FileOutputStream(dest).getChannel()) {
+                destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
+            }
+        }
+
+        private void galleryAddPics() {
+            Log.i(Global.LOGTAG,"Adding");
+            for(File file:Global.GALLERYFOLDER.listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.endsWith(".jpg");
+                }
+            }))
+                Global.addToGallery(getActivity(),file);
+
+        }
     }
+
 }
