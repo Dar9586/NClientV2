@@ -16,6 +16,8 @@ public class FavoriteActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
+        Global.initLoadImages(this);
+        Global.initHighRes(this);
         setContentView(R.layout.app_bar_main);
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

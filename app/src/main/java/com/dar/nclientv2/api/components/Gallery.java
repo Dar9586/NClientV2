@@ -1,6 +1,7 @@
 package com.dar.nclientv2.api.components;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.JsonReader;
 import android.util.JsonToken;
@@ -26,18 +27,55 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class Gallery extends GenericGallery{
 
-
-
-
     private Date uploadDate;
     private int favoriteCount,id,pageCount,mediaId;
-    private String titles[]=new String[3],scanlator;
+    private final String[] titles=new String[]{"","",""};
+    private String scanlator;
     private Tag[][] tags;
     private Image cover,thumbnail;
     private Page pages[];
     private Language language= Language.UNKNOWN;
     private boolean valid;
-
+    private Gallery(Parcel in){
+        uploadDate=new Date(in.readLong());
+        favoriteCount=in.readInt();
+        id=in.readInt();
+        pageCount=in.readInt();
+        mediaId=in.readInt();
+        in.readStringArray(titles);
+        scanlator=in.readString();
+        cover=in.readParcelable(Image.class.getClassLoader());
+        thumbnail=in.readParcelable(Image.class.getClassLoader());
+        pages=new Page[pageCount];
+        in.readTypedArray(pages,Page.CREATOR);
+        language=Language.values()[in.readInt()];
+        tags=new Tag[TagType.values().length][];
+        for(int a=0;a<TagType.values().length;a++){
+            int l=in.readInt();
+            if(l==0)continue;
+            tags[a]=new Tag[l];
+            in.readTypedArray(tags[a],Tag.CREATOR);
+        }
+    }
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(uploadDate.getTime());
+        dest.writeInt(favoriteCount);
+        dest.writeInt(id);
+        dest.writeInt(pageCount);
+        dest.writeInt(mediaId);
+        dest.writeStringArray(titles);
+        dest.writeString(scanlator);
+        dest.writeParcelable(cover, Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
+        dest.writeParcelable(thumbnail, Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
+        dest.writeTypedArray(pages,Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
+        dest.writeInt(language.ordinal());
+        for(Tag[] x:tags){
+            int l=x==null?0:x.length;
+            dest.writeInt(l);
+            if(l>0) dest.writeTypedArray(x,Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
+        }
+    }
     @Override
     public boolean isValid() {
         return valid;
@@ -67,13 +105,11 @@ public class Gallery extends GenericGallery{
     public static final Creator<Gallery> CREATOR = new Creator<Gallery>() {
         @Override
         public Gallery createFromParcel(Parcel in) {
-            try {
+
                 Log.d(Global.LOGTAG,"Reading to parcel");
                 return new Gallery(in);
-            } catch (IOException e) {
-                Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
-            }
-            return null;
+
+
         }
 
         @Override
@@ -86,19 +122,7 @@ public class Gallery extends GenericGallery{
     public int describeContents() {
         return 0;
     }
-    private Gallery(Parcel in) throws IOException {
-        this(new JsonReader(new StringReader(in.readString())));
-        Log.d( Global.LOGTAG,toString());
-    }
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        try {
-            Log.d(Global.LOGTAG,"Writing to parcel");
-            dest.writeString(toJSON());
-        } catch (IOException e) {
-            Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
-        }
-    }
+
 
     private void readTags(JsonReader jr)throws IOException {
         List<Tag>t=new ArrayList<>();
@@ -193,10 +217,11 @@ public class Gallery extends GenericGallery{
         jr.beginObject();
         while(jr.peek()!=JsonToken.END_OBJECT){
             switch (jr.nextName()){
-                case "japanese":if(jr.peek()!= JsonToken.NULL) setTitle(TitleType.JAPANESE,jr.nextString());else jr.skipValue();break;
-                case "english": if(jr.peek()!= JsonToken.NULL) setTitle(TitleType.ENGLISH ,jr.nextString());else jr.skipValue();break;
-                case "pretty":  if(jr.peek()!= JsonToken.NULL) setTitle(TitleType.PRETTY  ,jr.nextString());else jr.skipValue();break;
+                case "japanese":setTitle(TitleType.JAPANESE,jr.peek()!=JsonToken.NULL?jr.nextString():"");break;
+                case "english": setTitle(TitleType.ENGLISH ,jr.peek()!=JsonToken.NULL?jr.nextString():"");break;
+                case "pretty":  setTitle(TitleType.PRETTY  ,jr.peek()!=JsonToken.NULL?jr.nextString():"");break;
             }
+            if(jr.peek()==JsonToken.NULL)jr.skipValue();
         }
         jr.endObject();
     }
@@ -211,6 +236,14 @@ public class Gallery extends GenericGallery{
     }
     public String getTitle(TitleType x){
         return getTitle(x.ordinal());
+    }
+    public String getSafeTitle(){
+        String x=getTitle();
+        if(x.length()>2)return x;
+        if((x=getTitle(TitleType.ENGLISH)).length()>2)return x;
+        if((x=getTitle(TitleType.PRETTY)).length()>2)return x;
+        if((x=getTitle(TitleType.JAPANESE)).length()>2)return x;
+        return "Unnamed";
     }
 
     public Language getLanguage() {
@@ -250,7 +283,7 @@ public class Gallery extends GenericGallery{
         return titles;
     }
 
-    private Image getCover() {
+    public Image getCover() {
         return cover;
     }
 

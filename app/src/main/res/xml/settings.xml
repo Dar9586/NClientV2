@@ -35,5 +35,7 @@
     <Preference android:title="@string/clear_cache"
         android:key="@string/key_cache"
         />
-
+    <Preference android:title="@string/image_quality"
+        android:key="@string/image_quality_key"
+        />
 </PreferenceScreen>

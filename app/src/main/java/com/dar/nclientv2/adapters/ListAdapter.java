@@ -50,20 +50,22 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
                 }
             }
             if(x)Global.loadImage(ent.getThumbnail().getUrl(),holder.imgView);
-            holder.title.setText(ent.getTitle(Global.getTitleType()));
-            switch (ent.getLanguage()){
-                case CHINESE :holder.flag.setImageResource(R.drawable.ic_cn);break;
-                case ENGLISH :holder.flag.setImageResource(R.drawable.ic_gb);break;
-                case JAPANESE:holder.flag.setImageResource(R.drawable.ic_jp);break;
-                case UNKNOWN :holder.flag.setImageResource(R.drawable.ic_help);break;
-            }
+            holder.title.setText(ent.getTitle());
+            if(Global.getOnlyLanguage()==null) {
+                switch (ent.getLanguage()) {
+                    case CHINESE: holder.flag.setImageResource(R.drawable.ic_cn);break;
+                    case ENGLISH: holder.flag.setImageResource(R.drawable.ic_gb);break;
+                    case JAPANESE: holder.flag.setImageResource(R.drawable.ic_jp);break;
+                    case UNKNOWN: holder.flag.setImageResource(R.drawable.ic_help);break;
+                }
+            }else holder.flag.setVisibility(View.GONE);
             holder.pages.setText(String.format(Locale.US, "%d", ent.getPageCount()));
             holder.title.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Layout layout = holder.title.getLayout();
-                    if(layout.getEllipsisCount(layout.getLineCount()-1)>0)holder.title.setMaxLines(5);
-                    else if(holder.title.getMaxLines()==5)holder.title.setMaxLines(2);
+                    if(layout.getEllipsisCount(layout.getLineCount()-1)>0)holder.title.setMaxLines(7);
+                    else if(holder.title.getMaxLines()==7)holder.title.setMaxLines(3);
                     else holder.layout.performClick();
                 }
             });
@@ -76,6 +78,15 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
                     context.startActivity(intent);
                 }
             });
+        holder.layout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                holder.title.animate().alpha(holder.title.getAlpha()==0f?1f:0f).setDuration(100).start();
+                holder.flag.animate().alpha(holder.flag.getAlpha()==0f?1f:0f).setDuration(100).start();
+                holder.pages.animate().alpha(holder.pages.getAlpha()==0f?1f:0f).setDuration(100).start();
+                return true;
+            }
+        });
     }
     @Override
     public int getItemCount() {

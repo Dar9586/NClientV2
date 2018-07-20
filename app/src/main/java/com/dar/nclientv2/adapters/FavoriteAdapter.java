@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class FavoriteAdapter extends GenericAdapter<Gallery> {
-    private FavoriteActivity activity;
+    private final FavoriteActivity activity;
 
     public FavoriteAdapter(FavoriteActivity activity) {
         super(new ArrayList<Gallery>());
@@ -38,8 +38,8 @@ public class FavoriteAdapter extends GenericAdapter<Gallery> {
             @Override
             public void onClick(View v) {
                 Layout layout = holder.title.getLayout();
-                if(layout.getEllipsisCount(layout.getLineCount()-1)>0)holder.title.setMaxLines(5);
-                else if(holder.title.getMaxLines()==5)holder.title.setMaxLines(2);
+                if(layout.getEllipsisCount(layout.getLineCount()-1)>0)holder.title.setMaxLines(7);
+                else if(holder.title.getMaxLines()==7)holder.title.setMaxLines(3);
                 else holder.layout.performClick();
             }
         });
@@ -50,6 +50,15 @@ public class FavoriteAdapter extends GenericAdapter<Gallery> {
                 Intent intent = new Intent(activity, GalleryActivity.class);
                 intent.putExtra(activity.getPackageName()+ ".GALLERY",ent);
                 activity.startActivity(intent);
+            }
+        });
+        holder.layout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                holder.title.animate().alpha(holder.title.getAlpha()==0f?1f:0f).setDuration(100).start();
+                holder.flag.animate().alpha(holder.flag.getAlpha()==0f?1f:0f).setDuration(100).start();
+                holder.pages.animate().alpha(holder.pages.getAlpha()==0f?1f:0f).setDuration(100).start();
+                return true;
             }
         });
     }

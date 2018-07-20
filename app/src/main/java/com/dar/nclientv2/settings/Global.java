@@ -23,6 +23,7 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.dar.nclientv2.CopyToClipboardActivity;
 import com.dar.nclientv2.FavoriteActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.adapters.FavoriteAdapter;
@@ -52,17 +53,18 @@ import java.util.Set;
 public final class Global {
     public enum ThemeScheme{LIGHT,DARK,BLACK}
     public static final File GALLERYFOLDER=new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"NClientV2");
+    public static final File DOWNLOADFOLDER=new File(Environment.getExternalStorageDirectory(),"NClientV2");
     public static final String LOGTAG="NCLIENTLOG";
-    public static final String CHANNEL_ID="download_gallery";
+    public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf";
     private static TitleType titleType=TitleType.PRETTY;
     private static Language onlyLanguage=null;
     private static boolean byPopular,loadImages,tagOrder,hideFromGallery,highRes,onlyTag;
     private static List<Tag> accepted=new ArrayList<>(),avoided=new ArrayList<>();
     private static ThemeScheme theme;
-    private static int notificationId,columnCount,minTagCount,maxId,totalFavorite;
+    private static int notificationId,columnCount,minTagCount,maxId,totalFavorite,imageQuality;
     public static final int MAXFAVORITE=10000;
     public static final int MAXTAGS=100;
-    private static List<Tag>[] sets= new List[5];
+    private static final List<Tag>[] sets= new List[5];
     public static void initTagSets(@NonNull Context context){
         boolean already=true;
         for(int a=0;a<5;a++)if(sets[a]==null){already=false;break;}
@@ -75,13 +77,14 @@ public final class Global {
     }
     public static void     initTitleType    (@NonNull Context context){titleType=TitleType.values()[context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_title_type),1)];}
     public static void     initByPopular    (@NonNull Context context){byPopular=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_by_popular),false);}
-    public static boolean  initHideFromGallery    (@NonNull Context context){hideFromGallery=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_hide_saved_images),false);return hideFromGallery;}
+    public static void  initHideFromGallery    (@NonNull Context context){hideFromGallery=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_hide_saved_images),false);}
     public static void     initHighRes    (@NonNull Context context){highRes=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_high_res_gallery),true);}
     public static void     initOnlyTag    (@NonNull Context context){onlyTag=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_ignore_tags),true);}
     public static void     initTagOrder     (@NonNull Context context){tagOrder=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_tag_order),true);}
     public static boolean  initLoadImages   (@NonNull Context context){loadImages=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_load_images),true);return loadImages;}
     public static void     initOnlyLanguage (@NonNull Context context){int x=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_only_language),-1);onlyLanguage=x==-1?null:Language.values()[x];}
     public static void     initColumnCount  (@NonNull Context context){columnCount=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_column_count),1);}
+    public static int      initImageQuality (@NonNull Context context){imageQuality=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.image_quality_key),90);return imageQuality;}
     public static void     initMinTagCount  (@NonNull Context context){minTagCount=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_min_tag_count),25);}
     public static void     initMaxId        (@NonNull Context context){maxId=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_max_id),236000);}
     private static ThemeScheme initTheme(Context context){
@@ -89,10 +92,12 @@ public final class Global {
         return theme=h.equals("light")?ThemeScheme.LIGHT:h.equals("dark")?ThemeScheme.DARK:ThemeScheme.BLACK;
     }
     public static void  initTagPreferencesSets(@NonNull Context context){
-        if(accepted!=null&&avoided!=null)return;
+        if(accepted.size()!=0&&avoided.size()!=0)return;
         SharedPreferences preferences=context.getSharedPreferences("TagPreferences", 0);
         accepted=Tag.toArrayList(preferences.getStringSet(context.getString(R.string.key_accepted_tags),new HashSet<String>()));
         avoided=Tag.toArrayList(preferences.getStringSet(context.getString(R.string.key_avoided_tags),new HashSet<String>()));
+        Log.i(LOGTAG,"Accepted"+accepted.toString());
+        Log.i(LOGTAG,"Avoided"+avoided.toString());
     }
 
     public static int getMinTagCount() {
@@ -101,6 +106,10 @@ public final class Global {
 
     public static TitleType getTitleType() {
         return titleType;
+    }
+
+    public static int getImageQuality() {
+        return imageQuality;
     }
 
     @Nullable
@@ -144,10 +153,10 @@ public final class Global {
         if(avoided.contains(tag))return TagStatus.AVOIDED;
         return TagStatus.DEFAULT;
     }
-    public static String getQueryString(){
+    public static String getQueryString(String query){
         StringBuilder builder=new StringBuilder("");
-        for (Tag x:accepted)builder.append('+').append(x.toQueryTag(TagStatus.ACCEPTED));
-        for (Tag x:avoided)builder.append('+').append(x.toQueryTag(TagStatus.AVOIDED));
+        for (Tag x:accepted)if(!query.contains(x.getName()))builder.append('+').append(x.toQueryTag(TagStatus.ACCEPTED));
+        for (Tag x:avoided) if(!query.contains(x.getName()))builder.append('+').append(x.toQueryTag(TagStatus.AVOIDED));
         return builder.toString();
     }
     public static void resetAllStatus(@NonNull Context context){
@@ -158,18 +167,15 @@ public final class Global {
         if(accepted.contains(tag)){
             accepted.remove(tag);
             avoided.add(tag);
-            updateSharedTagPreferences(context);
-            return TagStatus.AVOIDED;
+            return updateSharedTagPreferences(context)?TagStatus.AVOIDED:TagStatus.ACCEPTED;
         }
         if(avoided.contains(tag)){
             avoided.remove(tag);
-            updateSharedTagPreferences(context);
-            return TagStatus.DEFAULT;
+            return updateSharedTagPreferences(context)?TagStatus.DEFAULT:TagStatus.AVOIDED;
         }
         if(maxTagReached())return TagStatus.DEFAULT;
         accepted.add(tag);
-        updateSharedTagPreferences(context);
-        return TagStatus.ACCEPTED;
+        return updateSharedTagPreferences(context)?TagStatus.ACCEPTED:TagStatus.DEFAULT;
     }
     public static void addToGallery(Context context, File file) {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
@@ -190,10 +196,14 @@ public final class Global {
             Log.e(LOGTAG,e.getLocalizedMessage(),e);
         }
     }
-    private static void updateSharedTagPreferences(Context context){
-        context.getSharedPreferences("TagPreferences",0).edit().clear()
+    private static boolean updateSharedTagPreferences(Context context){
+        Log.i(LOGTAG,context.getSharedPreferences("TagPreferences",0).getAll().toString());
+        boolean x=context.getSharedPreferences("TagPreferences",0).edit().clear()
                 .putStringSet(context.getString(R.string.key_accepted_tags),Tag.toStringSet(accepted))
-                .putStringSet(context.getString(R.string.key_avoided_tags),Tag.toStringSet(avoided)).apply();
+                .putStringSet(context.getString(R.string.key_avoided_tags),Tag.toStringSet(avoided)).commit();
+        Log.i(LOGTAG,context.getSharedPreferences("TagPreferences",0).getAll().toString());
+        return x;
+
     }
     public static void updateTitleType(@NonNull Context context, TitleType type){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_title_type)),type.ordinal()).apply();titleType=type;
     }
@@ -203,6 +213,7 @@ public final class Global {
     public static boolean  updateTagOrder(@NonNull Context context,boolean order){context.getSharedPreferences("Settings", 0).edit().putBoolean(context.getString((R.string.key_tag_order)),order).apply();tagOrder=order; return tagOrder;}
     public static boolean  updateLoadImages(@NonNull Context context,boolean load){context.getSharedPreferences("Settings", 0).edit().putBoolean(context.getString((R.string.key_load_images)),load).apply();loadImages=load; return loadImages;}
     public static void updateColumnCount(@NonNull Context context, int count){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_column_count)),count).apply();columnCount=count; }
+    public static void updateImageQuality(@NonNull Context context, int quality){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.image_quality_key)),quality).apply();imageQuality=quality; }
     public static void updateMaxId(@NonNull Context context, int id){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_max_id)),id).apply();maxId=id; }
     public static void updateMinTagCount(@NonNull Context context, int count){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_min_tag_count)),count).apply();minTagCount=count; }
 
@@ -223,11 +234,16 @@ public final class Global {
         return 0;
     }
     public static void shareGallery(Context context, GenericGallery gallery) {
+
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT,gallery.getTitle()+":\nhttps://nhentai.net/g/"+gallery.getId());
         sendIntent.setType("text/plain");
-        context.startActivity(sendIntent);
+        Intent clipboardIntent = new Intent(context, CopyToClipboardActivity.class);
+        clipboardIntent.setData(Uri.parse("https://nhentai.net/g/"+gallery.getId()));
+        Intent chooserIntent = Intent.createChooser(sendIntent,context.getString(R.string.share_with));
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] { clipboardIntent });
+        context.startActivity(chooserIntent);
     }
     public static void setTint(Drawable drawable){
         DrawableCompat.setTint(drawable,theme== ThemeScheme.LIGHT?Color.BLACK:Color.WHITE);
@@ -238,10 +254,15 @@ public final class Global {
 
     public static void loadNotificationChannel(@NonNull Context context){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, context.getString(R.string.channel_name), NotificationManager.IMPORTANCE_DEFAULT);
-            channel.setDescription(context.getString(R.string.channel_description));
+            NotificationChannel channel1 = new NotificationChannel(CHANNEL_ID1, context.getString(R.string.channel1_name), NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel channel2 = new NotificationChannel(CHANNEL_ID2, context.getString(R.string.channel2_name), NotificationManager.IMPORTANCE_DEFAULT);
+            channel1.setDescription(context.getString(R.string.channel1_description));
+            channel2.setDescription(context.getString(R.string.channel2_description));
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
-            if (notificationManager != null)notificationManager.createNotificationChannel(channel);
+            if (notificationManager != null){
+                notificationManager.createNotificationChannel(channel1);
+                notificationManager.createNotificationChannel(channel2);
+            }
         }
     }
     public static void preloadImage(String url){
@@ -266,6 +287,8 @@ public final class Global {
     }
     public static List<Tag>getListPrefer(){
         List<Tag>x=new ArrayList<>(accepted.size()+avoided.size());
+        Log.i(LOGTAG,"Accepted"+accepted.toString());
+        Log.i(LOGTAG,"Avoided"+avoided.toString());
         x.addAll(accepted);
         x.addAll(avoided);
         Collections.sort(x, new Comparator<Tag>() {
@@ -300,9 +323,8 @@ public final class Global {
     }
     @Nullable
     public static File findGalleryFolder(int id){
-        File parent=new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/NClientV2/");
-        parent.mkdirs();
-        File[] tmp=parent.listFiles();
+        DOWNLOADFOLDER.mkdirs();
+        File[] tmp=DOWNLOADFOLDER.listFiles();
         for (File tmp2 : tmp) {
             if (tmp2.isDirectory() && (tmp2 = new File(tmp2, ".nomedia")).exists()) {
                 try {
@@ -348,7 +370,9 @@ public final class Global {
         for(Tag y:tags){
             x.add(y.toScrapedString());
         }
-        context.getSharedPreferences("ScrapedTags", 0).edit().putStringSet(context.getString(getScraperId(type)),x).apply();
+        if(!context.getSharedPreferences("ScrapedTags", 0).edit().putStringSet(context.getString(getScraperId(type)),x).commit()){
+            Log.e(LOGTAG,"Error to write set: "+type);
+        }
     }
     private static int getScraperId(TagType tag){
         switch (tag){
@@ -384,11 +408,14 @@ public final class Global {
         }catch (IOException e){
             Log.e(LOGTAG,e.getLocalizedMessage(),e);
         }
-        context.getSharedPreferences("FavoriteList", 0).edit().putStringSet(context.getString(R.string.key_favorite_list),x).apply();
-        totalFavorite++;
-        return true;
+        if(context.getSharedPreferences("FavoriteList", 0).edit().clear().putStringSet(context.getString(R.string.key_favorite_list),x).commit()) {
+            totalFavorite++;
+            return true;
+        }
+        return false;
     }
     public static boolean removeFavorite(Context context,GenericGallery gallery){
+        Log.i(LOGTAG,"Called remove");
         try {
             Set<String> x = context.getSharedPreferences("FavoriteList", 0).getStringSet(context.getString(R.string.key_favorite_list), new HashSet<String>());
             for (String y : x) {
@@ -399,13 +426,14 @@ public final class Global {
                     Log.e(LOGTAG, e.getLocalizedMessage(), e);
                 }
             }
-            context.getSharedPreferences("FavoriteList", 0).edit().clear().putStringSet(context.getString(R.string.key_favorite_list), x).apply();
-            totalFavorite--;
-            return true;
+            if(context.getSharedPreferences("FavoriteList", 0).edit().clear().putStringSet(context.getString(R.string.key_favorite_list),x).commit()) {
+                totalFavorite--;
+                return true;
+            }
         }catch (ConcurrentModificationException e){
             Log.e(LOGTAG,e.getLocalizedMessage(),e);
-            return false;
         }
+        return false;
     }
     public static boolean isFavorite(Context context,GenericGallery gallery){
         if(gallery==null)return false;
@@ -421,6 +449,7 @@ public final class Global {
     }
     public static void countFavorite(Context context){
         totalFavorite=context.getSharedPreferences("FavoriteList", 0).getStringSet(context.getString(R.string.key_favorite_list),new HashSet<String>()).size();
+
     }
     public static boolean maxTagReached(){
         return accepted.size()+avoided.size()>=MAXTAGS;

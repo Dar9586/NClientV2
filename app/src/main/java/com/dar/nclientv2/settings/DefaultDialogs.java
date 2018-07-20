@@ -22,7 +22,7 @@ public class DefaultDialogs {
         void negative();
     }
     public static class Builder{
-        private Context context;
+        private final Context context;
         private @StringRes int title,yesbtn,nobtn;
         private @DrawableRes int drawable;
         private int max,actual;

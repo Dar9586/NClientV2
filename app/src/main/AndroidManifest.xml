@@ -12,7 +12,7 @@
         android:fullBackupContent="@xml/backup_content"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/LightTheme">
         <activity
@@ -62,7 +62,10 @@
             android:name=".async.DownloadGallery"
             android:enabled="true"
             android:exported="false" />
-
+        <service
+            android:name=".async.CreatePDF"
+            android:enabled="true"
+            android:exported="false" />
         <activity
             android:name=".LocalActivity"
             android:configChanges="orientation|screenSize"
@@ -117,6 +120,18 @@
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
+        <activity android:name=".CopyToClipboardActivity" android:icon="@drawable/ic_copy"
+            android:label="@string/open_in_browser"
+            />
     </application>
 
 </manifest>

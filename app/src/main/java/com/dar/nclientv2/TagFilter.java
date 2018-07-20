@@ -48,6 +48,7 @@ public class TagFilter extends AppCompatActivity{
         Global.loadTheme(this);
         Global.initTagOrder(this);
         Global.initMinTagCount(this);
+        Global.initTagPreferencesSets(this);
         setContentView(R.layout.activity_tag_filter);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -270,7 +271,7 @@ public class TagFilter extends AppCompatActivity{
             if(recyclerView.getAdapter()!=null) ((TagsAdapter)recyclerView.getAdapter()).sortDataset(false);
         }
 
-        public void updateDataset() {
+        void updateDataset() {
             if(tag==-1)applyAdapter();
             else filterDataset(((TagFilter)getActivity()).searchView.getQuery().toString());
         }

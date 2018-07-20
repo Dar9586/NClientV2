@@ -21,11 +21,11 @@ import okhttp3.Response;
 
 public class RandomLoader {
     private static final int MAXLOADED=3;
-    private List<Gallery> galleries;
-    private RandomActivity activity;
+    private final List<Gallery> galleries;
+    private final RandomActivity activity;
     private boolean hasRequested;
-    private OkHttpClient client;
-    private Random random;
+    private final OkHttpClient client;
+    private final Random random;
     public RandomLoader(RandomActivity activity) {
         this.activity = activity;
         random=new Random(System.nanoTime());
@@ -53,7 +53,7 @@ public class RandomLoader {
                         return;
                     }
                     galleries.add(x);
-                    Global.preloadImage(x.getThumbnail().getUrl());
+                    Global.preloadImage(x.getCover().getUrl());
                     if (hasRequested) {
                         hasRequested = false;
                         requestGallery();

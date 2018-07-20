@@ -24,7 +24,6 @@ import com.dar.nclientv2.api.Inspector;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.enums.ApiRequestType;
-import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.DownloadGallery;
 import com.dar.nclientv2.components.BaseActivity;
@@ -40,8 +39,11 @@ public class GalleryActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
+        Global.loadNotificationChannel(this);
         Global.initColumnCount(this);
         Global.initTagSets(this);
+        Global.initImageQuality(this);
+        Global.countFavorite(this);
         Global.initTagPreferencesSets(this);
         setContentView(R.layout.activity_gallery);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -49,6 +51,7 @@ public class GalleryActivity extends BaseActivity
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
         gallery= getIntent().getParcelableExtra(getPackageName()+".GALLERY");
+        Log.d(Global.LOGTAG,""+gallery);
         if(getIntent().getBooleanExtra(getPackageName()+".INSTANTDOWNLOAD",false))downloadGallery();
         isLocal=getIntent().getBooleanExtra(getPackageName()+".ISLOCAL",false);
         int zoom=getIntent().getIntExtra(getPackageName()+".ZOOM",0);
@@ -86,21 +89,21 @@ public class GalleryActivity extends BaseActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
         this.gallery=gall;
-        getSupportActionBar().setTitle(gallery.getTitle());
+        if(getSupportActionBar()!=null)getSupportActionBar().setTitle(gallery.getTitle());
         if(!gallery.isLocal()) {
             final Gallery gallery=(Gallery) this.gallery;
-            for (TagType x : TagType.values()) {
+            for (final TagType x : TagType.values()) {
                 int c = gallery.getTagCount(x);
-                final TagType y = x;
                 for (int a = 0; a < c; a++) {
                     final int b = a;
 
                     MenuItem menuItem = navigationView.getMenu().getItem(x.ordinal()).getSubMenu().add(getIdFromTagType(x), Menu.NONE, a, getString(R.string.tag_format, gallery.getTag(x, a).getName(), gallery.getTag(x, a).getCount()));
+
                     menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
                             Intent intent = new Intent(GalleryActivity.this, MainActivity.class);
-                            intent.putExtra(getPackageName() + ".TAG", gallery.getTag(y, b).toQueryTag(TagStatus.DEFAULT));
+                            intent.putExtra(getPackageName() + ".TAG", gallery.getTag(x, b));
                             GalleryActivity.this.startActivity(intent);
                             return true;
                         }
@@ -150,6 +153,7 @@ public class GalleryActivity extends BaseActivity
         Global.setTint(menu.findItem(R.id.load_internet).getIcon());
         Global.setTint(menu.findItem(R.id.change_view).getIcon());
         Global.setTint(menu.findItem(R.id.share).getIcon());
+        Global.setTint(menu.findItem(R.id.related).getIcon());
         menu.findItem(R.id.share).setVisible(gallery!=null&&gallery.isValid());
         menu.findItem(R.id.favorite_manager).setIcon((isFavorite=Global.isFavorite(this,gallery))?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
         Global.setTint(menu.findItem(R.id.favorite_manager).getIcon());
@@ -181,6 +185,11 @@ public class GalleryActivity extends BaseActivity
             case R.id.load_internet:toInternet();break;
             case R.id.share:
                 Global.shareGallery(this,gallery);
+                break;
+            case R.id.related:
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.putExtra(getPackageName() + ".RELATED", gallery.getId());
+                startActivity(intent);
                 break;
             case R.id.favorite_manager:
                 if(isFavorite){
@@ -240,9 +249,6 @@ public class GalleryActivity extends BaseActivity
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

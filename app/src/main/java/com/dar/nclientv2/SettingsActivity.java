@@ -14,6 +14,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
 
 import java.io.File;
@@ -29,6 +30,7 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
+        Global.initHideFromGallery(this);
         setContentView(R.layout.activity_settings);
         GeneralPreferenceFragment.act=this;
         getFragmentManager().beginTransaction().replace(android.R.id.content,
@@ -46,10 +48,12 @@ public class SettingsActivity extends AppCompatActivity {
             findPreference(getString(R.string.key_hide_saved_images)).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    Global.saveNoMedia(GeneralPreferenceFragment.this.getActivity());
-                    if(!((SwitchPreference)preference).isChecked())galleryAddPics();
-                    else removePic();
-                    return false;
+                    if(Global.hasStoragePermission(getActivity())) {
+                        Global.saveNoMedia(GeneralPreferenceFragment.this.getActivity());
+                        if (!((SwitchPreference) preference).isChecked()) galleryAddPics();
+                        else removePic();
+                    }
+                    return true;
                 }
             });
             findPreference(getString(R.string.key_theme_select)).setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -72,7 +76,29 @@ public class SettingsActivity extends AppCompatActivity {
                     }).setNegativeButton(R.string.no,null).setCancelable(true);
                     builder.show();
 
-                    return false;
+                    return true;
+                }
+            });
+            findPreference(getString(R.string.image_quality_key)).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    DefaultDialogs.pageChangerDialog(
+                            new DefaultDialogs.Builder(getActivity())
+                            .setDrawable(R.drawable.ic_image)
+                            .setTitle(R.string.image_quality)
+                            .setMax(100)
+                            .setActual(Global.initImageQuality(getActivity()))
+                            .setDialogs(new DefaultDialogs.DialogResults() {
+                                @Override
+                                public void positive(int actual) {
+                                    Log.d(Global.LOGTAG,"progress: "+actual);
+                                    Global.updateImageQuality(getActivity(),actual);
+                                }
+
+                                @Override public void negative() {}
+                            })
+                    );
+                    return true;
                 }
             });
             setHasOptionsMenu(true);

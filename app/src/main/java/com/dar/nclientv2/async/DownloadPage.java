@@ -4,12 +4,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import com.dar.nclientv2.settings.Global;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class DownloadPage extends Thread {
+class DownloadPage extends Thread {
     private final InputStream input;
     private final File file;
     public DownloadPage(InputStream input, File file){
@@ -24,7 +26,7 @@ public class DownloadPage extends Thread {
             file.createNewFile();
             Bitmap bitmap= BitmapFactory.decodeStream(input);
             FileOutputStream ostream = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, Global.getImageQuality(), ostream);
             ostream.flush();
             ostream.close();
         } catch (IOException e) {

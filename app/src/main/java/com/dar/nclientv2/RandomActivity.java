@@ -16,16 +16,21 @@ import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.settings.Global;
 
 public class RandomActivity extends AppCompatActivity {
-    FloatingActionButton shuffle;
-    ImageView language;
-    ImageButton thumbnail,share,favorite;
-    TextView title,page;
-    RandomLoader loader=null;
+    private FloatingActionButton shuffle;
+    private ImageView language;
+    private ImageButton thumbnail;
+    private ImageButton share;
+    private ImageButton favorite;
+    private TextView title;
+    private TextView page;
+    private RandomLoader loader=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
-        Global.initTagPreferencesSets(this);
+        Global.initImageQuality(this);
+        Global.countFavorite(this);
+        Global.initLoadImages(this);
         setContentView(R.layout.activity_random);
         shuffle=findViewById(R.id.shuffle);
         language=findViewById(R.id.language);
@@ -83,7 +88,7 @@ public class RandomActivity extends AppCompatActivity {
     private boolean isFavorite;
     public void loadGallery(Gallery gallery){
         loadedGallery=gallery;
-        Global.loadImage(gallery.getThumbnail().getUrl(),thumbnail);
+        Global.loadImage(gallery.getCover().getUrl(),thumbnail);
         switch (gallery.getLanguage()){
             case CHINESE :language.setImageResource(R.drawable.ic_cn);break;
             case ENGLISH :language.setImageResource(R.drawable.ic_gb);break;

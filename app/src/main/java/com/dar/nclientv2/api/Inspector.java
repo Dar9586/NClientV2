@@ -51,6 +51,22 @@ public class Inspector {
     private List<Gallery> galleries;
     private static final OkHttpClient client=new OkHttpClient();
 
+    public String getUrl() {
+        return url;
+    }
+    public String getUsableURL(){
+        StringBuilder builder = new StringBuilder("https://nhentai.net/?");
+        String tagQuery=Global.getQueryString(query);
+        switch (requestType){
+            case BYALL: if(tagQuery.length()>0||Global.getOnlyLanguage()!=null) builder.append("q=").append(appendedLanguage()).append(tagQuery);break;
+            case BYSEARCH:case BYTAG:
+                builder.append("q=").append(query).append('+').append(appendedLanguage());
+                if(requestType!=ApiRequestType.BYTAG||!Global.isOnlyTag())builder.append(tagQuery);
+                if(byPopular)builder.append("&sort=popular");
+        }
+        if(page>1)builder.append("page=").append(actualPage);
+        return builder.toString();
+    }
 
     public Inspector(final BaseActivity activity, final int page, String query, final ApiRequestType requestType) {
         client.dispatcher().cancelAll();
@@ -87,6 +103,7 @@ public class Inspector {
                     public void run() {
                         if(requestType!=ApiRequestType.BYSINGLE){
                             activity.getRecycler().setAdapter(new ListAdapter(activity,galleries));
+                            ((MainActivity)activity).setInspector(Inspector.this);
                             ((MainActivity)activity).showPageSwitcher(Inspector.this.page,Inspector.this.pageCount);
                         }
                         else{
@@ -167,7 +184,7 @@ public class Inspector {
 
     private void createUrl() {
         StringBuilder builder = new StringBuilder("https://nhentai.net/api/");
-        String tagQuery=Global.getQueryString();
+        String tagQuery=Global.getQueryString(query);
         switch (requestType) {
             case BYSINGLE:
             case RELATED:

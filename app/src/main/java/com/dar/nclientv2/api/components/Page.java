@@ -1,5 +1,6 @@
 package com.dar.nclientv2.api.components;
 
+import android.os.Parcel;
 import android.util.JsonReader;
 
 import com.dar.nclientv2.api.enums.ImageType;
@@ -13,7 +14,7 @@ public class Page extends Image {
         super(jr, galleryId, ImageType.PAGE);
         this.page=page;
     }
-    Page(boolean jpg, int galleryId, int page) throws IOException {
+    Page(boolean jpg, int galleryId, int page) {
         super(jpg, galleryId, ImageType.PAGE);
         this.page=page;
     }
@@ -34,5 +35,26 @@ public class Page extends Image {
                 ", galleryId=" + galleryId +
                 ", URL="+getUrl()+
                 '}';
+    }
+    public static final Creator<Page> CREATOR = new Creator<Page>() {
+        @Override
+        public Page createFromParcel(Parcel in) {
+            return new Page(in);
+        }
+
+        @Override
+        public Page[] newArray(int size) {
+            return new Page[size];
+        }
+    };
+    protected Page(Parcel in) {
+        super(in);
+        page=in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        super.writeToParcel(parcel, i);
+        parcel.writeInt(page);
     }
 }

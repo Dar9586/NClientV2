@@ -1,6 +1,8 @@
 package com.dar.nclientv2;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -38,8 +40,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import okhttp3.OkHttpClient;
-
 public class ZoomActivity extends AppCompatActivity {
     private GenericGallery gallery;
     private final static int hideFlags=View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -68,16 +68,17 @@ public class ZoomActivity extends AppCompatActivity {
     private File directory;
     private View pageSwitcher;
     private SeekBar seekBar;
-    private final OkHttpClient client=new OkHttpClient();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
+        Global.initHideFromGallery(this);
         setContentView(R.layout.activity_zoom);
         Toolbar toolbar = findViewById(R.id.toolbar);
         //toolbar.setPadding(toolbar.getPaddingLeft(),Global.getStatusBarHeight(this),toolbar.getPaddingRight(),toolbar.getTitleMarginBottom());
         setSupportActionBar(toolbar);
         gallery=getIntent().getParcelableExtra(getPackageName()+".GALLERY");
+        setTitle(gallery.getTitle());
         directory=Global.hasStoragePermission(this)?Global.findGalleryFolder(gallery.getId()):null;
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
@@ -208,7 +209,7 @@ public class ZoomActivity extends AppCompatActivity {
     }
 
     private void downloadPage() {
-        Global.GALLERYFOLDER.mkdirs();
+        Global.saveNoMedia(this);
         final File output=new File(Global.GALLERYFOLDER,gallery.getId()+"-"+(mViewPager.getCurrentItem()+1)+".jpg");
         Bitmap bitmap;
         PlaceholderFragment page =(PlaceholderFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
@@ -217,7 +218,7 @@ public class ZoomActivity extends AppCompatActivity {
             try {
                 if(!output.exists())output.createNewFile();
                 FileOutputStream ostream = new FileOutputStream(output);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 95, ostream);
                 ostream.flush();
                 ostream.close();
                 if(!Global.isHideFromGallery())Global.addToGallery(this,output);
@@ -267,10 +268,29 @@ public class ZoomActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
-                    x.getWindow().getDecorView().setSystemUiVisibility(x.isHidden?showFlags:hideFlags);
+                    /*x.getWindow().getDecorView().setSystemUiVisibility(x.isHidden?showFlags:hideFlags);
                     x.findViewById(R.id.page_switcher).setVisibility(x.isHidden?View.VISIBLE:View.GONE);
                     x.findViewById(R.id.appbar).setVisibility(x.isHidden?View.VISIBLE:View.GONE);
+                    x.isHidden=!x.isHidden;*/
+                    final View y=x.findViewById(R.id.page_switcher);
+                    final View z=x.findViewById(R.id.appbar);
                     x.isHidden=!x.isHidden;
+                    x.getWindow().getDecorView().setSystemUiVisibility(x.isHidden?hideFlags:showFlags);
+                    y.setVisibility(View.VISIBLE);
+                    z.setVisibility(View.VISIBLE);
+                    y.animate().alpha(x.isHidden?0f:0.75f).setDuration(150).setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            if(x.isHidden)y.setVisibility(View.GONE);
+                        }
+                    }).start();
+
+                    z.animate().alpha(x.isHidden?0f:0.75f).setDuration(150).setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            if(x.isHidden)z.setVisibility(View.GONE);
+                        }
+                    }).start();
 
                 }
             });

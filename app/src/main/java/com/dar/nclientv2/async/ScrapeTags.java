@@ -25,9 +25,9 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class ScrapeTags extends Thread {
-    private TagsAdapter adapter;
-    private TagType tagType;
-    private OkHttpClient client=new OkHttpClient();
+    private final TagsAdapter adapter;
+    private final TagType tagType;
+    private final OkHttpClient client=new OkHttpClient();
     private final List<Tag> tags=new ArrayList<>();
     private int maxPage;
     private final  Object lock=new Object();

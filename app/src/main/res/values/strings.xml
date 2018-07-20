@@ -19,7 +19,6 @@
     <string name="only_chinese">Only chinese</string>
     <string name="only_other">Only other languages</string>
     <string name="all_languages">All languages</string>
-    <string name="go_to">Go to&#8230;</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="pretty_title">Pretty</string>
@@ -42,17 +41,27 @@
     <string name="next">Next</string>
     <string name="change_page">Change page:</string>
     <string name="load_images">Load images</string>
-    <string name="channel_name">Download Gallery</string>
-    <string name="channel_description">Used to show progress of the download of a gallery</string>
+    <string name="channel1_name">Download Gallery</string>
+    <string name="channel2_name">Create PDF</string>
+    <string name="parsing_pages">Parsing pages</string>
+    <string name="writing_pdf">Writing PDF</string>
+    <string name="share_with">Share with</string>
+    <string name="created_pdf">Successful created PDF</string>
+    <string name="channel1_description">Used to show progress of the download of a gallery</string>
+    <string name="channel2_description">Used to show progress of the creation of the pdf</string>
     <string name="favorite_max_reached" formatted="true">You can have a maximum of %d favorite manga.</string>
     <string name="tags_max_reached" formatted="true">You can have a maximum of %d selected tags.</string>
     <string name="tag_format" formatted="true">%s (%d)</string>
+    <string name="related">Related</string>
+    <string name="update_tag_status">Update tag status</string>
     <string name="page_format" formatted="true">%d/%d</string>
-    <string name="notification_title">Downloading gallery:</string>
+    <string name="notification1_title">Downloading gallery:</string>
+    <string name="notification2_title">Creating PDF:</string>
     <string name="download_gallery">Download gallery</string>
+    <string name="error_pdf">Error while creating PDF</string>
+    <string name="failed">Failed</string>
     <string name="download_completed">Download completed</string>
     <string name="change_view">Change view</string>
-    <string name="download_path" formatted="true">%s/NClientV2/%s</string>
     <string name="go_online">Go online</string>
     <string name="search">Search</string>
     <string name="key_scraped_characters">scraped_characters</string>
@@ -78,15 +87,14 @@
     <string name="reset_tags">Reset all tags</string>
     <string name="reset_tags_long">Reset all tags to default value?</string>
     <string name="reload_tags">Reload all tags?</string>
-    <string name="long_time_toast">It may require a long time. Please wait</string>
     <string name="are_you_sure">Are you sure?</string>
     <string name="min_count">Minimum count</string>
     <string name="yes">Yes</string>
     <string name="downlaod_canceled">Download canceled</string>
     <string name="no">No</string>
     <string name="minium_tag_count">Minium tag count:</string>
-    <string name="stop">Stop</string>
-    <string name="delete_gallery">Delete gallery?</string>
+    <string name="show_related">Show related galleries</string>
+    <string name="delete_gallery">Delete gallery</string>
     <string name="delete_gallery_format" formatted="true">Do you want to delete the gallery:\n%s</string>
     <string name="setting_on_load">The images will be loaded from Internet</string>
     <string name="setting_off_load">The images won\'t be loaded from Internet</string>
@@ -114,9 +122,16 @@
     <string name="page_count_format" formatted="true">%d Pages</string>
     <string name="key_favorite_list">favorite_list</string>
     <string name="favorite_manga">Favorite manga</string>
+    <string name="open_in_browser">Open in browser</string>
     <string name="share">Share</string>
     <string name="filters">Filters</string>
+    <string name="settings">Settings</string>
+    <string name="create_pdf">Create PDF</string>
+    <string name="image_quality">Image quality</string>
+    <string name="image_quality_key">image_quality</string>
+    <string name="create_pdf_format" formatted="true">Create PDF of: "%s"</string>
     <string name="page_Switcher_placeholder">0/0</string>
+    <string name="page_placeholder">999/999</string>
     <string-array name="theme">
         <item>Light</item>
         <item>Dark</item>

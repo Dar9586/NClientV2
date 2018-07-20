@@ -6,11 +6,13 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.text.Layout;
 import android.view.View;
+import android.widget.ArrayAdapter;
 
 import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.LocalActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.local.LocalGallery;
+import com.dar.nclientv2.async.CreatePDF;
 import com.dar.nclientv2.settings.Global;
 
 import java.util.ArrayList;
@@ -36,8 +38,8 @@ public class LocalAdapter extends GenericAdapter<LocalGallery>{
             @Override
             public void onClick(View v) {
                 Layout layout = holder.title.getLayout();
-                if(layout.getEllipsisCount(layout.getLineCount()-1)>0)holder.title.setMaxLines(5);
-                else if(holder.title.getMaxLines()==5)holder.title.setMaxLines(2);
+                if(layout.getEllipsisCount(layout.getLineCount()-1)>0)holder.title.setMaxLines(7);
+                else if(holder.title.getMaxLines()==7)holder.title.setMaxLines(3);
                 else holder.layout.performClick();
             }
         });
@@ -54,13 +56,13 @@ public class LocalAdapter extends GenericAdapter<LocalGallery>{
         holder.layout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                showDialog(holder.getAdapterPosition());
+                createPDF(holder.getAdapterPosition());
                 return true;
             }
         });
     }
 
-    private void showDialog(final int pos){
+    private void showDialogDelete(final int pos){
         final LocalGallery gallery=filter.get(pos);
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         builder.setTitle(R.string.delete_gallery).setMessage(context.getString(R.string.delete_gallery_format,gallery.getTitle()));
@@ -74,7 +76,37 @@ public class LocalAdapter extends GenericAdapter<LocalGallery>{
             }
         }).setNegativeButton(R.string.no,null).setCancelable(true);
         builder.show();
-
+    }
+    private void showDialogPDF(final int pos){
+        final LocalGallery gallery=filter.get(pos);
+        AlertDialog.Builder builder=new AlertDialog.Builder(context);
+        builder.setTitle(R.string.create_pdf).setMessage(context.getString(R.string.create_pdf_format,gallery.getTitle()));
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent i=new Intent(context.getApplicationContext(),CreatePDF.class);
+                i.putExtra(context.getPackageName()+".PATH",gallery.getDirectory().getAbsolutePath());
+                i.putExtra(context.getPackageName()+".PAGES",gallery.getPageCount());
+                context.startService(i);
+            }
+        }).setNegativeButton(R.string.no,null).setCancelable(true);
+        builder.show();
+    }
+    private void createPDF(final int pos){
+        ArrayAdapter<String>adapter=new ArrayAdapter<>(context,android.R.layout.select_dialog_item);
+        adapter.add(context.getString(R.string.delete_gallery));
+        adapter.add(context.getString(R.string.create_pdf));
+        AlertDialog.Builder builder=new AlertDialog.Builder(context);
+        builder.setTitle(R.string.settings).setIcon(R.drawable.ic_settings);
+        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case 0:showDialogDelete(pos);break;
+                    case 1:showDialogPDF(pos);break;
+                }
+            }
+        }).show();
     }
     @Override
     public int getItemCount() {

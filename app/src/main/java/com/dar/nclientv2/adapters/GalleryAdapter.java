@@ -2,7 +2,6 @@ package com.dar.nclientv2.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -35,7 +34,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         this.gallery=gallery;
         if(Global.hasStoragePermission(cont)){
             if(gallery.getId()!=-1)directory=Global.findGalleryFolder(gallery.getId());
-            else directory=new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/NClientV2/",gallery.getTitle());
+            else directory=new File(Global.DOWNLOADFOLDER,gallery.getTitle());
         }else directory=null;
     }
 

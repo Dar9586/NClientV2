@@ -142,7 +142,6 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
             }
         });
         notifyItemRangeChanged(0,filterTags.size());
-        return;
     }
     public void addItem(Tag tag){
         tags.add(tag);

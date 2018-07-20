@@ -8,13 +8,22 @@
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
     <item
-        android:id="@+id/random"
-        android:icon="@drawable/ic_shuffle"
-        android:title="@string/random_manga"
+    android:id="@+id/random"
+    android:icon="@drawable/ic_shuffle"
+    android:title="@string/random_manga"
+    app:showAsAction="ifRoom|collapseActionView" />
+    <item
+        android:id="@+id/tag_manager"
+        android:icon="@drawable/ic_help"
+        android:title="@string/update_tag_status"
+        android:visible="false"
         app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/action_settings"
-        android:orderInCategory="100"
         android:title="@string/action_settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/open_browser"
+        android:title="@string/open_in_browser"
         app:showAsAction="never" />
 </menu>

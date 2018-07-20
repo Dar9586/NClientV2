@@ -23,7 +23,7 @@
         android:src="@drawable/ic_arrow_back"
         android:contentDescription="@string/prev" />
     <TextView
-        android:text="999/999"
+        android:text="@string/page_placeholder"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:textAppearance="?android:attr/textAppearanceMedium"

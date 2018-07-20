@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -14,6 +15,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,8 +23,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.dar.nclientv2.api.Inspector;
+import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.api.enums.Language;
+import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.DefaultDialogs;
@@ -32,26 +36,27 @@ import java.util.Locale;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private Inspector inspector=null;
+    private Tag tag;
+    private int related=-1;
+    public void setInspector(Inspector inspector) {
+        this.inspector = inspector;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Global.loadTheme(this);
         Global.initTitleType(this);
         Global.initHighRes(this);
         Global.initOnlyTag(this);
         Global.initByPopular(this);
         Global.initLoadImages(this);
         Global.initOnlyLanguage(this);
-        Global.initColumnCount(this);
-        Global.initTagSets(this);
         Global.initTagPreferencesSets(this);
-        Global.initTagOrder(this);
-        Global.initMinTagCount(this);
         Global.initMaxId(this);
-        Global.initHideFromGallery(this);
-        Global.countFavorite(this);
-        Global.loadTheme(this);
-        Global.loadNotificationChannel(this);
+        Global.initTagPreferencesSets(this);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -105,16 +110,22 @@ public class MainActivity extends BaseActivity
                 loadDialog();
             }
         });
-
         changeLayout(getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE);
-        String tag;
         try {
-            tag = getIntent().getExtras().getString(getPackageName()+".TAG", "");
+            related = getIntent().getExtras().getInt(getPackageName()+".RELATED", -1);
+            tag = getIntent().getExtras().getParcelable(getPackageName()+".TAG");
         }catch (NullPointerException e){
-            tag="";
+            Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
+
         }
-        if(tag.equals("")) new Inspector(this,1,"",ApiRequestType.BYALL);
-        else new Inspector(this,1,tag,ApiRequestType.BYTAG);
+        if(related!=-1){
+            new Inspector(this,1,""+related,ApiRequestType.RELATED);
+            toolbar.setTitle(R.string.related);
+        }else if(tag!=null) {
+            new Inspector(this,1,tag.toQueryTag(TagStatus.DEFAULT),ApiRequestType.BYTAG);
+            toolbar.setTitle(tag.getName());
+        } else new Inspector(this,1,"",ApiRequestType.BYALL);
+
     }
 
     private void changeNavigationImage(NavigationView navigationView) {
@@ -165,7 +176,7 @@ public class MainActivity extends BaseActivity
         findViewById(R.id.page_switcher).setVisibility(View.GONE);
     }
     public void showPageSwitcher(final int actualPage,final int totalPage){
-        findViewById(R.id.page_switcher).setVisibility(totalPage==1?View.GONE:View.VISIBLE);
+        findViewById(R.id.page_switcher).setVisibility(totalPage<=1?View.GONE:View.VISIBLE);
         this.actualPage=actualPage;
         this.totalPage=totalPage;
         EditText text=findViewById(R.id.page_index);
@@ -187,8 +198,8 @@ public class MainActivity extends BaseActivity
 
     private Setting setting=null;
     private class Setting{
-        Global.ThemeScheme theme;
-        boolean loadImages;
+        final Global.ThemeScheme theme;
+        final boolean loadImages;
         Setting() {
             this.theme = Global.getTheme();
             this.loadImages = Global.isLoadImages();
@@ -215,14 +226,31 @@ public class MainActivity extends BaseActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        Global.setTint(menu.findItem(R.id.search).getIcon());
-        Global.setTint(menu.findItem(R.id.random).getIcon());
-
+        if(tag!=null||related!=-1){
+            if(tag!=null){
+                MenuItem item=menu.findItem(R.id.tag_manager).setVisible(true);
+                TagStatus ts=Global.getStatus(tag);
+                switch (ts){
+                    case DEFAULT:item.setIcon(R.drawable.ic_help);break;
+                    case AVOIDED:item.setIcon(R.drawable.ic_close);break;
+                    case ACCEPTED:item.setIcon(R.drawable.ic_check);break;
+                }
+                Global.setTint(menu.findItem(R.id.tag_manager).getIcon());
+            }
+            menu.findItem(R.id.action_settings).setVisible(false);
+            menu.findItem(R.id.random).setVisible(false);
+        }else {
+            Global.setTint(menu.findItem(R.id.search).getIcon());
+            Global.setTint(menu.findItem(R.id.random).getIcon());
+        }
         final SearchView searchView=(SearchView)menu.findItem(R.id.search).getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                new Inspector(MainActivity.this,1,query,ApiRequestType.BYSEARCH);
+                if(query.length()==0)return true;
+                getSupportActionBar().setTitle(query);
+                new Inspector(MainActivity.this,1,query+(tag!=null?(' '+tag.toQueryTag(TagStatus.DEFAULT)):""),ApiRequestType.BYSEARCH);
+                searchView.setIconified(true);
                 return true;
             }
 
@@ -257,6 +285,21 @@ public class MainActivity extends BaseActivity
             case R.id.random:
                 i = new Intent(this, RandomActivity.class);
                 startActivity(i);
+                break;
+            case R.id.open_browser:
+                if(inspector!=null) {
+                    i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(inspector.getUsableURL()));
+                    startActivity(i);
+                }
+                break;
+            case R.id.tag_manager:
+                TagStatus ts=Global.updateStatus(this,tag);
+                switch (ts){
+                    case DEFAULT:item.setIcon(R.drawable.ic_help);break;
+                    case AVOIDED:item.setIcon(R.drawable.ic_close);break;
+                    case ACCEPTED:item.setIcon(R.drawable.ic_check);break;
+                }
                 break;
         }
 

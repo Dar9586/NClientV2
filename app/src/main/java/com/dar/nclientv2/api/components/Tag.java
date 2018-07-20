@@ -1,6 +1,8 @@
 package com.dar.nclientv2.api.components;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.JsonReader;
 import android.util.JsonToken;
 
@@ -15,7 +17,7 @@ import java.util.Locale;
 import java.util.Set;
 
 @SuppressWarnings("unused")
-public class Tag {
+public class Tag implements Parcelable{
     private String name;
     private int count,id;
     private TagType type;
@@ -47,6 +49,26 @@ public class Tag {
         }
         jr.endObject();
     }
+
+    private Tag(Parcel in) {
+        name = in.readString();
+        count = in.readInt();
+        id = in.readInt();
+        type=TagType.values()[in.readInt()];
+    }
+
+    public static final Creator<Tag> CREATOR = new Creator<Tag>() {
+        @Override
+        public Tag createFromParcel(Parcel in) {
+            return new Tag(in);
+        }
+
+        @Override
+        public Tag[] newArray(int size) {
+            return new Tag[size];
+        }
+    };
+
     public String toQueryTag(TagStatus status){
         if(name.contains(" "))return (status==TagStatus.AVOIDED?"-":"")+findTagString()+":\""+name+'"';
         return (status==TagStatus.AVOIDED?"-":"")+findTagString()+":"+name;
@@ -86,33 +108,21 @@ public class Tag {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public int getCount() {
         return count;
     }
 
-    public void setCount(int count) {
-        this.count = count;
-    }
 
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public TagType getType() {
         return type;
     }
 
-    public void setType(TagType type) {
-        this.type = type;
-    }
 
     @Override
     public String toString() {
@@ -156,5 +166,18 @@ public class Tag {
         result = 31 * result + id;
         result = 31 * result + type.hashCode();
         return result;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(name);
+        parcel.writeInt(count);
+        parcel.writeInt(id);
+        parcel.writeInt(type.ordinal());
     }
 }

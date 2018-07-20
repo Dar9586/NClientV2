@@ -42,7 +42,9 @@ public class LocalActivity extends BaseActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         menu.findItem(R.id.action_settings).setVisible(false);
+        menu.findItem(R.id.open_browser).setVisible(false);
         menu.findItem(R.id.random).setVisible(false);
+        Global.setTint(menu.findItem(R.id.search).getIcon());
         final android.support.v7.widget.SearchView searchView=(android.support.v7.widget.SearchView)menu.findItem(R.id.search).getActionView();
         searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
             @Override

@@ -4,7 +4,6 @@ import android.app.IntentService;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Intent;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -43,7 +42,7 @@ public class DownloadGallery extends IntentService {
     }
     private void downloadedPage(){
         notification.setProgress(gallery.getPageCount()-1,++page,false);
-        notificationManager.notify(getString(R.string.channel_name),notId,notification.build());
+        notificationManager.notify(getString(R.string.channel1_name),notId,notification.build());
         synchronized (lock){
             lock.notify();
         }
@@ -56,20 +55,20 @@ public class DownloadGallery extends IntentService {
         stackBuilder.addNextIntentWithParentStack(resultIntent);
         PendingIntent resultPendingIntent =stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         notificationManager = NotificationManagerCompat.from(getApplicationContext());
-        notification=new NotificationCompat.Builder(getApplicationContext(), Global.CHANNEL_ID);
+        notification=new NotificationCompat.Builder(getApplicationContext(), Global.CHANNEL_ID1);
         //notification.addAction(R.drawable.ic_close,"Stop",new PendingIntent.)
         notification.setSmallIcon(R.drawable.ic_file)
                 .setOnlyAlertOnce(true)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(gallery.getTitle(Global.getTitleType())))
-                .setContentTitle(getString(R.string.notification_title))
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(gallery.getTitle()))
+                .setContentTitle(getString(R.string.notification1_title))
                 .setContentText(gallery.getTitle(TitleType.PRETTY))
                 .setContentIntent(resultPendingIntent)
                 .setProgress(gallery.getPageCount()-1,0,false)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setCategory(NotificationCompat.CATEGORY_STATUS);
-        notificationManager.notify(getString(R.string.channel_name),notId,notification.build());
+        notificationManager.notify(getString(R.string.channel1_name),notId,notification.build());
     }
-    int a;
+    private int a;
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         gallery=intent.getParcelableExtra(getPackageName()+".GALLERY");
@@ -81,8 +80,7 @@ public class DownloadGallery extends IntentService {
         notification.addAction(R.drawable.ic_close,"Stop",pStopSelf);
         File folder=Global.findGalleryFolder(gallery.getId());
         if(folder==null){
-            folder=new File(getString(R.string.download_path, Environment.getExternalStorageDirectory().getAbsolutePath(),
-                    gallery.getTitle(Global.getTitleType()).length()<3?gallery.getTitle(TitleType.ENGLISH):gallery.getTitle(Global.getTitleType())));
+            folder=new File(Global.DOWNLOADFOLDER,gallery.getSafeTitle());
             folder.mkdirs();
             File nomedia=new File(folder,".nomedia");
             try {
@@ -113,7 +111,7 @@ public class DownloadGallery extends IntentService {
                     try {
                         lock.wait();
                     } catch (InterruptedException e) {
-                        Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);                    }
+                        Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);}
                 }
             }
             else {downloadedPage();}
@@ -132,6 +130,6 @@ public class DownloadGallery extends IntentService {
         notification.setProgress(0,0,false);
         notification.mActions.clear();
         notification.setContentTitle(getString(a==999?R.string.downlaod_canceled:R.string.download_completed)).setOnlyAlertOnce(false);
-        notificationManager.notify(getString(R.string.channel_name),notId,notification.build());
+        notificationManager.notify(getString(R.string.channel1_name),notId,notification.build());
     }
 }

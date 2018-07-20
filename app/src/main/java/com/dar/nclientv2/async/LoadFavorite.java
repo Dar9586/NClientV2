@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class LoadFavorite extends AsyncTask<FavoriteActivity,Gallery,FavoriteActivity> {
-    private FavoriteAdapter adapter;
+    private final FavoriteAdapter adapter;
 
     public LoadFavorite(FavoriteAdapter adapter) {
         this.adapter = adapter;
@@ -29,6 +29,7 @@ public class LoadFavorite extends AsyncTask<FavoriteActivity,Gallery,FavoriteAct
     protected FavoriteActivity doInBackground(FavoriteActivity... voids) {
         FavoriteActivity activity=voids[0];
         Set<String> x=activity.getSharedPreferences("FavoriteList", 0).getStringSet(activity.getString(R.string.key_favorite_list),new HashSet<String>());
+        Log.i(Global.LOGTAG,"SIZE:"+x.size());
         try {
             for(String y:x)publishProgress(new Gallery(y));
         }catch (IOException e){

@@ -20,8 +20,9 @@ import java.util.List;
 import java.util.Locale;
 
 public abstract class GenericAdapter<T extends GenericGallery> extends RecyclerView.Adapter<GenericAdapter.ViewHolder> implements Filterable {
-    protected List<T> dataset,filter;
-    protected String lastQuery="";
+    final List<T> dataset;
+    List<T> filter;
+    String lastQuery="";
     static class ViewHolder extends RecyclerView.ViewHolder {
         final ImageView imgView,flag;
         final TextView title,pages;
