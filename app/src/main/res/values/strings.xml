@@ -132,6 +132,7 @@
     <string name="create_pdf_format" formatted="true">Create PDF of: "%s"</string>
     <string name="page_Switcher_placeholder">0/0</string>
     <string name="page_placeholder">999/999</string>
+    <string name="hashtag">#</string>
     <string-array name="theme">
         <item>Light</item>
         <item>Dark</item>

@@ -365,14 +365,26 @@ public final class Global {
         }
         return null;
     }
-    public static void updateSet(@NonNull Context context, List<Tag>tags , TagType type){
-        Set<String>x=new HashSet<>(tags.size());
-        for(Tag y:tags){
-            x.add(y.toScrapedString());
+    private static int getOrdinalFromTag(TagType type){
+        switch (type){
+            case TAG:return 0;
+            case ARTIST:return 1;
+            case GROUP:return 2;
+            case PARODY:return 3;
+            case CHARACTER:return 4;
         }
-        if(!context.getSharedPreferences("ScrapedTags", 0).edit().putStringSet(context.getString(getScraperId(type)),x).commit()){
-            Log.e(LOGTAG,"Error to write set: "+type);
-        }
+        return -1;
+    }
+    public static void updateSet(@NonNull Context context, List<Tag>tags , TagType type,boolean mustWrite){
+        if(mustWrite) {
+            Set<String> x = new HashSet<>(tags.size());
+            for (Tag y : tags) {
+                x.add(y.toScrapedString());
+            }
+            if (!context.getSharedPreferences("ScrapedTags", 0).edit().putStringSet(context.getString(getScraperId(type)), x).commit()) {
+                Log.e(LOGTAG, "Error to write set: " + type);
+            }else sets[getOrdinalFromTag(type)]=tags;
+        }else sets[getOrdinalFromTag(type)]=tags;
     }
     private static int getScraperId(TagType tag){
         switch (tag){

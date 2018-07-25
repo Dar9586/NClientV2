@@ -26,7 +26,7 @@
             android:tint="?android:attr/colorForeground"
             android:layout_height="wrap_content" />
         <EditText
-            android:hint="@string/change_page"
+            android:hint="@string/hashtag"
             android:inputType="number"
             android:id="@+id/edit_page"
             android:layout_width="0dp"

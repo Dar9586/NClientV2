@@ -55,7 +55,7 @@ public class ScrapeTags extends Thread {
                 }
             }
         }
-        Global.updateSet(context,tags,tagType);
+        Global.updateSet(context,tags,tagType,true);
 
         updating.remove(tagType);
 
@@ -109,6 +109,7 @@ public class ScrapeTags extends Thread {
                 }
                 tags.add(t);
                 adapter.addItem(t);
+                Global.updateSet(context,tags,tagType,false);
             }
 
         }

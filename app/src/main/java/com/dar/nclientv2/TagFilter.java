@@ -23,10 +23,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.dar.nclientv2.adapters.TagsAdapter;
+import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TagFilter extends AppCompatActivity{
@@ -256,7 +258,8 @@ public class TagFilter extends AppCompatActivity{
             String query=((TagFilter)getActivity()).searchView==null?"":((TagFilter)getActivity()).searchView.getQuery().toString();
             recyclerView.setLayoutManager(new GridLayoutManager(getContext(), getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE?4:2));
             if(tag!=-1){
-                TagsAdapter adapter=new TagsAdapter((TagFilter)getActivity(),Global.getTagSet(TagType.values()[tag]),query);
+                List<Tag>t=Global.getTagSet(TagType.values()[tag]);
+                TagsAdapter adapter=new TagsAdapter((TagFilter)getActivity(),t==null?new ArrayList<Tag>(1):t,query);
                 recyclerView.setAdapter(adapter);
                 if(adapter.getTrueDataset().size()==0)loadTags();
             }

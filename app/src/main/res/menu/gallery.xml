@@ -15,6 +15,12 @@
         android:title="@string/change_view"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/load_internet"
+        android:orderInCategory="500"
+        android:icon="@drawable/ic_world"
+        android:title="@string/go_online"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/related"
         android:orderInCategory="300"
         android:icon="@drawable/ic_burst_mode"
@@ -26,13 +32,6 @@
         android:icon="@drawable/ic_file_download"
         android:title="@string/download_gallery"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/load_internet"
-        android:orderInCategory="500"
-        android:icon="@drawable/ic_world"
-        android:title="@string/go_online"
-        app:showAsAction="ifRoom" />
-
     <item
         android:id="@+id/share"
         android:orderInCategory="500"
