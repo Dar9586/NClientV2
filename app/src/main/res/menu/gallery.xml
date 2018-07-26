@@ -7,36 +7,36 @@
         android:orderInCategory="100"
         android:icon="@drawable/ic_favorite_border"
         android:title="@string/download_gallery"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/change_view"
         android:orderInCategory="200"
         android:icon="@drawable/ic_view_1"
         android:title="@string/change_view"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/load_internet"
         android:orderInCategory="500"
         android:icon="@drawable/ic_world"
         android:title="@string/go_online"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/related"
         android:orderInCategory="300"
         android:icon="@drawable/ic_burst_mode"
         android:title="@string/show_related"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/download_gallery"
         android:orderInCategory="400"
         android:icon="@drawable/ic_file_download"
         android:title="@string/download_gallery"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/share"
         android:orderInCategory="500"
         android:icon="@drawable/ic_share"
         android:title="@string/share"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom|collapseActionView"/>
 
 </menu>

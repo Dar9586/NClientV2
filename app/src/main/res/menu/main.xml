@@ -19,11 +19,12 @@
         android:visible="false"
         app:showAsAction="ifRoom|collapseActionView" />
     <item
+        android:id="@+id/open_browser"
+        android:title="@string/open_in_browser"
+        app:showAsAction="ifRoom|collapseActionView" />
+    <item
         android:id="@+id/action_settings"
         android:title="@string/action_settings"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/open_browser"
-        android:title="@string/open_in_browser"
-        app:showAsAction="never" />
+
 </menu>

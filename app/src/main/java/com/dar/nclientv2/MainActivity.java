@@ -58,7 +58,7 @@ public class MainActivity extends BaseActivity
         Global.initTagPreferencesSets(this);
 
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setTitle(R.string.app_name);
@@ -76,6 +76,7 @@ public class MainActivity extends BaseActivity
             case ENGLISH:navigationView.setCheckedItem(R.id.english_title);break;
             case JAPANESE:navigationView.setCheckedItem(R.id.japanese_title);break;
         }
+
         navigationView.getMenu().findItem(R.id.by_popular).setIcon(Global.isByPopular()?R.drawable.ic_check:R.drawable.ic_close);
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
@@ -116,14 +117,17 @@ public class MainActivity extends BaseActivity
             tag = getIntent().getExtras().getParcelable(getPackageName()+".TAG");
         }catch (NullPointerException e){
             Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
-
         }
         if(related!=-1){
             new Inspector(this,1,""+related,ApiRequestType.RELATED);
             toolbar.setTitle(R.string.related);
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            toggle.setDrawerIndicatorEnabled(false);
         }else if(tag!=null) {
             new Inspector(this,1,tag.toQueryTag(TagStatus.DEFAULT),ApiRequestType.BYTAG);
             toolbar.setTitle(tag.getName());
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            toggle.setDrawerIndicatorEnabled(false);
         } else new Inspector(this,1,"",ApiRequestType.BYALL);
 
     }
@@ -168,6 +172,8 @@ public class MainActivity extends BaseActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        }else if(inspector.getRequestType()==ApiRequestType.BYSEARCH){
+            removeQuery();
         } else {
             super.onBackPressed();
         }
@@ -211,6 +217,22 @@ public class MainActivity extends BaseActivity
         super.onPause();
 
     }
+    private void removeQuery(){
+        searchView.setQuery("",false);
+        getSupportActionBar().setTitle(R.string.app_name);
+        if(related!=-1){
+            new Inspector(this,1,""+related,ApiRequestType.RELATED);
+            getSupportActionBar().setTitle(R.string.related);
+        }
+        else if(tag!=null){
+            new Inspector(this,1,tag.toQueryTag(TagStatus.DEFAULT),ApiRequestType.BYTAG);
+            getSupportActionBar().setTitle(tag.getName());
+        }
+        else {
+            new Inspector(this,1,"",ApiRequestType.BYALL);
+            getSupportActionBar().setTitle(R.string.app_name);
+        }
+    }
 
     @Override
     protected void onResume() {
@@ -221,7 +243,7 @@ public class MainActivity extends BaseActivity
             if(Global.getTheme()!=setting.theme)recreate();
         }
     }
-
+    private SearchView searchView;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -243,12 +265,17 @@ public class MainActivity extends BaseActivity
             Global.setTint(menu.findItem(R.id.search).getIcon());
             Global.setTint(menu.findItem(R.id.random).getIcon());
         }
-        final SearchView searchView=(SearchView)menu.findItem(R.id.search).getActionView();
+        searchView =(SearchView)menu.findItem(R.id.search).getActionView();
+        if(related!=-1){
+            menu.findItem(R.id.search).setVisible(false);
+            return true;
+        }
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if(query.length()==0)return true;
-                getSupportActionBar().setTitle(query);
+                query=query.trim();
+                getSupportActionBar().setTitle(query+(tag!=null?' '+tag.getName():""));
                 new Inspector(MainActivity.this,1,query+(tag!=null?(' '+tag.toQueryTag(TagStatus.DEFAULT)):""),ApiRequestType.BYSEARCH);
                 searchView.setIconified(true);
                 return true;
@@ -263,8 +290,7 @@ public class MainActivity extends BaseActivity
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                searchView.setQuery("",false);
-                new Inspector(MainActivity.this,1,"",ApiRequestType.BYALL);
+                removeQuery();
             }
         });
         return true;

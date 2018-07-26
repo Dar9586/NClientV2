@@ -55,16 +55,19 @@ public class Inspector {
         return url;
     }
     public String getUsableURL(){
-        StringBuilder builder = new StringBuilder("https://nhentai.net/?");
+        StringBuilder builder = new StringBuilder("https://nhentai.net/");
         String tagQuery=Global.getQueryString(query);
         switch (requestType){
-            case BYALL: if(tagQuery.length()>0||Global.getOnlyLanguage()!=null) builder.append("q=").append(appendedLanguage()).append(tagQuery);break;
+            case BYALL: if(tagQuery.length()>0||Global.getOnlyLanguage()!=null) builder.append("?q=").append(appendedLanguage()).append(tagQuery);break;
             case BYSEARCH:case BYTAG:
-                builder.append("q=").append(query).append('+').append(appendedLanguage());
+                builder.append("?q=").append(query).append('+').append(appendedLanguage());
                 if(requestType!=ApiRequestType.BYTAG||!Global.isOnlyTag())builder.append(tagQuery);
                 if(byPopular)builder.append("&sort=popular");
+                break;
+            case RELATED: case BYSINGLE:builder.append("g/").append(query);if(requestType==ApiRequestType.RELATED)builder.append("/#related-container");break;
+
         }
-        if(page>1)builder.append("page=").append(actualPage);
+        if(page>1)builder.append("page=").append(page);
         return builder.toString();
     }
 

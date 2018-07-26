@@ -35,6 +35,7 @@ public class GalleryActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private GenericGallery gallery;
     private boolean isLocal;
+    private int count=-1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +64,6 @@ public class GalleryActivity extends BaseActivity
         refresher.setEnabled(false);
         NavigationView navigationView = findViewById(R.id.nav_view);
         recycler.setLayoutManager(new GridLayoutManager(this,Global.getColumnCount()));
-
         navigationView.setNavigationItemSelectedListener(this);
 
 
@@ -94,6 +94,7 @@ public class GalleryActivity extends BaseActivity
             final Gallery gallery=(Gallery) this.gallery;
             for (final TagType x : TagType.values()) {
                 int c = gallery.getTagCount(x);
+                if(c==0) navigationView.getMenu().getItem(x.ordinal()).setVisible(false);
                 for (int a = 0; a < c; a++) {
                     final int b = a;
 
@@ -208,8 +209,10 @@ public class GalleryActivity extends BaseActivity
     }
 
     private void updateColumnCount(boolean increase) {
-        MenuItem item= ((Toolbar)findViewById(R.id.toolbar)).getMenu().findItem(R.id.change_view);
         int x=Global.getColumnCount();
+        if(x==count)return;
+        count=x;
+        MenuItem item= ((Toolbar)findViewById(R.id.toolbar)).getMenu().findItem(R.id.change_view);
         if(increase){
             x=x%4+1;
             Global.updateColumnCount(this,x);
