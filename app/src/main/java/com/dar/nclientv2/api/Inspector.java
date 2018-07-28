@@ -115,7 +115,7 @@ public class Inspector {
                             intent.putExtra(activity.getPackageName()+".ZOOM",page-1);
                             activity.startActivity(intent);
                             activity.getRefresher().setEnabled(false);
-                            activity.finish();
+                            if(page!=-1)activity.finish();
                         }
                         activity.getRefresher().setRefreshing(false);
                     }

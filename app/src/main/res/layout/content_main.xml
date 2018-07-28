@@ -25,6 +25,7 @@
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <include
+        android:visibility="gone"
         android:id="@+id/page_switcher"
         layout="@layout/page_switcher"
         android:layout_width="0dp"

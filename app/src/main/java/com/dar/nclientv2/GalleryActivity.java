@@ -18,6 +18,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.dar.nclientv2.adapters.GalleryAdapter;
 import com.dar.nclientv2.api.Inspector;
@@ -122,6 +124,11 @@ public class GalleryActivity extends BaseActivity
             intent.putExtra(getPackageName()+".PAGE",zoom);
             startActivity(intent);
         }
+        if(!gall.isLocal()) {
+            ((TextView) navigationView.getHeaderView(0).findViewById(R.id.title)).setText(gall.getTitle());
+            ((TextView) navigationView.getHeaderView(0).findViewById(R.id.textView)).setText(getString(R.string.page_count_format, gall.getPageCount()));
+            Global.loadImage(((Gallery) gall).getThumbnail().getUrl(), (ImageView) navigationView.getHeaderView(0).findViewById(R.id.imageView));
+        }
     }
 
     private int getIdFromTagType(TagType type){
@@ -160,6 +167,7 @@ public class GalleryActivity extends BaseActivity
         Global.setTint(menu.findItem(R.id.favorite_manager).getIcon());
         menu.findItem(R.id.favorite_manager).setVisible(!isLocal||isFavorite);
         menu.findItem(R.id.download_gallery).setVisible(!isLocal);
+        menu.findItem(R.id.related).setVisible(!isLocal);
         menu.findItem(R.id.load_internet).setVisible(isLocal&&gallery!=null&&gallery.getId()!=-1);
         updateColumnCount(false);
         return true;
@@ -179,7 +187,6 @@ public class GalleryActivity extends BaseActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         switch (id){
             case R.id.download_gallery:if(Global.hasStoragePermission(this))downloadGallery();else{requestStorage();}break;
             case R.id.change_view:updateColumnCount(true); break;

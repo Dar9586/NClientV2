@@ -15,7 +15,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -112,11 +111,10 @@ public class MainActivity extends BaseActivity
             }
         });
         changeLayout(getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE);
-        try {
+        Bundle bundle=getIntent().getExtras();
+        if(bundle!=null){
             related = getIntent().getExtras().getInt(getPackageName()+".RELATED", -1);
             tag = getIntent().getExtras().getParcelable(getPackageName()+".TAG");
-        }catch (NullPointerException e){
-            Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
         }
         if(related!=-1){
             new Inspector(this,1,""+related,ApiRequestType.RELATED);
@@ -134,8 +132,8 @@ public class MainActivity extends BaseActivity
 
     private void changeNavigationImage(NavigationView navigationView) {
         switch (Global.getTheme()){
-            case BLACK:navigationView.getHeaderView(0).findViewById(R.id.layout_header).setBackgroundResource(android.R.color.black);break;
-            default:navigationView.getHeaderView(0).findViewById(R.id.layout_header).setBackgroundResource(R.drawable.side_nav_bar);break;
+            case BLACK: ((ImageView)navigationView.getHeaderView(0).findViewById(R.id.imageView)).setImageResource(R.drawable.ic_logo);navigationView.getHeaderView(0).findViewById(R.id.layout_header).setBackgroundResource(android.R.color.black);break;
+            default:((ImageView)navigationView.getHeaderView(0).findViewById(R.id.imageView)).setImageResource(R.mipmap.ic_launcher);navigationView.getHeaderView(0).findViewById(R.id.layout_header).setBackgroundResource(R.drawable.side_nav_bar);break;
         }
     }
 
@@ -185,6 +183,10 @@ public class MainActivity extends BaseActivity
         findViewById(R.id.page_switcher).setVisibility(totalPage<=1?View.GONE:View.VISIBLE);
         this.actualPage=actualPage;
         this.totalPage=totalPage;
+        findViewById(R.id.prev).setAlpha(actualPage>1?1f:.5f);
+        findViewById(R.id.prev).setEnabled(actualPage>1);
+        findViewById(R.id.next).setAlpha(actualPage<totalPage?1f:.5f);
+        findViewById(R.id.next).setEnabled(actualPage<totalPage);
         EditText text=findViewById(R.id.page_index);
         text.setText(String.format(Locale.US, "%d/%d", actualPage, totalPage));
     }
@@ -274,6 +276,13 @@ public class MainActivity extends BaseActivity
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if(query.length()==0)return true;
+                try {
+                    if (tag == null && related == -1) {
+                        int id=Integer.parseInt(query);
+                        new Inspector(MainActivity.this,-1,""+id,ApiRequestType.BYSINGLE);
+                        return true;
+                    }
+                }catch (NumberFormatException ignore){}
                 query=query.trim();
                 getSupportActionBar().setTitle(query+(tag!=null?' '+tag.getName():""));
                 new Inspector(MainActivity.this,1,query+(tag!=null?(' '+tag.toQueryTag(TagStatus.DEFAULT)):""),ApiRequestType.BYSEARCH);

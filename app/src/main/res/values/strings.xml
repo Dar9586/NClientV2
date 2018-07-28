@@ -133,6 +133,8 @@
     <string name="page_Switcher_placeholder">0/0</string>
     <string name="page_placeholder">999/999</string>
     <string name="hashtag">#</string>
+    <string name="link_copied_to_clipboard">Link copied to clipboard</string>
+    <string name="image_quality_summary">Resolution quality in percentage when a gallery is downloaded</string>
     <string-array name="theme">
         <item>Light</item>
         <item>Dark</item>

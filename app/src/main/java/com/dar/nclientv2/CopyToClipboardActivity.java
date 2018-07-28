@@ -15,7 +15,7 @@ public class CopyToClipboardActivity extends Activity {
             Uri uri = getIntent().getData();
             if (uri != null) {
                 copyTextToClipboard(uri.toString());
-                Toast.makeText(this, "Link copied to clipboard", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.link_copied_to_clipboard, Toast.LENGTH_SHORT).show();
             }
             finish();
         }
