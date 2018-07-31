@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,17 +32,23 @@ import com.dar.nclientv2.async.DownloadGallery;
 import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Global;
 
+import java.io.IOException;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class GalleryActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private GenericGallery gallery;
     private boolean isLocal;
-    private int count=-1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
+        Global.initHttpClient(this);
         Global.loadNotificationChannel(this);
         Global.initColumnCount(this);
         Global.initTagSets(this);
@@ -50,6 +57,7 @@ public class GalleryActivity extends BaseActivity
         Global.initTagPreferencesSets(this);
         setContentView(R.layout.activity_gallery);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        final NavigationView navigationView = findViewById(R.id.nav_view);
         setSupportActionBar(toolbar);
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
@@ -60,11 +68,16 @@ public class GalleryActivity extends BaseActivity
         int zoom=getIntent().getIntExtra(getPackageName()+".ZOOM",0);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                Global.loadImage(((Gallery) gallery).getCover().getUrl(), (ImageView) navigationView.getHeaderView(0).findViewById(R.id.imageView));
+            }
+        };
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         refresher.setEnabled(false);
-        NavigationView navigationView = findViewById(R.id.nav_view);
         recycler.setLayoutManager(new GridLayoutManager(this,Global.getColumnCount()));
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -127,7 +140,7 @@ public class GalleryActivity extends BaseActivity
         if(!gall.isLocal()) {
             ((TextView) navigationView.getHeaderView(0).findViewById(R.id.title)).setText(gall.getTitle());
             ((TextView) navigationView.getHeaderView(0).findViewById(R.id.textView)).setText(getString(R.string.page_count_format, gall.getPageCount()));
-            Global.loadImage(((Gallery) gall).getThumbnail().getUrl(), (ImageView) navigationView.getHeaderView(0).findViewById(R.id.imageView));
+            Global.loadImage(((Gallery) gall).getCover().getUrl(), (ImageView) navigationView.getHeaderView(0).findViewById(R.id.imageView));
         }
     }
 
@@ -157,6 +170,15 @@ public class GalleryActivity extends BaseActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.gallery, menu);
+        if(!isLocal&&Global.isLogged()){
+            MenuItem item= menu.findItem(R.id.add_online_gallery);
+            item.setVisible(true);
+            boolean x=gallery==null||Global.getOnlineFavorite(this,gallery.getId())==null;
+            item.setIcon(x?R.drawable.ic_star_border:R.drawable.ic_star);
+            item.setTitle(x?R.string.add_to_online_favorite:R.string.remove_from_online_favorites);
+        }
+
+        menu.findItem(R.id.add_online_gallery).setVisible(Global.isLogged());
         Global.setTint(menu.findItem(R.id.download_gallery).getIcon());
         Global.setTint(menu.findItem(R.id.load_internet).getIcon());
         Global.setTint(menu.findItem(R.id.change_view).getIcon());
@@ -181,13 +203,31 @@ public class GalleryActivity extends BaseActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+    public boolean onOptionsItemSelected(final MenuItem item) {
         int id = item.getItemId();
 
         switch (id){
+            case R.id.add_online_gallery:
+                if(gallery!=null)Global.client.newCall(new Request.Builder().url("https://nhentai.net/g/"+gallery.getId()+"/favorite").build()).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(@NonNull Call call,@NonNull IOException e) {}
+
+                    @Override
+                    public void onResponse(@NonNull Call call,@NonNull Response response)  {
+                        Log.d(Global.LOGTAG,"Called");
+                            final boolean x=Global.getOnlineFavorite(GalleryActivity.this,gallery.getId())==null;
+                            if (x) Global.saveOnlineFavorite(GalleryActivity.this, (Gallery) gallery);
+                            else Global.removeOnlineFavorite(GalleryActivity.this, gallery.getId());
+                            GalleryActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    item.setIcon(x?R.drawable.ic_star:R.drawable.ic_star_border);
+                                    item.setTitle(x?R.string.remove_from_online_favorites:R.string.add_to_online_favorite);
+                                }
+                            });
+                    }
+                });
+                break;
             case R.id.download_gallery:if(Global.hasStoragePermission(this))downloadGallery();else{requestStorage();}break;
             case R.id.change_view:updateColumnCount(true); break;
             case R.id.load_internet:toInternet();break;
@@ -217,16 +257,16 @@ public class GalleryActivity extends BaseActivity
 
     private void updateColumnCount(boolean increase) {
         int x=Global.getColumnCount();
-        if(x==count)return;
-        count=x;
         MenuItem item= ((Toolbar)findViewById(R.id.toolbar)).getMenu().findItem(R.id.change_view);
-        if(increase){
-            x=x%4+1;
+        if(increase||((GridLayoutManager)recycler.getLayoutManager()).getSpanCount()!=x){
+            if(increase)x=x%4+1;
             Global.updateColumnCount(this,x);
+            RecyclerView.Adapter adapter=recycler.getAdapter();
+            recycler.setLayoutManager(new GridLayoutManager(this,x));
+            Log.d(Global.LOGTAG,"Span count: "+((GridLayoutManager)recycler.getLayoutManager()).getSpanCount());
+            if(adapter!=null)recycler.setAdapter(adapter);
         }
-        RecyclerView.Adapter adapter=recycler.getAdapter();
-        recycler.setLayoutManager(new GridLayoutManager(this,x));
-        if(adapter!=null)recycler.setAdapter(adapter);
+
         if(item!=null) {
             switch (x) {
                 case 1: item.setIcon(R.drawable.ic_view_1);break;

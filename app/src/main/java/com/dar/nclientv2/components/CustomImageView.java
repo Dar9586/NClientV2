@@ -24,7 +24,7 @@ public class CustomImageView extends AppCompatImageView {
     @Override
     public void setImageDrawable(@Nullable Drawable drawable) {
         super.setImageDrawable(drawable);
-        //invalidate();
+        invalidate();
     }
 
 

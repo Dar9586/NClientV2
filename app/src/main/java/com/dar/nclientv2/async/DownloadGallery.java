@@ -22,7 +22,6 @@ import java.io.IOException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -32,13 +31,11 @@ public class DownloadGallery extends IntentService {
     private final int notId;
     private int page=0;
     private final Object lock;
-    private final OkHttpClient client;
     private NotificationManagerCompat notificationManager;
     public DownloadGallery(){
         super("Download Gallery");
         notId=Global.getNotificationId();
         lock=new Object();
-        client=new OkHttpClient();
     }
     private void downloadedPage(){
         notification.setProgress(gallery.getPageCount()-1,++page,false);
@@ -95,7 +92,7 @@ public class DownloadGallery extends IntentService {
         for(a=0;a<gallery.getPageCount();a++){
             final File x=new File(folder,("000"+(a+1)+".jpg").substring(Integer.toString(a+1).length()));
             if(!x.exists()||Global.isCorrupted(x.getAbsolutePath())){
-                client.newCall(new Request.Builder().url(gallery.getPage(a).getUrl()).build()).enqueue(new Callback() {
+                Global.client.newCall(new Request.Builder().url(gallery.getPage(a).getUrl()).build()).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call,@NonNull IOException e) {
                         Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);

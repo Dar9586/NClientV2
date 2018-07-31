@@ -31,6 +31,7 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
         Global.initHideFromGallery(this);
+        Global.initHttpClient(this);
         setContentView(R.layout.activity_settings);
         GeneralPreferenceFragment.act=this;
         getFragmentManager().beginTransaction().replace(android.R.id.content,
@@ -45,6 +46,7 @@ public class SettingsActivity extends AppCompatActivity {
             final PreferenceManager prefMgr = getPreferenceManager();
             prefMgr.setSharedPreferencesName("Settings");
             addPreferencesFromResource(R.xml.settings);
+            findPreference(getString(R.string.key_use_account_tag)).setEnabled(Global.isLogged());
             findPreference(getString(R.string.key_hide_saved_images)).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {

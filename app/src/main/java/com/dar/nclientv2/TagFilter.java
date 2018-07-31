@@ -48,8 +48,10 @@ public class TagFilter extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
+        Global.initHttpClient(this);
         Global.initTagOrder(this);
         Global.initMinTagCount(this);
+        Global.initTagSets(this);
         Global.initTagPreferencesSets(this);
         setContentView(R.layout.activity_tag_filter);
 
@@ -62,9 +64,12 @@ public class TagFilter extends AppCompatActivity{
         // Set up the ViewPager with the sections adapter.
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        mViewPager.setOffscreenPageLimit(0);
-        TabLayout tabLayout = findViewById(R.id.tabs);
+        mViewPager.setOffscreenPageLimit(1);
 
+        TabLayout tabLayout = findViewById(R.id.tabs);
+        if(Global.isLogged())tabLayout.addTab(tabLayout.newTab().setText(R.string.online_tags));
+
+        Log.d(Global.LOGTAG,"ISNULL?"+(tabLayout==null));
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -250,8 +255,8 @@ public class TagFilter extends AppCompatActivity{
         }
 
         private void loadTags() {
-            if(tag==-1)applyAdapter();
-            else ((TagsAdapter)recyclerView.getAdapter()).resetDataset(TagType.values()[tag]);
+            if(tag==-1&&page!=6)applyAdapter();
+            else ((TagsAdapter)recyclerView.getAdapter()).resetDataset(TagType.values()[tag==-1?0:tag]);
         }
 
         private void applyAdapter(){
@@ -263,7 +268,10 @@ public class TagFilter extends AppCompatActivity{
                 recyclerView.setAdapter(adapter);
                 if(adapter.getTrueDataset().size()==0)loadTags();
             }
-            else recyclerView.setAdapter(new TagsAdapter((TagFilter)getActivity(),Global.getListPrefer(),query));
+            else {
+                if(page==0)recyclerView.setAdapter(new TagsAdapter((TagFilter)getActivity(),Global.getListPrefer(),query));
+                else recyclerView.setAdapter(new TagsAdapter((TagFilter)getActivity(),query));
+            }
         }
         private void filterDataset(String newText){
             if(((TagFilter)getActivity()).searchView!=null&&recyclerView.getAdapter()!=null)
@@ -298,7 +306,7 @@ public class TagFilter extends AppCompatActivity{
 
         @Override
         public int getCount() {
-            return 6;
+            return Global.isLogged()?7:6;
         }
     }
 }

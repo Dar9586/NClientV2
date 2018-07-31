@@ -33,4 +33,5 @@ public abstract class BaseActivity extends AppCompatActivity {
         recycler.setLayoutManager(gridLayoutManager);
         recycler.setAdapter(adapter);
     }
+
 }

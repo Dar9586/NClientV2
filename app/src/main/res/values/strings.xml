@@ -145,4 +145,34 @@
         <item>dark</item>
         <item>black</item>
     </string-array>
+    <string name="title_activity_login">Log in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Username or Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="forgot_password">Forgot your password? <b>Reset it</b></string>
+    <string name="register">Don\'t have an account? <b>Register</b></string>
+    <string name="login">Log in</string>
+    <string name="logout">Log out</string>
+    <string name="sign_in">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="online_favorites">Online favorites</string>
+    <string name="favorite_online_manga">Favorite online manga</string>
+    <string name="offline_favorites">Offline favorites</string>
+    <string name="online_tags">Online tags</string>
+    <string name="use_account_tag">Use tags from account</string>
+    <string name="setting_on_use_account_tag">Use the account tags into the search query (Local tags will have priority)</string>
+    <string name="setting_off_use_account_tag">Account tags will be ignored for the query</string>
+    <string name="key_use_account_tag">use_account_tags</string>
+    <string name="invalid_credentials">Invalid credentials</string>
+    <string name="add_to_online_favorite">Add to online favorites</string>
+    <string name="remove_from_online_favorites">Remove from online favorites</string>
+    <string name="add_to_online_blacklist">Add to online blacklist?</string>
+    <string name="tag_already_in_blacklist">Tag already in blacklist</string>
 </resources>

@@ -7,6 +7,11 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_content"
@@ -26,12 +31,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
-                <data android:scheme="http"/>
-                <data android:scheme="https"/>
-                <data android:host="nhentai.net"/>
-                <data android:path="/"/>
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="nhentai.net" />
+                <data android:path="/" />
+
                 <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT"/>
+
+                <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
@@ -41,13 +48,16 @@
             android:parentActivityName=".MainActivity"
             android:theme="@style/DarkTheme">
             <intent-filter>
-                <data android:scheme="http"/>
-                <data android:scheme="https"/>
-                <data android:host="nhentai.net" android:pathPattern="/g/.*" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data
+                    android:host="nhentai.net"
+                    android:pathPattern="/g/.*" />
                 <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.dar.nclientv2.MainActivity" />
@@ -58,6 +68,7 @@
             android:label="@string/title_activity_zoom"
             android:parentActivityName=".GalleryActivity"
             android:theme="@style/DarkTheme.NoTitle" />
+
         <service
             android:name=".async.DownloadGallery"
             android:enabled="true"
@@ -66,6 +77,7 @@
             android:name=".async.CreatePDF"
             android:enabled="true"
             android:exported="false" />
+
         <activity
             android:name=".LocalActivity"
             android:configChanges="orientation|screenSize"
@@ -78,48 +90,50 @@
             android:parentActivityName=".MainActivity"
             android:theme="@style/DarkTheme">
             <intent-filter>
-                <data android:scheme="http"/>
-                <data android:scheme="https"/>
-                <data android:host="nhentai.net"/>
-                <data android:pathPrefix="/tags"/>
-                <data android:pathPrefix="/artists"/>
-                <data android:pathPrefix="/characters"/>
-                <data android:pathPrefix="/parodies"/>
-                <data android:pathPrefix="/groups"/>
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="nhentai.net" />
+                <data android:pathPrefix="/tags" />
+                <data android:pathPrefix="/artists" />
+                <data android:pathPrefix="/characters" />
+                <data android:pathPrefix="/parodies" />
+                <data android:pathPrefix="/groups" />
                 <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.dar.nclientv2.MainActivity" />
         </activity>
         <activity android:name=".SettingsActivity" />
-        <activity android:name=".RandomActivity" >
+        <activity android:name=".RandomActivity">
             <intent-filter>
-                <data android:scheme="http"/>
-                <data android:scheme="https"/>
-                <data android:host="nhentai.net"/>
-                <data android:pathPrefix="/random"/>
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="nhentai.net" />
+                <data android:pathPrefix="/random" />
                 <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
-        <activity android:name=".FavoriteActivity"
+        <activity
+            android:name=".FavoriteActivity"
             android:configChanges="orientation|screenSize"
-            android:parentActivityName=".MainActivity"
-            >
+            android:parentActivityName=".MainActivity">
             <intent-filter>
-                <data android:scheme="http"/>
-                <data android:scheme="https"/>
-                <data android:host="nhentai.net"/>
-                <data android:path="/favorites"/>
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="nhentai.net" />
+                <data android:pathPrefix="/favorites" />
                 <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -127,11 +141,30 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
-        <activity android:name=".CopyToClipboardActivity" android:icon="@drawable/ic_copy"
-            android:label="@string/open_in_browser"
-            />
+
+        <activity
+            android:name=".CopyToClipboardActivity"
+            android:icon="@drawable/ic_copy"
+            android:label="@string/open_in_browser" />
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/title_activity_login"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.dar.nclientv2.MainActivity" />
+            <intent-filter>
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="nhentai.net" />
+                <data android:pathPrefix="/login" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

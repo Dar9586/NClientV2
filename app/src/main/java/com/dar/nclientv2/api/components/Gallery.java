@@ -12,6 +12,7 @@ import com.dar.nclientv2.api.enums.ImageType;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.enums.TitleType;
+import com.dar.nclientv2.loginapi.DownloadFavorite;
 import com.dar.nclientv2.settings.Global;
 
 import java.io.IOException;
@@ -23,6 +24,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
 
 @SuppressWarnings("unused")
 public class Gallery extends GenericGallery{
@@ -422,5 +428,21 @@ public class Gallery extends GenericGallery{
             jr.endArray();
         }
         jr.close();
+    }
+    public static void galleryFromId(final DownloadFavorite download, int id){
+        String url="https://nhentai.net/api/gallery/"+id;
+        Log.d(Global.LOGTAG,url);
+
+        Global.client.newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                download.addGallery(new Gallery(new JsonReader(response.body().charStream())),true);
+            }
+        });
     }
 }

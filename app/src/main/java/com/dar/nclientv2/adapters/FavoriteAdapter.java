@@ -9,6 +9,7 @@ import com.dar.nclientv2.FavoriteActivity;
 import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Gallery;
+import com.dar.nclientv2.loginapi.DownloadFavorite;
 import com.dar.nclientv2.settings.Global;
 
 import java.util.ArrayList;
@@ -16,7 +17,6 @@ import java.util.Locale;
 
 public class FavoriteAdapter extends GenericAdapter<Gallery> {
     private final FavoriteActivity activity;
-
     public FavoriteAdapter(FavoriteActivity activity) {
         super(new ArrayList<Gallery>());
         this.activity=activity;
@@ -66,13 +66,34 @@ public class FavoriteAdapter extends GenericAdapter<Gallery> {
             dataset.add(gallery);
             if(gallery.getTitle().contains(lastQuery)){
                 filter.add(gallery);
-                notifyItemInserted(filter.size()-1);
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        notifyItemInserted(filter.size());
+                    }
+                });
+
             }
     }
     public void clearGallery(){
         dataset.clear();
-        int s=filter.size();
+        final int s=filter.size();
         filter.clear();
-        notifyItemRangeRemoved(0,s);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                notifyItemRangeRemoved(0,s);
+            }
+        });
+
     }
+    public void reloadOnline(){
+        clearGallery();
+        new DownloadFavorite(this,true).start();
+    }
+
+    public FavoriteActivity getActivity() {
+        return activity;
+    }
+
 }

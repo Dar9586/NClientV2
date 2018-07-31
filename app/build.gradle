@@ -35,7 +35,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.11.0'
+    implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
     implementation 'com.squareup.picasso:picasso:2.71828'
     //noinspection GradleCompatible
     implementation 'com.android.support:cardview-v7:27.1.1'

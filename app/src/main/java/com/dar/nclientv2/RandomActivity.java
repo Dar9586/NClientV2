@@ -28,6 +28,7 @@ public class RandomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
+        Global.initHttpClient(this);
         Global.initImageQuality(this);
         Global.countFavorite(this);
         Global.initLoadImages(this);

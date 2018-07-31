@@ -2,6 +2,7 @@ package com.dar.nclientv2;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -13,6 +14,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -28,6 +30,7 @@ import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.components.BaseActivity;
+import com.dar.nclientv2.loginapi.Login;
 import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
 
@@ -46,6 +49,7 @@ public class MainActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
+        Global.initHttpClient(this);
         Global.initTitleType(this);
         Global.initHighRes(this);
         Global.initOnlyTag(this);
@@ -55,7 +59,7 @@ public class MainActivity extends BaseActivity
         Global.initTagPreferencesSets(this);
         Global.initMaxId(this);
         Global.initTagPreferencesSets(this);
-
+        Global.initUseAccountTag(this);
         setContentView(R.layout.activity_main);
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -208,9 +212,11 @@ public class MainActivity extends BaseActivity
     private class Setting{
         final Global.ThemeScheme theme;
         final boolean loadImages;
+        final boolean logged;
         Setting() {
             this.theme = Global.getTheme();
             this.loadImages = Global.isLoadImages();
+            this.logged= Global.isLogged();
         }
     }
     @Override
@@ -239,8 +245,10 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onResume() {
         super.onResume();
+        Global.initUseAccountTag(this);
         if(setting!=null){
-            Global.saveNoMedia(this);Global.initHighRes(this);Global.initOnlyTag(this);
+            if(Global.isLogged()!=setting.logged)supportInvalidateOptionsMenu();
+            Global.initHighRes(this);Global.initOnlyTag(this);
             if(Global.initLoadImages(this)!=setting.loadImages) recycler.getAdapter().notifyItemRangeChanged(0,recycler.getAdapter().getItemCount());
             if(Global.getTheme()!=setting.theme)recreate();
         }
@@ -263,7 +271,9 @@ public class MainActivity extends BaseActivity
             }
             menu.findItem(R.id.action_settings).setVisible(false);
             menu.findItem(R.id.random).setVisible(false);
+            menu.findItem(R.id.action_login).setVisible(false);
         }else {
+            menu.findItem(R.id.action_login).setTitle(Global.isLogged()?R.string.logout:R.string.login);
             Global.setTint(menu.findItem(R.id.search).getIcon());
             Global.setTint(menu.findItem(R.id.random).getIcon());
         }
@@ -313,6 +323,15 @@ public class MainActivity extends BaseActivity
         int id = item.getItemId();
         Intent i;
         switch (id){
+            case R.id.action_login:
+                if(item.getTitle().equals(getString(R.string.logout))){
+                    showLogoutForm(item);
+
+                }else {
+                    i = new Intent(this, LoginActivity.class);
+                    startActivity(i);
+                }
+                break;
             case R.id.action_settings:
                 i = new Intent(this, SettingsActivity.class);
                 startActivity(i);
@@ -339,6 +358,18 @@ public class MainActivity extends BaseActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showLogoutForm(final MenuItem item) {
+        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        builder.setIcon(R.drawable.ic_exit_to_app).setTitle(R.string.logout).setMessage(R.string.are_you_sure);
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Login.logout(MainActivity.this);
+                item.setTitle(R.string.login);
+            }
+        }).setNegativeButton(R.string.no,null).show();
     }
 
     @Override

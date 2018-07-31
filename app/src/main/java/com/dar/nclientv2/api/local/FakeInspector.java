@@ -61,7 +61,7 @@ public class FakeInspector extends AsyncTask<LocalActivity,LocalActivity,LocalAc
         } catch (Exception e) {
             LocalGallery lg=new LocalGallery(file,-1);
             if(lg.isValid()) galleries.add(lg);
-            else invalidPaths.add(file.getAbsolutePath());
+            else if(lg.getPageCount()>0)invalidPaths.add(file.getAbsolutePath());
             Log.e(Global.LOGTAG,e.getLocalizedMessage());
         }
     }

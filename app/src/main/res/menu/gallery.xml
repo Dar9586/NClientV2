@@ -33,10 +33,15 @@
         android:title="@string/download_gallery"
         app:showAsAction="ifRoom|collapseActionView" />
     <item
-        android:id="@+id/share"
+        android:id="@+id/add_online_gallery"
         android:orderInCategory="500"
+        android:icon="@drawable/ic_world"
+        android:title="@string/remove_from_online_favorites"
+        app:showAsAction="ifRoom|collapseActionView"/>
+    <item
+        android:id="@+id/share"
+        android:orderInCategory="600"
         android:icon="@drawable/ic_share"
         android:title="@string/share"
         app:showAsAction="ifRoom|collapseActionView"/>
-
 </menu>

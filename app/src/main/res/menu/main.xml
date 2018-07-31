@@ -26,5 +26,13 @@
         android:id="@+id/action_settings"
         android:title="@string/action_settings"
         app:showAsAction="never" />
-
+    <item
+        android:id="@+id/action_login"
+        android:title="@string/login"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/online_favorite"
+        android:title="@string/online_favorites"
+        android:visible="false"
+        app:showAsAction="never"/>
 </menu>

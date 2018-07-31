@@ -35,6 +35,11 @@ import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.async.LoadFavorite;
+import com.dar.nclientv2.loginapi.LoadTags;
+import com.dar.nclientv2.loginapi.User;
+import com.franmontiel.persistentcookiejar.PersistentCookieJar;
+import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.squareup.picasso.Picasso;
 
 import java.io.BufferedReader;
@@ -50,21 +55,38 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import okhttp3.Cookie;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+
 public final class Global {
     public enum ThemeScheme{LIGHT,DARK,BLACK}
+    private static User user;
+    public static OkHttpClient client=null;
     public static final File GALLERYFOLDER=new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"NClientV2");
     public static final File DOWNLOADFOLDER=new File(Environment.getExternalStorageDirectory(),"NClientV2");
     public static final String LOGTAG="NCLIENTLOG";
     public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf";
     private static TitleType titleType=TitleType.PRETTY;
     private static Language onlyLanguage=null;
-    private static boolean byPopular,loadImages,tagOrder,hideFromGallery,highRes,onlyTag;
+    private static boolean byPopular,loadImages,tagOrder,hideFromGallery,highRes,onlyTag,accountTag;
     private static List<Tag> accepted=new ArrayList<>(),avoided=new ArrayList<>();
     private static ThemeScheme theme;
     private static int notificationId,columnCount,minTagCount,maxId,totalFavorite,imageQuality;
     public static final int MAXFAVORITE=10000;
     public static final int MAXTAGS=100;
     private static final List<Tag>[] sets= new List[5];
+    private static List<Tag>onlineTags=new ArrayList<>();
+    public static void logout(Context context){
+        context.getSharedPreferences("OnlineFavorite",0).edit().clear().apply();
+    }
+    public static List<Tag> getOnlineTags() {
+        return onlineTags;
+    }
+    public static void clearOnlineTags(){onlineTags.clear();}
+    public static void addOnlineTag(Tag tag){onlineTags.add(tag);}
+    public static void removeOnlineTag(Tag tag){onlineTags.remove(tag);}
+
     public static void initTagSets(@NonNull Context context){
         boolean already=true;
         for(int a=0;a<5;a++)if(sets[a]==null){already=false;break;}
@@ -75,6 +97,63 @@ public final class Global {
         sets[3]=getSet(context,getScraperId(TagType.PARODY));
         sets[4]=getSet(context,getScraperId(TagType.CHARACTER));
     }
+
+    public static User getUser() {
+        return user;
+    }
+
+    public static void updateUser(User user) {
+        Global.user = user;
+    }
+    public static void saveOnlineFavorite(@NonNull Context context,Gallery gallery){
+        try {
+            context.getSharedPreferences("OnlineFavorite",0).edit().putString(""+gallery.getId(),gallery.writeGallery()).apply();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void removeOnlineFavorite(@NonNull Context context,int id){
+        context.getSharedPreferences("OnlineFavorite",0).edit().remove(""+id).apply();
+    }
+    @Nullable public static Gallery getOnlineFavorite(@NonNull Context context,int id){
+        String s=context.getSharedPreferences("OnlineFavorite",0).getString(""+id,null);
+        if(s==null)return null;
+        try {
+            return new Gallery(s);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void initHttpClient(@NonNull Context context){
+        if(client!=null)return;
+
+        client=new OkHttpClient.Builder()
+                .cookieJar(new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context.getSharedPreferences("Login",0))))
+                .build();
+        client.dispatcher().setMaxRequests(25);
+        client.dispatcher().setMaxRequestsPerHost(25);
+        if(isLogged()&&user==null){
+            User.createUser(new User.CreateUser() {
+                @Override
+                public void onCreateUser(User user) {
+                    if(user!=null)new LoadTags(null).start();
+                }
+            });
+
+        }
+    }
+    public static boolean isLogged(){
+        if(client==null)return false;
+        PersistentCookieJar p=((PersistentCookieJar)client.cookieJar());
+        for(Cookie c:p.loadForRequest(HttpUrl.get("https://nhentai.net/"))){
+            if(c.name().equals("sessionid"))return true;
+        }
+        return false;
+
+    }
+    public static void  initUseAccountTag(@NonNull Context context){accountTag=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_use_account_tag),false);}
     public static void     initTitleType    (@NonNull Context context){titleType=TitleType.values()[context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_title_type),1)];}
     public static void     initByPopular    (@NonNull Context context){byPopular=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_by_popular),false);}
     public static void  initHideFromGallery    (@NonNull Context context){hideFromGallery=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_hide_saved_images),false);}
@@ -157,6 +236,7 @@ public final class Global {
         StringBuilder builder=new StringBuilder("");
         for (Tag x:accepted)if(!query.contains(x.getName()))builder.append('+').append(x.toQueryTag(TagStatus.ACCEPTED));
         for (Tag x:avoided) if(!query.contains(x.getName()))builder.append('+').append(x.toQueryTag(TagStatus.AVOIDED));
+        if(accountTag)for(Tag x:onlineTags)if(!accepted.contains(x)&&!avoided.contains(x)&&!query.contains(x.getName()))builder.append('+').append(x.toQueryTag(TagStatus.AVOIDED));
         return builder.toString();
     }
     public static void resetAllStatus(@NonNull Context context){
@@ -340,7 +420,7 @@ public final class Global {
         }
         return null;
     }
-
+    @NonNull
     private static List<Tag> getSet(@NonNull Context context, @StringRes int res){
         Set<String>x= context.getSharedPreferences("ScrapedTags", 0).getStringSet(context.getString(res),new HashSet<String>());
         List<Tag>tags=new ArrayList<>(x.size());

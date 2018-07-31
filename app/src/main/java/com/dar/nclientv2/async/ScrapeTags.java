@@ -20,14 +20,12 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
 public class ScrapeTags extends Thread {
     private final TagsAdapter adapter;
     private final TagType tagType;
-    private final OkHttpClient client=new OkHttpClient();
     private final List<Tag> tags=new ArrayList<>();
     private int maxPage;
     private final  Object lock=new Object();
@@ -80,7 +78,7 @@ public class ScrapeTags extends Thread {
     private void retrivePage(int page) {
         String url="https://nhentai.net/"+getMultipleName(tagType)+"/popular?page="+page;
         Log.d(Global.LOGTAG,"Scraping: "+url);
-        client.newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
+        Global.client.newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);

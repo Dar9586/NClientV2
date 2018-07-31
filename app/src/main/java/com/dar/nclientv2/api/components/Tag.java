@@ -36,7 +36,7 @@ public class Tag implements Parcelable{
         this.type = type;
     }
 
-    Tag(JsonReader jr) throws IOException {
+    public Tag(JsonReader jr) throws IOException {
         jr.beginObject();
         while(jr.peek()!= JsonToken.END_OBJECT){
             switch (jr.nextName()){
@@ -97,7 +97,7 @@ public class Tag implements Parcelable{
         }
         return TagType.UNKNOWN;
     }
-    public String getAPIURL(int page,boolean byPopular){
+    private String getAPIURL(int page,boolean byPopular){
         return String.format(Locale.US,"https://nhentai.net/api/galleries/tagged?tag_id=%d&page=%d%s",id,page,byPopular?"sort=popular":"");
     }
     public String getAPIURL(){
@@ -121,6 +121,9 @@ public class Tag implements Parcelable{
 
     public TagType getType() {
         return type;
+    }
+    public String getTypeString(){
+        return findTagString();
     }
 
 
@@ -157,7 +160,7 @@ public class Tag implements Parcelable{
         if (o == null || getClass() != o.getClass()) return false;
 
         Tag tag = (Tag) o;
-        return id == tag.id&&name.equals(tag.name)&type == tag.type;
+        return id == tag.id&&name.equals(tag.name)&&type == tag.type;
     }
 
     @Override

@@ -15,7 +15,6 @@ import java.util.Random;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -24,13 +23,11 @@ public class RandomLoader {
     private final List<Gallery> galleries;
     private final RandomActivity activity;
     private boolean hasRequested;
-    private final OkHttpClient client;
     private final Random random;
     public RandomLoader(RandomActivity activity) {
         this.activity = activity;
         random=new Random(System.nanoTime());
         galleries=new ArrayList<>(MAXLOADED);
-        client=new OkHttpClient();
         hasRequested=RandomActivity.loadedGallery==null;
         for(int a=0;a<MAXLOADED;a++)loadRandomGallery();
 
@@ -38,7 +35,7 @@ public class RandomLoader {
     private void loadRandomGallery(){
         if(galleries.size()>=MAXLOADED)return;
         final int id=random.nextInt(Global.getMaxId())+1;
-            client.newCall(new Request.Builder().url("https://nhentai.net/api/gallery/" + id).build()).enqueue(new Callback() {
+            Global.client.newCall(new Request.Builder().url("https://nhentai.net/api/gallery/" + id).build()).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
 
