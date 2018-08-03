@@ -57,7 +57,7 @@ public class DownloadGallery extends IntentService {
         notification.setSmallIcon(R.drawable.ic_file)
                 .setOnlyAlertOnce(true)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(gallery.getTitle()))
-                .setContentTitle(getString(R.string.notification1_title))
+                .setContentTitle(getString(R.string.channel1_title))
                 .setContentText(gallery.getTitle(TitleType.PRETTY))
                 .setContentIntent(resultPendingIntent)
                 .setProgress(gallery.getPageCount()-1,0,false)
@@ -126,7 +126,7 @@ public class DownloadGallery extends IntentService {
     private void onPostExecute() {
         notification.setProgress(0,0,false);
         notification.mActions.clear();
-        notification.setContentTitle(getString(a==999?R.string.downlaod_canceled:R.string.download_completed)).setOnlyAlertOnce(false);
+        notification.setContentTitle(getString(a==999?R.string.download_canceled :R.string.download_completed)).setOnlyAlertOnce(false);
         notificationManager.notify(getString(R.string.channel1_name),notId,notification.build());
     }
 }

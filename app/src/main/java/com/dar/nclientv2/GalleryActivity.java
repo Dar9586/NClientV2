@@ -18,7 +18,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -68,13 +67,7 @@ public class GalleryActivity extends BaseActivity
         int zoom=getIntent().getIntExtra(getPackageName()+".ZOOM",0);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                Global.loadImage(((Gallery) gallery).getCover().getUrl(), (ImageView) navigationView.getHeaderView(0).findViewById(R.id.imageView));
-            }
-        };
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         refresher.setEnabled(false);

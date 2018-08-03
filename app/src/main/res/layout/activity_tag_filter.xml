@@ -37,23 +37,23 @@
             <android.support.design.widget.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tab_tags" />
+                android:text="@string/tags" />
             <android.support.design.widget.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tab_artists" />
+                android:text="@string/artists" />
             <android.support.design.widget.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tab_characters" />
+                android:text="@string/characters" />
             <android.support.design.widget.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tab_parodies" />
+                android:text="@string/parodies" />
             <android.support.design.widget.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tab_groups" />
+                android:text="@string/groups" />
         </android.support.design.widget.TabLayout>
     </android.support.design.widget.AppBarLayout>
 

@@ -69,7 +69,7 @@ public final class Global {
     public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf";
     private static TitleType titleType=TitleType.PRETTY;
     private static Language onlyLanguage=null;
-    private static boolean byPopular,loadImages,tagOrder,hideFromGallery,highRes,onlyTag,accountTag;
+    private static boolean byPopular,loadImages,tagOrder,hideFromGallery,highRes,onlyTag,accountTag,infiniteScroll;
     private static List<Tag> accepted=new ArrayList<>(),avoided=new ArrayList<>();
     private static ThemeScheme theme;
     private static int notificationId,columnCount,minTagCount,maxId,totalFavorite,imageQuality;
@@ -156,6 +156,7 @@ public final class Global {
     public static void  initUseAccountTag(@NonNull Context context){accountTag=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_use_account_tag),false);}
     public static void     initTitleType    (@NonNull Context context){titleType=TitleType.values()[context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_title_type),1)];}
     public static void     initByPopular    (@NonNull Context context){byPopular=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_by_popular),false);}
+    public static void     initInfiniteScroll    (@NonNull Context context){infiniteScroll=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_infinite_scroll),false);}
     public static void  initHideFromGallery    (@NonNull Context context){hideFromGallery=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_hide_saved_images),false);}
     public static void     initHighRes    (@NonNull Context context){highRes=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_high_res_gallery),true);}
     public static void     initOnlyTag    (@NonNull Context context){onlyTag=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_ignore_tags),true);}
@@ -163,7 +164,7 @@ public final class Global {
     public static boolean  initLoadImages   (@NonNull Context context){loadImages=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_load_images),true);return loadImages;}
     public static void     initOnlyLanguage (@NonNull Context context){int x=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_only_language),-1);onlyLanguage=x==-1?null:Language.values()[x];}
     public static void     initColumnCount  (@NonNull Context context){columnCount=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_column_count),1);}
-    public static int      initImageQuality (@NonNull Context context){imageQuality=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.image_quality_key),90);return imageQuality;}
+    public static int      initImageQuality (@NonNull Context context){imageQuality=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_image_quality),90);return imageQuality;}
     public static void     initMinTagCount  (@NonNull Context context){minTagCount=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_min_tag_count),25);}
     public static void     initMaxId        (@NonNull Context context){maxId=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_max_id),236000);}
     private static ThemeScheme initTheme(Context context){
@@ -214,6 +215,10 @@ public final class Global {
 
     public static boolean isTagOrderByPopular() {
         return tagOrder;
+    }
+
+    public static boolean isInfiniteScroll(){
+        return infiniteScroll;
     }
 
     public static int getColumnCount() {
@@ -293,7 +298,7 @@ public final class Global {
     public static boolean  updateTagOrder(@NonNull Context context,boolean order){context.getSharedPreferences("Settings", 0).edit().putBoolean(context.getString((R.string.key_tag_order)),order).apply();tagOrder=order; return tagOrder;}
     public static boolean  updateLoadImages(@NonNull Context context,boolean load){context.getSharedPreferences("Settings", 0).edit().putBoolean(context.getString((R.string.key_load_images)),load).apply();loadImages=load; return loadImages;}
     public static void updateColumnCount(@NonNull Context context, int count){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_column_count)),count).apply();columnCount=count; }
-    public static void updateImageQuality(@NonNull Context context, int quality){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.image_quality_key)),quality).apply();imageQuality=quality; }
+    public static void updateImageQuality(@NonNull Context context, int quality){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_image_quality)),quality).apply();imageQuality=quality; }
     public static void updateMaxId(@NonNull Context context, int id){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_max_id)),id).apply();maxId=id; }
     public static void updateMinTagCount(@NonNull Context context, int count){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_min_tag_count)),count).apply();minTagCount=count; }
 

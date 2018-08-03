@@ -24,7 +24,7 @@
         app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/action_settings"
-        android:title="@string/action_settings"
+        android:title="@string/settings"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_login"

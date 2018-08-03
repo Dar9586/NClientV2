@@ -15,6 +15,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -58,6 +60,7 @@ public class MainActivity extends BaseActivity
         Global.initOnlyLanguage(this);
         Global.initTagPreferencesSets(this);
         Global.initMaxId(this);
+        Global.initInfiniteScroll(this);
         Global.initTagPreferencesSets(this);
         Global.initUseAccountTag(this);
         setContentView(R.layout.activity_main);
@@ -86,7 +89,17 @@ public class MainActivity extends BaseActivity
         prepareUpdateIcon();
         updateLanguageIcon(navigationView.getMenu().findItem(R.id.only_language),false);
         recycler.setHasFixedSize(true);
+        recycler.addOnScrollListener(new RecyclerView.OnScrollListener(){
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy){
+                if(Global.isInfiniteScroll()&&!refresher.isRefreshing()){
+                    GridLayoutManager manager = (GridLayoutManager)recycler.getLayoutManager();
+                    if(actualPage < totalPage && manager.findLastVisibleItemPosition() >= (recycler.getAdapter().getItemCount()-1-manager.getSpanCount()))
+                        new Inspector(MainActivity.this, actualPage + 1, Inspector.getActualQuery(), Inspector.getActualRequestType(),true);
+                }
 
+            }
+        });
         refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -184,9 +197,10 @@ public class MainActivity extends BaseActivity
         findViewById(R.id.page_switcher).setVisibility(View.GONE);
     }
     public void showPageSwitcher(final int actualPage,final int totalPage){
-        findViewById(R.id.page_switcher).setVisibility(totalPage<=1?View.GONE:View.VISIBLE);
         this.actualPage=actualPage;
         this.totalPage=totalPage;
+        if(Global.isInfiniteScroll())return;
+        findViewById(R.id.page_switcher).setVisibility(totalPage<=1?View.GONE:View.VISIBLE);
         findViewById(R.id.prev).setAlpha(actualPage>1?1f:.5f);
         findViewById(R.id.prev).setEnabled(actualPage>1);
         findViewById(R.id.next).setAlpha(actualPage<totalPage?1f:.5f);
@@ -194,7 +208,8 @@ public class MainActivity extends BaseActivity
         EditText text=findViewById(R.id.page_index);
         text.setText(String.format(Locale.US, "%d/%d", actualPage, totalPage));
     }
-    private int actualPage,totalPage;
+
+    private int actualPage=1,totalPage;
     private void loadDialog(){
         DefaultDialogs.pageChangerDialog(
                 new DefaultDialogs.Builder(this).setActual(actualPage).setMax(totalPage).setDialogs(new DefaultDialogs.DialogResults() {
@@ -211,19 +226,13 @@ public class MainActivity extends BaseActivity
     private Setting setting=null;
     private class Setting{
         final Global.ThemeScheme theme;
-        final boolean loadImages;
-        final boolean logged;
+        final boolean loadImages,logged,infinite;
         Setting() {
             this.theme = Global.getTheme();
             this.loadImages = Global.isLoadImages();
             this.logged= Global.isLogged();
+            this.infinite= Global.isInfiniteScroll();
         }
-    }
-    @Override
-    protected void onPause() {
-        setting=new Setting();
-        super.onPause();
-
     }
     private void removeQuery(){
         searchView.setQuery("",false);
@@ -247,10 +256,17 @@ public class MainActivity extends BaseActivity
         super.onResume();
         Global.initUseAccountTag(this);
         if(setting!=null){
+            Global.initHighRes(this);Global.initOnlyTag(this);Global.initInfiniteScroll(this);
             if(Global.isLogged()!=setting.logged)supportInvalidateOptionsMenu();
-            Global.initHighRes(this);Global.initOnlyTag(this);
+            if(setting.infinite!=Global.isInfiniteScroll()){
+                if(Global.isInfiniteScroll()){
+                    hidePageSwitcher();
+                    if(actualPage != 1) new Inspector(this, 1, inspector.getQuery(), inspector.getRequestType());
+                }else new Inspector(this, actualPage, inspector.getQuery(), inspector.getRequestType());
+            }
             if(Global.initLoadImages(this)!=setting.loadImages) recycler.getAdapter().notifyItemRangeChanged(0,recycler.getAdapter().getItemCount());
             if(Global.getTheme()!=setting.theme)recreate();
+            setting=null;
         }
     }
     private SearchView searchView;
@@ -333,6 +349,7 @@ public class MainActivity extends BaseActivity
                 }
                 break;
             case R.id.action_settings:
+                setting=new Setting();
                 i = new Intent(this, SettingsActivity.class);
                 startActivity(i);
                 break;
