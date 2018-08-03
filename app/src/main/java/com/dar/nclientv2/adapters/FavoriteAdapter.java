@@ -7,7 +7,6 @@ import android.view.View;
 
 import com.dar.nclientv2.FavoriteActivity;
 import com.dar.nclientv2.GalleryActivity;
-import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.loginapi.DownloadFavorite;
 import com.dar.nclientv2.settings.Global;
@@ -29,10 +28,10 @@ public class FavoriteAdapter extends GenericAdapter<Gallery> {
         holder.pages.setText(String.format(Locale.US, "%d", ent.getPageCount()));
         holder.title.setText(ent.getTitle());
         switch (ent.getLanguage()){
-            case CHINESE :holder.flag.setImageResource(R.drawable.ic_cn);break;
-            case ENGLISH :holder.flag.setImageResource(R.drawable.ic_gb);break;
-            case JAPANESE:holder.flag.setImageResource(R.drawable.ic_jp);break;
-            case UNKNOWN :holder.flag.setImageResource(R.drawable.ic_help);break;
+            case CHINESE:  holder.flag.setText("\uD83C\uDDF9\uD83C\uDDFC");
+            case ENGLISH:  holder.flag.setText("\uD83C\uDDEC\uD83C\uDDE7");
+            case JAPANESE: holder.flag.setText("\uD83C\uDDEF\uD83C\uDDF5");
+            case UNKNOWN:  holder.flag.setText("\uD83C\uDFF3");
         }
         holder.title.setOnClickListener(new View.OnClickListener() {
             @Override

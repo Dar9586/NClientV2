@@ -81,7 +81,7 @@ public class SettingsActivity extends AppCompatActivity {
                     return true;
                 }
             });
-            findPreference(getString(R.string.image_quality_key)).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            findPreference(getString(R.string.key_image_quality)).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     DefaultDialogs.pageChangerDialog(

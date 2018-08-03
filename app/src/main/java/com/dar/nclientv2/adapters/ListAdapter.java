@@ -53,10 +53,10 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
             holder.title.setText(ent.getTitle());
             if(Global.getOnlyLanguage()==null) {
                 switch (ent.getLanguage()) {
-                    case CHINESE: holder.flag.setImageResource(R.drawable.ic_cn);break;
-                    case ENGLISH: holder.flag.setImageResource(R.drawable.ic_gb);break;
-                    case JAPANESE: holder.flag.setImageResource(R.drawable.ic_jp);break;
-                    case UNKNOWN: holder.flag.setImageResource(R.drawable.ic_help);break;
+                    case CHINESE:  holder.flag.setText("\uD83C\uDDE8\uD83C\uDDF3");break;
+                    case ENGLISH:  holder.flag.setText("\uD83C\uDDEC\uD83C\uDDE7");break;
+                    case JAPANESE: holder.flag.setText("\uD83C\uDDEF\uD83C\uDDF5");break;
+                    case UNKNOWN:  holder.flag.setText("\uD83C\uDFF3");
                 }
             }else holder.flag.setVisibility(View.GONE);
             holder.pages.setText(String.format(Locale.US, "%d", ent.getPageCount()));
@@ -93,7 +93,13 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         return mDataset.size();
     }
 
-    private List<Gallery> getDataset() {
+    public List<Gallery> getDataset() {
         return mDataset;
+    }
+
+    public void addGalleries(List<Gallery> galleries){
+        int c=mDataset.size();
+        mDataset.addAll(galleries);
+        notifyItemRangeInserted(c,galleries.size());
     }
 }

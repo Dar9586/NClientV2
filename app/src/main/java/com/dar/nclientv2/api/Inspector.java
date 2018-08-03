@@ -42,12 +42,12 @@ public class Inspector {
         return actualRequestType;
     }
 
-    private final boolean byPopular;
-    private final int page;
+    private boolean byPopular;
+    private int page;
     private int pageCount;
-    private final String query;
+    private String query;
     private String url;
-    private final ApiRequestType requestType;
+    private ApiRequestType requestType;
     private List<Gallery> galleries;
     private static final OkHttpClient client=new OkHttpClient();
 
@@ -70,14 +70,23 @@ public class Inspector {
         if(page>1)builder.append("page=").append(page);
         return builder.toString();
     }
-
     public Inspector(final BaseActivity activity, final int page, String query, final ApiRequestType requestType) {
-        client.dispatcher().cancelAll();
+        this(activity,page,query,requestType,false);
+    }
+    public Inspector(final BaseActivity activity, final int page, String query, final ApiRequestType requestType,final boolean update) {
+        Log.d(Global.LOGTAG,"COUNT: "+client.dispatcher().runningCallsCount());
+        if(!update)client.dispatcher().cancelAll();
+        else if(client.dispatcher().runningCallsCount()>0)return;
         activity.getRefresher().setRefreshing(true);
         this.byPopular = Global.isByPopular();
-        this.page=actualPage= page;
-        this.query=actualQuery =query;
-        this.requestType=actualRequestType = requestType;
+        this.page=page;
+        this.query=query;
+        this.requestType=requestType;
+        if(requestType!=ApiRequestType.BYSINGLE){
+            actualPage=page;
+            actualQuery=query;
+            actualRequestType=requestType;
+        }
         createUrl();
         client.newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
             @Override
@@ -85,13 +94,14 @@ public class Inspector {
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        activity.getRefresher().setRefreshing(false);
                         galleries=new ArrayList<>(1);
                         if(activity instanceof MainActivity){
-                            activity.getRecycler().setAdapter(new ListAdapter(activity,galleries));
+                            if(!update||activity.getRecycler().getAdapter()==null)
+                                activity.getRecycler().setAdapter(new ListAdapter(activity,galleries));
                             ((MainActivity)activity).hidePageSwitcher();
                         }
                         else if(activity instanceof GalleryActivity)activity.getRefresher().setEnabled(false);
+                        activity.getRefresher().setRefreshing(false);
                     }
                 });
             }
@@ -105,7 +115,8 @@ public class Inspector {
                     @Override
                     public void run() {
                         if(requestType!=ApiRequestType.BYSINGLE){
-                            activity.getRecycler().setAdapter(new ListAdapter(activity,galleries));
+                            if(update&&activity.getRecycler().getAdapter()!=null)((ListAdapter)activity.getRecycler().getAdapter()).addGalleries(galleries);
+                            else activity.getRecycler().setAdapter(new ListAdapter(activity, galleries));
                             ((MainActivity)activity).setInspector(Inspector.this);
                             ((MainActivity)activity).showPageSwitcher(Inspector.this.page,Inspector.this.pageCount);
                         }

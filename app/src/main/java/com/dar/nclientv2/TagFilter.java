@@ -186,7 +186,7 @@ public class TagFilter extends AppCompatActivity{
                     }
                     @Override
                     public void negative() {}
-                }).setTitle(R.string.minium_tag_count).setDrawable(R.drawable.ic_hashtag)
+                }).setTitle(R.string.minimum_tag_count).setDrawable(R.drawable.ic_hashtag)
         );
     }
 

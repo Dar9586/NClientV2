@@ -24,8 +24,8 @@ public abstract class GenericAdapter<T extends GenericGallery> extends RecyclerV
     List<T> filter;
     String lastQuery="";
     static class ViewHolder extends RecyclerView.ViewHolder {
-        final ImageView imgView,flag;
-        final TextView title,pages;
+        final ImageView imgView;
+        final TextView title,pages,flag;
         final View layout;
         ViewHolder(View v) {
             super(v);

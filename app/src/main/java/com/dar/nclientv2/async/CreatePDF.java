@@ -117,7 +117,7 @@ public class CreatePDF extends IntentService {
         notification.setSmallIcon(R.drawable.ic_image)
                 .setOnlyAlertOnce(true)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(file.getName()))
-                .setContentTitle(getString(R.string.notification2_title))
+                .setContentTitle(getString(R.string.channel2_title))
                 .setContentText(getString(R.string.parsing_pages))
                 .setProgress(totalPage-1,0,false)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)

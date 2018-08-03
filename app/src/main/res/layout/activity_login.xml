@@ -38,7 +38,7 @@
                     android:id="@+id/username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_email"
+                    android:hint="@string/username_or_email"
                     android:inputType="text"
                     android:maxLines="1"
                     android:singleLine="true" />
@@ -51,7 +51,7 @@
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_password"
+                    android:hint="@string/password"
                     android:imeActionId="6"
                     android:imeActionLabel="@string/login"
                     android:imeOptions="actionUnspecified"

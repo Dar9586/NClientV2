@@ -15,6 +15,12 @@
         android:summaryOff="@string/setting_off_load"
         android:title="@string/load_images" />
     <SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/key_infinite_scroll"
+        android:summaryOn="@string/setting_on_infinite_scroll"
+        android:summaryOff="@string/setting_off_infinite_scroll"
+        android:title="@string/infinite_scroll" />
+    <SwitchPreference
         android:defaultValue="true"
         android:key="@string/key_high_res_gallery"
         android:summaryOn="@string/setting_on_high_res"
@@ -39,8 +45,9 @@
         android:summaryOn="@string/setting_on_use_account_tag"
         android:summaryOff="@string/setting_off_use_account_tag"
         android:title="@string/use_account_tag" />
+
     <Preference android:title="@string/image_quality"
-        android:key="@string/image_quality_key"
+        android:key="@string/key_image_quality"
         android:summary="@string/image_quality_summary"
         />
     <Preference android:title="@string/clear_cache"
