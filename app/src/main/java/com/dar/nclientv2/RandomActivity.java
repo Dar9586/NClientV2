@@ -8,7 +8,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dar.nclientv2.api.RandomLoader;
@@ -17,7 +16,7 @@ import com.dar.nclientv2.settings.Global;
 
 public class RandomActivity extends AppCompatActivity {
     private FloatingActionButton shuffle;
-    private ImageView language;
+    private TextView language;
     private ImageButton thumbnail;
     private ImageButton share;
     private ImageButton favorite;
@@ -82,8 +81,12 @@ public class RandomActivity extends AppCompatActivity {
                 }
             }
         });
-        shuffle.setImageTintList(ColorStateList.valueOf(Global.getTheme()== Global.ThemeScheme.LIGHT? Color.WHITE:Color.BLACK));
+        shuffle.setImageTintList (ColorStateList.valueOf(Global.getTheme()== Global.ThemeScheme.LIGHT? Color.WHITE:Color.BLACK));
+        share.setImageTintList   (ColorStateList.valueOf(Global.getTheme()== Global.ThemeScheme.LIGHT? Color.BLACK:Color.WHITE));
+        favorite.setImageTintList(ColorStateList.valueOf(Global.getTheme()== Global.ThemeScheme.LIGHT? Color.BLACK:Color.WHITE));
         Global.setTint(shuffle.getContentBackground());
+        Global.setTint(favorite.getDrawable());
+        Global.setTint(share.getDrawable());
     }
     public static Gallery loadedGallery=null;
     private boolean isFavorite;
@@ -91,10 +94,10 @@ public class RandomActivity extends AppCompatActivity {
         loadedGallery=gallery;
         Global.loadImage(gallery.getCover().getUrl(),thumbnail);
         switch (gallery.getLanguage()){
-            case CHINESE :language.setImageResource(R.drawable.ic_cn);break;
-            case ENGLISH :language.setImageResource(R.drawable.ic_gb);break;
-            case JAPANESE:language.setImageResource(R.drawable.ic_jp);break;
-            case UNKNOWN :language.setImageResource(R.drawable.ic_help);break;
+            case CHINESE :language.setText("\uD83C\uDDE8\uD83C\uDDF3");break;
+            case ENGLISH :language.setText("\uD83C\uDDEC\uD83C\uDDE7");break;
+            case JAPANESE:language.setText("\uD83C\uDDEF\uD83C\uDDF5");break;
+            case UNKNOWN :language.setText("\uD83C\uDFF3"); break;
         }
         isFavorite=Global.isFavorite(this,loadedGallery);
         favorite.setImageResource(isFavorite?R.drawable.ic_favorite:R.drawable.ic_favorite_border);

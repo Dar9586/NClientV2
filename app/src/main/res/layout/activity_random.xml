@@ -25,26 +25,25 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:ellipsize="end"
         android:gravity="center"
-        android:minLines="4"
         android:maxLines="4"
+        android:minLines="4"
+        app:layout_constraintBottom_toBottomOf="@+id/language"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/language"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/language" />
 
-    <ImageView
-        android:scaleType="fitCenter"
-        android:contentDescription="@string/languages"
+    <TextView
         android:id="@+id/language"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:textSize="48dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-         />
+        tools:ignore="SpUsage" />
 
     <ImageButton
         android:id="@+id/thumbnail"
