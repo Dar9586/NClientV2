@@ -23,11 +23,13 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
     private final List<Gallery> mDataset;
     private final BaseActivity context;
     private final boolean storagePermission;
+    private final String queryString;
 
-    public ListAdapter(BaseActivity cont, List<Gallery> myDataset) {
+    public ListAdapter(BaseActivity cont, List<Gallery> myDataset,String query) {
         this.context=cont;
         this.mDataset = myDataset;
         storagePermission=Global.hasStoragePermission(context);
+        queryString=query==null?null:query+"+"+Global.getQueryString(query);
     }
 
     @NonNull
@@ -35,21 +37,25 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
     public GenericAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new GenericAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.entry_layout, parent, false));
     }
+    private void loadGallery(final GenericAdapter.ViewHolder holder,Gallery ent){
+        boolean x=true;
+        if(storagePermission){
+            File f=Global.findGalleryFolder(ent.getId());
+            if(f!=null){
+                f=new File(f,"001.jpg");
+                if(f.exists()){
+                    x=false;
+                    Global.loadImage(f,holder.imgView);
+                }
+            }
+        }
+        if(x)Global.loadImage(ent.getThumbnail().getUrl(),holder.imgView);
+    }
     @Override
     public void onBindViewHolder(@NonNull final GenericAdapter.ViewHolder holder, int position) {
             final Gallery ent = mDataset.get(holder.getAdapterPosition());
-            boolean x=true;
-            if(storagePermission){
-                File f=Global.findGalleryFolder(ent.getId());
-                if(f!=null){
-                    f=new File(f,"001.jpg");
-                    if(f.exists()){
-                        x=false;
-                        Global.loadImage(f,holder.imgView);
-                    }
-                }
-            }
-            if(x)Global.loadImage(ent.getThumbnail().getUrl(),holder.imgView);
+            holder.imgView.setBlur(queryString!=null&&ent.hasIgnoredTags(queryString));
+            loadGallery(holder,ent);
             holder.title.setText(ent.getTitle());
             if(Global.getOnlyLanguage()==null) {
                 switch (ent.getLanguage()) {
@@ -72,10 +78,15 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
             holder.layout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Global.setLoadedGallery(ent);
-                    Intent intent = new Intent(context, GalleryActivity.class);
-                    intent.putExtra(context.getPackageName()+ ".GALLERY",ent);
-                    context.startActivity(intent);
+                    if(holder.imgView.isBlur()){
+                        holder.imgView.setBlur(false);
+                        loadGallery(holder,ent);
+                    }else{
+                        holder.imgView.setBlur(queryString!=null&&ent.hasIgnoredTags(queryString));
+                        Intent intent = new Intent(context, GalleryActivity.class);
+                        intent.putExtra(context.getPackageName() + ".GALLERY", ent);
+                        context.startActivity(intent);
+                    }
                 }
             });
         holder.layout.setOnLongClickListener(new View.OnLongClickListener() {

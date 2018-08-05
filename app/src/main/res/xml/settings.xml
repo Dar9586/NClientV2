@@ -34,6 +34,12 @@
         android:title="@string/hide_saved_images" />
     <SwitchPreference
         android:defaultValue="true"
+        android:key="@string/key_remove_ignored"
+        android:summaryOn="@string/setting_on_remove_ignored"
+        android:summaryOff="@string/setting_off_remove_ignored"
+        android:title="@string/remove_ignored_galleries" />
+    <SwitchPreference
+        android:defaultValue="true"
         android:key="@string/key_ignore_tags"
         android:summaryOn="@string/setting_on_ignore_tags"
         android:summaryOff="@string/setting_off_ignore_tags"

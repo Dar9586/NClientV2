@@ -445,4 +445,11 @@ public class Gallery extends GenericGallery{
             }
         });
     }
+    public boolean hasIgnoredTags(String s){
+        for(Tag[]t:tags)if(t!=null)for(Tag t1:t)if(s.contains(t1.getName()))return true;
+        return false;
+    }
+    public boolean hasIgnoredTags(){
+        return hasIgnoredTags(Global.getQueryString(""));
+    }
 }

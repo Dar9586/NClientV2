@@ -7,11 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.GenericGallery;
+import com.dar.nclientv2.components.BlurImageView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +24,7 @@ public abstract class GenericAdapter<T extends GenericGallery> extends RecyclerV
     List<T> filter;
     String lastQuery="";
     static class ViewHolder extends RecyclerView.ViewHolder {
-        final ImageView imgView;
+        final BlurImageView imgView;
         final TextView title,pages,flag;
         final View layout;
         ViewHolder(View v) {

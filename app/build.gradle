@@ -9,6 +9,8 @@ android {
         versionCode 110
         versionName "1.1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        renderscriptTargetApi 28
+        renderscriptSupportModeEnabled true
     }
     buildTypes {
         release {

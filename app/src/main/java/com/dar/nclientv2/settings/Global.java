@@ -69,7 +69,7 @@ public final class Global {
     public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf";
     private static TitleType titleType=TitleType.PRETTY;
     private static Language onlyLanguage=null;
-    private static boolean byPopular,loadImages,tagOrder,hideFromGallery,highRes,onlyTag,accountTag,infiniteScroll;
+    private static boolean byPopular,loadImages,tagOrder,hideFromGallery,highRes,onlyTag,accountTag,infiniteScroll,removeIgnoredGalleries;
     private static List<Tag> accepted=new ArrayList<>(),avoided=new ArrayList<>();
     private static ThemeScheme theme;
     private static int notificationId,columnCount,minTagCount,maxId,totalFavorite,imageQuality;
@@ -159,6 +159,7 @@ public final class Global {
     public static void     initInfiniteScroll    (@NonNull Context context){infiniteScroll=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_infinite_scroll),false);}
     public static void  initHideFromGallery    (@NonNull Context context){hideFromGallery=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_hide_saved_images),false);}
     public static void     initHighRes    (@NonNull Context context){highRes=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_high_res_gallery),true);}
+    public static void     initRemoveIgnoredGalleries    (@NonNull Context context){removeIgnoredGalleries=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_remove_ignored),true);}
     public static void     initOnlyTag    (@NonNull Context context){onlyTag=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_ignore_tags),true);}
     public static void     initTagOrder     (@NonNull Context context){tagOrder=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_tag_order),true);}
     public static boolean  initLoadImages   (@NonNull Context context){loadImages=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_load_images),true);return loadImages;}
@@ -191,7 +192,7 @@ public final class Global {
     public static int getImageQuality() {
         return imageQuality;
     }
-
+    public static boolean getRemoveIgnoredGalleries(){return removeIgnoredGalleries;}
     @Nullable
     public static Language getOnlyLanguage() {
         return onlyLanguage;
@@ -410,6 +411,7 @@ public final class Global {
     public static File findGalleryFolder(int id){
         DOWNLOADFOLDER.mkdirs();
         File[] tmp=DOWNLOADFOLDER.listFiles();
+        if(tmp!=null)
         for (File tmp2 : tmp) {
             if (tmp2.isDirectory() && (tmp2 = new File(tmp2, ".nomedia")).exists()) {
                 try {

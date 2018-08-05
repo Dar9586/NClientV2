@@ -53,6 +53,7 @@ public class MainActivity extends BaseActivity
         Global.loadTheme(this);
         Global.initHttpClient(this);
         Global.initTitleType(this);
+        Global.initRemoveIgnoredGalleries(this);
         Global.initHighRes(this);
         Global.initOnlyTag(this);
         Global.initByPopular(this);
@@ -226,12 +227,13 @@ public class MainActivity extends BaseActivity
     private Setting setting=null;
     private class Setting{
         final Global.ThemeScheme theme;
-        final boolean loadImages,logged,infinite;
+        final boolean loadImages,logged,infinite,remove;
         Setting() {
             this.theme = Global.getTheme();
             this.loadImages = Global.isLoadImages();
             this.logged= Global.isLogged();
             this.infinite= Global.isInfiniteScroll();
+            this.remove= Global.getRemoveIgnoredGalleries();
         }
     }
     private void removeQuery(){
@@ -256,9 +258,11 @@ public class MainActivity extends BaseActivity
         super.onResume();
         Global.initUseAccountTag(this);
         if(setting!=null){
-            Global.initHighRes(this);Global.initOnlyTag(this);Global.initInfiniteScroll(this);
+            Global.initHighRes(this);Global.initOnlyTag(this);Global.initInfiniteScroll(this);Global.initRemoveIgnoredGalleries(this);
             if(Global.isLogged()!=setting.logged)supportInvalidateOptionsMenu();
-            if(setting.infinite!=Global.isInfiniteScroll()){
+            if(setting.remove!=Global.getRemoveIgnoredGalleries()){
+                new Inspector(this,1,inspector.getQuery(),inspector.getRequestType());
+            }else if(setting.infinite!=Global.isInfiniteScroll()){
                 if(Global.isInfiniteScroll()){
                     hidePageSwitcher();
                     if(actualPage != 1) new Inspector(this, 1, inspector.getQuery(), inspector.getRequestType());

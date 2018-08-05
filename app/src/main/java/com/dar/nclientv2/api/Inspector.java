@@ -73,7 +73,7 @@ public class Inspector {
     public Inspector(final BaseActivity activity, final int page, String query, final ApiRequestType requestType) {
         this(activity,page,query,requestType,false);
     }
-    public Inspector(final BaseActivity activity, final int page, String query, final ApiRequestType requestType,final boolean update) {
+    public Inspector(final BaseActivity activity, final int page, final String query, final ApiRequestType requestType, final boolean update) {
         Log.d(Global.LOGTAG,"COUNT: "+client.dispatcher().runningCallsCount());
         if(!update)client.dispatcher().cancelAll();
         else if(client.dispatcher().runningCallsCount()>0)return;
@@ -97,7 +97,7 @@ public class Inspector {
                         galleries=new ArrayList<>(1);
                         if(activity instanceof MainActivity){
                             if(!update||activity.getRecycler().getAdapter()==null)
-                                activity.getRecycler().setAdapter(new ListAdapter(activity,galleries));
+                                activity.getRecycler().setAdapter(new ListAdapter(activity,galleries,null));
                             ((MainActivity)activity).hidePageSwitcher();
                         }
                         else if(activity instanceof GalleryActivity)activity.getRefresher().setEnabled(false);
@@ -116,7 +116,7 @@ public class Inspector {
                     public void run() {
                         if(requestType!=ApiRequestType.BYSINGLE){
                             if(update&&activity.getRecycler().getAdapter()!=null)((ListAdapter)activity.getRecycler().getAdapter()).addGalleries(galleries);
-                            else activity.getRecycler().setAdapter(new ListAdapter(activity, galleries));
+                            else activity.getRecycler().setAdapter(new ListAdapter(activity, galleries,Global.getRemoveIgnoredGalleries()?null:query));
                             ((MainActivity)activity).setInspector(Inspector.this);
                             ((MainActivity)activity).showPageSwitcher(Inspector.this.page,Inspector.this.pageCount);
                         }
@@ -198,7 +198,7 @@ public class Inspector {
 
     private void createUrl() {
         StringBuilder builder = new StringBuilder("https://nhentai.net/api/");
-        String tagQuery=Global.getQueryString(query);
+        String tagQuery=Global.getRemoveIgnoredGalleries()?Global.getQueryString(query):"";
         switch (requestType) {
             case BYSINGLE:
             case RELATED:

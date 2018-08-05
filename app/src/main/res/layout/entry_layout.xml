@@ -16,7 +16,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <com.dar.nclientv2.components.BlurImageView
         android:id="@+id/image"
         android:layout_width="0dp"
         android:layout_height="0dp"
