@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -247,6 +248,10 @@ public class TagFilter extends AppCompatActivity{
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_tag_filter, container, false);
              recyclerView=rootView.findViewById(R.id.recycler);
+             if(Global.getTheme()== Global.ThemeScheme.BLACK){
+                 recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), RecyclerView.VERTICAL));
+                 recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), RecyclerView.HORIZONTAL));
+             }
              tag=getArguments().getInt("TAGTYPE");
              page=getArguments().getInt("PAGE");
             applyAdapter();

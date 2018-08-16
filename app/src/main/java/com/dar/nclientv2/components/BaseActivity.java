@@ -28,10 +28,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
     protected void changeLayout(boolean landscape){
         final int count=landscape?4:2;
+        int first=recycler.getLayoutManager()==null?0:((GridLayoutManager)recycler.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
         RecyclerView.Adapter adapter=recycler.getAdapter();
         GridLayoutManager gridLayoutManager=new GridLayoutManager(this,count);
         recycler.setLayoutManager(gridLayoutManager);
         recycler.setAdapter(adapter);
+        recycler.scrollToPosition(first);
     }
 
 }

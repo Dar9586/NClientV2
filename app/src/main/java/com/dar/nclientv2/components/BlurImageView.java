@@ -27,6 +27,7 @@ public class BlurImageView extends AppCompatImageView {
     }
 
     public void setBlur(boolean blur){
+        if(this.blur==blur)return;
         this.blur = blur;
         setImageDrawable(getDrawable());
     }

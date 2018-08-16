@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.dar.nclientv2.api.enums.ImageType;
 import com.dar.nclientv2.api.enums.Language;
+import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.loginapi.DownloadFavorite;
@@ -105,6 +106,7 @@ public class Gallery extends GenericGallery{
 
             }
         }
+        if(uploadDate==null)uploadDate=new Date(0);
         jr.endObject();
     }
 
@@ -157,6 +159,9 @@ public class Gallery extends GenericGallery{
         }
         tags[type.ordinal()]=new Tag[t.size()-i];
         tags[type.ordinal()]=t.subList(i,t.size()).toArray(tags[type.ordinal()]);
+        loadLanguage();
+    }
+    private void loadLanguage(){
         //CHINESE 29963 ENGLISH 12227 JAPANESE 6346
         for(Tag tag:tags[TagType.LANGUAGE.ordinal()]){
             switch (tag.getId()){
@@ -167,7 +172,6 @@ public class Gallery extends GenericGallery{
             if(language!=Language.UNKNOWN)break;
         }
     }
-
     @Override
     public String toString() {
         StringBuilder builder=new StringBuilder();
@@ -368,7 +372,7 @@ public class Gallery extends GenericGallery{
         StringWriter stringWriter=new StringWriter();
         JsonWriter jw=new JsonWriter(stringWriter);
         jw.beginArray();
-        jw.value(id).value(mediaId).value(language.ordinal()).value(favoriteCount).value(pageCount).value(uploadDate.getTime()).value(scanlator);
+        jw.value(id).value(mediaId).value(language.ordinal()).value(favoriteCount).value(pageCount).value(uploadDate.getTime()/1000).value(scanlator);
         jw.value(titles[0]).value(titles[1]).value(titles[2]);
         jw.value(getThumbnail().jpg?"j":"p").value(getCover().jpg?"j":"p");
         boolean allPng=true,allJpg=true;
@@ -446,7 +450,7 @@ public class Gallery extends GenericGallery{
         });
     }
     public boolean hasIgnoredTags(String s){
-        for(Tag[]t:tags)if(t!=null)for(Tag t1:t)if(s.contains(t1.getName()))return true;
+        for(Tag[]t:tags)if(t!=null)for(Tag t1:t)if(s.contains(t1.toQueryTag(TagStatus.AVOIDED)))return true;
         return false;
     }
     public boolean hasIgnoredTags(){

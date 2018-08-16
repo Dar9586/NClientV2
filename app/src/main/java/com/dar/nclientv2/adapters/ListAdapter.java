@@ -1,6 +1,7 @@
 package com.dar.nclientv2.adapters;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
@@ -15,6 +16,7 @@ import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Global;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -22,13 +24,14 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
 
     private final List<Gallery> mDataset;
     private final BaseActivity context;
-    private final boolean storagePermission;
+    private final boolean storagePermission,black;
     private final String queryString;
 
     public ListAdapter(BaseActivity cont, List<Gallery> myDataset,String query) {
         this.context=cont;
         this.mDataset = myDataset;
         storagePermission=Global.hasStoragePermission(context);
+        black=Global.getTheme()== Global.ThemeScheme.BLACK;
         queryString=query==null?null:query+"+"+Global.getQueryString(query);
     }
 
@@ -51,9 +54,11 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         }
         if(x)Global.loadImage(ent.getThumbnail().getUrl(),holder.imgView);
     }
+    private List<Integer>toBlur=new ArrayList<>();
     @Override
     public void onBindViewHolder(@NonNull final GenericAdapter.ViewHolder holder, int position) {
             final Gallery ent = mDataset.get(holder.getAdapterPosition());
+            if(black)holder.layout.setBackgroundColor(Color.BLACK);
             holder.imgView.setBlur(queryString!=null&&ent.hasIgnoredTags(queryString));
             loadGallery(holder,ent);
             holder.title.setText(ent.getTitle());
@@ -79,6 +84,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
                 @Override
                 public void onClick(View v) {
                     if(holder.imgView.isBlur()){
+                        toBlur.add(holder.getAdapterPosition());
                         holder.imgView.setBlur(false);
                         loadGallery(holder,ent);
                     }else{
@@ -99,6 +105,17 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
             }
         });
     }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull GenericAdapter.ViewHolder holder){
+        super.onViewDetachedFromWindow(holder);
+        if(toBlur.contains(holder.getAdapterPosition())){
+            toBlur.remove(Integer.valueOf(holder.getAdapterPosition()));
+            holder.imgView.setBlur(true);
+        }
+
+    }
+
     @Override
     public int getItemCount() {
         return mDataset.size();

@@ -90,6 +90,7 @@ public class MainActivity extends BaseActivity
         prepareUpdateIcon();
         updateLanguageIcon(navigationView.getMenu().findItem(R.id.only_language),false);
         recycler.setHasFixedSize(true);
+        recycler.setItemViewCacheSize(24);
         recycler.addOnScrollListener(new RecyclerView.OnScrollListener(){
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy){
@@ -272,6 +273,7 @@ public class MainActivity extends BaseActivity
             if(Global.getTheme()!=setting.theme)recreate();
             setting=null;
         }
+        invalidateOptionsMenu();
     }
     private SearchView searchView;
     @Override
@@ -309,8 +311,10 @@ public class MainActivity extends BaseActivity
                 try {
                     if (tag == null && related == -1) {
                         int id=Integer.parseInt(query);
-                        new Inspector(MainActivity.this,-1,""+id,ApiRequestType.BYSINGLE);
-                        return true;
+                        if(id<=Global.getMaxId()){
+                            new Inspector(MainActivity.this, -1, "" + id, ApiRequestType.BYSINGLE);
+                            return true;
+                        }
                     }
                 }catch (NumberFormatException ignore){}
                 query=query.trim();

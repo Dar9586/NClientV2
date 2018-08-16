@@ -1,21 +1,31 @@
 <resources>
-    <style name="LightTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="LightTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+    </style>
 
-    <style name="LightTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="LightTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" >
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+    </style>
 
 
-    <style name="DarkTheme" parent="Theme.AppCompat.NoActionBar" />
+    <style name="DarkTheme" parent="Theme.AppCompat.NoActionBar" >
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+    </style>
     <style name="DarkTheme.NoTitle" parent="DarkTheme">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
 
-    <style name="LightTheme" parent="Theme.AppCompat.Light.NoActionBar" />
+    <style name="LightTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+    </style>
     <style name="LightTheme.NoTitle" parent="LightTheme">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
 
     <style name="Theme.Amoled" parent="Theme.AppCompat.NoActionBar">
@@ -23,10 +33,12 @@
         <item name="colorPrimaryDark">@android:color/black</item>
         <item name="android:colorBackground">@android:color/black</item>
         <item name="android:background">@drawable/selector_backgound_black</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
     <style name="Theme.Amoled.NoTitle" parent="Theme.Amoled">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
 </resources>

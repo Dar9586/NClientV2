@@ -5,13 +5,11 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.preference.SwitchPreference;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.SwitchPreferenceCompat;
 import android.util.Log;
 
 import com.dar.nclientv2.settings.DefaultDialogs;
@@ -34,40 +32,39 @@ public class SettingsActivity extends AppCompatActivity {
         Global.initHttpClient(this);
         setContentView(R.layout.activity_settings);
         GeneralPreferenceFragment.act=this;
-        getFragmentManager().beginTransaction().replace(android.R.id.content,
+        getSupportFragmentManager().beginTransaction().replace(android.R.id.content,
                 new GeneralPreferenceFragment()).commit();
     }
-    public static class GeneralPreferenceFragment extends PreferenceFragment {
+    public static class GeneralPreferenceFragment extends PreferenceFragmentCompat{
         static SettingsActivity act;
 
+
         @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            final PreferenceManager prefMgr = getPreferenceManager();
-            prefMgr.setSharedPreferencesName("Settings");
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey){
+            getPreferenceManager().setSharedPreferencesName("Settings");
             addPreferencesFromResource(R.xml.settings);
             findPreference(getString(R.string.key_use_account_tag)).setEnabled(Global.isLogged());
-            findPreference(getString(R.string.key_hide_saved_images)).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            findPreference(getString(R.string.key_hide_saved_images)).setOnPreferenceClickListener(new android.support.v7.preference.Preference.OnPreferenceClickListener() {
                 @Override
-                public boolean onPreferenceClick(Preference preference) {
+                public boolean onPreferenceClick(android.support.v7.preference.Preference preference){
                     if(Global.hasStoragePermission(getActivity())) {
                         Global.saveNoMedia(GeneralPreferenceFragment.this.getActivity());
-                        if (!((SwitchPreference) preference).isChecked()) galleryAddPics();
+                        if (!((SwitchPreferenceCompat) preference).isChecked()) galleryAddPics();
                         else removePic();
                     }
                     return true;
                 }
             });
-            findPreference(getString(R.string.key_theme_select)).setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            findPreference(getString(R.string.key_theme_select)).setOnPreferenceChangeListener(new android.support.v7.preference.Preference.OnPreferenceChangeListener(){
                 @Override
-                public boolean onPreferenceChange(Preference preference, Object o) {
+                public boolean onPreferenceChange(android.support.v7.preference.Preference preference, Object newValue){
                     act.recreate();
                     return true;
                 }
             });
-            findPreference(getString(R.string.key_cache)).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            findPreference(getString(R.string.key_cache)).setOnPreferenceClickListener(new android.support.v7.preference.Preference.OnPreferenceClickListener() {
                 @Override
-                public boolean onPreferenceClick(Preference preference) {
+                public boolean onPreferenceClick(android.support.v7.preference.Preference preference){
                     AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
                     builder.setTitle(R.string.clear_cache);
                     builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
@@ -81,30 +78,30 @@ public class SettingsActivity extends AppCompatActivity {
                     return true;
                 }
             });
-            findPreference(getString(R.string.key_image_quality)).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            findPreference(getString(R.string.key_image_quality)).setOnPreferenceClickListener(new android.support.v7.preference.Preference.OnPreferenceClickListener() {
                 @Override
-                public boolean onPreferenceClick(Preference preference) {
+                public boolean onPreferenceClick(android.support.v7.preference.Preference preference){
                     DefaultDialogs.pageChangerDialog(
                             new DefaultDialogs.Builder(getActivity())
-                            .setDrawable(R.drawable.ic_image)
-                            .setTitle(R.string.image_quality)
-                            .setMax(100)
-                            .setActual(Global.initImageQuality(getActivity()))
-                            .setDialogs(new DefaultDialogs.DialogResults() {
-                                @Override
-                                public void positive(int actual) {
-                                    Log.d(Global.LOGTAG,"progress: "+actual);
-                                    Global.updateImageQuality(getActivity(),actual);
-                                }
+                                    .setDrawable(R.drawable.ic_image)
+                                    .setTitle(R.string.image_quality)
+                                    .setMax(100)
+                                    .setActual(Global.initImageQuality(getActivity()))
+                                    .setDialogs(new DefaultDialogs.DialogResults() {
+                                        @Override
+                                        public void positive(int actual) {
+                                            Log.d(Global.LOGTAG,"progress: "+actual);
+                                            Global.updateImageQuality(getActivity(),actual);
+                                        }
 
-                                @Override public void negative() {}
-                            })
+                                        @Override public void negative() {}
+                                    })
                     );
                     return true;
                 }
             });
-            setHasOptionsMenu(true);
         }
+
         private void removePic(){
             Log.i(Global.LOGTAG,"Removing");
             String[] retCol = {MediaStore.Images.Media._ID, MediaStore.Images.Media.DATA };

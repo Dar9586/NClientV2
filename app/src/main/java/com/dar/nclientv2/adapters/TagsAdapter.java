@@ -1,6 +1,7 @@
 package com.dar.nclientv2.adapters;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
@@ -45,7 +46,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
     private final TagFilter context;
     private final List<Tag> tags;
     private List<Tag> filterTags;
-    private final boolean logged;
+    private final boolean logged,black;
     private String lastQuery="nothing";
     @Override
     public Filter getFilter() {
@@ -96,6 +97,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         this.context=cont;
         this.tags=tags;
         online=false;
+        black=Global.getTheme()== Global.ThemeScheme.BLACK;
         logged=Global.isLogged();
         this.orderByPopular=!Global.isTagOrderByPopular();
         filterTags=new ArrayList<>();
@@ -106,6 +108,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         this.context=cont;
         online=true;
         logged=Global.isLogged();
+        black=Global.getTheme()== Global.ThemeScheme.BLACK;
         if(Global.getOnlineTags().size()==0){
             this.tags=new ArrayList<>();
             new LoadTags(this).start();
@@ -123,6 +126,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
 
     @Override
     public void onBindViewHolder(@NonNull final TagsAdapter.ViewHolder holder, int position) {
+        if(black)holder.master.setBackgroundColor(Color.BLACK);
         final Tag ent=filterTags.get(holder.getAdapterPosition());
         holder.title.setText(ent.getName());
         holder.count.setText(String.format(Locale.US,"%d",ent.getCount()));

@@ -28,10 +28,10 @@ public class FavoriteAdapter extends GenericAdapter<Gallery> {
         holder.pages.setText(String.format(Locale.US, "%d", ent.getPageCount()));
         holder.title.setText(ent.getTitle());
         switch (ent.getLanguage()){
-            case CHINESE:  holder.flag.setText("\uD83C\uDDF9\uD83C\uDDFC");
-            case ENGLISH:  holder.flag.setText("\uD83C\uDDEC\uD83C\uDDE7");
-            case JAPANESE: holder.flag.setText("\uD83C\uDDEF\uD83C\uDDF5");
-            case UNKNOWN:  holder.flag.setText("\uD83C\uDFF3");
+            case CHINESE:  holder.flag.setText("\uD83C\uDDF9\uD83C\uDDFC");break;
+            case ENGLISH:  holder.flag.setText("\uD83C\uDDEC\uD83C\uDDE7");break;
+            case JAPANESE: holder.flag.setText("\uD83C\uDDEF\uD83C\uDDF5");break;
+            case UNKNOWN:  holder.flag.setText("\uD83C\uDFF3");break;
         }
         holder.title.setOnClickListener(new View.OnClickListener() {
             @Override
