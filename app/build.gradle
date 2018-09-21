@@ -6,8 +6,8 @@ android {
         applicationId "com.dar.nclientv2"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 110
-        versionName "1.1.0"
+        versionCode 141
+        versionName "1.4.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
