@@ -188,6 +188,7 @@
     <string name="setting_on_remove_ignored">The galleries with ignored tags will not be shown</string>
     <string name="setting_off_remove_ignored">The galleries with ignored tags will be blurred</string>
     <string name="remove_ignored_galleries">Remove ignored galleries</string>
+    <string name="copy_to_clipboard">Copy to clipboard</string>
 
 
     <string-array name="theme">

@@ -42,7 +42,7 @@ public class Gallery extends GenericGallery{
     private Image cover,thumbnail;
     private Page pages[];
     private Language language= Language.UNKNOWN;
-    private boolean valid;
+    private boolean valid=true;
     private Gallery(Parcel in){
         uploadDate=new Date(in.readLong());
         favoriteCount=in.readInt();

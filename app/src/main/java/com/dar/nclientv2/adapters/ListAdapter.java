@@ -16,7 +16,6 @@ import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Global;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -54,12 +53,11 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         }
         if(x)Global.loadImage(ent.getThumbnail().getUrl(),holder.imgView);
     }
-    private List<Integer>toBlur=new ArrayList<>();
     @Override
     public void onBindViewHolder(@NonNull final GenericAdapter.ViewHolder holder, int position) {
             final Gallery ent = mDataset.get(holder.getAdapterPosition());
             if(black)holder.layout.setBackgroundColor(Color.BLACK);
-            holder.imgView.setBlur(queryString!=null&&ent.hasIgnoredTags(queryString));
+            holder.overlay.setVisibility((queryString!=null&&ent.hasIgnoredTags(queryString))?View.VISIBLE:View.GONE);
             loadGallery(holder,ent);
             holder.title.setText(ent.getTitle());
             if(Global.getOnlyLanguage()==null) {
@@ -83,16 +81,16 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
             holder.layout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(holder.imgView.isBlur()){
-                        toBlur.add(holder.getAdapterPosition());
-                        holder.imgView.setBlur(false);
-                        loadGallery(holder,ent);
-                    }else{
-                        holder.imgView.setBlur(queryString!=null&&ent.hasIgnoredTags(queryString));
-                        Intent intent = new Intent(context, GalleryActivity.class);
-                        intent.putExtra(context.getPackageName() + ".GALLERY", ent);
-                        context.startActivity(intent);
-                    }
+                  Intent intent = new Intent(context, GalleryActivity.class);
+                  intent.putExtra(context.getPackageName() + ".GALLERY", ent);
+                  context.startActivity(intent);
+                  holder.overlay.setVisibility((queryString!=null&&ent.hasIgnoredTags(queryString))?View.VISIBLE:View.GONE);
+                }
+            });
+            holder.overlay.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    holder.overlay.setVisibility(View.GONE);
                 }
             });
         holder.layout.setOnLongClickListener(new View.OnLongClickListener() {
@@ -106,15 +104,6 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         });
     }
 
-    @Override
-    public void onViewDetachedFromWindow(@NonNull GenericAdapter.ViewHolder holder){
-        super.onViewDetachedFromWindow(holder);
-        if(toBlur.contains(holder.getAdapterPosition())){
-            toBlur.remove(Integer.valueOf(holder.getAdapterPosition()));
-            holder.imgView.setBlur(true);
-        }
-
-    }
 
     @Override
     public int getItemCount() {

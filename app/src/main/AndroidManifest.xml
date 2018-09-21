@@ -143,7 +143,7 @@
         <activity
             android:name=".CopyToClipboardActivity"
             android:icon="@drawable/ic_copy"
-            android:label="@string/open_in_browser" />
+            android:label="@android:string/copyUrl" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"

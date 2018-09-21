@@ -3,6 +3,7 @@ package com.dar.nclientv2.adapters;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.text.Layout;
 import android.view.View;
@@ -21,15 +22,17 @@ import java.util.Locale;
 
 public class LocalAdapter extends GenericAdapter<LocalGallery>{
     private final LocalActivity context;
-
+    private final boolean black;
     public LocalAdapter(LocalActivity cont, ArrayList<LocalGallery> myDataset) {
         super(myDataset);
         this.context=cont;
+        black=Global.getTheme()== Global.ThemeScheme.BLACK;
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final LocalGallery ent = filter.get(holder.getAdapterPosition());
+        if(black)holder.layout.setBackgroundColor(Color.BLACK);
         holder.flag.setVisibility(View.GONE);
         Global.loadImage(ent.getPage(ent.getMin()),holder.imgView);
         holder.title.setText(ent.getTitle());

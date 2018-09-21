@@ -2,5 +2,5 @@
 <resources>
     <color name="test1">#01ffffff</color>
     <color name="entry_background">#7f000000</color>
-    <color name="color_overlay">#7f000000</color>
+    <color name="color_overlay">#8f000000</color>
 </resources>
