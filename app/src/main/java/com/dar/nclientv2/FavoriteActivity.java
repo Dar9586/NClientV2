@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,6 +11,9 @@ import android.view.View;
 import com.dar.nclientv2.adapters.FavoriteAdapter;
 import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Global;
+
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class FavoriteActivity extends BaseActivity {
     private boolean online=false;
@@ -65,8 +66,8 @@ public class FavoriteActivity extends BaseActivity {
         menu.findItem(R.id.random).setVisible(false);
         if(online||Global.isLogged())menu.findItem(R.id.online_favorite).setVisible(true);
         menu.findItem(R.id.online_favorite).setTitle(online?R.string.offline_favorites:R.string.online_favorites);
-        final android.support.v7.widget.SearchView searchView=(android.support.v7.widget.SearchView)menu.findItem(R.id.search).getActionView();
-        searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+        final androidx.appcompat.widget.SearchView searchView=(androidx.appcompat.widget.SearchView)menu.findItem(R.id.search).getActionView();
+        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return true;

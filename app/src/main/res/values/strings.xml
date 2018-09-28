@@ -120,7 +120,6 @@
     <string name="settings">Settings</string>
     <string name="related">Related</string>
     <string name="refresh">Refresh</string>
-    <string name="cancel">Cancel</string>
     <string name="failed">Failed</string>
     <string name="search">Search</string>
     <string name="prev">Previous</string>
@@ -128,9 +127,6 @@
     <string name="image">Image</string>
     <string name="next">Next</string>
     <string name="hashtag">#</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
-    <string name="ok">OK</string>
 
     <string name="create_pdf">Create PDF</string>
     <string name="create_pdf_format" formatted="true">Create PDF of: "%s"</string>

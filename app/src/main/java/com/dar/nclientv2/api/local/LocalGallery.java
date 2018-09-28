@@ -1,7 +1,6 @@
 package com.dar.nclientv2.api.local;
 
 import android.os.Parcel;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.dar.nclientv2.api.components.GenericGallery;
@@ -9,6 +8,8 @@ import com.dar.nclientv2.settings.Global;
 
 import java.io.File;
 import java.io.FilenameFilter;
+
+import androidx.annotation.Nullable;
 
 public class LocalGallery extends GenericGallery{
     private final int id,min,max;

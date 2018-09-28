@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<androidx.cardview.widget.CardView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android">
@@ -45,4 +45,4 @@
         android:src="@drawable/ic_arrow_forward"
         android:contentDescription="@string/next_page" />
 </LinearLayout>
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

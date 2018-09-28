@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
 import android.text.Layout;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -19,6 +18,8 @@ import com.dar.nclientv2.settings.Global;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
 
 public class LocalAdapter extends GenericAdapter<LocalGallery>{
     private final LocalActivity context;
@@ -69,7 +70,7 @@ public class LocalAdapter extends GenericAdapter<LocalGallery>{
         final LocalGallery gallery=filter.get(pos);
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         builder.setTitle(R.string.delete_gallery).setMessage(context.getString(R.string.delete_gallery_format,gallery.getTitle()));
-        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 filter.remove(gallery);
@@ -77,14 +78,14 @@ public class LocalAdapter extends GenericAdapter<LocalGallery>{
                 Global.recursiveDelete(gallery.getDirectory());
                 notifyItemRemoved(pos);
             }
-        }).setNegativeButton(R.string.no,null).setCancelable(true);
+        }).setNegativeButton(android.R.string.no,null).setCancelable(true);
         builder.show();
     }
     private void showDialogPDF(final int pos){
         final LocalGallery gallery=filter.get(pos);
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         builder.setTitle(R.string.create_pdf).setMessage(context.getString(R.string.create_pdf_format,gallery.getTitle()));
-        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent i=new Intent(context.getApplicationContext(),CreatePDF.class);
@@ -92,7 +93,7 @@ public class LocalAdapter extends GenericAdapter<LocalGallery>{
                 i.putExtra(context.getPackageName()+".PAGES",gallery.getPageCount());
                 context.startService(i);
             }
-        }).setNegativeButton(R.string.no,null).setCancelable(true);
+        }).setNegativeButton(android.R.string.no,null).setCancelable(true);
         builder.show();
     }
     private void createPDF(final int pos){

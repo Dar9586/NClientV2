@@ -3,8 +3,6 @@ package com.dar.nclientv2;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +11,9 @@ import android.widget.TextView;
 
 import com.dar.nclientv2.loginapi.Login;
 import com.dar.nclientv2.settings.Global;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * A login screen that offers login via email/password.

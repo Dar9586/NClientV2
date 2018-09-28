@@ -2,8 +2,6 @@ package com.dar.nclientv2.settings;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.StringRes;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -15,6 +13,9 @@ import android.widget.TextView;
 import com.dar.nclientv2.R;
 
 import java.util.Locale;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.StringRes;
 
 public class DefaultDialogs {
     public interface DialogResults{
@@ -31,8 +32,8 @@ public class DefaultDialogs {
         public Builder(Context context) {
             this.context = context;
             title=drawable=0;
-            yesbtn=R.string.ok;
-            nobtn=R.string.cancel;
+            yesbtn=android.R.string.ok;
+            nobtn=android.R.string.cancel;
             max=actual=1;
             dialogs=null;
         }
@@ -73,7 +74,7 @@ public class DefaultDialogs {
         }
     }
     public static void pageChangerDialog(final Builder builder){
-        android.support.v7.app.AlertDialog.Builder build = new android.support.v7.app.AlertDialog.Builder(builder.context);
+        androidx.appcompat.app.AlertDialog.Builder build = new androidx.appcompat.app.AlertDialog.Builder(builder.context);
         if(builder.title!=0)build.setTitle(builder.context.getString(builder.title));
         if(builder.drawable!=0) build.setIcon(builder.drawable);
         View v=View.inflate(builder.context, R.layout.page_changer, null);

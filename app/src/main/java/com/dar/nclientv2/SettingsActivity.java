@@ -6,10 +6,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.preference.PreferenceFragmentCompat;
-import android.support.v7.preference.SwitchPreferenceCompat;
 import android.util.Log;
 
 import com.dar.nclientv2.settings.DefaultDialogs;
@@ -21,6 +17,11 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.SwitchPreferenceCompat;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -44,9 +45,9 @@ public class SettingsActivity extends AppCompatActivity {
             getPreferenceManager().setSharedPreferencesName("Settings");
             addPreferencesFromResource(R.xml.settings);
             findPreference(getString(R.string.key_use_account_tag)).setEnabled(Global.isLogged());
-            findPreference(getString(R.string.key_hide_saved_images)).setOnPreferenceClickListener(new android.support.v7.preference.Preference.OnPreferenceClickListener() {
+            findPreference(getString(R.string.key_hide_saved_images)).setOnPreferenceClickListener(new androidx.preference.Preference.OnPreferenceClickListener() {
                 @Override
-                public boolean onPreferenceClick(android.support.v7.preference.Preference preference){
+                public boolean onPreferenceClick(androidx.preference.Preference preference){
                     if(Global.hasStoragePermission(getActivity())) {
                         Global.saveNoMedia(GeneralPreferenceFragment.this.getActivity());
                         if (!((SwitchPreferenceCompat) preference).isChecked()) galleryAddPics();
@@ -55,32 +56,32 @@ public class SettingsActivity extends AppCompatActivity {
                     return true;
                 }
             });
-            findPreference(getString(R.string.key_theme_select)).setOnPreferenceChangeListener(new android.support.v7.preference.Preference.OnPreferenceChangeListener(){
+            findPreference(getString(R.string.key_theme_select)).setOnPreferenceChangeListener(new androidx.preference.Preference.OnPreferenceChangeListener(){
                 @Override
-                public boolean onPreferenceChange(android.support.v7.preference.Preference preference, Object newValue){
+                public boolean onPreferenceChange(androidx.preference.Preference preference, Object newValue){
                     act.recreate();
                     return true;
                 }
             });
-            findPreference(getString(R.string.key_cache)).setOnPreferenceClickListener(new android.support.v7.preference.Preference.OnPreferenceClickListener() {
+            findPreference(getString(R.string.key_cache)).setOnPreferenceClickListener(new androidx.preference.Preference.OnPreferenceClickListener() {
                 @Override
-                public boolean onPreferenceClick(android.support.v7.preference.Preference preference){
+                public boolean onPreferenceClick(androidx.preference.Preference preference){
                     AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
                     builder.setTitle(R.string.clear_cache);
-                    builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Global.recursiveDelete(getActivity().getCacheDir());
                         }
-                    }).setNegativeButton(R.string.no,null).setCancelable(true);
+                    }).setNegativeButton(android.R.string.no,null).setCancelable(true);
                     builder.show();
 
                     return true;
                 }
             });
-            findPreference(getString(R.string.key_image_quality)).setOnPreferenceClickListener(new android.support.v7.preference.Preference.OnPreferenceClickListener() {
+            findPreference(getString(R.string.key_image_quality)).setOnPreferenceClickListener(new androidx.preference.Preference.OnPreferenceClickListener() {
                 @Override
-                public boolean onPreferenceClick(android.support.v7.preference.Preference preference){
+                public boolean onPreferenceClick(androidx.preference.Preference preference){
                     DefaultDialogs.pageChangerDialog(
                             new DefaultDialogs.Builder(getActivity())
                                     .setDrawable(R.drawable.ic_image)

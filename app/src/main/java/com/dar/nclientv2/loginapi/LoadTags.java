@@ -1,7 +1,5 @@
 package com.dar.nclientv2.loginapi;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.JsonReader;
 
 import com.dar.nclientv2.adapters.TagsAdapter;
@@ -16,6 +14,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;

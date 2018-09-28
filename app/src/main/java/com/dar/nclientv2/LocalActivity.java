@@ -3,8 +3,6 @@ package com.dar.nclientv2;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
 
@@ -12,6 +10,9 @@ import com.dar.nclientv2.adapters.LocalAdapter;
 import com.dar.nclientv2.api.local.FakeInspector;
 import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Global;
+
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class LocalActivity extends BaseActivity {
 
@@ -46,8 +47,8 @@ public class LocalActivity extends BaseActivity {
         menu.findItem(R.id.open_browser).setVisible(false);
         menu.findItem(R.id.random).setVisible(false);
         Global.setTint(menu.findItem(R.id.search).getIcon());
-        final android.support.v7.widget.SearchView searchView=(android.support.v7.widget.SearchView)menu.findItem(R.id.search).getActionView();
-        searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+        final androidx.appcompat.widget.SearchView searchView=(androidx.appcompat.widget.SearchView)menu.findItem(R.id.search).getActionView();
+        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return true;

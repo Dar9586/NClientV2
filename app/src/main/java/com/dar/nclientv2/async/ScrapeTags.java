@@ -1,7 +1,6 @@
 package com.dar.nclientv2.async;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.dar.nclientv2.adapters.TagsAdapter;
@@ -18,6 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;
@@ -75,8 +75,10 @@ public class ScrapeTags extends Thread {
         }
         return null;
     }
+    private String url;
+
     private void retrivePage(int page) {
-        String url="https://nhentai.net/"+getMultipleName(tagType)+"/popular?page="+page;
+        url="https://nhentai.net/"+getMultipleName(tagType)+"/popular?page="+page;
         Log.d(Global.LOGTAG,"Scraping: "+url);
         Global.client.newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
             @Override
@@ -111,7 +113,12 @@ public class ScrapeTags extends Thread {
             }
 
         }
-        maxPage=Integer.parseInt(y.get(y.size()-1).attr("href").substring(6));
+        try{
+            maxPage = Integer.parseInt(y.get(y.size() - 1).attr("href").substring(6));
+        }catch(Exception e){
+            Log.e(Global.LOGTAG,url);
+            throw e;
+        }
         //maxPage=3;
     }
     private void stopExecution(){

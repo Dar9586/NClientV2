@@ -1,7 +1,5 @@
 package com.dar.nclientv2.loginapi;
 
-import android.support.annotation.NonNull;
-
 import com.dar.nclientv2.settings.Global;
 
 import org.jsoup.Jsoup;
@@ -11,6 +9,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 
+import androidx.annotation.NonNull;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;

@@ -1,7 +1,5 @@
 package com.dar.nclientv2.adapters;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +16,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 public abstract class GenericAdapter<T extends GenericGallery> extends RecyclerView.Adapter<GenericAdapter.ViewHolder> implements Filterable {
     final List<T> dataset;

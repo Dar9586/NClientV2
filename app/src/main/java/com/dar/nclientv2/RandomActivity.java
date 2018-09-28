@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -13,6 +11,9 @@ import android.widget.TextView;
 import com.dar.nclientv2.api.RandomLoader;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.settings.Global;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class RandomActivity extends AppCompatActivity {
     private FloatingActionButton shuffle;

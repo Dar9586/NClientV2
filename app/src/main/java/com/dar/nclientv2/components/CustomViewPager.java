@@ -1,9 +1,6 @@
 package com.dar.nclientv2.components;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -11,6 +8,10 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.dar.nclientv2.settings.Global;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.viewpager.widget.ViewPager;
 
 public class CustomViewPager extends ViewPager {
     private OnItemClickListener mOnItemClickListener;

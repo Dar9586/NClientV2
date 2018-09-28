@@ -4,18 +4,6 @@ import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,9 +16,22 @@ import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 public class TagFilter extends AppCompatActivity{
 
@@ -111,15 +112,15 @@ public class TagFilter extends AppCompatActivity{
         }
         return 0;
     }
-    private android.support.v7.widget.SearchView searchView;
+    private androidx.appcompat.widget.SearchView searchView;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_tag_filter, menu);
         menu.findItem(R.id.order_type).setIcon(Global.isTagOrderByPopular()?R.drawable.ic_sort:R.drawable.ic_sort_by_alpha);
         Global.setTint(menu.findItem(R.id.order_type).getIcon());
-        searchView=(android.support.v7.widget.SearchView)menu.findItem(R.id.search).getActionView();
-        searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+        searchView=(androidx.appcompat.widget.SearchView)menu.findItem(R.id.search).getActionView();
+        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return true;
@@ -139,7 +140,7 @@ public class TagFilter extends AppCompatActivity{
     private void createDialog(final boolean reset){
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
         builder.setTitle(R.string.are_you_sure).setMessage(reset?R.string.reload_tags:R.string.reset_tags_long).setIcon(R.drawable.ic_help);
-        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
@@ -151,7 +152,7 @@ public class TagFilter extends AppCompatActivity{
                     }
                 }
             }
-        }).setNegativeButton(R.string.no, null).setCancelable(true);
+        }).setNegativeButton(android.R.string.no, null).setCancelable(true);
         builder.show();
     }
 

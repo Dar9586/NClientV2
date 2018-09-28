@@ -2,11 +2,6 @@ package com.dar.nclientv2.adapters;
 
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
 import android.util.JsonWriter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +21,7 @@ import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.ScrapeTags;
 import com.dar.nclientv2.loginapi.LoadTags;
 import com.dar.nclientv2.settings.Global;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -35,6 +31,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.RecyclerView;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -158,7 +158,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
     private void showBlacklistDialog(final Tag tag,final ImageView imgView) {
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         builder.setIcon(R.drawable.ic_star_border).setTitle(R.string.add_to_online_blacklist).setMessage(R.string.are_you_sure);
-        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 try {
@@ -167,7 +167,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
                     e.printStackTrace();
                 }
             }
-        }).setNegativeButton(R.string.no,null).show();
+        }).setNegativeButton(android.R.string.no,null).show();
     }
     private void onlineTagUpdate(final Tag tag, final boolean add,final ImageView imgView) throws IOException{
         StringWriter sw=new StringWriter();

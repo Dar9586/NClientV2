@@ -6,7 +6,7 @@
         android:id="@+id/search"
         android:icon="@drawable/ic_search"
         android:title="@string/search"
-        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
     <item android:id="@+id/order_type"
         android:title="@string/sort_type"

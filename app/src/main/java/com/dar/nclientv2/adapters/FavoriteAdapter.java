@@ -1,7 +1,6 @@
 package com.dar.nclientv2.adapters;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.text.Layout;
 import android.view.View;
 
@@ -13,6 +12,8 @@ import com.dar.nclientv2.settings.Global;
 
 import java.util.ArrayList;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
 
 public class FavoriteAdapter extends GenericAdapter<Gallery> {
     private final FavoriteActivity activity;

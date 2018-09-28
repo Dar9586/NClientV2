@@ -1,7 +1,6 @@
 package com.dar.nclientv2.loginapi;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 
@@ -14,6 +13,7 @@ import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 
+import androidx.annotation.NonNull;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;

@@ -2,8 +2,6 @@ package com.dar.nclientv2.adapters;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +16,9 @@ import com.dar.nclientv2.settings.Global;
 import java.io.File;
 import java.util.List;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder> {
 
