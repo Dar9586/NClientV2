@@ -14,6 +14,7 @@ import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.loginapi.DownloadFavorite;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.settings.Tags;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -454,6 +455,6 @@ public class Gallery extends GenericGallery{
         return false;
     }
     public boolean hasIgnoredTags(){
-        return hasIgnoredTags(Global.getQueryString(""));
+        return hasIgnoredTags(Tags.getQueryString(""));
     }
 }

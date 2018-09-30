@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.settings.Login;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,7 +45,7 @@ public class SettingsActivity extends AppCompatActivity {
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey){
             getPreferenceManager().setSharedPreferencesName("Settings");
             addPreferencesFromResource(R.xml.settings);
-            findPreference(getString(R.string.key_use_account_tag)).setEnabled(Global.isLogged());
+            findPreference(getString(R.string.key_use_account_tag)).setEnabled(Login.isLogged());
             findPreference(getString(R.string.key_hide_saved_images)).setOnPreferenceClickListener(new androidx.preference.Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(androidx.preference.Preference preference){

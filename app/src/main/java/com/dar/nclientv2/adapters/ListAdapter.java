@@ -12,6 +12,7 @@ import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.settings.Tags;
 
 import java.io.File;
 import java.util.List;
@@ -32,7 +33,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         this.mDataset = myDataset;
         storagePermission=Global.hasStoragePermission(context);
         black=Global.getTheme()== Global.ThemeScheme.BLACK;
-        queryString=query==null?null:query+"+"+Global.getQueryString(query);
+        queryString=query==null?null:query+"+"+Tags.getQueryString(query);
     }
 
     @NonNull

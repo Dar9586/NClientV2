@@ -7,6 +7,7 @@ import com.dar.nclientv2.adapters.TagsAdapter;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.settings.Tags;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -14,8 +15,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import androidx.annotation.NonNull;
 import okhttp3.Call;
@@ -26,12 +27,10 @@ import okhttp3.Response;
 public class ScrapeTags extends Thread {
     private final TagsAdapter adapter;
     private final TagType tagType;
-    private final List<Tag> tags=new ArrayList<>();
-    private int maxPage;
-    private final  Object lock=new Object();
-    private static final List<TagType>updating=new ArrayList<>();
+    private static final Set<TagType> updating=new HashSet<>();
     private final Context context;
-    public ScrapeTags(Context context, TagsAdapter adapter, TagType tagType){
+    private final Object lock=new Object();
+    public ScrapeTags(Context context, TagsAdapter adapter, TagType tagType){ ;
         this.adapter=adapter;
         this.tagType=tagType;
         this.context=context.getApplicationContext();
@@ -39,22 +38,18 @@ public class ScrapeTags extends Thread {
     @Override
     public void run() {
         super.run();
-        if(updating.contains(tagType))return;
-        updating.add(tagType);
-        maxPage=1;
-        for(int a=1;a<=maxPage;a++){
-            retrivePage(a);
-            synchronized (lock){
-                try {
-                    lock.wait();
-                } catch (InterruptedException e) {
-                    Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
-                    maxPage=-1;
-                }
+        if(!updating.add(tagType))return;
+        final int page=Tags.pageReachedForType(context,tagType)+1;
+        retrivePage(page);
+        synchronized(lock){
+            try{
+                lock.wait();
+            }catch(InterruptedException e){
+                e.printStackTrace();
             }
         }
-        Global.updateSet(context,tags,tagType,true);
-
+        Tags.updateSet(context,adapter.getTrueDataset(),tagType);
+        Tags.setPageReachedForType(context,tagType,page);
         updating.remove(tagType);
 
     }
@@ -75,21 +70,24 @@ public class ScrapeTags extends Thread {
         }
         return null;
     }
-    private String url;
 
     private void retrivePage(int page) {
-        url="https://nhentai.net/"+getMultipleName(tagType)+"/popular?page="+page;
-        Log.d(Global.LOGTAG,"Scraping: "+url);
+        String url = "https://nhentai.net/" + getMultipleName(tagType) + "/popular?page=" + page;
+        Log.d(Global.LOGTAG,"Scraping: "+ url);
         Global.client.newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
-                stopExecution();
+                synchronized(lock){
+                    lock.notify();
+                }
             }
             @Override
             public void onResponse(@NonNull Call call,@NonNull Response response) throws IOException {
                 scrape(response.body().string());
-                continueExecution();
+                synchronized(lock){
+                    lock.notify();
+                }
             }
         });
     }
@@ -103,33 +101,8 @@ public class ScrapeTags extends Thread {
                         Integer.parseInt(x.attr("class").substring(x.attr("class").lastIndexOf('-')+1).trim()),
                         tagType
                 );
-                if(t.getCount()<Global.getMinTagCount()){
-                    maxPage=-1;
-                    return;
-                }
-                tags.add(t);
                 adapter.addItem(t);
-                Global.updateSet(context,tags,tagType,false);
             }
-
-        }
-        try{
-            maxPage = Integer.parseInt(y.get(y.size() - 1).attr("href").substring(6));
-        }catch(Exception e){
-            Log.e(Global.LOGTAG,url);
-            throw e;
-        }
-        //maxPage=3;
-    }
-    private void stopExecution(){
-        maxPage=-1;
-        synchronized (lock){
-            lock.notify();
-        }
-    }
-    private void continueExecution(){
-        synchronized (lock){
-            lock.notify();
         }
     }
 

@@ -13,17 +13,12 @@
         android:icon="@drawable/ic_sort_by_alpha"
         app:showAsAction="ifRoom|collapseActionView"/>
     <item
-        android:id="@+id/change_min"
-        android:titleCondensed="@string/min_count"
-        android:title="@string/change_min_tag"
-        app:showAsAction="never"/>
-    <item
         android:id="@+id/reset_tags"
-        android:title="@string/reset_tags"
+        android:title="@string/clear_tag_preferences"
         app:showAsAction="never"
         />
     <item
         android:id="@+id/refresh"
-        android:title="@string/refresh"
+        android:title="@string/reload_tags_from_web"
         app:showAsAction="never" />
 </menu>

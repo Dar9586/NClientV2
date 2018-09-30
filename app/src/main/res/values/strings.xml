@@ -185,6 +185,8 @@
     <string name="setting_off_remove_ignored">The galleries with ignored tags will be blurred</string>
     <string name="remove_ignored_galleries">Remove ignored galleries</string>
     <string name="copy_to_clipboard">Copy to clipboard</string>
+    <string name="clear_tag_preferences">Clear tag preferences</string>
+    <string name="reload_tags_from_web">Reload tags from web</string>
 
 
     <string-array name="theme">

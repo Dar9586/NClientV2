@@ -1,6 +1,7 @@
 package com.dar.nclientv2.loginapi;
 
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.settings.Login;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -37,8 +38,8 @@ public class User {
                     String[] y = x.attr("href").split("/");
                     user = new User(username, y[2], y[3]);
                 }
-                Global.updateUser(user);
-                if(createUser!=null)createUser.onCreateUser(Global.getUser());
+                Login.updateUser(user);
+                if(createUser!=null)createUser.onCreateUser(Login.getUser());
             }
         });
     }

@@ -10,7 +10,9 @@ import android.view.View;
 
 import com.dar.nclientv2.adapters.FavoriteAdapter;
 import com.dar.nclientv2.components.BaseActivity;
+import com.dar.nclientv2.settings.Favorites;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.settings.Login;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -26,7 +28,7 @@ public class FavoriteActivity extends BaseActivity {
         Global.initHighRes(this);
         setContentView(R.layout.app_bar_main);
         if(getIntent().getExtras()!=null)online=getIntent().getExtras().getBoolean(getPackageName()+".ONLINE",false);
-        if(online||(getIntent().getData() != null &&Global.isLogged()))online=true;
+        if(online||(getIntent().getData() != null &&Login.isLogged()))online=true;
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -53,7 +55,7 @@ public class FavoriteActivity extends BaseActivity {
         refresher.setEnabled(true);
         refresher.setRefreshing(true);
         if(!online) {
-            Global.loadFavorites(this, (FavoriteAdapter) recycler.getAdapter());
+            Favorites.loadFavorites(this, (FavoriteAdapter) recycler.getAdapter());
         }else ((FavoriteAdapter)recycler.getAdapter()).reloadOnline();
         super.onResume();
     }
@@ -64,7 +66,7 @@ public class FavoriteActivity extends BaseActivity {
         menu.findItem(R.id.action_settings).setVisible(false);
         menu.findItem(R.id.action_login).setVisible(false);
         menu.findItem(R.id.random).setVisible(false);
-        if(online||Global.isLogged())menu.findItem(R.id.online_favorite).setVisible(true);
+        if(online||Login.isLogged())menu.findItem(R.id.online_favorite).setVisible(true);
         menu.findItem(R.id.online_favorite).setTitle(online?R.string.offline_favorites:R.string.online_favorites);
         final androidx.appcompat.widget.SearchView searchView=(androidx.appcompat.widget.SearchView)menu.findItem(R.id.search).getActionView();
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {

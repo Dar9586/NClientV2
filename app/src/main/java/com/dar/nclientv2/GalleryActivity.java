@@ -20,7 +20,10 @@ import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.DownloadGallery;
 import com.dar.nclientv2.components.BaseActivity;
+import com.dar.nclientv2.settings.Favorites;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.settings.Login;
+import com.dar.nclientv2.settings.Tags;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -50,10 +53,10 @@ public class GalleryActivity extends BaseActivity
         Global.initHttpClient(this);
         Global.loadNotificationChannel(this);
         Global.initColumnCount(this);
-        Global.initTagSets(this);
+        Tags.initTagSets(this);
         Global.initImageQuality(this);
-        Global.countFavorite(this);
-        Global.initTagPreferencesSets(this);
+        Favorites.countFavorite(this);
+        Tags.initTagPreferencesSets(this);
         setContentView(R.layout.activity_gallery);
         Toolbar toolbar = findViewById(R.id.toolbar);
         final NavigationView navigationView = findViewById(R.id.nav_view);
@@ -163,22 +166,22 @@ public class GalleryActivity extends BaseActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.gallery, menu);
-        if(!isLocal&&Global.isLogged()){
+        if(!isLocal&&Login.isLogged()){
             MenuItem item= menu.findItem(R.id.add_online_gallery);
             item.setVisible(true);
-            boolean x=gallery==null||Global.getOnlineFavorite(this,gallery.getId())==null;
+            boolean x=gallery==null||Login.getOnlineFavorite(this,gallery.getId())==null;
             item.setIcon(x?R.drawable.ic_star_border:R.drawable.ic_star);
             item.setTitle(x?R.string.add_to_online_favorite:R.string.remove_from_online_favorites);
         }
 
-        menu.findItem(R.id.add_online_gallery).setVisible(Global.isLogged());
+        menu.findItem(R.id.add_online_gallery).setVisible(Login.isLogged());
         Global.setTint(menu.findItem(R.id.download_gallery).getIcon());
         Global.setTint(menu.findItem(R.id.load_internet).getIcon());
         Global.setTint(menu.findItem(R.id.change_view).getIcon());
         Global.setTint(menu.findItem(R.id.share).getIcon());
         Global.setTint(menu.findItem(R.id.related).getIcon());
         menu.findItem(R.id.share).setVisible(gallery!=null&&gallery.isValid());
-        menu.findItem(R.id.favorite_manager).setIcon((isFavorite=Global.isFavorite(this,gallery))?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
+        menu.findItem(R.id.favorite_manager).setIcon((isFavorite=Favorites.isFavorite(this,gallery))?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
         Global.setTint(menu.findItem(R.id.favorite_manager).getIcon());
         menu.findItem(R.id.favorite_manager).setVisible(!isLocal||isFavorite);
         menu.findItem(R.id.download_gallery).setVisible(!isLocal);
@@ -208,9 +211,9 @@ public class GalleryActivity extends BaseActivity
                     @Override
                     public void onResponse(@NonNull Call call,@NonNull Response response)  {
                         Log.d(Global.LOGTAG,"Called");
-                            final boolean x=Global.getOnlineFavorite(GalleryActivity.this,gallery.getId())==null;
-                            if (x) Global.saveOnlineFavorite(GalleryActivity.this, (Gallery) gallery);
-                            else Global.removeOnlineFavorite(GalleryActivity.this, gallery.getId());
+                            final boolean x=Login.getOnlineFavorite(GalleryActivity.this,gallery.getId())==null;
+                            if (x) Login.saveOnlineFavorite(GalleryActivity.this, (Gallery) gallery);
+                            else Login.removeOnlineFavorite(GalleryActivity.this, gallery.getId());
                             GalleryActivity.this.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -234,11 +237,11 @@ public class GalleryActivity extends BaseActivity
                 break;
             case R.id.favorite_manager:
                 if(isFavorite){
-                    if(Global.removeFavorite(this,gallery)) isFavorite=!isFavorite;
-                }else if(Global.addFavorite(this,(Gallery) gallery)){
+                    if(Favorites.removeFavorite(this,gallery)) isFavorite=!isFavorite;
+                }else if(Favorites.addFavorite(this,(Gallery) gallery)){
                     isFavorite=!isFavorite;
                 }else{
-                    Snackbar.make(recycler,getString(R.string.favorite_max_reached,Global.MAXFAVORITE),Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(recycler,getString(R.string.favorite_max_reached,Favorites.MAXFAVORITE),Snackbar.LENGTH_LONG).show();
                 }
                 item.setIcon(isFavorite?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
                 Global.setTint(item.getIcon());

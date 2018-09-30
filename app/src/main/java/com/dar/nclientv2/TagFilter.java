@@ -14,8 +14,10 @@ import android.view.ViewGroup;
 import com.dar.nclientv2.adapters.TagsAdapter;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagType;
-import com.dar.nclientv2.settings.DefaultDialogs;
+import com.dar.nclientv2.async.ScrapeTags;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.settings.Login;
+import com.dar.nclientv2.settings.Tags;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -52,9 +54,8 @@ public class TagFilter extends AppCompatActivity{
         Global.loadTheme(this);
         Global.initHttpClient(this);
         Global.initTagOrder(this);
-        Global.initMinTagCount(this);
-        Global.initTagSets(this);
-        Global.initTagPreferencesSets(this);
+        Tags.initTagSets(this);
+        Tags.initTagPreferencesSets(this);
         setContentView(R.layout.activity_tag_filter);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -69,7 +70,7 @@ public class TagFilter extends AppCompatActivity{
         mViewPager.setOffscreenPageLimit(1);
 
         TabLayout tabLayout = findViewById(R.id.tabs);
-        if(Global.isLogged())tabLayout.addTab(tabLayout.newTab().setText(R.string.online_tags));
+        if(Login.isLogged())tabLayout.addTab(tabLayout.newTab().setText(R.string.online_tags));
 
         Log.d(Global.LOGTAG,"ISNULL?"+(tabLayout==null));
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -147,7 +148,7 @@ public class TagFilter extends AppCompatActivity{
                 if (page != null) {
                     if(reset)((PlaceholderFragment)page).loadTags();
                     else{
-                        Global.resetAllStatus(TagFilter.this);
+                        Tags.resetAllStatus(TagFilter.this);
                         ((PlaceholderFragment)page).updateDataset();
                     }
                 }
@@ -165,7 +166,6 @@ public class TagFilter extends AppCompatActivity{
         Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
 
         switch (id){
-            case R.id.change_min:loadDialog();break;
             case R.id.refresh:if(page != null)createDialog(true);break;
             case R.id.reset_tags:createDialog(false);break;
             case R.id.order_type:
@@ -179,18 +179,6 @@ public class TagFilter extends AppCompatActivity{
         return super.onOptionsItemSelected(item);
     }
 
-    private void loadDialog(){
-        DefaultDialogs.pageChangerDialog(
-                new DefaultDialogs.Builder(this).setActual(Global.getMinTagCount()).setMax(100).setDialogs(new DefaultDialogs.DialogResults() {
-                    @Override
-                    public void positive(int actual) {
-                        Global.updateMinTagCount(TagFilter.this,actual);
-                    }
-                    @Override
-                    public void negative() {}
-                }).setTitle(R.string.minimum_tag_count).setDrawable(R.drawable.ic_hashtag)
-        );
-    }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -249,6 +237,15 @@ public class TagFilter extends AppCompatActivity{
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_tag_filter, container, false);
              recyclerView=rootView.findViewById(R.id.recycler);
+             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
+                 @Override
+                 public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy){
+                     GridLayoutManager manager=(GridLayoutManager)recyclerView.getLayoutManager();
+                     if(tag!=-1&&tag!=6&&manager.findLastVisibleItemPosition() >= (recyclerView.getAdapter().getItemCount()-1-manager.getSpanCount())){
+                         new ScrapeTags(PlaceholderFragment.this.getContext(),(TagsAdapter)recyclerView.getAdapter(),TagType.values()[tag]).start();
+                     }
+                 }
+             });
              if(Global.getTheme()== Global.ThemeScheme.BLACK){
                  recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), RecyclerView.VERTICAL));
                  recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), RecyclerView.HORIZONTAL));
@@ -269,13 +266,13 @@ public class TagFilter extends AppCompatActivity{
             String query=((TagFilter)getActivity()).searchView==null?"":((TagFilter)getActivity()).searchView.getQuery().toString();
             recyclerView.setLayoutManager(new GridLayoutManager(getContext(), getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE?4:2));
             if(tag!=-1){
-                List<Tag>t=Global.getTagSet(TagType.values()[tag]);
+                List<Tag>t=Tags.getTagSet(TagType.values()[tag]);
                 TagsAdapter adapter=new TagsAdapter((TagFilter)getActivity(),t==null?new ArrayList<Tag>(1):t,query);
                 recyclerView.setAdapter(adapter);
                 if(adapter.getTrueDataset().size()==0)loadTags();
             }
             else {
-                if(page==0)recyclerView.setAdapter(new TagsAdapter((TagFilter)getActivity(),Global.getListPrefer(),query));
+                if(page==0)recyclerView.setAdapter(new TagsAdapter((TagFilter)getActivity(),Tags.getListPrefer(),query));
                 else recyclerView.setAdapter(new TagsAdapter((TagFilter)getActivity(),query));
             }
         }
@@ -312,7 +309,7 @@ public class TagFilter extends AppCompatActivity{
 
         @Override
         public int getCount() {
-            return Global.isLogged()?7:6;
+            return Login.isLogged()?7:6;
         }
     }
 }

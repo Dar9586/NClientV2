@@ -12,6 +12,7 @@ import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.settings.Tags;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -56,7 +57,7 @@ public class Inspector {
     }
     public String getUsableURL(){
         StringBuilder builder = new StringBuilder("https://nhentai.net/");
-        String tagQuery=Global.getQueryString(query);
+        String tagQuery=Tags.getQueryString(query);
         switch (requestType){
             case BYALL: if(tagQuery.length()>0||Global.getOnlyLanguage()!=null) builder.append("search/?q=").append(appendedLanguage()).append(tagQuery);break;
             case BYSEARCH:case BYTAG:
@@ -198,7 +199,7 @@ public class Inspector {
 
     private void createUrl() {
         StringBuilder builder = new StringBuilder("https://nhentai.net/api/");
-        String tagQuery=Global.getRemoveIgnoredGalleries()?Global.getQueryString(query):"";
+        String tagQuery=Global.getRemoveIgnoredGalleries()?Tags.getQueryString(query):"";
         switch (requestType) {
             case BYSINGLE:
             case RELATED:

@@ -6,6 +6,7 @@ import com.dar.nclientv2.adapters.TagsAdapter;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.settings.Login;
 
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
@@ -31,7 +32,7 @@ public class LoadTags extends Thread {
     @Override
     public void run() {
         super.run();
-        Global.client.newCall(new Request.Builder().url(String.format(Locale.US,"https://nhentai.net/users/%s/%s/blacklist",Global.getUser().getId(),Global.getUser().getCodename())).build()).enqueue(new Callback() {
+        Global.client.newCall(new Request.Builder().url(String.format(Locale.US,"https://nhentai.net/users/%s/%s/blacklist",Login.getUser().getId(),Login.getUser().getCodename())).build()).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
 
@@ -39,7 +40,7 @@ public class LoadTags extends Thread {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                Global.clearOnlineTags();
+                Login.clearOnlineTags();
                 Elements x= Jsoup.parse(response.body().byteStream(),null,"https://nhentai.net/").getElementsByTag("script");
                 if(x.size()>0) {
                     String t = x.last().toString();
@@ -49,7 +50,7 @@ public class LoadTags extends Thread {
                     while (reader.hasNext()){
                         Tag tt=new Tag(reader);
                         if(tt.getType()!=TagType.LANGUAGE&&tt.getType()!=TagType.CATEGORY) {
-                            Global.addOnlineTag(tt);
+                            Login.addOnlineTag(tt);
                             if (adapter != null) adapter.addItem(tt);
                         }
                     }

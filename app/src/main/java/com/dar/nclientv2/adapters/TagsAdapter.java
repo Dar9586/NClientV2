@@ -21,6 +21,8 @@ import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.ScrapeTags;
 import com.dar.nclientv2.loginapi.LoadTags;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.settings.Login;
+import com.dar.nclientv2.settings.Tags;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
@@ -98,7 +100,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         this.tags=tags;
         online=false;
         black=Global.getTheme()== Global.ThemeScheme.BLACK;
-        logged=Global.isLogged();
+        logged=Login.isLogged();
         this.orderByPopular=!Global.isTagOrderByPopular();
         filterTags=new ArrayList<>();
         getFilter().filter(query);
@@ -107,12 +109,12 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
     public TagsAdapter(TagFilter cont,String query){
         this.context=cont;
         online=true;
-        logged=Global.isLogged();
+        logged=Login.isLogged();
         black=Global.getTheme()== Global.ThemeScheme.BLACK;
-        if(Global.getOnlineTags().size()==0){
+        if(Login.getOnlineTags().size()==0){
             this.tags=new ArrayList<>();
             new LoadTags(this).start();
-        }else this.tags=new ArrayList<>(Global.getOnlineTags());
+        }else this.tags=new ArrayList<>(Login.getOnlineTags());
         this.orderByPopular=!Global.isTagOrderByPopular();
         filterTags=new ArrayList<>();
         getFilter().filter(query);
@@ -134,11 +136,11 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
             @Override
             public void onClick(View v) {
                 if(!online) {
-                    if (!Global.maxTagReached() || Global.getStatus(ent) != TagStatus.DEFAULT) updateLogo(holder.imgView, Global.updateStatus(context, ent));
-                    else Snackbar.make(context.getViewPager(), context.getString(R.string.tags_max_reached, Global.MAXTAGS), Snackbar.LENGTH_LONG).show();
+                    if (!Tags.maxTagReached() || Tags.getStatus(ent) != TagStatus.DEFAULT) updateLogo(holder.imgView, Tags.updateStatus(context, ent));
+                    else Snackbar.make(context.getViewPager(), context.getString(R.string.tags_max_reached, Tags.MAXTAGS), Snackbar.LENGTH_LONG).show();
                 }else{
                     try {
-                        onlineTagUpdate(ent,!Global.getOnlineTags().contains(ent),holder.imgView);
+                        onlineTagUpdate(ent,!Login.getOnlineTags().contains(ent),holder.imgView);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -148,12 +150,12 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         if(!online&&logged)holder.master.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                if(!Global.getOnlineTags().contains(ent)) showBlacklistDialog(ent,holder.imgView);
+                if(!Login.getOnlineTags().contains(ent)) showBlacklistDialog(ent,holder.imgView);
                 else Toast.makeText(context, R.string.tag_already_in_blacklist, Toast.LENGTH_SHORT).show();
                 return true;
             }
         });
-        updateLogo(holder.imgView,online?TagStatus.AVOIDED:Global.getStatus(ent));
+        updateLogo(holder.imgView,online?TagStatus.AVOIDED:Tags.getStatus(ent));
     }
     private void showBlacklistDialog(final Tag tag,final ImageView imgView) {
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
@@ -177,7 +179,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         jw.endArray().name("removed").beginArray();
         if(!add)writeTag(jw,tag);
         jw.endArray().endObject();
-        final String url=String.format(Locale.US,"https://nhentai.net/users/%s/%s/blacklist",Global.getUser().getId(),Global.getUser().getCodename());
+        final String url=String.format(Locale.US,"https://nhentai.net/users/%s/%s/blacklist",Login.getUser().getId(),Login.getUser().getCodename());
         final RequestBody ss=RequestBody.create(MediaType.get("application/json"),sw.toString());
         Global.client.newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
             @Override
@@ -198,8 +200,8 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
                         String s=response.body().string();
                         Log.d(Global.LOGTAG,"Response: "+s);
                         if(s.equals("{\"status\": \"ok\"}")) {
-                            if (add) Global.addOnlineTag(tag);
-                            else Global.removeOnlineTag(tag);
+                            if (add) Login.addOnlineTag(tag);
+                            else Login.removeOnlineTag(tag);
                             if(online)updateLogo(imgView, add ? TagStatus.AVOIDED : TagStatus.DEFAULT);
                         }
                     }
@@ -255,11 +257,19 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
     public void addItem(Tag tag){
         tags.add(tag);
         if(tag.getName().contains(lastQuery)){
-            filterTags.add(tag);
+            int where=orderByPopular?filterTags.size()+1:Collections.binarySearch(filterTags, tag, new Comparator<Tag>(){
+                @Override
+                public int compare(Tag o1, Tag o2){
+                    return 0;
+                }
+            });
+            if(where<0)where=~where;
+            filterTags.add(where,tag);
+            final int w=where;
             context.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    notifyItemInserted(filterTags.size());
+                    notifyItemInserted(w);
                     //notifyDataSetChanged();
                 }
             });
@@ -267,6 +277,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
     }
     public void resetDataset(TagType type){
         tags.clear();
+        Tags.removeSet(context,type);
         int s=filterTags.size();
         filterTags=new ArrayList<>();
         notifyItemRangeRemoved(0,s);

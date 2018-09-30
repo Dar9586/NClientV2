@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.dar.nclientv2.api.RandomLoader;
 import com.dar.nclientv2.api.components.Gallery;
+import com.dar.nclientv2.settings.Favorites;
 import com.dar.nclientv2.settings.Global;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -30,7 +31,7 @@ public class RandomActivity extends AppCompatActivity {
         Global.loadTheme(this);
         Global.initHttpClient(this);
         Global.initImageQuality(this);
-        Global.countFavorite(this);
+        Favorites.countFavorite(this);
         Global.initLoadImages(this);
         setContentView(R.layout.activity_random);
         shuffle=findViewById(R.id.shuffle);
@@ -69,12 +70,12 @@ public class RandomActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(loadedGallery!=null&&loadedGallery.isValid()){
                     if(isFavorite){
-                        if(Global.removeFavorite(RandomActivity.this,loadedGallery)){
+                        if(Favorites.removeFavorite(RandomActivity.this,loadedGallery)){
                             isFavorite=false;
                             favorite.setImageResource(R.drawable.ic_favorite_border);
                         }
                     }else{
-                        if(Global.addFavorite(RandomActivity.this,loadedGallery)){
+                        if(Favorites.addFavorite(RandomActivity.this,loadedGallery)){
                             isFavorite=true;
                             favorite.setImageResource(R.drawable.ic_favorite);
                         }
@@ -100,7 +101,7 @@ public class RandomActivity extends AppCompatActivity {
             case JAPANESE:language.setText("\uD83C\uDDEF\uD83C\uDDF5");break;
             case UNKNOWN :language.setText("\uD83C\uDFF3"); break;
         }
-        isFavorite=Global.isFavorite(this,loadedGallery);
+        isFavorite=Favorites.isFavorite(this,loadedGallery);
         favorite.setImageResource(isFavorite?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
         title.setText(gallery.getTitle());
         page.setText(getString(R.string.page_count_format,gallery.getPageCount()));

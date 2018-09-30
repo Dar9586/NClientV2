@@ -65,8 +65,8 @@ public class Login {
             @Override
             public void onResponse(@NonNull Call call,@NonNull Response response) {
                 Log.d(Global.LOGTAG,"Logged out: "+response.networkResponse().code());
-                Global.logout(context);
-                Global.updateUser(null);
+                com.dar.nclientv2.settings.Login.logout(context);
+                com.dar.nclientv2.settings.Login.updateUser(null);
             }
         });
     }
@@ -83,7 +83,7 @@ public class Login {
             @Override
             public void onResponse(@NonNull Call call,@NonNull Response response) {
                 Log.d(Global.LOGTAG,"Log in: "+response.networkResponse().code());
-                if(Global.isLogged()) {
+                if(com.dar.nclientv2.settings.Login.isLogged()) {
                     activity.finish();
                     User.createUser(new User.CreateUser() {
                         @Override

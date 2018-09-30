@@ -5,6 +5,7 @@ import android.util.Log;
 import com.dar.nclientv2.adapters.FavoriteAdapter;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.settings.Login;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -35,13 +36,13 @@ public class DownloadFavorite extends Thread{
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                     Document doc = Jsoup.parse(response.body().byteStream(), null, url);
-                    if (Global.getUser() == null) User.createUser(new User.CreateUser() {
+                    if (Login.getUser() == null) User.createUser(new User.CreateUser() {
                         @Override
                         public void onCreateUser(User user) {
                             new DownloadFavorite(adapter, false);
                         }
                     });
-                    else if (!parse || Global.getUser().getTotalPages() == 0) updateTotalPage(doc);
+                    else if (!parse || Login.getUser().getTotalPages() == 0) updateTotalPage(doc);
                     if (parse) parseFavorite(doc);
 
 
@@ -54,7 +55,7 @@ public class DownloadFavorite extends Thread{
                     e.printStackTrace();
                 }
             }
-        }while (++page<=Global.getUser().getTotalPages());
+        }while (++page<=Login.getUser().getTotalPages());
         adapter.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -77,7 +78,7 @@ public class DownloadFavorite extends Thread{
             String y = ele.last().attr("href");
             total=Integer.parseInt(y.substring(y.indexOf('=') + 1));
         }
-        Global.getUser().setTotalPages(total);
+        Login.getUser().setTotalPages(total);
         Log.e(Global.LOGTAG,"Total: "+total);
     }
     private final Object lock=new Object();
@@ -86,7 +87,7 @@ public class DownloadFavorite extends Thread{
         for(Element y:x) {
             int id = Integer.parseInt(y.attr("data-id"));
             Log.e(Global.LOGTAG,"Loading: "+id);
-            Gallery g = Global.getOnlineFavorite(adapter.getActivity(), id);
+            Gallery g = Login.getOnlineFavorite(adapter.getActivity(), id);
             if (g == null) {
                 Gallery.galleryFromId(this, id);
                 synchronized (lock) {
@@ -98,6 +99,11 @@ public class DownloadFavorite extends Thread{
                 }
             } else addGallery(g, false);
         }
+        try{
+            Thread.sleep(1000);
+        }catch(InterruptedException e){
+            e.printStackTrace();
+        }
         synchronized (lock2){
             lock2.notify();
         }
@@ -107,7 +113,7 @@ public class DownloadFavorite extends Thread{
         adapter.addGallery(gallery);
         Log.d(Global.LOGTAG,"Loaded: "+gallery.getId()+" from "+(sync?"web":"shared"));
         if(sync) {
-            Global.saveOnlineFavorite(adapter.getActivity(),gallery);
+            Login.saveOnlineFavorite(adapter.getActivity(),gallery);
             synchronized (lock) {
                 lock.notify();
             }

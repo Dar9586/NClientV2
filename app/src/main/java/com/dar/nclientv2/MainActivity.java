@@ -24,6 +24,7 @@ import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.loginapi.Login;
 import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.settings.Tags;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.Locale;
@@ -60,11 +61,11 @@ public class MainActivity extends BaseActivity
         Global.initByPopular(this);
         Global.initLoadImages(this);
         Global.initOnlyLanguage(this);
-        Global.initTagPreferencesSets(this);
+        Tags.initTagPreferencesSets(this);
         Global.initMaxId(this);
         Global.initInfiniteScroll(this);
-        Global.initTagPreferencesSets(this);
-        Global.initUseAccountTag(this);
+        Tags.initTagPreferencesSets(this);
+        com.dar.nclientv2.settings.Login.initUseAccountTag(this);
         setContentView(R.layout.activity_main);
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -233,7 +234,7 @@ public class MainActivity extends BaseActivity
         Setting() {
             this.theme = Global.getTheme();
             this.loadImages = Global.isLoadImages();
-            this.logged= Global.isLogged();
+            this.logged= com.dar.nclientv2.settings.Login.isLogged();
             this.infinite= Global.isInfiniteScroll();
             this.remove= Global.getRemoveIgnoredGalleries();
         }
@@ -258,10 +259,10 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onResume() {
         super.onResume();
-        Global.initUseAccountTag(this);
+        com.dar.nclientv2.settings.Login.initUseAccountTag(this);
         if(setting!=null){
             Global.initHighRes(this);Global.initOnlyTag(this);Global.initInfiniteScroll(this);Global.initRemoveIgnoredGalleries(this);
-            if(Global.isLogged()!=setting.logged)supportInvalidateOptionsMenu();
+            if(com.dar.nclientv2.settings.Login.isLogged()!=setting.logged)supportInvalidateOptionsMenu();
             if(setting.remove!=Global.getRemoveIgnoredGalleries()){
                 new Inspector(this,1,inspector.getQuery(),inspector.getRequestType());
             }else if(setting.infinite!=Global.isInfiniteScroll()){
@@ -284,7 +285,7 @@ public class MainActivity extends BaseActivity
         if(tag!=null||related!=-1){
             if(tag!=null){
                 MenuItem item=menu.findItem(R.id.tag_manager).setVisible(true);
-                TagStatus ts=Global.getStatus(tag);
+                TagStatus ts=Tags.getStatus(tag);
                 switch (ts){
                     case DEFAULT:item.setIcon(R.drawable.ic_help);break;
                     case AVOIDED:item.setIcon(R.drawable.ic_close);break;
@@ -296,7 +297,7 @@ public class MainActivity extends BaseActivity
             menu.findItem(R.id.random).setVisible(false);
             menu.findItem(R.id.action_login).setVisible(false);
         }else {
-            menu.findItem(R.id.action_login).setTitle(Global.isLogged()?R.string.logout:R.string.login);
+            menu.findItem(R.id.action_login).setTitle(com.dar.nclientv2.settings.Login.isLogged()?R.string.logout:R.string.login);
             Global.setTint(menu.findItem(R.id.search).getIcon());
             Global.setTint(menu.findItem(R.id.random).getIcon());
         }
@@ -374,7 +375,7 @@ public class MainActivity extends BaseActivity
                 }
                 break;
             case R.id.tag_manager:
-                TagStatus ts=Global.updateStatus(this,tag);
+                TagStatus ts=Tags.updateStatus(this,tag);
                 switch (ts){
                     case DEFAULT:item.setIcon(R.drawable.ic_help);break;
                     case AVOIDED:item.setIcon(R.drawable.ic_close);break;
