@@ -85,7 +85,7 @@ public final class Global {
     }
 
     private static ThemeScheme initTheme(Context context){
-        String h=context.getSharedPreferences("Settings",0).getString(context.getString(R.string.key_theme_select),"light");
+        String h=context.getSharedPreferences("Settings",0).getString(context.getString(R.string.key_theme_select),"dark");
         return theme=h.equals("light")?ThemeScheme.LIGHT:h.equals("dark")?ThemeScheme.DARK:ThemeScheme.BLACK;
     }
 

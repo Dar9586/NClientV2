@@ -75,6 +75,7 @@ public class GalleryActivity extends BaseActivity
         toggle.syncState();
         refresher.setEnabled(false);
         recycler.setLayoutManager(new GridLayoutManager(this,Global.getColumnCount()));
+        lookup();
         navigationView.setNavigationItemSelectedListener(this);
 
 
@@ -93,6 +94,15 @@ public class GalleryActivity extends BaseActivity
             new Inspector(this,isZoom,params.get(1),ApiRequestType.BYSINGLE);
         }else loadGallery(gallery,zoom);
 
+    }
+    private void lookup(){
+        GridLayoutManager manager= (GridLayoutManager)recycler.getLayoutManager();
+        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup(){
+            @Override
+            public int getSpanSize(int position){
+                return !gallery.isLocal()&&position==0?manager.getSpanCount():1;
+            }
+        });
     }
     private void loadGallery(GenericGallery gall,int zoom) {
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -259,6 +269,7 @@ public class GalleryActivity extends BaseActivity
             Global.updateColumnCount(this,x);
             RecyclerView.Adapter adapter=recycler.getAdapter();
             recycler.setLayoutManager(new GridLayoutManager(this,x));
+            lookup();
             Log.d(Global.LOGTAG,"Span count: "+((GridLayoutManager)recycler.getLayoutManager()).getSpanCount());
             if(adapter!=null)recycler.setAdapter(adapter);
         }
