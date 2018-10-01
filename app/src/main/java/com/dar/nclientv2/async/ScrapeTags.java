@@ -102,6 +102,7 @@ public class ScrapeTags extends Thread {
                         tagType
                 );
                 adapter.addItem(t);
+                //tagsList.add(t);
             }
         }
     }

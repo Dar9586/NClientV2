@@ -1,6 +1,7 @@
 package com.dar.nclientv2.loginapi;
 
 import android.util.JsonReader;
+import android.util.Log;
 
 import com.dar.nclientv2.adapters.TagsAdapter;
 import com.dar.nclientv2.api.components.Tag;
@@ -32,6 +33,7 @@ public class LoadTags extends Thread {
     @Override
     public void run() {
         super.run();
+        Log.d(Global.LOGTAG,String.format("Creating blacklist of: https://nhentai.net/users/%s/%s/blacklist",Login.getUser().getId(),Login.getUser().getCodename()));
         Global.client.newCall(new Request.Builder().url(String.format(Locale.US,"https://nhentai.net/users/%s/%s/blacklist",Login.getUser().getId(),Login.getUser().getCodename())).build()).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {

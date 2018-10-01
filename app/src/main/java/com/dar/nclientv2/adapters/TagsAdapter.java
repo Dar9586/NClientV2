@@ -75,9 +75,8 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
                     filterTags=(List<Tag>) results.values;
                     if(filterTags.size()>results.count)notifyItemRangeInserted(results.count,filterTags.size()-results.count);
                     else if(filterTags.size()<results.count)notifyItemRangeRemoved(filterTags.size(),results.count-filterTags.size());
-                    sortDataset(true);
-                }else sortDataset(false);
-
+                    sortDataset();
+                }
             }
         };
     }
@@ -94,14 +93,12 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
             master=v.findViewById(R.id.master_layout);
         }
     }
-    private boolean orderByPopular;
     public TagsAdapter(TagFilter cont, List<Tag> tags,String query) {
         this.context=cont;
         this.tags=tags;
         online=false;
         black=Global.getTheme()== Global.ThemeScheme.BLACK;
         logged=Login.isLogged();
-        this.orderByPopular=!Global.isTagOrderByPopular();
         filterTags=new ArrayList<>();
         getFilter().filter(query);
     }
@@ -115,7 +112,6 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
             this.tags=new ArrayList<>();
             new LoadTags(this).start();
         }else this.tags=new ArrayList<>(Login.getOnlineTags());
-        this.orderByPopular=!Global.isTagOrderByPopular();
         filterTags=new ArrayList<>();
         getFilter().filter(query);
     }
@@ -235,41 +231,24 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
     public List<Tag> getTrueDataset() {
         return tags;
     }
-    public void sortDataset(boolean force){
-        boolean byPopular=Global.isTagOrderByPopular();
-        Log.d(Global.LOGTAG,"SORT: "+(byPopular==orderByPopular));
-        if(byPopular==orderByPopular&&!force)return;
-        orderByPopular=byPopular;
-        if(orderByPopular) Collections.sort(filterTags, new Comparator<Tag>() {
+    public void sortDataset(){
+        Collections.sort(filterTags, new Comparator<Tag>() {
             @Override
             public int compare(Tag o1, Tag o2) {
                 return o2.getCount()-o1.getCount();
             }
         });
-        else Collections.sort(filterTags, new Comparator<Tag>() {
-            @Override
-            public int compare(Tag o1, Tag o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
         notifyItemRangeChanged(0,filterTags.size());
     }
+
     public void addItem(Tag tag){
         tags.add(tag);
         if(tag.getName().contains(lastQuery)){
-            int where=orderByPopular?filterTags.size()+1:Collections.binarySearch(filterTags, tag, new Comparator<Tag>(){
-                @Override
-                public int compare(Tag o1, Tag o2){
-                    return 0;
-                }
-            });
-            if(where<0)where=~where;
-            filterTags.add(where,tag);
-            final int w=where;
+            filterTags.add(tag);
             context.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    notifyItemInserted(w);
+                    notifyItemInserted(filterTags.size());
                     //notifyDataSetChanged();
                 }
             });

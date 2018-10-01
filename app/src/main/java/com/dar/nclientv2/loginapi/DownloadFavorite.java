@@ -30,6 +30,7 @@ public class DownloadFavorite extends Thread{
         int page=1;
         do {
             final String url = "https://nhentai.net/favorites/?page=" + page;
+            Log.d(Global.LOGTAG,"Downloading online favorites: "+url);
             Global.client.newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {}
@@ -86,7 +87,7 @@ public class DownloadFavorite extends Thread{
         Elements x=doc.getElementsByClass("gallery-favorite");
         for(Element y:x) {
             int id = Integer.parseInt(y.attr("data-id"));
-            Log.e(Global.LOGTAG,"Loading: "+id);
+            Log.d(Global.LOGTAG,"Loading: "+id);
             Gallery g = Login.getOnlineFavorite(adapter.getActivity(), id);
             if (g == null) {
                 Gallery.galleryFromId(this, id);

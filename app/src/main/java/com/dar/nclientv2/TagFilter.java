@@ -53,7 +53,6 @@ public class TagFilter extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
         Global.initHttpClient(this);
-        Global.initTagOrder(this);
         Tags.initTagSets(this);
         Tags.initTagPreferencesSets(this);
         setContentView(R.layout.activity_tag_filter);
@@ -118,8 +117,6 @@ public class TagFilter extends AppCompatActivity{
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_tag_filter, menu);
-        menu.findItem(R.id.order_type).setIcon(Global.isTagOrderByPopular()?R.drawable.ic_sort:R.drawable.ic_sort_by_alpha);
-        Global.setTint(menu.findItem(R.id.order_type).getIcon());
         searchView=(androidx.appcompat.widget.SearchView)menu.findItem(R.id.search).getActionView();
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
@@ -168,12 +165,6 @@ public class TagFilter extends AppCompatActivity{
         switch (id){
             case R.id.refresh:if(page != null)createDialog(true);break;
             case R.id.reset_tags:createDialog(false);break;
-            case R.id.order_type:
-                Global.updateTagOrder(this,!Global.isTagOrderByPopular());
-            if(page!=null)((PlaceholderFragment)page).sortDataset();
-                item.setIcon(Global.isTagOrderByPopular()?R.drawable.ic_sort:R.drawable.ic_sort_by_alpha);
-                Global.setTint(item.getIcon());
-            break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -280,9 +271,6 @@ public class TagFilter extends AppCompatActivity{
             if(((TagFilter)getActivity()).searchView!=null&&recyclerView.getAdapter()!=null)
                 ((TagsAdapter)recyclerView.getAdapter()).getFilter().filter(newText);
 
-        }
-        private void sortDataset(){
-            if(recyclerView.getAdapter()!=null) ((TagsAdapter)recyclerView.getAdapter()).sortDataset(false);
         }
 
         void updateDataset() {

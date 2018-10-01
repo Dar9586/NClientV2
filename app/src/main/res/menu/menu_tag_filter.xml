@@ -8,10 +8,6 @@
         android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
-    <item android:id="@+id/order_type"
-        android:title="@string/sort_type"
-        android:icon="@drawable/ic_sort_by_alpha"
-        app:showAsAction="ifRoom|collapseActionView"/>
     <item
         android:id="@+id/reset_tags"
         android:title="@string/clear_tag_preferences"
