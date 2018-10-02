@@ -92,18 +92,15 @@ public class Inspector {
         client.newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        galleries=new ArrayList<>(1);
-                        if(activity instanceof MainActivity){
-                            if(!update||activity.getRecycler().getAdapter()==null)
-                                activity.getRecycler().setAdapter(new ListAdapter(activity,galleries,null));
-                            ((MainActivity)activity).hidePageSwitcher();
-                        }
-                        else if(activity instanceof GalleryActivity)activity.getRefresher().setEnabled(false);
-                        activity.getRefresher().setRefreshing(false);
+                activity.runOnUiThread(() -> {
+                    galleries=new ArrayList<>(1);
+                    if(activity instanceof MainActivity){
+                        if(!update||activity.getRecycler().getAdapter()==null)
+                            activity.getRecycler().setAdapter(new ListAdapter(activity,galleries,null));
+                        ((MainActivity)activity).hidePageSwitcher();
                     }
+                    else if(activity instanceof GalleryActivity)activity.getRefresher().setEnabled(false);
+                    activity.getRefresher().setRefreshing(false);
                 });
             }
 
@@ -112,25 +109,22 @@ public class Inspector {
                 Log.d(Global.LOGTAG,"Response of "+url);
                 parseGalleries(response.body().charStream());
                 for (Gallery x:galleries)if(x.getId()>Global.getMaxId())Global.updateMaxId(activity,x.getId());
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(requestType!=ApiRequestType.BYSINGLE){
-                            if(update&&activity.getRecycler().getAdapter()!=null)((ListAdapter)activity.getRecycler().getAdapter()).addGalleries(galleries);
-                            else activity.getRecycler().setAdapter(new ListAdapter(activity, galleries,Global.getRemoveIgnoredGalleries()?null:query));
-                            ((MainActivity)activity).setInspector(Inspector.this);
-                            ((MainActivity)activity).showPageSwitcher(Inspector.this.page,Inspector.this.pageCount);
-                        }
-                        else{
-                            Intent intent=new Intent(activity, GalleryActivity.class);
-                            intent.putExtra(activity.getPackageName()+".GALLERY",galleries.get(0));
-                            intent.putExtra(activity.getPackageName()+".ZOOM",page-1);
-                            activity.startActivity(intent);
-                            activity.getRefresher().setEnabled(false);
-                            if(page!=-1)activity.finish();
-                        }
-                        activity.getRefresher().setRefreshing(false);
+                activity.runOnUiThread(() -> {
+                    if(requestType!=ApiRequestType.BYSINGLE){
+                        if(update&&activity.getRecycler().getAdapter()!=null)((ListAdapter)activity.getRecycler().getAdapter()).addGalleries(galleries);
+                        else activity.getRecycler().setAdapter(new ListAdapter(activity, galleries,Global.getRemoveIgnoredGalleries()?null:query));
+                        ((MainActivity)activity).setInspector(Inspector.this);
+                        ((MainActivity)activity).showPageSwitcher(Inspector.this.page,Inspector.this.pageCount);
                     }
+                    else{
+                        Intent intent=new Intent(activity, GalleryActivity.class);
+                        intent.putExtra(activity.getPackageName()+".GALLERY",galleries.get(0));
+                        intent.putExtra(activity.getPackageName()+".ZOOM",page-1);
+                        activity.startActivity(intent);
+                        activity.getRefresher().setEnabled(false);
+                        if(page!=-1)activity.finish();
+                    }
+                    activity.getRefresher().setRefreshing(false);
                 });
             }
         });

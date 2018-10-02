@@ -2,7 +2,6 @@ package com.dar.nclientv2;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -38,7 +37,6 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -104,33 +102,17 @@ public class MainActivity extends BaseActivity
 
             }
         });
-        refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new Inspector(MainActivity.this,Inspector.getActualPage(),Inspector.getActualQuery(),Inspector.getActualRequestType());
-            }
+        refresher.setOnRefreshListener(() -> new Inspector(MainActivity.this,Inspector.getActualPage(),Inspector.getActualQuery(),Inspector.getActualRequestType()));
+        findViewById(R.id.prev).setOnClickListener(v -> {
+            if (actualPage > 1)
+                new Inspector(MainActivity.this, actualPage - 1, Inspector.getActualQuery(), Inspector.getActualRequestType());
         });
-        findViewById(R.id.prev).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (actualPage > 1)
-                    new Inspector(MainActivity.this, actualPage - 1, Inspector.getActualQuery(), Inspector.getActualRequestType());
-            }
-        });
-        findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (actualPage < totalPage)
-                    new Inspector(MainActivity.this, actualPage + 1, Inspector.getActualQuery(), Inspector.getActualRequestType());
+        findViewById(R.id.next).setOnClickListener(v -> {
+            if (actualPage < totalPage)
+                new Inspector(MainActivity.this, actualPage + 1, Inspector.getActualQuery(), Inspector.getActualRequestType());
 
-            }
         });
-        findViewById(R.id.page_index).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadDialog();
-            }
-        });
+        findViewById(R.id.page_index).setOnClickListener(v -> loadDialog());
         changeLayout(getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE);
         Bundle bundle=getIntent().getExtras();
         if(bundle!=null){
@@ -332,12 +314,7 @@ public class MainActivity extends BaseActivity
             }
         });
         ImageView closeButton = searchView.findViewById(R.id.search_close_btn);
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                removeQuery();
-            }
-        });
+        closeButton.setOnClickListener(v -> removeQuery());
         return true;
     }
 
@@ -390,12 +367,9 @@ public class MainActivity extends BaseActivity
     private void showLogoutForm(final MenuItem item) {
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.ic_exit_to_app).setTitle(R.string.logout).setMessage(R.string.are_you_sure);
-        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Login.logout(MainActivity.this);
-                item.setTitle(R.string.login);
-            }
+        builder.setPositiveButton(android.R.string.yes, (dialogInterface, i) -> {
+            Login.logout(MainActivity.this);
+            item.setTitle(R.string.login);
         }).setNegativeButton(android.R.string.no,null).show();
     }
 

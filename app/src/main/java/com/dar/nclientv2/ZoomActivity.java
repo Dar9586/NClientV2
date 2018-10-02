@@ -7,7 +7,6 @@ import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,7 +24,6 @@ import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.components.CustomViewPager;
 import com.dar.nclientv2.settings.Global;
-import com.github.chrisbanes.photoview.OnMatrixChangedListener;
 import com.github.chrisbanes.photoview.PhotoView;
 
 import java.io.File;
@@ -51,7 +49,6 @@ public class ZoomActivity extends AppCompatActivity {
             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
     private final static int showFlags=View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
     private boolean isHidden=false;
-    private SectionsPagerAdapter mSectionsPagerAdapter;
 
     private CustomViewPager mViewPager;
     private TextView pageManager;
@@ -77,7 +74,7 @@ public class ZoomActivity extends AppCompatActivity {
                         | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                         | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         pageSwitcher =findViewById(R.id.page_switcher);
@@ -105,17 +102,11 @@ public class ZoomActivity extends AppCompatActivity {
             public void onPageScrollStateChanged(int state) { }
         });
         changeLayout(getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE);
-        findViewById(R.id.prev).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mViewPager.getCurrentItem()>0)changePage(mViewPager.getCurrentItem()-1);
-            }
+        findViewById(R.id.prev).setOnClickListener(v -> {
+            if(mViewPager.getCurrentItem()>0)changePage(mViewPager.getCurrentItem()-1);
         });
-        findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mViewPager.getCurrentItem()<(mViewPager.getAdapter().getCount()-1))changePage(mViewPager.getCurrentItem()+1);
-            }
+        findViewById(R.id.next).setOnClickListener(v -> {
+            if(mViewPager.getCurrentItem()<(mViewPager.getAdapter().getCount()-1))changePage(mViewPager.getCurrentItem()+1);
         });
 
         final int page=getIntent().getExtras().getInt(getPackageName()+".PAGE",0);
@@ -224,7 +215,7 @@ public class ZoomActivity extends AppCompatActivity {
         }
     }
 
-    public static class PlaceholderFragment extends Fragment {
+    static class PlaceholderFragment extends Fragment {
 
         public PlaceholderFragment() {
         }
@@ -244,41 +235,33 @@ public class ZoomActivity extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.fragment_zoom, container, false);
             photoView =  rootView.findViewById(R.id.image);
 
-            photoView.setOnMatrixChangeListener(new OnMatrixChangedListener() {
-                @Override
-                public void onMatrixChanged(RectF rect) {
-                    photoView.setAllowParentInterceptOnEdge(photoView.getScale()<=1f);
-                }
-            });
-            photoView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            photoView.setOnMatrixChangeListener(rect -> photoView.setAllowParentInterceptOnEdge(photoView.getScale()<=1f));
+            photoView.setOnClickListener(v -> {
 
-                    /*x.getWindow().getDecorView().setSystemUiVisibility(x.isHidden?showFlags:hideFlags);
-                    x.findViewById(R.id.page_switcher).setVisibility(x.isHidden?View.VISIBLE:View.GONE);
-                    x.findViewById(R.id.appbar).setVisibility(x.isHidden?View.VISIBLE:View.GONE);
-                    x.isHidden=!x.isHidden;*/
-                    final View y=x.findViewById(R.id.page_switcher);
-                    final View z=x.findViewById(R.id.appbar);
-                    x.isHidden=!x.isHidden;
-                    x.getWindow().getDecorView().setSystemUiVisibility(x.isHidden?hideFlags:showFlags);
-                    y.setVisibility(View.VISIBLE);
-                    z.setVisibility(View.VISIBLE);
-                    y.animate().alpha(x.isHidden?0f:0.75f).setDuration(150).setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            if(x.isHidden)y.setVisibility(View.GONE);
-                        }
-                    }).start();
+                /*x.getWindow().getDecorView().setSystemUiVisibility(x.isHidden?showFlags:hideFlags);
+                x.findViewById(R.id.page_switcher).setVisibility(x.isHidden?View.VISIBLE:View.GONE);
+                x.findViewById(R.id.appbar).setVisibility(x.isHidden?View.VISIBLE:View.GONE);
+                x.isHidden=!x.isHidden;*/
+                final View y=x.findViewById(R.id.page_switcher);
+                final View z=x.findViewById(R.id.appbar);
+                x.isHidden=!x.isHidden;
+                x.getWindow().getDecorView().setSystemUiVisibility(x.isHidden?hideFlags:showFlags);
+                y.setVisibility(View.VISIBLE);
+                z.setVisibility(View.VISIBLE);
+                y.animate().alpha(x.isHidden?0f:0.75f).setDuration(150).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        if(x.isHidden)y.setVisibility(View.GONE);
+                    }
+                }).start();
 
-                    z.animate().alpha(x.isHidden?0f:0.75f).setDuration(150).setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            if(x.isHidden)z.setVisibility(View.GONE);
-                        }
-                    }).start();
+                z.animate().alpha(x.isHidden?0f:0.75f).setDuration(150).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        if(x.isHidden)z.setVisibility(View.GONE);
+                    }
+                }).start();
 
-                }
             });
             int page=getArguments().getInt("PAGE",0);
             File file=x.directory==null?null:new File(x.directory,("000"+(page+1)+".jpg").substring(Integer.toString(page+1).length()));

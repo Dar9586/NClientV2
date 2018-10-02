@@ -121,13 +121,10 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                     Chip c=(Chip)context.getLayoutInflater().inflate(R.layout.chip_layout,cg,false);
                     //c.setText(context.getString(R.string.tag_format, tag.getName(), tag.getCount()));
                     c.setText(tag.getName());
-                    c.setOnClickListener(new View.OnClickListener(){
-                        @Override
-                        public void onClick(View v){
-                            Intent intent = new Intent(context, MainActivity.class);
-                            intent.putExtra(context.getPackageName() + ".TAG", tag);
-                            context.startActivity(intent);
-                        }
+                    c.setOnClickListener(v -> {
+                        Intent intent = new Intent(context, MainActivity.class);
+                        intent.putExtra(context.getPackageName() + ".TAG", tag);
+                        context.startActivity(intent);
                     });
                     cg.addView(c);
                 }
@@ -147,14 +144,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             if(file != null && file.exists()) Global.loadImage(file, imgView);
             else Global.loadImage(R.mipmap.ic_launcher, imgView);
         }
-        imgView.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Intent intent = new Intent(context, ZoomActivity.class);
-                intent.putExtra(context.getPackageName() + ".GALLERY", gallery);
-                intent.putExtra(context.getPackageName() + ".PAGE", holder.getAdapterPosition()-1);
-                context.startActivity(intent);
-            }
+        imgView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ZoomActivity.class);
+            intent.putExtra(context.getPackageName() + ".GALLERY", gallery);
+            intent.putExtra(context.getPackageName() + ".PAGE", holder.getAdapterPosition()-1);
+            context.startActivity(intent);
         });
     }
 

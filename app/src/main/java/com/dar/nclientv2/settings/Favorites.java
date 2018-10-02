@@ -29,7 +29,7 @@ public class Favorites{
 
     public static boolean addFavorite(Context context, Gallery gallery){
         if(totalFavorite>=MAXFAVORITE)return false;
-        Set<String> x=context.getSharedPreferences("FavoriteList", 0).getStringSet(context.getString(R.string.key_favorite_list),new HashSet<String>());
+        Set<String> x=context.getSharedPreferences("FavoriteList", 0).getStringSet(context.getString(R.string.key_favorite_list), new HashSet<>());
         try {
             x.add(gallery.writeGallery());
         }catch (IOException e){
@@ -45,7 +45,7 @@ public class Favorites{
     public static boolean removeFavorite(Context context,GenericGallery gallery){
         Log.i(LOGTAG,"Called remove");
         try {
-            Set<String> x = context.getSharedPreferences("FavoriteList", 0).getStringSet(context.getString(R.string.key_favorite_list), new HashSet<String>());
+            Set<String> x = context.getSharedPreferences("FavoriteList", 0).getStringSet(context.getString(R.string.key_favorite_list), new HashSet<>());
             for (String y : x) {
                 try {
                     if (Integer.parseInt(y.substring(1, y.indexOf(','))) == gallery.getId())
@@ -66,7 +66,7 @@ public class Favorites{
 
     public static boolean isFavorite(Context context,GenericGallery gallery){
         if(gallery==null)return false;
-        Set<String> x=context.getSharedPreferences("FavoriteList", 0).getStringSet(context.getString(R.string.key_favorite_list),new HashSet<String>());
+        Set<String> x=context.getSharedPreferences("FavoriteList", 0).getStringSet(context.getString(R.string.key_favorite_list), new HashSet<>());
         for(String y:x){
             try{
                 if(Integer.parseInt(y.substring(1,y.indexOf(',')))==gallery.getId())return true;
@@ -78,6 +78,6 @@ public class Favorites{
     }
 
     public static void countFavorite(Context context){
-        totalFavorite=context.getSharedPreferences("FavoriteList", 0).getStringSet(context.getString(R.string.key_favorite_list),new HashSet<String>()).size();
+        totalFavorite=context.getSharedPreferences("FavoriteList", 0).getStringSet(context.getString(R.string.key_favorite_list), new HashSet<>()).size();
     }
 }

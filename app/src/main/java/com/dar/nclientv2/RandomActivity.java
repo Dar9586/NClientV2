@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -17,7 +16,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class RandomActivity extends AppCompatActivity {
-    private FloatingActionButton shuffle;
     private TextView language;
     private ImageButton thumbnail;
     private ImageButton share;
@@ -34,7 +32,7 @@ public class RandomActivity extends AppCompatActivity {
         Favorites.countFavorite(this);
         Global.initLoadImages(this);
         setContentView(R.layout.activity_random);
-        shuffle=findViewById(R.id.shuffle);
+        FloatingActionButton shuffle = findViewById(R.id.shuffle);
         language=findViewById(R.id.language);
         thumbnail=findViewById(R.id.thumbnail);
         share=findViewById(R.id.share);
@@ -43,42 +41,28 @@ public class RandomActivity extends AppCompatActivity {
         page=findViewById(R.id.pages);
         loader=new RandomLoader(this);
         if(loadedGallery!=null)loadGallery(loadedGallery);
-        shuffle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loader.requestGallery();
+        shuffle.setOnClickListener(v -> loader.requestGallery());
+        thumbnail.setOnClickListener(v -> {
+            if(loadedGallery!=null) {
+                Intent intent = new Intent(RandomActivity.this, GalleryActivity.class);
+                intent.putExtra(RandomActivity.this.getPackageName() + ".GALLERY", loadedGallery);
+                RandomActivity.this.startActivity(intent);
             }
         });
-        thumbnail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(loadedGallery!=null) {
-                    Intent intent = new Intent(RandomActivity.this, GalleryActivity.class);
-                    intent.putExtra(RandomActivity.this.getPackageName() + ".GALLERY", loadedGallery);
-                    RandomActivity.this.startActivity(intent);
-                }
-            }
+        share.setOnClickListener(v -> {
+            if(loadedGallery!=null&&loadedGallery.isValid())Global.shareGallery(RandomActivity.this,loadedGallery);
         });
-        share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(loadedGallery!=null&&loadedGallery.isValid())Global.shareGallery(RandomActivity.this,loadedGallery);
-            }
-        });
-        favorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(loadedGallery!=null&&loadedGallery.isValid()){
-                    if(isFavorite){
-                        if(Favorites.removeFavorite(RandomActivity.this,loadedGallery)){
-                            isFavorite=false;
-                            favorite.setImageResource(R.drawable.ic_favorite_border);
-                        }
-                    }else{
-                        if(Favorites.addFavorite(RandomActivity.this,loadedGallery)){
-                            isFavorite=true;
-                            favorite.setImageResource(R.drawable.ic_favorite);
-                        }
+        favorite.setOnClickListener(v -> {
+            if(loadedGallery!=null&&loadedGallery.isValid()){
+                if(isFavorite){
+                    if(Favorites.removeFavorite(RandomActivity.this,loadedGallery)){
+                        isFavorite=false;
+                        favorite.setImageResource(R.drawable.ic_favorite_border);
+                    }
+                }else{
+                    if(Favorites.addFavorite(RandomActivity.this,loadedGallery)){
+                        isFavorite=true;
+                        favorite.setImageResource(R.drawable.ic_favorite);
                     }
                 }
             }

@@ -7,7 +7,6 @@ import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.settings.Global;
 
 import java.io.File;
-import java.io.FilenameFilter;
 
 import androidx.annotation.Nullable;
 
@@ -22,10 +21,7 @@ public class LocalGallery extends GenericGallery{
         this.id=id;
         int max=0,min=9999;
         //Inizio ricerca pagine
-        File[] files=file.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {return name.endsWith(".jpg")&&name.length()==7;}
-        });
+        File[] files=file.listFiles((dir, name) -> name.endsWith(".jpg")&&name.length()==7);
         //trova la pagina col numero piu grande
         if(files.length<1) Log.e(Global.LOGTAG,"FILE INESISTENTI");
         for(File f:files){

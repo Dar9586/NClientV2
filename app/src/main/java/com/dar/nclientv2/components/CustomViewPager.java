@@ -5,7 +5,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.View;
 
 import com.dar.nclientv2.settings.Global;
 
@@ -56,14 +55,10 @@ public class CustomViewPager extends ViewPager {
     }
     private void setup() {
         final GestureDetector tapGestureDetector = new    GestureDetector(getContext(), new TapGestureListener());
-        setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                tapGestureDetector.onTouchEvent(event);
-                performClick();
-                return false;
-            }
-
+        setOnTouchListener((v, event) -> {
+            tapGestureDetector.onTouchEvent(event);
+            performClick();
+            return false;
         });
     }
 

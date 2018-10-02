@@ -66,9 +66,8 @@ public class User {
         return codename;
     }
 
-    public User setTotalPages(int totalPages) {
+    public void setTotalPages(int totalPages) {
         this.totalPages = totalPages;
-        return this;
     }
 
     public int getTotalPages() {

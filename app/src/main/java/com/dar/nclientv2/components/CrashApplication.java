@@ -10,7 +10,7 @@ import org.acra.annotation.AcraMailSender;
 
 @AcraCore(buildConfigClass = BuildConfig.class)
 @AcraMailSender(mailTo = "atoppi2013@gmail.com")
-public class CrashApplication extends Application{
+class CrashApplication extends Application{
     @Override
     protected void attachBaseContext(Context newBase){
         super.attachBaseContext(newBase);

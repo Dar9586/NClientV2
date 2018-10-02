@@ -1,6 +1,5 @@
 package com.dar.nclientv2;
 
-import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,8 +36,6 @@ import androidx.viewpager.widget.ViewPager;
 
 public class TagFilter extends AppCompatActivity{
 
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -62,7 +59,7 @@ public class TagFilter extends AppCompatActivity{
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         // Set up the ViewPager with the sections adapter.
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -138,16 +135,13 @@ public class TagFilter extends AppCompatActivity{
     private void createDialog(final boolean reset){
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
         builder.setTitle(R.string.are_you_sure).setMessage(reset?R.string.reload_tags:R.string.reset_tags_long).setIcon(R.drawable.ic_help);
-        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
-                if (page != null) {
-                    if(reset)((PlaceholderFragment)page).loadTags();
-                    else{
-                        Tags.resetAllStatus(TagFilter.this);
-                        ((PlaceholderFragment)page).updateDataset();
-                    }
+        builder.setPositiveButton(android.R.string.yes, (dialog, which) -> {
+            Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
+            if (page != null) {
+                if(reset)((PlaceholderFragment)page).loadTags();
+                else{
+                    Tags.resetAllStatus(TagFilter.this);
+                    ((PlaceholderFragment)page).updateDataset();
                 }
             }
         }).setNegativeButton(android.R.string.no, null).setCancelable(true);
@@ -193,7 +187,7 @@ public class TagFilter extends AppCompatActivity{
             }
         }
     }
-    public static class PlaceholderFragment extends Fragment {
+    static class PlaceholderFragment extends Fragment {
         public PlaceholderFragment() {
         }
 
@@ -259,7 +253,7 @@ public class TagFilter extends AppCompatActivity{
             recyclerView.setLayoutManager(new GridLayoutManager(getContext(), getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE?4:2));
             if(tag!=-1){
                 List<Tag>t=Tags.getTagSet(TagType.values()[tag]);
-                TagsAdapter adapter=new TagsAdapter((TagFilter)getActivity(),t==null?new ArrayList<Tag>(1):t,query);
+                TagsAdapter adapter=new TagsAdapter((TagFilter)getActivity(),t==null?new ArrayList<>(1):t,query);
                 recyclerView.setAdapter(adapter);
                 if(adapter.getTrueDataset().size()==0)loadTags();
             }

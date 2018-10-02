@@ -91,11 +91,8 @@ public final class Global {
         client.dispatcher().setMaxRequests(25);
         client.dispatcher().setMaxRequestsPerHost(25);
         if(Login.isLogged()&&Login.getUser()==null){
-            User.createUser(new User.CreateUser() {
-                @Override
-                public void onCreateUser(User user) {
-                    if(user!=null)new LoadTags(null).start();
-                }
+            User.createUser(user -> {
+                if(user!=null)new LoadTags(null).start();
             });
         }
     }

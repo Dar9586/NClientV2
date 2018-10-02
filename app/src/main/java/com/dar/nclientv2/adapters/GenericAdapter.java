@@ -13,7 +13,6 @@ import com.dar.nclientv2.api.components.GenericGallery;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -42,12 +41,7 @@ public abstract class GenericAdapter<T extends GenericGallery> extends RecyclerV
 
     GenericAdapter(List<T>dataset){
         this.dataset=dataset;
-        Collections.sort(dataset, new Comparator<T>() {
-            @Override
-            public int compare(T o1, T o2) {
-                return o1.getTitle().compareTo(o2.getTitle());
-            }
-        });
+        Collections.sort(dataset, (o1, o2) -> o1.getTitle().compareTo(o2.getTitle()));
         filter=new ArrayList<>(dataset);
     }
 

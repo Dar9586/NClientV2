@@ -91,7 +91,6 @@ public class GalleryActivity extends BaseActivity{
         });
     }
     private void loadGallery(GenericGallery gall,int zoom) {
-        Toolbar toolbar = findViewById(R.id.toolbar);
         this.gallery=gall;
         if(getSupportActionBar()!=null)getSupportActionBar().setTitle(gallery.getTitle());
         recycler.setAdapter(new GalleryAdapter(this,gallery));
@@ -159,12 +158,9 @@ public class GalleryActivity extends BaseActivity{
                             final boolean x=Login.getOnlineFavorite(GalleryActivity.this,gallery.getId())==null;
                             if (x) Login.saveOnlineFavorite(GalleryActivity.this, (Gallery) gallery);
                             else Login.removeOnlineFavorite(GalleryActivity.this, gallery.getId());
-                            GalleryActivity.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    item.setIcon(x?R.drawable.ic_star:R.drawable.ic_star_border);
-                                    item.setTitle(x?R.string.remove_from_online_favorites:R.string.add_to_online_favorite);
-                                }
+                            GalleryActivity.this.runOnUiThread(() -> {
+                                item.setIcon(x?R.drawable.ic_star:R.drawable.ic_star_border);
+                                item.setTitle(x?R.string.remove_from_online_favorites:R.string.add_to_online_favorite);
                             });
                     }
                 });

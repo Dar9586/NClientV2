@@ -24,7 +24,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class LoadTags extends Thread {
-    private TagsAdapter adapter;
+    private final TagsAdapter adapter;
 
     public LoadTags(@Nullable TagsAdapter adapter) {
         this.adapter = adapter;

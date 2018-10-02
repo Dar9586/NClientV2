@@ -29,7 +29,7 @@ public class Image implements Parcelable{
         this.jpg=jpg;
     }
 
-    protected Image(Parcel in) {
+    Image(Parcel in) {
         jpg = in.readByte() != 0;
         galleryId = in.readInt();
         type=ImageType.values()[in.readInt()];

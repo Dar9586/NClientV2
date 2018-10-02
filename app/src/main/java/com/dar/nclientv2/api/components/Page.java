@@ -47,7 +47,7 @@ public class Page extends Image {
             return new Page[size];
         }
     };
-    protected Page(Parcel in) {
+    private Page(Parcel in) {
         super(in);
         page=in.readInt();
     }

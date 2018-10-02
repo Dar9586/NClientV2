@@ -61,12 +61,9 @@ public class RandomLoader {
     public void requestGallery(){
         if(galleries.size()==0) hasRequested=true;
         else{
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Gallery x=galleries.remove(0);
-                    activity.loadGallery(x);
-                }
+            activity.runOnUiThread(() -> {
+                Gallery x=galleries.remove(0);
+                activity.loadGallery(x);
             });
         }
         loadRandomGallery();

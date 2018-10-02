@@ -19,7 +19,7 @@ import okhttp3.HttpUrl;
 
 public class Login{
     private static User user;
-    private static List<Tag> onlineTags=new ArrayList<>();
+    private static final List<Tag> onlineTags=new ArrayList<>();
     private static boolean accountTag;
 
     public static void  initUseAccountTag(@NonNull Context context){accountTag=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_use_account_tag),false);}

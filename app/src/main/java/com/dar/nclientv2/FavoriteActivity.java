@@ -15,7 +15,6 @@ import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 
 import androidx.appcompat.widget.Toolbar;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class FavoriteActivity extends BaseActivity {
     private boolean online=false;
@@ -38,11 +37,8 @@ public class FavoriteActivity extends BaseActivity {
         findViewById(R.id.page_switcher).setVisibility(View.GONE);
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
-        refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if(online)adapter.reloadOnline();
-            }
+        refresher.setOnRefreshListener(() -> {
+            if(online)adapter.reloadOnline();
         });
         changeLayout(getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE);
         recycler.setAdapter(adapter);

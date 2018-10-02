@@ -1,6 +1,5 @@
 package com.dar.nclientv2.adapters;
 
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.util.JsonWriter;
 import android.util.Log;
@@ -29,7 +28,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -133,42 +131,33 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         final Tag ent=filterTags.get(holder.getAdapterPosition());
         holder.title.setText(ent.getName());
         holder.count.setText(String.format(Locale.US,"%d",ent.getCount()));
-        holder.master.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!online) {
-                    if (!Tags.maxTagReached() || Tags.getStatus(ent) != TagStatus.DEFAULT) updateLogo(holder.imgView, Tags.updateStatus(context, ent));
-                    else Snackbar.make(context.getViewPager(), context.getString(R.string.tags_max_reached, Tags.MAXTAGS), Snackbar.LENGTH_LONG).show();
-                }else{
-                    try {
-                        onlineTagUpdate(ent,!Login.getOnlineTags().contains(ent),holder.imgView);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+        holder.master.setOnClickListener(v -> {
+            if(!online) {
+                if (!Tags.maxTagReached() || Tags.getStatus(ent) != TagStatus.DEFAULT) updateLogo(holder.imgView, Tags.updateStatus(context, ent));
+                else Snackbar.make(context.getViewPager(), context.getString(R.string.tags_max_reached, Tags.MAXTAGS), Snackbar.LENGTH_LONG).show();
+            }else{
+                try {
+                    onlineTagUpdate(ent,!Login.getOnlineTags().contains(ent),holder.imgView);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         });
-        if(!online&&logged)holder.master.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                if(!Login.getOnlineTags().contains(ent)) showBlacklistDialog(ent,holder.imgView);
-                else Toast.makeText(context, R.string.tag_already_in_blacklist, Toast.LENGTH_SHORT).show();
-                return true;
-            }
+        if(!online&&logged)holder.master.setOnLongClickListener(view -> {
+            if(!Login.getOnlineTags().contains(ent)) showBlacklistDialog(ent,holder.imgView);
+            else Toast.makeText(context, R.string.tag_already_in_blacklist, Toast.LENGTH_SHORT).show();
+            return true;
         });
         updateLogo(holder.imgView,online?TagStatus.AVOIDED:Tags.getStatus(ent));
     }
     private void showBlacklistDialog(final Tag tag,final ImageView imgView) {
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         builder.setIcon(R.drawable.ic_star_border).setTitle(R.string.add_to_online_blacklist).setMessage(R.string.are_you_sure);
-        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                try {
-                    onlineTagUpdate(tag,true,imgView);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        builder.setPositiveButton(android.R.string.yes, (dialogInterface, i) -> {
+            try {
+                onlineTagUpdate(tag,true,imgView);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }).setNegativeButton(android.R.string.no,null).show();
     }
@@ -236,13 +225,8 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
     public List<Tag> getTrueDataset() {
         return tags;
     }
-    public void sortDataset(){
-        Collections.sort(filterTags, new Comparator<Tag>() {
-            @Override
-            public int compare(Tag o1, Tag o2) {
-                return o2.getCount()-o1.getCount();
-            }
-        });
+    private void sortDataset(){
+        Collections.sort(filterTags, (o1, o2) -> o2.getCount()-o1.getCount());
         notifyItemRangeChanged(0,filterTags.size());
     }
 
@@ -250,12 +234,9 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         tags.add(tag);
         if(tag.getName().contains(lastQuery)){
             filterTags.add(tag);
-            context.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    notifyItemInserted(filterTags.size());
-                    //notifyDataSetChanged();
-                }
+            context.runOnUiThread(() -> {
+                notifyItemInserted(filterTags.size());
+                //notifyDataSetChanged();
             });
         }
     }

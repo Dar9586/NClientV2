@@ -28,7 +28,7 @@ public class LoadFavorite extends AsyncTask<FavoriteActivity,Gallery,FavoriteAct
     @Override
     protected FavoriteActivity doInBackground(FavoriteActivity... voids) {
         FavoriteActivity activity=voids[0];
-        Set<String> x=activity.getSharedPreferences("FavoriteList", 0).getStringSet(activity.getString(R.string.key_favorite_list),new HashSet<String>());
+        Set<String> x=activity.getSharedPreferences("FavoriteList", 0).getStringSet(activity.getString(R.string.key_favorite_list), new HashSet<>());
         Log.i(Global.LOGTAG,"SIZE:"+x.size());
         try {
             for(String y:x)publishProgress(new Gallery(y));

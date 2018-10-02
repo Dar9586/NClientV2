@@ -11,7 +11,6 @@ import com.dar.nclientv2.api.enums.TagType;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -71,8 +70,8 @@ public class Tags{
     public static void  initTagPreferencesSets(@NonNull Context context){
         if(accepted.size()!=0&&avoided.size()!=0)return;
         SharedPreferences preferences=context.getSharedPreferences("TagPreferences", 0);
-        accepted=Tag.toArrayList(preferences.getStringSet(context.getString(R.string.key_accepted_tags),new HashSet<String>()));
-        avoided=Tag.toArrayList(preferences.getStringSet(context.getString(R.string.key_avoided_tags),new HashSet<String>()));
+        accepted=Tag.toArrayList(preferences.getStringSet(context.getString(R.string.key_accepted_tags), new HashSet<>()));
+        avoided=Tag.toArrayList(preferences.getStringSet(context.getString(R.string.key_avoided_tags), new HashSet<>()));
         Log.i(LOGTAG,"Accepted"+accepted.toString());
         Log.i(LOGTAG,"Avoided"+avoided.toString());
     }
@@ -96,28 +95,18 @@ public class Tags{
         Log.i(LOGTAG,"Avoided"+avoided.toString());
         x.addAll(accepted);
         x.addAll(avoided);
-        Collections.sort(x, new Comparator<Tag>() {
-            @Override
-            public int compare(Tag o1, Tag o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
+        Collections.sort(x, (o1, o2) -> o1.getName().compareTo(o2.getName()));
         return x;
     }
 
     @NonNull
     private static List<Tag> getSet(@NonNull Context context, @StringRes int res){
-        Set<String>x= context.getSharedPreferences("ScrapedTags", 0).getStringSet(context.getString(res),new HashSet<String>());
+        Set<String>x= context.getSharedPreferences("ScrapedTags", 0).getStringSet(context.getString(res), new HashSet<>());
         List<Tag>tags=new ArrayList<>(x.size());
         for(String y:x){
             tags.add(new Tag(y));
         }
-        Collections.sort(tags, new Comparator<Tag>() {
-            @Override
-            public int compare(Tag o1, Tag o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
+        Collections.sort(tags, (o1, o2) -> o1.getName().compareTo(o2.getName()));
         return tags;
     }
 
@@ -170,7 +159,7 @@ public class Tags{
     }
 
     public static void updateSet(@NonNull Context context, List<Tag>tags , TagType type){
-        Set<String> x =context.getSharedPreferences("ScrapedTags", 0).getStringSet(context.getString(getScraperId(type)),new HashSet<String>());
+        Set<String> x =context.getSharedPreferences("ScrapedTags", 0).getStringSet(context.getString(getScraperId(type)), new HashSet<>());
         for (Tag y : tags) {
             x.add(y.toScrapedString());
         }

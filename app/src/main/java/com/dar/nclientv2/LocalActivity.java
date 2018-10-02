@@ -12,7 +12,6 @@ import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Global;
 
 import androidx.appcompat.widget.Toolbar;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class LocalActivity extends BaseActivity {
 
@@ -29,12 +28,7 @@ public class LocalActivity extends BaseActivity {
         findViewById(R.id.page_switcher).setVisibility(View.GONE);
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
-        refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new FakeInspector().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,LocalActivity.this);
-            }
-        });
+        refresher.setOnRefreshListener(() -> new FakeInspector().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,LocalActivity.this));
         changeLayout(getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE);
         new FakeInspector().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,this);
     }

@@ -23,7 +23,6 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -170,13 +169,10 @@ public class Gallery extends GenericGallery{
         jr.beginArray();
         while(jr.hasNext())t.add(new Tag(jr));
         jr.endArray();
-        Collections.sort(t, new Comparator<Tag>() {
-            @Override
-            public int compare(Tag o1, Tag o2) {
-                int x=o1.getType().ordinal()-o2.getType().ordinal();
-                if(x==0)return o1.getCount()-o2.getCount();
-                return x;
-            }
+        Collections.sort(t, (o1, o2) -> {
+            int x=o1.getType().ordinal()-o2.getType().ordinal();
+            if(x==0)return o1.getCount()-o2.getCount();
+            return x;
         });
         tags=new Tag[TagType.values().length][];
         int i=0;

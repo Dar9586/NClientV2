@@ -61,14 +61,11 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
     public void onBindViewHolder(@NonNull final GenericAdapter.ViewHolder holder, int position) {
             final Gallery ent = mDataset.get(holder.getAdapterPosition());
             if(Global.getGalleryWidth()==-1)
-            holder.title.post(new Runnable(){
-                @Override
-                public void run(){
-                        Global.setGalleryWidth(holder.title.getMeasuredWidth());
-                        Global.setGalleryHeigth(holder.imgView.getMeasuredHeight());
-                        Log.d(Global.LOGTAG,"MEASURED: "+holder.title.getMeasuredWidth()+";"+holder.imgView.getMeasuredHeight());
-                    }
-            });
+            holder.title.post(() -> {
+                    Global.setGalleryWidth(holder.title.getMeasuredWidth());
+                    Global.setGalleryHeigth(holder.imgView.getMeasuredHeight());
+                    Log.d(Global.LOGTAG,"MEASURED: "+holder.title.getMeasuredWidth()+";"+holder.imgView.getMeasuredHeight());
+                });
 
             if(context instanceof GalleryActivity){
                 CardView card=(CardView)holder.layout.getParent();
@@ -90,38 +87,24 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
                 }
             }else holder.flag.setVisibility(View.GONE);
             holder.pages.setText(String.format(Locale.US, "%d", ent.getPageCount()));
-            holder.title.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Layout layout = holder.title.getLayout();
-                    if(layout.getEllipsisCount(layout.getLineCount()-1)>0)holder.title.setMaxLines(7);
-                    else if(holder.title.getMaxLines()==7)holder.title.setMaxLines(3);
-                    else holder.layout.performClick();
-                }
+            holder.title.setOnClickListener(v -> {
+                Layout layout = holder.title.getLayout();
+                if(layout.getEllipsisCount(layout.getLineCount()-1)>0)holder.title.setMaxLines(7);
+                else if(holder.title.getMaxLines()==7)holder.title.setMaxLines(3);
+                else holder.layout.performClick();
             });
-            holder.layout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                  Intent intent = new Intent(context, GalleryActivity.class);
-                  intent.putExtra(context.getPackageName() + ".GALLERY", ent);
-                  context.startActivity(intent);
-                  holder.overlay.setVisibility((queryString!=null&&ent.hasIgnoredTags(queryString))?View.VISIBLE:View.GONE);
-                }
+            holder.layout.setOnClickListener(v -> {
+              Intent intent = new Intent(context, GalleryActivity.class);
+              intent.putExtra(context.getPackageName() + ".GALLERY", ent);
+              context.startActivity(intent);
+              holder.overlay.setVisibility((queryString!=null&&ent.hasIgnoredTags(queryString))?View.VISIBLE:View.GONE);
             });
-            holder.overlay.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v){
-                    holder.overlay.setVisibility(View.GONE);
-                }
-            });
-        holder.layout.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                holder.title.animate().alpha(holder.title.getAlpha()==0f?1f:0f).setDuration(100).start();
-                holder.flag.animate().alpha(holder.flag.getAlpha()==0f?1f:0f).setDuration(100).start();
-                holder.pages.animate().alpha(holder.pages.getAlpha()==0f?1f:0f).setDuration(100).start();
-                return true;
-            }
+            holder.overlay.setOnClickListener(v -> holder.overlay.setVisibility(View.GONE));
+        holder.layout.setOnLongClickListener(v -> {
+            holder.title.animate().alpha(holder.title.getAlpha()==0f?1f:0f).setDuration(100).start();
+            holder.flag.animate().alpha(holder.flag.getAlpha()==0f?1f:0f).setDuration(100).start();
+            holder.pages.animate().alpha(holder.pages.getAlpha()==0f?1f:0f).setDuration(100).start();
+            return true;
         });
     }
 

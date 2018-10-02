@@ -29,12 +29,7 @@ public class Login {
         ((PersistentCookieJar)Global.client.cookieJar()).clear();
     }
     public static void login(final LoginActivity activity, final String username, final String password) {
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                activity.invalid.setVisibility(View.GONE);
-            }
-        });
+        activity.runOnUiThread(() -> activity.invalid.setVisibility(View.GONE));
         Global.client.newCall(new Request.Builder().url(login_url).build()).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call,@NonNull IOException e) { }
@@ -85,18 +80,8 @@ public class Login {
                 Log.d(Global.LOGTAG,"Log in: "+response.networkResponse().code());
                 if(com.dar.nclientv2.settings.Login.isLogged()) {
                     activity.finish();
-                    User.createUser(new User.CreateUser() {
-                        @Override
-                        public void onCreateUser(User user) {
-                            new LoadTags(null).start();
-                        }
-                    });
-                }else activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        activity.invalid.setVisibility(View.VISIBLE);
-                    }
-                });
+                    User.createUser(user -> new LoadTags(null).start());
+                }else activity.runOnUiThread(() -> activity.invalid.setVisibility(View.VISIBLE));
             }
         });
     }

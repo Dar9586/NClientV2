@@ -21,9 +21,9 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class DownloadFavorite extends Thread{
-    private FavoriteAdapter adapter;
+    private final FavoriteAdapter adapter;
     private final Object lock2=new Object();
-    private boolean parse;
+    private final boolean parse;
     @Override
     public void run() {
         super.run();
@@ -37,12 +37,7 @@ public class DownloadFavorite extends Thread{
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                     Document doc = Jsoup.parse(response.body().byteStream(), null, url);
-                    if (Login.getUser() == null) User.createUser(new User.CreateUser() {
-                        @Override
-                        public void onCreateUser(User user) {
-                            new DownloadFavorite(adapter, false);
-                        }
-                    });
+                    if (Login.getUser() == null) User.createUser(user -> new DownloadFavorite(adapter, false));
                     else if (!parse || Login.getUser().getTotalPages() == 0) updateTotalPage(doc);
                     if (parse) parseFavorite(doc);
 
@@ -57,13 +52,7 @@ public class DownloadFavorite extends Thread{
                 }
             }
         }while (++page<=Login.getUser().getTotalPages());
-        adapter.getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                adapter.getActivity().getRefresher().setRefreshing(false);
-
-            }
-        });
+        adapter.getActivity().runOnUiThread(() -> adapter.getActivity().getRefresher().setRefreshing(false));
         Log.e(Global.LOGTAG,"Total: "+adapter.getItemCount());
     }
 

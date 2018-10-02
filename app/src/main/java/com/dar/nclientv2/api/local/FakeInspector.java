@@ -11,7 +11,6 @@ import com.dar.nclientv2.settings.Global;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 
 public class FakeInspector extends AsyncTask<LocalActivity,LocalActivity,LocalActivity>{
@@ -28,12 +27,7 @@ public class FakeInspector extends AsyncTask<LocalActivity,LocalActivity,LocalAc
         publishProgress(voids[0]);
         File parent=new File(Environment.getExternalStorageDirectory(),"NClientV2");
         parent.mkdirs();
-        File[] directories=parent.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return !name.equals("PDF");
-            }
-        });
+        File[] directories=parent.listFiles((dir, name) -> !name.equals("PDF"));
         for (File f:directories)createGallery(f);
         for (String x:invalidPaths) Log.d(Global.LOGTAG,"Invalid path: "+x);
         return voids[0];

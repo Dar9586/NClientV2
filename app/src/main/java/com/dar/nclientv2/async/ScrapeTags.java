@@ -30,7 +30,7 @@ public class ScrapeTags extends Thread {
     private static final Set<TagType> updating=new HashSet<>();
     private final Context context;
     private final Object lock=new Object();
-    public ScrapeTags(Context context, TagsAdapter adapter, TagType tagType){ ;
+    public ScrapeTags(Context context, TagsAdapter adapter, TagType tagType){
         this.adapter=adapter;
         this.tagType=tagType;
         this.context=context.getApplicationContext();

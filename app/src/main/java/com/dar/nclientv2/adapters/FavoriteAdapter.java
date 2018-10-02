@@ -2,7 +2,6 @@ package com.dar.nclientv2.adapters;
 
 import android.content.Intent;
 import android.text.Layout;
-import android.view.View;
 
 import com.dar.nclientv2.FavoriteActivity;
 import com.dar.nclientv2.GalleryActivity;
@@ -34,44 +33,30 @@ public class FavoriteAdapter extends GenericAdapter<Gallery> {
             case JAPANESE: holder.flag.setText("\uD83C\uDDEF\uD83C\uDDF5");break;
             case UNKNOWN:  holder.flag.setText("\uD83C\uDFF3");break;
         }
-        holder.title.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Layout layout = holder.title.getLayout();
-                if(layout.getEllipsisCount(layout.getLineCount()-1)>0)holder.title.setMaxLines(7);
-                else if(holder.title.getMaxLines()==7)holder.title.setMaxLines(3);
-                else holder.layout.performClick();
-            }
+        holder.title.setOnClickListener(v -> {
+            Layout layout = holder.title.getLayout();
+            if(layout.getEllipsisCount(layout.getLineCount()-1)>0)holder.title.setMaxLines(7);
+            else if(holder.title.getMaxLines()==7)holder.title.setMaxLines(3);
+            else holder.layout.performClick();
         });
-        holder.layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Global.setLoadedGallery(ent);
-                Intent intent = new Intent(activity, GalleryActivity.class);
-                intent.putExtra(activity.getPackageName()+ ".GALLERY",ent);
-                activity.startActivity(intent);
-            }
+        holder.layout.setOnClickListener(v -> {
+            //Global.setLoadedGallery(ent);
+            Intent intent = new Intent(activity, GalleryActivity.class);
+            intent.putExtra(activity.getPackageName()+ ".GALLERY",ent);
+            activity.startActivity(intent);
         });
-        holder.layout.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                holder.title.animate().alpha(holder.title.getAlpha()==0f?1f:0f).setDuration(100).start();
-                holder.flag.animate().alpha(holder.flag.getAlpha()==0f?1f:0f).setDuration(100).start();
-                holder.pages.animate().alpha(holder.pages.getAlpha()==0f?1f:0f).setDuration(100).start();
-                return true;
-            }
+        holder.layout.setOnLongClickListener(v -> {
+            holder.title.animate().alpha(holder.title.getAlpha()==0f?1f:0f).setDuration(100).start();
+            holder.flag.animate().alpha(holder.flag.getAlpha()==0f?1f:0f).setDuration(100).start();
+            holder.pages.animate().alpha(holder.pages.getAlpha()==0f?1f:0f).setDuration(100).start();
+            return true;
         });
     }
     public void addGallery(Gallery gallery){
             dataset.add(gallery);
             if(gallery.getTitle().contains(lastQuery)){
                 filter.add(gallery);
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        notifyItemInserted(filter.size());
-                    }
-                });
+                activity.runOnUiThread(() -> notifyItemInserted(filter.size()));
 
             }
     }
@@ -79,12 +64,7 @@ public class FavoriteAdapter extends GenericAdapter<Gallery> {
         dataset.clear();
         final int s=filter.size();
         filter.clear();
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                notifyItemRangeRemoved(0,s);
-            }
-        });
+        activity.runOnUiThread(() -> notifyItemRangeRemoved(0,s));
 
     }
     public void reloadOnline(){

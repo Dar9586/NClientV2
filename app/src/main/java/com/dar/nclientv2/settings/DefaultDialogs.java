@@ -1,7 +1,6 @@
 package com.dar.nclientv2.settings;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -82,20 +81,14 @@ public class DefaultDialogs {
         final SeekBar edt=v.findViewById(R.id.seekBar);
         final TextView pag=v.findViewById(R.id.page);
         final EditText editText=v.findViewById(R.id.edit_page);
-        v.findViewById(R.id.prev).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                edt.setProgress(edt.getProgress()-1);
-                editText.setText(String.format(Locale.US,"%d",edt.getProgress()+1));
+        v.findViewById(R.id.prev).setOnClickListener(v12 -> {
+            edt.setProgress(edt.getProgress()-1);
+            editText.setText(String.format(Locale.US,"%d",edt.getProgress()+1));
 
-            }
         });
-        v.findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                edt.setProgress(edt.getProgress()+1);
-                editText.setText(String.format(Locale.US,"%d",edt.getProgress()+1));
-            }
+        v.findViewById(R.id.next).setOnClickListener(v1 -> {
+            edt.setProgress(edt.getProgress()+1);
+            editText.setText(String.format(Locale.US,"%d",edt.getProgress()+1));
         });
         edt.setMax(builder.max-1);
         edt.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -132,16 +125,7 @@ public class DefaultDialogs {
             }
         });
         if(builder.dialogs!=null)
-        build.setPositiveButton(builder.context.getString(builder.yesbtn), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                builder.dialogs.positive(edt.getProgress()+1);
-            }
-        }).setNegativeButton(builder.context.getString(builder.nobtn), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                builder.dialogs.negative();
-            }
-        });
+        build.setPositiveButton(builder.context.getString(builder.yesbtn), (dialog, id) -> builder.dialogs.positive(edt.getProgress()+1)).setNegativeButton(builder.context.getString(builder.nobtn), (dialog, which) -> builder.dialogs.negative());
         build.setCancelable(true);
         build.show();
     }
