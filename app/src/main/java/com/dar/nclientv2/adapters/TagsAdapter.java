@@ -50,6 +50,11 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
     private List<Tag> filterTags;
     private final boolean logged,black;
     private String lastQuery="nothing";
+
+    public String getLastQuery(){
+        return lastQuery;
+    }
+
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -256,12 +261,14 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
     }
     public void resetDataset(TagType type){
         tags.clear();
-        Tags.removeSet(context,type);
         int s=filterTags.size();
         filterTags=new ArrayList<>();
         notifyItemRangeRemoved(0,s);
-        if(!online)new ScrapeTags(context,this,type).start();
-        else new LoadTags(this).start();
+        if(online) new LoadTags(this).start();
+        else{
+            Tags.removeSet(context,type);
+            new ScrapeTags(context,this,type).start();
+        }
     }
 
 }

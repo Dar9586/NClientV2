@@ -18,7 +18,7 @@ import androidx.annotation.NonNull;
 public class FavoriteAdapter extends GenericAdapter<Gallery> {
     private final FavoriteActivity activity;
     public FavoriteAdapter(FavoriteActivity activity) {
-        super(new ArrayList<Gallery>());
+        super(new ArrayList<>());
         this.activity=activity;
     }
 

@@ -67,6 +67,8 @@ public class ZoomActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         //toolbar.setPadding(toolbar.getPaddingLeft(),Global.getStatusBarHeight(this),toolbar.getPaddingRight(),toolbar.getTitleMarginBottom());
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
         gallery=getIntent().getParcelableExtra(getPackageName()+".GALLERY");
         setTitle(gallery.getTitle());
         directory=Global.hasStoragePermission(this)?Global.findGalleryFolder(gallery.getId()):null;
@@ -182,6 +184,9 @@ public class ZoomActivity extends AppCompatActivity {
                     downloadPage();
                 }else requestStorage();
                 break;
+            case android.R.id.home:
+                finish();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

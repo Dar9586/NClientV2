@@ -9,32 +9,25 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.dar.nclientv2.adapters.GalleryAdapter;
 import com.dar.nclientv2.api.Inspector;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.enums.ApiRequestType;
-import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.DownloadGallery;
 import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Favorites;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.settings.Tags;
-import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import okhttp3.Call;
@@ -42,8 +35,7 @@ import okhttp3.Callback;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class GalleryActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class GalleryActivity extends BaseActivity{
     private GenericGallery gallery;
     private boolean isLocal;
     @Override
@@ -59,8 +51,9 @@ public class GalleryActivity extends BaseActivity
         Tags.initTagPreferencesSets(this);
         setContentView(R.layout.activity_gallery);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        final NavigationView navigationView = findViewById(R.id.nav_view);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
         gallery= getIntent().getParcelableExtra(getPackageName()+".GALLERY");
@@ -68,16 +61,8 @@ public class GalleryActivity extends BaseActivity
         if(getIntent().getBooleanExtra(getPackageName()+".INSTANTDOWNLOAD",false))downloadGallery();
         isLocal=getIntent().getBooleanExtra(getPackageName()+".ISLOCAL",false);
         int zoom=getIntent().getIntExtra(getPackageName()+".ZOOM",0);
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
         refresher.setEnabled(false);
         recycler.setLayoutManager(new GridLayoutManager(this,Global.getColumnCount()));
-        lookup();
-        navigationView.setNavigationItemSelectedListener(this);
-
 
         Uri data = getIntent().getData();
         int isZoom=0;
@@ -97,80 +82,30 @@ public class GalleryActivity extends BaseActivity
     }
     private void lookup(){
         GridLayoutManager manager= (GridLayoutManager)recycler.getLayoutManager();
+        GalleryAdapter adapter=(GalleryAdapter)recycler.getAdapter();
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup(){
             @Override
             public int getSpanSize(int position){
-                return !gallery.isLocal()&&position==0?manager.getSpanCount():1;
+                return adapter.positionToType(position)==GalleryAdapter.Type.PAGE?1:manager.getSpanCount();
             }
         });
     }
     private void loadGallery(GenericGallery gall,int zoom) {
-        NavigationView navigationView = findViewById(R.id.nav_view);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-
         this.gallery=gall;
         if(getSupportActionBar()!=null)getSupportActionBar().setTitle(gallery.getTitle());
-        if(!gallery.isLocal()) {
-            final Gallery gallery=(Gallery) this.gallery;
-            for (final TagType x : TagType.values()) {
-                int c = gallery.getTagCount(x);
-                if(c==0) navigationView.getMenu().getItem(x.ordinal()).setVisible(false);
-                for (int a = 0; a < c; a++) {
-                    final int b = a;
-
-                    MenuItem menuItem = navigationView.getMenu().getItem(x.ordinal()).getSubMenu().add(getIdFromTagType(x), Menu.NONE, a, getString(R.string.tag_format, gallery.getTag(x, a).getName(), gallery.getTag(x, a).getCount()));
-
-                    menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            Intent intent = new Intent(GalleryActivity.this, MainActivity.class);
-                            intent.putExtra(getPackageName() + ".TAG", gallery.getTag(x, b));
-                            GalleryActivity.this.startActivity(intent);
-                            return true;
-                        }
-                    });
-                }
-            }
-        }else{
-            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-            toolbar.setNavigationIcon(null);
-        }
         recycler.setAdapter(new GalleryAdapter(this,gallery));
+        lookup();
+        if(!gallery.isLocal())((Gallery)gallery).loadRelated((GalleryAdapter)recycler.getAdapter());
         if(zoom>0){
             Intent intent = new Intent(this, ZoomActivity.class);
             intent.putExtra(getPackageName()+".GALLERY",this.gallery);
             intent.putExtra(getPackageName()+".PAGE",zoom);
             startActivity(intent);
         }
-        if(!gall.isLocal()) {
-            ((TextView) navigationView.getHeaderView(0).findViewById(R.id.title)).setText(gall.getTitle());
-            ((TextView) navigationView.getHeaderView(0).findViewById(R.id.textView)).setText(getString(R.string.page_count_format, gall.getPageCount()));
-            Global.loadImage(((Gallery) gall).getCover().getUrl(), (ImageView) navigationView.getHeaderView(0).findViewById(R.id.imageView));
-        }
     }
 
-    private int getIdFromTagType(TagType type){
-        switch (type){
-            case TAG:return R.id.tags;
-            case PARODY:return R.id.parodies;
-            case ARTIST:return R.id.artists;
-            case GROUP:return R.id.groups;
-            case CATEGORY:return R.id.categories;
-            case LANGUAGE:return R.id.languages;
-            case CHARACTER:return R.id.characters;
-        }
-        return R.id.unknown;
-    }
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
+
     private boolean isFavorite;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -241,9 +176,10 @@ public class GalleryActivity extends BaseActivity
                 Global.shareGallery(this,gallery);
                 break;
             case R.id.related:
-                Intent intent = new Intent(this, MainActivity.class);
+                /*Intent intent = new Intent(this, MainActivity.class);
                 intent.putExtra(getPackageName() + ".RELATED", gallery.getId());
-                startActivity(intent);
+                startActivity(intent);*/
+                recycler.smoothScrollToPosition(recycler.getAdapter().getItemCount()-1);
                 break;
             case R.id.favorite_manager:
                 if(isFavorite){
@@ -256,6 +192,9 @@ public class GalleryActivity extends BaseActivity
                 item.setIcon(isFavorite?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
                 Global.setTint(item.getIcon());
             break;
+            case android.R.id.home:
+                onBackPressed();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -266,12 +205,16 @@ public class GalleryActivity extends BaseActivity
         MenuItem item= ((Toolbar)findViewById(R.id.toolbar)).getMenu().findItem(R.id.change_view);
         if(increase||((GridLayoutManager)recycler.getLayoutManager()).getSpanCount()!=x){
             if(increase)x=x%4+1;
+            int pos=((GridLayoutManager)recycler.getLayoutManager()).findFirstVisibleItemPosition();
             Global.updateColumnCount(this,x);
             RecyclerView.Adapter adapter=recycler.getAdapter();
             recycler.setLayoutManager(new GridLayoutManager(this,x));
-            lookup();
             Log.d(Global.LOGTAG,"Span count: "+((GridLayoutManager)recycler.getLayoutManager()).getSpanCount());
-            if(adapter!=null)recycler.setAdapter(adapter);
+            if(adapter!=null){
+                recycler.setAdapter(adapter);
+                lookup();
+                recycler.scrollToPosition(pos);
+            }
         }
 
         if(item!=null) {
@@ -300,15 +243,6 @@ public class GalleryActivity extends BaseActivity
             if(requestCode==1&&grantResults.length >0&&grantResults[0]==PackageManager.PERMISSION_GRANTED)
                 downloadGallery();
                 //new DownloadGallery(this,gallery).start();
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
     private void downloadGallery(){
         Intent intent=new Intent(getApplicationContext(), DownloadGallery.class);

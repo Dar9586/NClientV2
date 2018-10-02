@@ -52,7 +52,23 @@ public final class Global {
     private static Language onlyLanguage=null;
     private static boolean byPopular,loadImages,hideFromGallery,highRes,onlyTag,infiniteScroll,removeIgnoredGalleries;
     private static ThemeScheme theme;
-    private static int notificationId,columnCount,maxId,imageQuality;
+    private static int notificationId,columnCount,maxId,imageQuality,galleryWidth=-1, galleryHeight =-1;
+
+    public static int getGalleryWidth(){
+        return galleryWidth;
+    }
+
+    public static void setGalleryWidth(int galleryWidth){
+        Global.galleryWidth = galleryWidth;
+    }
+
+    public static int getGalleryHeight(){
+        return galleryHeight;
+    }
+
+    public static void setGalleryHeigth(int galleryHeight){
+        Global.galleryHeight = galleryHeight;
+    }
 
     public static void     initTitleType    (@NonNull Context context){titleType=TitleType.values()[context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_title_type),1)];}
     public static void     initByPopular    (@NonNull Context context){byPopular=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_by_popular),false);}

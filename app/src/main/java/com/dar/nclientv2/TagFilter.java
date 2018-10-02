@@ -233,7 +233,8 @@ public class TagFilter extends AppCompatActivity{
                  public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy){
                      GridLayoutManager manager=(GridLayoutManager)recyclerView.getLayoutManager();
                      if(tag!=-1&&tag!=6&&manager.findLastVisibleItemPosition() >= (recyclerView.getAdapter().getItemCount()-1-manager.getSpanCount())){
-                         new ScrapeTags(PlaceholderFragment.this.getContext(),(TagsAdapter)recyclerView.getAdapter(),TagType.values()[tag]).start();
+                         if(((TagsAdapter)recyclerView.getAdapter()).getLastQuery().equals(""))
+                                new ScrapeTags(PlaceholderFragment.this.getContext(),(TagsAdapter)recyclerView.getAdapter(),TagType.values()[tag]).start();
                      }
                  }
              });

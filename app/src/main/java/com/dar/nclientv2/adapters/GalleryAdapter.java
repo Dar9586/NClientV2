@@ -1,15 +1,13 @@
 package com.dar.nclientv2.adapters;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.MainActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.ZoomActivity;
@@ -27,27 +25,31 @@ import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
-    private final Context context;
+    public enum Type{TAG,PAGE,RELATED}
+
+    public Type positionToType(int pos){
+        if(!gallery.isLocal()){
+            if(pos == 0) return Type.TAG;
+            if(pos > gallery.getPageCount()) return Type.RELATED;
+        }
+        return Type.PAGE;
+    }
+
+    private final GalleryActivity context;
     static class ViewHolder extends RecyclerView.ViewHolder {
-        final ImageView imgView;
-        final LinearLayout master;
-        ViewHolder(View v,boolean first) {
+        final View master;
+        ViewHolder(View v,Type type) {
             super(v);
-            if(!first) {
-                imgView = v.findViewById(R.id.image);
-                master=null;
-            }else{
-                master=v.findViewById(R.id.master_layout);
-                imgView=null;
-            }
+            master=type==Type.PAGE?v.findViewById(R.id.image):v.findViewById(R.id.master);
         }
     }
     private final GenericGallery gallery;
     private final File directory;
-    public GalleryAdapter(Context cont,GenericGallery gallery) {
+    public GalleryAdapter(GalleryActivity cont, GenericGallery gallery) {
         this.context=cont;
         this.gallery=gallery;
         if(Global.hasStoragePermission(cont)){
@@ -59,50 +61,64 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     @NonNull
     @Override
     public GalleryAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new GalleryAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(viewType==0?R.layout.tags_layout:R.layout.image_void, parent, false),viewType==0);
+        int id=0;
+        switch(viewType){
+            case 0:id=R.layout.tags_layout;break;
+            case 1:id=R.layout.image_void;break;
+            case 2:id=R.layout.related_recycler;break;
+        }
+        return new GalleryAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(id, parent, false),Type.values()[viewType]);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final GalleryAdapter.ViewHolder holder, int position) {
-        if(gallery.isLocal()||holder.getAdapterPosition()!=0){
-            final File file = directory == null ? null : new File(directory, ("000" + (holder.getAdapterPosition()) + ".jpg").substring(Integer.toString(holder.getAdapterPosition()).length()));
-            if(!gallery.isLocal()){
-                final Page ent = ((Gallery)gallery).getPage(holder.getAdapterPosition()-1);
-                if(file == null || !file.exists())
-                    Global.loadImage(Global.isHighRes() ? ent.getUrl() : ent.getLowUrl(), holder.imgView);
-                else Global.loadImage(file, holder.imgView);
-            }else{
-                if(file != null && file.exists()) Global.loadImage(file, holder.imgView);
-                else Global.loadImage(R.mipmap.ic_launcher, holder.imgView);
-            }
 
-            holder.imgView.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v){
-                    Intent intent = new Intent(context, ZoomActivity.class);
-                    intent.putExtra(context.getPackageName() + ".GALLERY", gallery);
-                    intent.putExtra(context.getPackageName() + ".PAGE", holder.getAdapterPosition()-1);
-                    context.startActivity(intent);
-                }
-            });
-        }else{
+        switch(positionToType(holder.getAdapterPosition())){
+            case TAG:loadTagLayout(holder);break;
+            case PAGE:loadPageLayout(holder);break;
+            case RELATED:loadRelatedLayout(holder);break;
+        }
+    }
+
+    public GenericGallery getGallery(){
+        return gallery;
+    }
+
+    private void loadRelatedLayout(ViewHolder holder){
+        if(gallery.isLocal()){
+            holder.master.setVisibility(View.GONE);
+            return;
+        }
+        final RecyclerView recyclerView=(RecyclerView)holder.master;
+        final Gallery gallery=(Gallery)this.gallery;
+        recyclerView.setLayoutManager(new GridLayoutManager(context,1,RecyclerView.HORIZONTAL,false));
+        if(gallery.isRelatedLoaded()){
+            recyclerView.setAdapter(new ListAdapter(context,gallery.getRelated(),""));
+        }
+    }
+
+    private void loadTagLayout(ViewHolder holder){
+            if(gallery.isLocal()){
+                holder.master.setVisibility(View.GONE);
+                return;
+            }
+            final ViewGroup vg=(ViewGroup)holder.master;
             int i=0,len;
             ConstraintLayout lay;
             ChipGroup cg;
             Gallery gallery=(Gallery)this.gallery;
             for(TagType type:TagType.values()){
                 len=gallery.getTagCount(type);
-                lay=(ConstraintLayout)holder.master.getChildAt(i++);
-                lay.setVisibility(len==0?View.GONE:View.VISIBLE);
+                lay=(ConstraintLayout)vg.getChildAt(i++);
                 cg=lay.findViewById(R.id.chip_group);
                 if(cg.getChildCount()!=0)continue;
+                lay.setVisibility(len==0?View.GONE:View.VISIBLE);
                 String s=type.name();
-                s=s.charAt(0)+s.substring(1).toLowerCase(Locale.US);
+                s=s.charAt(0)+s.substring(1).toLowerCase(Locale.US)+":";
                 ((TextView)lay.findViewById(R.id.title)).setText(s);
                 for(int a=0;a<len;a++){
                     final Tag tag=gallery.getTag(type,a);
-                    View v=((Activity)context).getLayoutInflater().inflate(R.layout.chip_layout,cg,false);
-                    Chip c=(Chip)v;
+                    Chip c=(Chip)context.getLayoutInflater().inflate(R.layout.chip_layout,cg,false);
                     //c.setText(context.getString(R.string.tag_format, tag.getName(), tag.getCount()));
                     c.setText(tag.getName());
                     c.setOnClickListener(new View.OnClickListener(){
@@ -116,17 +132,40 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                     cg.addView(c);
                 }
             }
+    }
+
+    private void loadPageLayout(ViewHolder holder){
+        final ImageView imgView=(ImageView)holder.master;
+        final int pos=holder.getAdapterPosition()+(gallery.isLocal()?1:0);
+        final File file = directory == null ? null : new File(directory, (("000" + pos) + ".jpg").substring(Integer.toString(pos).length()));
+        if(!gallery.isLocal()){
+            final Page ent = ((Gallery)gallery).getPage(pos-1);
+            if(file == null || !file.exists())
+                Global.loadImage(Global.isHighRes() ? ent.getUrl() : ent.getLowUrl(), imgView);
+            else Global.loadImage(file, imgView);
+        }else{
+            if(file != null && file.exists()) Global.loadImage(file, imgView);
+            else Global.loadImage(R.mipmap.ic_launcher, imgView);
         }
+        imgView.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(context, ZoomActivity.class);
+                intent.putExtra(context.getPackageName() + ".GALLERY", gallery);
+                intent.putExtra(context.getPackageName() + ".PAGE", holder.getAdapterPosition()-1);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
     public int getItemViewType(int position){
-        return position+(gallery.isLocal()?1:0);
+        return positionToType(position).ordinal();
     }
 
     @Override
     public int getItemCount() {
-        return gallery.getPageCount()+1;
+        return gallery.getPageCount()+(gallery.isLocal()?0:2);
     }
 
     private GenericGallery getDataset() {

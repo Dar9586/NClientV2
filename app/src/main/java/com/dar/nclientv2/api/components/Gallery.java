@@ -7,6 +7,7 @@ import android.util.JsonToken;
 import android.util.JsonWriter;
 import android.util.Log;
 
+import com.dar.nclientv2.adapters.GalleryAdapter;
 import com.dar.nclientv2.api.enums.ImageType;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
@@ -25,6 +26,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import okhttp3.Call;
@@ -38,6 +40,7 @@ public class Gallery extends GenericGallery{
     private Date uploadDate;
     private int favoriteCount,id,pageCount,mediaId;
     private final String[] titles=new String[]{"","",""};
+    private List<Gallery>related;
     private String scanlator;
     private Tag[][] tags;
     private Image cover,thumbnail;
@@ -65,6 +68,35 @@ public class Gallery extends GenericGallery{
             in.readTypedArray(tags[a],Tag.CREATOR);
         }
     }
+    public boolean isRelatedLoaded(){return related!=null;}
+
+    public List<Gallery> getRelated(){
+        return related;
+    }
+
+    public void loadRelated(GalleryAdapter adapter){
+        String url=String.format(Locale.US,"https://nhentai.net/api/gallery/%d/related",adapter.getGallery().getId());
+        Global.client.newCall(new Request.Builder().url(url).build()).enqueue(new Callback(){
+            @Override
+            public void onFailure(Call call, IOException e){
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException{
+                int i=0;
+                related=new ArrayList<>(5);
+                JsonReader jr=new JsonReader(response.body().charStream());
+                jr.beginObject();
+                jr.skipValue();
+                jr.beginArray();
+                while(jr.hasNext())related.add(new Gallery(jr));
+                jr.close();
+            }
+        });
+    }
+
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(uploadDate.getTime());

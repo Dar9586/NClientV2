@@ -3,6 +3,7 @@ package com.dar.nclientv2.adapters;
 import android.content.Intent;
 import android.graphics.Color;
 import android.text.Layout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder> {
@@ -58,11 +60,28 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
     @Override
     public void onBindViewHolder(@NonNull final GenericAdapter.ViewHolder holder, int position) {
             final Gallery ent = mDataset.get(holder.getAdapterPosition());
+            if(Global.getGalleryWidth()==-1)
+            holder.title.post(new Runnable(){
+                @Override
+                public void run(){
+                        Global.setGalleryWidth(holder.title.getMeasuredWidth());
+                        Global.setGalleryHeigth(holder.imgView.getMeasuredHeight());
+                        Log.d(Global.LOGTAG,"MEASURED: "+holder.title.getMeasuredWidth()+";"+holder.imgView.getMeasuredHeight());
+                    }
+            });
+
+            if(context instanceof GalleryActivity){
+                CardView card=(CardView)holder.layout.getParent();
+                ViewGroup.LayoutParams params=card.getLayoutParams();
+                params.height=Global.getGalleryHeight();
+                params.width=Global.getGalleryWidth();
+                card.setLayoutParams(params);
+            }
             if(black)holder.layout.setBackgroundColor(Color.BLACK);
             holder.overlay.setVisibility((queryString!=null&&ent.hasIgnoredTags(queryString))?View.VISIBLE:View.GONE);
             loadGallery(holder,ent);
             holder.title.setText(ent.getTitle());
-            if(Global.getOnlyLanguage()==null) {
+            if(Global.getOnlyLanguage()==null||context instanceof GalleryActivity) {
                 switch (ent.getLanguage()) {
                     case CHINESE:  holder.flag.setText("\uD83C\uDDE8\uD83C\uDDF3");break;
                     case ENGLISH:  holder.flag.setText("\uD83C\uDDEC\uD83C\uDDE7");break;
