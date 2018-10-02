@@ -187,6 +187,7 @@
     <string name="copy_to_clipboard">Copy to clipboard</string>
     <string name="clear_tag_preferences">Clear tag preferences</string>
     <string name="reload_tags_from_web">Reload tags from web</string>
+    <string name="load_next_page">Load next page</string>
 
 
     <string-array name="theme">

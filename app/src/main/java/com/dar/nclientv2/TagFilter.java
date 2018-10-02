@@ -154,11 +154,15 @@ public class TagFilter extends AppCompatActivity{
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
+        PlaceholderFragment page = (PlaceholderFragment)getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
 
         switch (id){
             case R.id.refresh:if(page != null)createDialog(true);break;
             case R.id.reset_tags:createDialog(false);break;
+            case R.id.load_next:
+                if(page.tag!=-1)
+                    new ScrapeTags(this,(TagsAdapter)page.recyclerView.getAdapter(),TagType.values()[page.tag]).start();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -187,7 +191,7 @@ public class TagFilter extends AppCompatActivity{
             }
         }
     }
-    static class PlaceholderFragment extends Fragment {
+    public static class PlaceholderFragment extends Fragment {
         public PlaceholderFragment() {
         }
 
@@ -197,7 +201,6 @@ public class TagFilter extends AppCompatActivity{
          */
         private static int getTag(int page){
             switch (page){
-                case 0:return -1;
                 case 1:return TagType.TAG.ordinal();
                 case 2:return TagType.ARTIST.ordinal();
                 case 3:return TagType.CHARACTER.ordinal();

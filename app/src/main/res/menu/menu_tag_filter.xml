@@ -17,4 +17,8 @@
         android:id="@+id/refresh"
         android:title="@string/reload_tags_from_web"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/load_next"
+        android:title="@string/load_next_page"
+        app:showAsAction="never" />
 </menu>
