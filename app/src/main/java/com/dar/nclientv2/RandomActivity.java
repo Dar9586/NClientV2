@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -22,6 +23,7 @@ public class RandomActivity extends AppCompatActivity {
     private ImageButton favorite;
     private TextView title;
     private TextView page;
+    private View censor;
     private RandomLoader loader=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,7 @@ public class RandomActivity extends AppCompatActivity {
         Global.initLoadImages(this);
         setContentView(R.layout.activity_random);
         FloatingActionButton shuffle = findViewById(R.id.shuffle);
+        censor=findViewById(R.id.censor);
         language=findViewById(R.id.language);
         thumbnail=findViewById(R.id.thumbnail);
         share=findViewById(R.id.share);
@@ -52,6 +55,7 @@ public class RandomActivity extends AppCompatActivity {
         share.setOnClickListener(v -> {
             if(loadedGallery!=null&&loadedGallery.isValid())Global.shareGallery(RandomActivity.this,loadedGallery);
         });
+        censor.setOnClickListener(v -> censor.setVisibility(View.GONE));
         favorite.setOnClickListener(v -> {
             if(loadedGallery!=null&&loadedGallery.isValid()){
                 if(isFavorite){
@@ -89,6 +93,7 @@ public class RandomActivity extends AppCompatActivity {
         favorite.setImageResource(isFavorite?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
         title.setText(gallery.getTitle());
         page.setText(getString(R.string.page_count_format,gallery.getPageCount()));
+        censor.setVisibility(gallery.hasIgnoredTags()?View.VISIBLE:View.GONE);
     }
 
     @Override
