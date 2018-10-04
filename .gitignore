@@ -11,4 +11,5 @@ output.json
 /build
 /captures
 /svgs
+/release
 .externalNativeBuild
