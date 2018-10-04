@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import com.dar.nclientv2.async.VersionChecker;
 import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
@@ -35,8 +36,8 @@ public class SettingsActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content,
                 new GeneralPreferenceFragment()).commit();
     }
-    static class GeneralPreferenceFragment extends PreferenceFragmentCompat{
-        static SettingsActivity act;
+    public static class GeneralPreferenceFragment extends PreferenceFragmentCompat{
+        public static SettingsActivity act;
 
 
         @Override
@@ -61,7 +62,10 @@ public class SettingsActivity extends AppCompatActivity {
                 builder.setTitle(R.string.clear_cache);
                 builder.setPositiveButton(android.R.string.yes, (dialog, which) -> Global.recursiveDelete(getActivity().getCacheDir())).setNegativeButton(android.R.string.no,null).setCancelable(true);
                 builder.show();
-
+                return true;
+            });
+            findPreference(getString(R.string.key_update)).setOnPreferenceClickListener(preference -> {
+                new VersionChecker(GeneralPreferenceFragment.this.getActivity(),false);
                 return true;
             });
             findPreference(getString(R.string.key_image_quality)).setOnPreferenceClickListener(preference -> {

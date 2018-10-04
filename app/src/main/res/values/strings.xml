@@ -188,6 +188,14 @@
     <string name="clear_tag_preferences">Clear tag preferences</string>
     <string name="reload_tags_from_web">Reload tags from web</string>
     <string name="load_next_page">Load next page</string>
+    <string name="key_check_update">check_update</string>
+    <string name="check_for_update_on_startup">Check for update on startup</string>
+    <string name="key_update">update</string>
+    <string name="check_for_updates">Check for updates</string>
+    <string name="no_updates_found">No updates found</string>
+    <string name="error_retrieving">Error in retrieving latest version</string>
+    <string name="new_version_found">New version found</string>
+    <string name="update_version_format" formatted="true">Update from version %s to version %s?</string>
 
 
     <string-array name="theme">

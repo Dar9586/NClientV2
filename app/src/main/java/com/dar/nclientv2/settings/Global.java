@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -102,7 +103,9 @@ public final class Global {
         return theme=h.equals("light")?ThemeScheme.LIGHT:h.equals("dark")?ThemeScheme.DARK:ThemeScheme.BLACK;
     }
 
-
+    public static boolean shouldCheckForUpdates(Context context){
+        return context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_check_update),true);
+    }
     private static int getLogo(){ return theme==ThemeScheme.LIGHT?R.drawable.ic_logo_dark:R.drawable.ic_logo; }
     public static TitleType getTitleType() {
         return titleType;
@@ -295,6 +298,16 @@ public final class Global {
         file.delete();
     }
 
+    @Nullable
+    public static String getVersionName(Context context){
+        try {
+            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 
 }

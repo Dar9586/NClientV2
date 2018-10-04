@@ -19,6 +19,7 @@ import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TitleType;
+import com.dar.nclientv2.async.VersionChecker;
 import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.loginapi.Login;
 import com.dar.nclientv2.settings.DefaultDialogs;
@@ -130,7 +131,7 @@ public class MainActivity extends BaseActivity
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             toggle.setDrawerIndicatorEnabled(false);
         } else new Inspector(this,1,"",ApiRequestType.BYALL);
-
+        if(Global.shouldCheckForUpdates(this))new VersionChecker(this,true);
     }
 
     private void changeNavigationImage(NavigationView navigationView) {

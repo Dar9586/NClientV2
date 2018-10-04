@@ -51,7 +51,10 @@
         android:summaryOn="@string/setting_on_use_account_tag"
         android:summaryOff="@string/setting_off_use_account_tag"
         android:title="@string/use_account_tag" />
-
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/key_check_update"
+        android:title="@string/check_for_update_on_startup" />
     <Preference android:title="@string/image_quality"
         android:key="@string/key_image_quality"
         android:summary="@string/image_quality_summary"
@@ -59,5 +62,9 @@
     <Preference android:title="@string/clear_cache"
         android:key="@string/key_cache"
         />
+    <Preference android:title="@string/check_for_updates"
+        android:key="@string/key_update"
+        />
+
 
 </PreferenceScreen>

@@ -215,12 +215,12 @@ public class ZoomActivity extends AppCompatActivity {
         }
     }
 
-    static class PlaceholderFragment extends Fragment {
+    public static class PlaceholderFragment extends Fragment {
 
         public PlaceholderFragment() {
         }
 
-        static PlaceholderFragment newInstance(int sectionNumber) {
+        public static PlaceholderFragment newInstance(int sectionNumber) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
             args.putInt("PAGE", sectionNumber);
@@ -275,9 +275,9 @@ public class ZoomActivity extends AppCompatActivity {
         }
     }
 
-    class SectionsPagerAdapter extends FragmentPagerAdapter {
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        SectionsPagerAdapter(FragmentManager fm) {
+        public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
