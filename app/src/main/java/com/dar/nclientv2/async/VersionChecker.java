@@ -1,8 +1,6 @@
 package com.dar.nclientv2.async;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.JsonReader;
@@ -33,7 +31,10 @@ public class VersionChecker{
             Global.client.newCall(new Request.Builder().url(LATEST_API_URL).build()).enqueue(new Callback(){
                 @Override
                 public void onFailure(@NonNull Call call,@NonNull IOException e){
-                    if(!silent) Toast.makeText(context, R.string.error_retrieving, Toast.LENGTH_SHORT).show();
+                    context.runOnUiThread(()->{
+                        if(!silent) Toast.makeText(context, R.string.error_retrieving, Toast.LENGTH_SHORT).show();
+                    });
+
                 }
 
                 @Override
