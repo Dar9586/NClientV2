@@ -44,13 +44,16 @@ public class VersionChecker{
                     String latestVersion=jr.nextString();
                     Log.d(Global.LOGTAG,"LATEST VERSION: "+latestVersion);
                     jr.close();
-                    if(latestVersion.equals(versionName)){
-                        if(!silent)
-                            Toast.makeText(context, R.string.no_updates_found, Toast.LENGTH_SHORT).show();
-                    }else{
-                        Log.d(Global.LOGTAG,"Executing false");
-                        context.runOnUiThread(() -> createDialog(versionName,latestVersion));
-                    }
+                    context.runOnUiThread(()->{
+                        if(latestVersion.equals(versionName)){
+                            if(!silent)
+                                Toast.makeText(context, R.string.no_updates_found, Toast.LENGTH_SHORT).show();
+                        }else{
+                            Log.d(Global.LOGTAG,"Executing false");
+                            createDialog(versionName,latestVersion);
+                        }
+                    });
+
 
                 }
             });
