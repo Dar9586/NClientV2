@@ -25,7 +25,7 @@ public class Tags{
     private static List<Tag> accepted=new ArrayList<>(),avoided=new ArrayList<>();
     private static final List<Tag>[] sets= new List[5];
 
-    private static int getScraperId(TagType tag){
+    public static int getScraperId(TagType tag){
         switch (tag){
             case TAG:return R.string.key_scraped_tags;
             case ARTIST:return R.string.key_scraped_artists;
@@ -84,11 +84,12 @@ public class Tags{
     }
     public static String getQueryString(String query){
         StringBuilder builder=new StringBuilder();
-        for (Tag x:accepted)if(!query.contains(x.getName()))builder.append('+').append(x.toQueryTag(TagStatus.ACCEPTED));
-        for (Tag x:avoided) if(!query.contains(x.getName()))builder.append('+').append(x.toQueryTag(TagStatus.AVOIDED));
-        if(Login.useAccountTag())for(Tag x:Login.getOnlineTags())if(!accepted.contains(x)&&!avoided.contains(x)&&!query.contains(x.getName()))builder.append('+').append(x.toQueryTag(TagStatus.AVOIDED));
+        for (Tag x:accepted)if(!query.contains(x.getName()))builder.append('+').append(x.toQueryTag());
+        for (Tag x:avoided) if(!query.contains(x.getName()))builder.append('+').append(x.toQueryTag());
+        if(Login.useAccountTag())for(Tag x:Login.getOnlineTags())if(!accepted.contains(x)&&!avoided.contains(x)&&!query.contains(x.getName()))builder.append('+').append(x.toQueryTag());
         return builder.toString();
     }
+
     public static List<Tag>getListPrefer(){
         List<Tag>x=new ArrayList<>(accepted.size()+avoided.size());
         Log.i(LOGTAG,"Accepted"+accepted.toString());
@@ -97,6 +98,14 @@ public class Tags{
         x.addAll(avoided);
         Collections.sort(x, (o1, o2) -> o1.getName().compareTo(o2.getName()));
         return x;
+    }
+
+    public static List<Tag> getAvoided(){
+        return avoided;
+    }
+
+    public static List<Tag> getAccepted(){
+        return accepted;
     }
 
     @NonNull

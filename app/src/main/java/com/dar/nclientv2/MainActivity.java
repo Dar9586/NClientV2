@@ -20,11 +20,12 @@ import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.async.VersionChecker;
+import com.dar.nclientv2.async.scrape.BulkScraper;
 import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.loginapi.Login;
 import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
-import com.dar.nclientv2.settings.Tags;
+import com.dar.nclientv2.settings.TagV2;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.Locale;
@@ -60,10 +61,8 @@ public class MainActivity extends BaseActivity
         Global.initByPopular(this);
         Global.initLoadImages(this);
         Global.initOnlyLanguage(this);
-        Tags.initTagPreferencesSets(this);
         Global.initMaxId(this);
         Global.initInfiniteScroll(this);
-        Tags.initTagPreferencesSets(this);
         com.dar.nclientv2.settings.Login.initUseAccountTag(this);
         setContentView(R.layout.activity_main);
         final Toolbar toolbar = findViewById(R.id.toolbar);
@@ -139,6 +138,12 @@ public class MainActivity extends BaseActivity
             case BLACK: ((ImageView)navigationView.getHeaderView(0).findViewById(R.id.imageView)).setImageResource(R.drawable.ic_logo);navigationView.getHeaderView(0).findViewById(R.id.layout_header).setBackgroundResource(android.R.color.black);break;
             default:((ImageView)navigationView.getHeaderView(0).findViewById(R.id.imageView)).setImageResource(R.mipmap.ic_launcher);navigationView.getHeaderView(0).findViewById(R.id.layout_header).setBackgroundResource(R.drawable.side_nav_bar);break;
         }
+    }
+
+    @Override
+    protected void onDestroy(){
+        BulkScraper.setActivity(null);
+        super.onDestroy();
     }
 
     private void prepareUpdateIcon(){
@@ -268,7 +273,7 @@ public class MainActivity extends BaseActivity
         if(tag!=null||related!=-1){
             if(tag!=null){
                 MenuItem item=menu.findItem(R.id.tag_manager).setVisible(true);
-                TagStatus ts=Tags.getStatus(tag);
+                TagStatus ts=tag.getStatus();
                 switch (ts){
                     case DEFAULT:item.setIcon(R.drawable.ic_help);break;
                     case AVOIDED:item.setIcon(R.drawable.ic_close);break;
@@ -353,7 +358,7 @@ public class MainActivity extends BaseActivity
                 }
                 break;
             case R.id.tag_manager:
-                TagStatus ts=Tags.updateStatus(this,tag);
+                TagStatus ts=TagV2.updateStatus(tag);
                 switch (ts){
                     case DEFAULT:item.setIcon(R.drawable.ic_help);break;
                     case AVOIDED:item.setIcon(R.drawable.ic_close);break;

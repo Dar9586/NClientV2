@@ -50,7 +50,7 @@ public class RandomLoader {
                         return;
                     }
                     galleries.add(x);
-                    Global.preloadImage(x.getCover().getUrl());
+                    Global.preloadImage(x.getCover());
                     if (hasRequested) {
                         hasRequested = false;
                         requestGallery();

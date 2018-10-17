@@ -24,7 +24,7 @@ public class FavoriteAdapter extends GenericAdapter<Gallery> {
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final Gallery ent=dataset.get(holder.getAdapterPosition());
-        Global.loadImage(ent.getThumbnail().getUrl(),holder.imgView);
+        Global.loadImage(ent.getThumbnail(),holder.imgView);
         holder.pages.setText(String.format(Locale.US, "%d", ent.getPageCount()));
         holder.title.setText(ent.getTitle());
         switch (ent.getLanguage()){

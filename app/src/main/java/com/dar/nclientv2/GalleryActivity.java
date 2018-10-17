@@ -20,7 +20,6 @@ import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Favorites;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
-import com.dar.nclientv2.settings.Tags;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
@@ -45,10 +44,8 @@ public class GalleryActivity extends BaseActivity{
         Global.initHttpClient(this);
         Global.loadNotificationChannel(this);
         Global.initColumnCount(this);
-        Tags.initTagSets(this);
         Global.initImageQuality(this);
-        Favorites.countFavorite(this);
-        Tags.initTagPreferencesSets(this);
+        Favorites.countFavorite();
         setContentView(R.layout.activity_gallery);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -125,7 +122,7 @@ public class GalleryActivity extends BaseActivity{
         Global.setTint(menu.findItem(R.id.share).getIcon());
         Global.setTint(menu.findItem(R.id.related).getIcon());
         menu.findItem(R.id.share).setVisible(gallery!=null&&gallery.isValid());
-        menu.findItem(R.id.favorite_manager).setIcon((isFavorite=Favorites.isFavorite(this,gallery))?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
+        menu.findItem(R.id.favorite_manager).setIcon((isFavorite=Favorites.isFavorite((Gallery)gallery))?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
         Global.setTint(menu.findItem(R.id.favorite_manager).getIcon());
         menu.findItem(R.id.favorite_manager).setVisible(!isLocal||isFavorite);
         menu.findItem(R.id.download_gallery).setVisible(!isLocal);
@@ -179,8 +176,8 @@ public class GalleryActivity extends BaseActivity{
                 break;
             case R.id.favorite_manager:
                 if(isFavorite){
-                    if(Favorites.removeFavorite(this,gallery)) isFavorite=!isFavorite;
-                }else if(Favorites.addFavorite(this,(Gallery) gallery)){
+                    if(Favorites.removeFavorite((Gallery)gallery)) isFavorite=!isFavorite;
+                }else if(Favorites.addFavorite((Gallery) gallery)){
                     isFavorite=!isFavorite;
                 }else{
                     Snackbar.make(recycler,getString(R.string.favorite_max_reached,Favorites.MAXFAVORITE),Snackbar.LENGTH_LONG).show();

@@ -13,7 +13,7 @@ import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Global;
-import com.dar.nclientv2.settings.Tags;
+import com.dar.nclientv2.settings.TagV2;
 
 import java.io.File;
 import java.util.List;
@@ -35,7 +35,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         this.mDataset = myDataset;
         storagePermission=Global.hasStoragePermission(context);
         black=Global.getTheme()== Global.ThemeScheme.BLACK;
-        queryString=query==null?null:query+"+"+Tags.getQueryString(query);
+        queryString=query==null?null:query+"+"+TagV2.getQueryString(query);
     }
 
     @NonNull
@@ -55,7 +55,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
                 }
             }
         }
-        if(x)Global.loadImage(ent.getThumbnail().getUrl(),holder.imgView);
+        if(x)Global.loadImage(ent.getThumbnail(),holder.imgView);
     }
     @Override
     public void onBindViewHolder(@NonNull final GenericAdapter.ViewHolder holder, int position) {

@@ -1,20 +1,15 @@
 package com.dar.nclientv2.settings;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.dar.nclientv2.FavoriteActivity;
-import com.dar.nclientv2.R;
 import com.dar.nclientv2.adapters.FavoriteAdapter;
 import com.dar.nclientv2.api.components.Gallery;
-import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.async.LoadFavorite;
+import com.dar.nclientv2.async.database.Queries;
 
 import java.io.IOException;
-import java.util.ConcurrentModificationException;
-import java.util.HashSet;
-import java.util.Set;
 
 import static com.dar.nclientv2.settings.Global.LOGTAG;
 
@@ -27,57 +22,28 @@ public class Favorites{
     }
 
 
-    public static boolean addFavorite(Context context, Gallery gallery){
+    public static boolean addFavorite(Gallery gallery){
         if(totalFavorite>=MAXFAVORITE)return false;
-        Set<String> x=context.getSharedPreferences("FavoriteList", 0).getStringSet(context.getString(R.string.key_favorite_list), new HashSet<>());
-        try {
-            x.add(gallery.writeGallery());
-        }catch (IOException e){
-            Log.e(LOGTAG,e.getLocalizedMessage(),e);
+        try{
+            Queries.GalleryTable.addFavorite(Database.getDatabase(),gallery,false);
+        }catch(IOException e){
+            return false;
         }
-        if(context.getSharedPreferences("FavoriteList", 0).edit().clear().putStringSet(context.getString(R.string.key_favorite_list),x).commit()) {
-            totalFavorite++;
-            return true;
-        }
-        return false;
+        return true;
     }
 
-    public static boolean removeFavorite(Context context,GenericGallery gallery){
+    public static boolean removeFavorite(Gallery gallery){
         Log.i(LOGTAG,"Called remove");
-        try {
-            Set<String> x = context.getSharedPreferences("FavoriteList", 0).getStringSet(context.getString(R.string.key_favorite_list), new HashSet<>());
-            for (String y : x) {
-                try {
-                    if (Integer.parseInt(y.substring(1, y.indexOf(','))) == gallery.getId())
-                        x.remove(y);
-                } catch (NumberFormatException e) {
-                    Log.e(LOGTAG, e.getLocalizedMessage(), e);
-                }
-            }
-            if(context.getSharedPreferences("FavoriteList", 0).edit().clear().putStringSet(context.getString(R.string.key_favorite_list),x).commit()) {
-                totalFavorite--;
-                return true;
-            }
-        }catch (ConcurrentModificationException e){
-            Log.e(LOGTAG,e.getLocalizedMessage(),e);
-        }
+        Queries.GalleryTable.removeFavorite(Database.getDatabase(),gallery,false);
         return false;
     }
 
-    public static boolean isFavorite(Context context,GenericGallery gallery){
+    public static boolean isFavorite(Gallery gallery){
         if(gallery==null)return false;
-        Set<String> x=context.getSharedPreferences("FavoriteList", 0).getStringSet(context.getString(R.string.key_favorite_list), new HashSet<>());
-        for(String y:x){
-            try{
-                if(Integer.parseInt(y.substring(1,y.indexOf(',')))==gallery.getId())return true;
-            }catch (NumberFormatException e){
-                Log.e(LOGTAG,e.getLocalizedMessage(),e);
-            }
-        }
-        return false;
+        return Queries.GalleryTable.isFavorite(Queries.GalleryTable.isFavorite(Database.getDatabase(),gallery),false);
     }
 
-    public static void countFavorite(Context context){
-        totalFavorite=context.getSharedPreferences("FavoriteList", 0).getStringSet(context.getString(R.string.key_favorite_list), new HashSet<>()).size();
+    public static void countFavorite(){
+        totalFavorite=Queries.GalleryTable.countFavorite(Database.getDatabase());
     }
 }

@@ -21,6 +21,7 @@ public class Tag implements Parcelable{
     private String name;
     private int count,id;
     private TagType type;
+    private TagStatus status=TagStatus.DEFAULT;
     public Tag(String text){
         this.count = Integer.parseInt(text.substring(0,text.indexOf(',')));
         text=text.substring(text.indexOf(',')+1);
@@ -29,11 +30,12 @@ public class Tag implements Parcelable{
         this.type = TagType.values()[Integer.parseInt(text.substring(0,text.indexOf(',')))];
         this.name=text.substring(text.indexOf(',')+1);
     }
-    public Tag(String name, int count, int id, TagType type) {
+    public Tag(String name, int count, int id, TagType type,TagStatus status) {
         this.name = name;
         this.count = count;
         this.id = id;
         this.type = type;
+        this.status = status;
     }
 
     public Tag(JsonReader jr) throws IOException {
@@ -54,7 +56,8 @@ public class Tag implements Parcelable{
         name = in.readString();
         count = in.readInt();
         id = in.readInt();
-        type=TagType.values()[in.readInt()];
+        type=TagType.values()[in.readByte()];
+        status=TagStatus.values()[in.readByte()];
     }
 
     public static final Creator<Tag> CREATOR = new Creator<Tag>() {
@@ -69,9 +72,16 @@ public class Tag implements Parcelable{
         }
     };
 
+    public void setStatus(TagStatus status){
+        this.status = status;
+    }
+
     public String toQueryTag(TagStatus status){
         if(name.contains(" "))return (status==TagStatus.AVOIDED?"-":"")+findTagString()+":\""+name+'"';
         return (status==TagStatus.AVOIDED?"-":"")+findTagString()+":"+name;
+    }
+    public String toQueryTag(){
+        return toQueryTag(status);
     }
     String findTagString(){
         switch (type){
@@ -113,11 +123,22 @@ public class Tag implements Parcelable{
         return count;
     }
 
+    public TagStatus getStatus(){
+        return status;
+    }
 
     public int getId() {
         return id;
     }
 
+    public TagStatus updateStatus(){
+        switch(status){
+            case AVOIDED:return status=TagStatus.DEFAULT;
+            case DEFAULT:return status=TagStatus.ACCEPTED;
+            case ACCEPTED:return status=TagStatus.AVOIDED;
+        }
+        return null;
+    }
 
     public TagType getType() {
         return type;
@@ -155,20 +176,18 @@ public class Tag implements Parcelable{
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object o){
+        if(this == o) return true;
+        if(o == null || getClass() != o.getClass()) return false;
 
-        Tag tag = (Tag) o;
-        return id == tag.id&&name.equals(tag.name)&&type == tag.type;
+        Tag tag = (Tag)o;
+
+        return id == tag.id;
     }
 
     @Override
-    public int hashCode() {
-        int result = name.hashCode();
-        result = 31 * result + id;
-        result = 31 * result + type.hashCode();
-        return result;
+    public int hashCode(){
+        return id;
     }
 
     @Override
@@ -181,6 +200,7 @@ public class Tag implements Parcelable{
         parcel.writeString(name);
         parcel.writeInt(count);
         parcel.writeInt(id);
-        parcel.writeInt(type.ordinal());
+        parcel.writeByte((byte)type.ordinal());
+        parcel.writeByte((byte)status.ordinal());
     }
 }

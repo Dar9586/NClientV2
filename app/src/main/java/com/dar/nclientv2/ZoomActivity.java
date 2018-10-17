@@ -92,8 +92,8 @@ public class ZoomActivity extends AppCompatActivity {
                 seekBar.setProgress(position);
                 if(!gallery.isLocal()){
                     Gallery gallery=(Gallery)ZoomActivity.this.gallery;
-                    if(position<gallery.getPageCount()-1)Global.preloadImage(gallery.getPage(position+1).getUrl());
-                    if(position>0)Global.preloadImage(gallery.getPage(position-1).getUrl());
+                    if(position<gallery.getPageCount()-1)Global.preloadImage(gallery.getPage(position+1));
+                    if(position>0)Global.preloadImage(gallery.getPage(position-1));
 
                 }
             }
@@ -267,7 +267,7 @@ public class ZoomActivity extends AppCompatActivity {
             File file=x.directory==null?null:new File(x.directory,("000"+(page+1)+".jpg").substring(Integer.toString(page+1).length()));
             if(file==null||!file.exists()){
                 if(x.gallery.isLocal())Global.loadImage(R.mipmap.ic_launcher,photoView);
-                else Global.loadImage(((Gallery)x.gallery).getPage(page).getUrl(),photoView,true);
+                else Global.loadImage(((Gallery)x.gallery).getPage(page),photoView,true);
 
             }
             else Global.loadImage(file,photoView);

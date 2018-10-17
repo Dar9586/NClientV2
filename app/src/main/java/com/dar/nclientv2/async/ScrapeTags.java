@@ -5,9 +5,10 @@ import android.util.Log;
 
 import com.dar.nclientv2.adapters.TagsAdapter;
 import com.dar.nclientv2.api.components.Tag;
+import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.settings.Global;
-import com.dar.nclientv2.settings.Tags;
+import com.dar.nclientv2.settings.TagV2;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -28,6 +29,7 @@ public class ScrapeTags extends Thread {
     private final TagsAdapter adapter;
     private final TagType tagType;
     private static final Set<TagType> updating=new HashSet<>();
+    private static final Set<Tag>loadedTags=new HashSet<>();
     private final Context context;
     private final Object lock=new Object();
     public ScrapeTags(Context context, TagsAdapter adapter, TagType tagType){
@@ -39,7 +41,7 @@ public class ScrapeTags extends Thread {
     public void run() {
         super.run();
         if(!updating.add(tagType))return;
-        final int page=Tags.pageReachedForType(context,tagType)+1;
+        final int page=TagV2.pageReachedForType(context,tagType)+1;
         retrivePage(page);
         synchronized(lock){
             try{
@@ -48,8 +50,8 @@ public class ScrapeTags extends Thread {
                 e.printStackTrace();
             }
         }
-        Tags.updateSet(context,adapter.getTrueDataset(),tagType);
-        Tags.setPageReachedForType(context,tagType,page);
+        TagV2.updateSet(loadedTags);
+        TagV2.setPageReachedForType(context,tagType,page);
         updating.remove(tagType);
 
     }
@@ -66,9 +68,8 @@ public class ScrapeTags extends Thread {
     private static String getMultipleName(TagType type){
         switch (type){
             case PARODY:return "parodies";
-            case CHARACTER: case TAG: case ARTIST: case GROUP: return getSingleName(type)+"s";
+            default: return getSingleName(type)+"s";
         }
-        return null;
     }
 
     private void retrivePage(int page) {
@@ -99,9 +100,10 @@ public class ScrapeTags extends Thread {
                 Tag t=new Tag(x.text().substring(0,x.text().lastIndexOf('(')-1),
                         Integer.parseInt(x.text().substring(x.text().lastIndexOf('(')+1,x.text().lastIndexOf(')')).replace(",","")),
                         Integer.parseInt(x.attr("class").substring(x.attr("class").lastIndexOf('-')+1).trim()),
-                        tagType
+                        tagType,TagStatus.DEFAULT
                 );
                 adapter.addItem(t);
+                loadedTags.add(t);
                 //tagsList.add(t);
             }
         }

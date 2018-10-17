@@ -1,5 +1,6 @@
 package com.dar.nclientv2.api.components;
 
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.JsonReader;
@@ -8,14 +9,14 @@ import android.util.JsonWriter;
 import android.util.Log;
 
 import com.dar.nclientv2.adapters.GalleryAdapter;
-import com.dar.nclientv2.api.enums.ImageType;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.enums.TitleType;
+import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.loginapi.DownloadFavorite;
 import com.dar.nclientv2.settings.Global;
-import com.dar.nclientv2.settings.Tags;
+import com.dar.nclientv2.settings.TagV2;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -33,7 +34,6 @@ import okhttp3.Callback;
 import okhttp3.Request;
 import okhttp3.Response;
 
-@SuppressWarnings("unused")
 public class Gallery extends GenericGallery{
 
     private Date uploadDate;
@@ -42,10 +42,86 @@ public class Gallery extends GenericGallery{
     private List<Gallery>related;
     private String scanlator;
     private Tag[][] tags;
-    private Image cover,thumbnail;
-    private Page pages[];
+    //true=jpg, false=png
+    private boolean cover,thumbnail;
+    private boolean pages[];
     private Language language= Language.UNKNOWN;
+
+    public Gallery(Cursor cursor, Tag[][] tags) throws IOException{
+        id=cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.IDGALLERY));
+        mediaId=cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.MEDIAID));
+        favoriteCount=cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.FAVORITE_COUNT));
+        titles[0]=cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.TITLE_JP));
+        titles[1]=cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.TITLE_PRETTY));
+        titles[2]=cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.TITLE_ENG));
+        uploadDate=new Date(cursor.getLong(Queries.getColumnFromName(cursor,Queries.GalleryTable.UPLOAD)));
+        scanlator=cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.SCANLATOR));
+        readPagePath(cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.PAGES)));
+        this.tags=tags;
+        loadLanguage();
+    }
+
+
     private boolean valid=true;
+
+    public String getCover(){
+        return String.format(Locale.US,"https://t.nhentai.net/galleries/%d/cover.%s",mediaId,cover?"jpg":"png");
+    }
+    public String getThumbnail(){
+        return String.format(Locale.US,"https://t.nhentai.net/galleries/%d/thumb.%s",mediaId,thumbnail?"jpg":"png");
+    }
+
+    public String getPage(int page){
+        return String.format(Locale.US,"https://i.nhentai.net/galleries/%d/%d.%s",mediaId,page+1,pages[page]?"jpg":"png");
+    }
+    public String getLowPage(int page){
+        return String.format(Locale.US,"https://t.nhentai.net/galleries/%d/%dt.%s",mediaId,page+1,pages[page]?"jpg":"png");
+    }
+
+
+
+
+
+    public String createPagePath(){
+        StringWriter writer=new StringWriter();
+        writer.write(Integer.toString(pages.length));
+        writer.write(cover?'j':'p');
+        writer.write(thumbnail?'j':'p');
+        boolean x=pages[0],act;
+        int len=1;
+        for(int i=1;i<pages.length;i++,len++){
+            act=pages[i];
+            if(act!=x){
+                writer.write(Integer.toString(len));
+                writer.write(x?'j':'p');
+                len=0;
+            }
+            x=act;
+        }
+        writer.write(Integer.toString(len));
+        writer.write(x?'j':'p');
+        return writer.toString();
+    }
+
+    public void readPagePath(String path)throws IOException{
+        System.out.println(path);
+        pages=null;
+        StringReader reader=new StringReader(path+"e");//flag per la fine
+        int i=0,act,val=0;
+        while((act=reader.read())!='e'){
+            if(act!='p'&&act!='j'){
+                val*=10;
+                val+=act-'0';
+            }else{
+                if(pages==null){
+                    pages=new boolean[pageCount=val];
+                    cover=act=='j';
+                    thumbnail=reader.read()=='j';
+                }else for(int j=0;j<val;j++)pages[i++]=act=='j';
+                val=0;
+            }
+        }
+    }
     private Gallery(Parcel in){
         uploadDate=new Date(in.readLong());
         favoriteCount=in.readInt();
@@ -54,10 +130,10 @@ public class Gallery extends GenericGallery{
         mediaId=in.readInt();
         in.readStringArray(titles);
         scanlator=in.readString();
-        cover=in.readParcelable(Image.class.getClassLoader());
-        thumbnail=in.readParcelable(Image.class.getClassLoader());
-        pages=new Page[pageCount];
-        in.readTypedArray(pages,Page.CREATOR);
+        cover=in.readByte()==1;
+        thumbnail=in.readByte()==1;
+        pages=new boolean[pageCount];
+        in.readBooleanArray(pages);
         language=Language.values()[in.readInt()];
         tags=new Tag[TagType.values().length][];
         for(int a=0;a<TagType.values().length;a++){
@@ -105,9 +181,9 @@ public class Gallery extends GenericGallery{
         dest.writeInt(mediaId);
         dest.writeStringArray(titles);
         dest.writeString(scanlator);
-        dest.writeParcelable(cover, Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
-        dest.writeParcelable(thumbnail, Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
-        dest.writeTypedArray(pages,Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
+        dest.writeByte((byte)(cover?1:0));
+        dest.writeByte((byte)(thumbnail?1:0));
+        dest.writeBooleanArray(pages);
         dest.writeInt(language.ordinal());
         for(Tag[] x:tags){
             int l=x==null?0:x.length;
@@ -223,20 +299,33 @@ public class Gallery extends GenericGallery{
 
     private void readImages(JsonReader jr) throws IOException {
 
-        List<Page>p=new ArrayList<>();
+        List<Boolean>p=new ArrayList<>();
         jr.beginObject();
-        int i=1;
+        int i=0;
         while (jr.peek()!=JsonToken.END_OBJECT){
             switch (jr.nextName()){
-                case "cover":cover=new Image(jr,mediaId, ImageType.COVER);break;
-                case "pages":jr.beginArray();while(jr.hasNext())p.add(new Page(jr,mediaId,i++));jr.endArray();break;
-                case "thumbnail":thumbnail=new Image(jr,mediaId,ImageType.THUMBNAIL);break;
+                case "cover":cover=pageIsJpg(jr);break;
+                case "pages":jr.beginArray();while(jr.hasNext())p.add(pageIsJpg(jr));jr.endArray();break;
+                case "thumbnail":thumbnail=pageIsJpg(jr);break;
             }
         }
         jr.endObject();
-        pages=new Page[p.size()];
-        pages=p.toArray(pages);
+        pages=new boolean[p.size()];
+        for(boolean b:p)pages[i++]=b;
+        p.clear();
     }
+
+    private boolean pageIsJpg(JsonReader jr)throws IOException{
+        boolean jpg=false;
+        jr.beginObject();
+        while (jr.peek()!= JsonToken.END_OBJECT){
+            if(!jr.nextName().equals("t"))jr.skipValue();
+            else jpg=jr.nextString().startsWith("j");
+        }
+        jr.endObject();
+        return jpg;
+    }
+
     private String unescapeUnicodeString(String t){
         StringBuilder s=new StringBuilder();
         int l=t.length();
@@ -322,13 +411,7 @@ public class Gallery extends GenericGallery{
         return titles;
     }
 
-    public Image getCover() {
-        return cover;
-    }
 
-    public Image getThumbnail() {
-        return thumbnail;
-    }
     public int getTagCount(@NonNull TagType type){
         return getTagCount(type.ordinal());
     }
@@ -344,10 +427,7 @@ public class Gallery extends GenericGallery{
     public Tag getTag(@NonNull TagType type,int index){
         return getTag(type.ordinal(),index);
     }
-    public Page getPage(int index){
-        return pages[index];
-    }
-    private String toJSON() throws IOException{
+    /*private String toJSON() throws IOException{
         StringWriter sw=new StringWriter();
         JsonWriter jw=new JsonWriter(sw);
         jw.beginObject();
@@ -374,7 +454,7 @@ public class Gallery extends GenericGallery{
         jw.name("num_favorites").value(favoriteCount);
         jw.endObject();
         return  sw.toString();
-    }
+    }*/
     private void tagsLoader(JsonWriter jw) throws IOException{
         for(Tag[]type:tags)
             if(type!=null)
@@ -387,29 +467,29 @@ public class Gallery extends GenericGallery{
                 jw.endObject();
             }
     }
-    private void pageLoader(ImageType type,JsonWriter jw) throws IOException{
+    /*private void pageLoader(ImageType type,JsonWriter jw) throws IOException{
         switch (type){
             case PAGE:
                 for(Page x:pages)
                     jw.beginObject().name("t").value(x.jpg?"j":"p").endObject();
                 break;
             default:
-                jw.beginObject().name("t").value((type==ImageType.COVER?cover:thumbnail).jpg?"j":"p").endObject();
+                jw.beginObject().name("t").value((type==ImageType.COVER?cover:thumbnail)?"j":"p").endObject();
         }
-    }
+    }*/
     public String writeGallery() throws IOException{
         StringWriter stringWriter=new StringWriter();
         JsonWriter jw=new JsonWriter(stringWriter);
         jw.beginArray();
         jw.value(id).value(mediaId).value(language.ordinal()).value(favoriteCount).value(pageCount).value(uploadDate.getTime()/1000).value(scanlator);
         jw.value(titles[0]).value(titles[1]).value(titles[2]);
-        jw.value(getThumbnail().jpg?"j":"p").value(getCover().jpg?"j":"p");
+        jw.value(thumbnail?"j":"p").value(cover?"j":"p");
         boolean allPng=true,allJpg=true;
         StringBuilder builder=new StringBuilder(pageCount);
-        for(Page p:pages){
-            if(p.jpg)allPng=false;
+        for(boolean p:pages){
+            if(p)allPng=false;
             else allJpg=false;
-            builder.append(p.jpg?"j":"p");
+            builder.append(p?"j":"p");
         }
         if(!allPng&&!allJpg){
             jw.value(builder.toString());
@@ -442,20 +522,20 @@ public class Gallery extends GenericGallery{
         titles[0]=jr.nextString();
         titles[1]=jr.nextString();
         titles[2]=jr.nextString();
-        thumbnail=new Image(jr.nextString().equals("j"),mediaId,ImageType.THUMBNAIL);
-        cover=new Image(jr.nextString().equals("j"),mediaId,ImageType.COVER);
-        pages=new Page[pageCount];
+        thumbnail=jr.nextString().equals("j");
+        cover=jr.nextString().equals("j");
+        pages=new boolean[pageCount];
         String pagstr=jr.nextString();
         if(pagstr.length()==1){
-            for(int a=0;a<pageCount;a++)pages[a]=new Page(pagstr.equals("j"),mediaId,a+1);
-        }else for(int a=0;a<pageCount;a++)pages[a]=new Page(pagstr.charAt(a)=='j',mediaId,a+1);
+            for(int a=0;a<pageCount;a++)pages[a]=pagstr.equals("j");
+        }else for(int a=0;a<pageCount;a++)pages[a]=pagstr.charAt(a)=='j';
         int len=TagType.values().length;
         tags=new Tag[len][];
         for(int a=0;a<len;a++){
             List<Tag>list=new ArrayList<>();
             jr.beginArray();
             while (jr.hasNext()) {
-                list.add(new Tag(jr.nextString(),jr.nextInt(),jr.nextInt(),TagType.values()[a]));
+                list.add(new Tag(jr.nextString(),jr.nextInt(),jr.nextInt(),TagType.values()[a],TagStatus.DEFAULT));
             }
             if(list.size()>0) tags[a]=list.toArray(new Tag[0]);
             jr.endArray();
@@ -479,10 +559,10 @@ public class Gallery extends GenericGallery{
         });
     }
     public boolean hasIgnoredTags(String s){
-        for(Tag[]t:tags)if(t!=null)for(Tag t1:t)if(s.contains(t1.toQueryTag(TagStatus.AVOIDED)))return true;
+        for(Tag[]t:tags)if(t!=null)for(Tag t1:t)if(s.contains(t1.toQueryTag()))return true;
         return false;
     }
     public boolean hasIgnoredTags(){
-        return hasIgnoredTags(Tags.getQueryString(""));
+        return hasIgnoredTags(TagV2.getQueryString(""));
     }
 }

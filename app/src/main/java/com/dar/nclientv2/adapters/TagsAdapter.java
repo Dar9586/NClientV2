@@ -17,11 +17,11 @@ import com.dar.nclientv2.TagFilter;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
-import com.dar.nclientv2.async.ScrapeTags;
+import com.dar.nclientv2.async.scrape.BulkScraper;
 import com.dar.nclientv2.loginapi.LoadTags;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
-import com.dar.nclientv2.settings.Tags;
+import com.dar.nclientv2.settings.TagV2;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
@@ -84,6 +84,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         };
     }
 
+
     static class ViewHolder extends RecyclerView.ViewHolder {
         final ImageView imgView;
         final TextView title,count;
@@ -133,8 +134,8 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         holder.count.setText(String.format(Locale.US,"%d",ent.getCount()));
         holder.master.setOnClickListener(v -> {
             if(!online) {
-                if (!Tags.maxTagReached() || Tags.getStatus(ent) != TagStatus.DEFAULT) updateLogo(holder.imgView, Tags.updateStatus(context, ent));
-                else Snackbar.make(context.getViewPager(), context.getString(R.string.tags_max_reached, Tags.MAXTAGS), Snackbar.LENGTH_LONG).show();
+                if (!TagV2.maxTagReached() || ent.getStatus() != TagStatus.DEFAULT) updateLogo(holder.imgView, TagV2.updateStatus(ent));
+                else Snackbar.make(context.getViewPager(), context.getString(R.string.tags_max_reached, TagV2.MAXTAGS), Snackbar.LENGTH_LONG).show();
             }else{
                 try {
                     onlineTagUpdate(ent,!Login.getOnlineTags().contains(ent),holder.imgView);
@@ -148,7 +149,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
             else Toast.makeText(context, R.string.tag_already_in_blacklist, Toast.LENGTH_SHORT).show();
             return true;
         });
-        updateLogo(holder.imgView,online?TagStatus.AVOIDED:Tags.getStatus(ent));
+        updateLogo(holder.imgView,online?TagStatus.AVOIDED:ent.getStatus());
     }
     private void showBlacklistDialog(final Tag tag,final ImageView imgView) {
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
@@ -247,8 +248,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         notifyItemRangeRemoved(0,s);
         if(online) new LoadTags(this).start();
         else{
-            Tags.removeSet(context,type);
-            new ScrapeTags(context,this,type).start();
+            BulkScraper.addScrape(context,type);
         }
     }
 

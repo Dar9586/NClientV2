@@ -31,7 +31,7 @@ public class RandomActivity extends AppCompatActivity {
         Global.loadTheme(this);
         Global.initHttpClient(this);
         Global.initImageQuality(this);
-        Favorites.countFavorite(this);
+        Favorites.countFavorite();
         Global.initLoadImages(this);
         setContentView(R.layout.activity_random);
         FloatingActionButton shuffle = findViewById(R.id.shuffle);
@@ -59,12 +59,12 @@ public class RandomActivity extends AppCompatActivity {
         favorite.setOnClickListener(v -> {
             if(loadedGallery!=null&&loadedGallery.isValid()){
                 if(isFavorite){
-                    if(Favorites.removeFavorite(RandomActivity.this,loadedGallery)){
+                    if(Favorites.removeFavorite(loadedGallery)){
                         isFavorite=false;
                         favorite.setImageResource(R.drawable.ic_favorite_border);
                     }
                 }else{
-                    if(Favorites.addFavorite(RandomActivity.this,loadedGallery)){
+                    if(Favorites.addFavorite(loadedGallery)){
                         isFavorite=true;
                         favorite.setImageResource(R.drawable.ic_favorite);
                     }
@@ -82,14 +82,14 @@ public class RandomActivity extends AppCompatActivity {
     private boolean isFavorite;
     public void loadGallery(Gallery gallery){
         loadedGallery=gallery;
-        Global.loadImage(gallery.getCover().getUrl(),thumbnail);
+        Global.loadImage(gallery.getCover(),thumbnail);
         switch (gallery.getLanguage()){
             case CHINESE :language.setText("\uD83C\uDDE8\uD83C\uDDF3");break;
             case ENGLISH :language.setText("\uD83C\uDDEC\uD83C\uDDE7");break;
             case JAPANESE:language.setText("\uD83C\uDDEF\uD83C\uDDF5");break;
             case UNKNOWN :language.setText("\uD83C\uDFF3"); break;
         }
-        isFavorite=Favorites.isFavorite(this,loadedGallery);
+        isFavorite=Favorites.isFavorite(loadedGallery);
         favorite.setImageResource(isFavorite?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
         title.setText(gallery.getTitle());
         page.setText(getString(R.string.page_count_format,gallery.getPageCount()));

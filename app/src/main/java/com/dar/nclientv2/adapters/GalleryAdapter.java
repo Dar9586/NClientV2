@@ -13,7 +13,6 @@ import com.dar.nclientv2.R;
 import com.dar.nclientv2.ZoomActivity;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
-import com.dar.nclientv2.api.components.Page;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.settings.Global;
@@ -136,9 +135,9 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         final int pos=holder.getAdapterPosition()+(gallery.isLocal()?1:0);
         final File file = directory == null ? null : new File(directory, (("000" + pos) + ".jpg").substring(Integer.toString(pos).length()));
         if(!gallery.isLocal()){
-            final Page ent = ((Gallery)gallery).getPage(pos-1);
+            final Gallery ent = ((Gallery)gallery);
             if(file == null || !file.exists())
-                Global.loadImage(Global.isHighRes() ? ent.getUrl() : ent.getLowUrl(), imgView);
+                Global.loadImage(Global.isHighRes() ? ent.getPage(pos-1) : ent.getLowPage(pos-1), imgView);
             else Global.loadImage(file, imgView);
         }else{
             if(file != null && file.exists()) Global.loadImage(file, imgView);
