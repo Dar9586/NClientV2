@@ -198,6 +198,8 @@
     <string name="update_version_format" formatted="true">Update from version %s to version %s?</string>
     <string name="clear_this_list">Clear this list?</string>
     <string name="set_minimum_count">Set minimum count</string>
+    <string name="sort_by_title">Sort by title</string>
+    <string name="sort_by_popular">Sort by popular</string>
 
 
     <string-array name="theme">

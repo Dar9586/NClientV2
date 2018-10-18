@@ -9,6 +9,11 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
     <item
+        android:id="@+id/sort_by_name"
+        android:icon="@drawable/ic_sort"
+        android:title="@string/sort_by_popular"
+        app:showAsAction="ifRoom|collapseActionView" />
+    <item
         android:id="@+id/reset_tags"
         android:title="@string/clear_tag_preferences"
         app:showAsAction="never"

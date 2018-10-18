@@ -1,4 +1,4 @@
-package com.dar.nclientv2.adapters;
+package com.dar.nclientv2.adapters.paged;
 
 import android.graphics.Color;
 import android.util.JsonWriter;
@@ -17,8 +17,8 @@ import com.dar.nclientv2.TagFilter;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
-import com.dar.nclientv2.async.scrape.BulkScraper;
-import com.dar.nclientv2.loginapi.LoadTags;
+import com.dar.nclientv2.async.database.Queries;
+import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.settings.TagV2;
@@ -26,14 +26,15 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -42,15 +43,19 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> implements Filterable{
+public class TagsAdapter extends ListAdapter<Tag,TagsAdapter.ViewHolder> implements Filterable{
     private final TagFilter context;
-    private final List<Tag> tags;
-    private List<Tag> filterTags;
-    private final boolean logged,black;
-    private String lastQuery="nothing";
+    private final boolean logged=Login.isLogged(),black=Global.getTheme()==Global.ThemeScheme.BLACK,online;
+    private String lastQuery=null;
+    private final TagType type;
+    private boolean wasSortedByName;
+    public TagsAdapter(TagFilter cont, String query, TagType type, boolean online){
+        super(CALLBACK);
+        context=cont;
+        this.type=type;
+        this.online=online;
+        getFilter().filter(query);
 
-    public String getLastQuery(){
-        return lastQuery;
     }
 
     @Override
@@ -58,28 +63,26 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
-                String x=constraint.toString().toLowerCase(Locale.US);
-                Log.d(Global.LOGTAG,"FILTER:\""+x+"\",\""+lastQuery+"\"="+(x.equals(lastQuery)));
                 FilterResults results=new FilterResults();
-                if(!x.equals(lastQuery)) {
-                    results.count=filterTags.size();
-                    lastQuery=x;
-                    List<Tag>filterTags=new ArrayList<>();
-                    for (Tag t : tags) if (t.getName().contains(x)) filterTags.add(t);
-                    Log.d(Global.LOGTAG,"Size: "+filterTags.size()+filterTags);
-                    results.values=filterTags;
-                }else{results.count=-1;}
+                if(!force&&constraint.toString().equals(lastQuery)&&TagV2.isSortedByName()==wasSortedByName){
+                    results.count=-1;
+                }else{
+                    force=false;
+                    wasSortedByName=TagV2.isSortedByName();
+                    lastQuery = constraint.toString();
+                    Tag[] tags = Queries.TagTable.filterTags(Database.getDatabase(), lastQuery, type, online, TagV2.isSortedByName());
+                    results.count = tags.length;
+                    results.values = Arrays.asList(tags);
+                }
                 return results;
             }
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                if(results.count!=-1) {
-                    filterTags=(List<Tag>) results.values;
-                    if(filterTags.size()>results.count)notifyItemRangeInserted(results.count,filterTags.size()-results.count);
-                    else if(filterTags.size()<results.count)notifyItemRangeRemoved(filterTags.size(),results.count-filterTags.size());
-                    sortDataset();
-                }
+                //if(filterTags.size()>results.count)notifyItemRangeInserted(results.count,filterTags.size()-results.count);
+                //else if(filterTags.size()<results.count)notifyItemRangeRemoved(filterTags.size(),results.count-filterTags.size());
+                //sortDataset();
+                if(results.count!=-1) submitList((List<Tag>)results.values);
             }
         };
     }
@@ -97,28 +100,17 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
             master=v.findViewById(R.id.master_layout);
         }
     }
-    public TagsAdapter(TagFilter cont, List<Tag> tags,String query) {
-        this.context=cont;
-        this.tags=tags;
-        online=false;
-        black=Global.getTheme()== Global.ThemeScheme.BLACK;
-        logged=Login.isLogged();
-        filterTags=new ArrayList<>();
-        getFilter().filter(query);
-    }
-    private final boolean online;
-    public TagsAdapter(TagFilter cont,String query){
-        this.context=cont;
-        online=true;
-        logged=Login.isLogged();
-        black=Global.getTheme()== Global.ThemeScheme.BLACK;
-        if(Login.getOnlineTags().size()==0){
-            this.tags=new ArrayList<>();
-            new LoadTags(this).start();
-        }else this.tags=new ArrayList<>(Login.getOnlineTags());
-        filterTags=new ArrayList<>();
-        getFilter().filter(query);
-    }
+    private static final DiffUtil.ItemCallback<Tag> CALLBACK=new DiffUtil.ItemCallback<Tag>(){
+        @Override
+        public boolean areItemsTheSame(@NonNull Tag oldItem, @NonNull Tag newItem){
+            return oldItem.getId()==newItem.getId();
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull Tag oldItem, @NonNull Tag newItem){
+            return oldItem.getStatus()==newItem.getStatus();
+        }
+    };
 
     @NonNull
     @Override
@@ -129,7 +121,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
     @Override
     public void onBindViewHolder(@NonNull final TagsAdapter.ViewHolder holder, int position) {
         if(black)holder.master.setBackgroundColor(Color.BLACK);
-        final Tag ent=filterTags.get(holder.getAdapterPosition());
+        final Tag ent=getItem(position);
         holder.title.setText(ent.getName());
         holder.count.setText(String.format(Locale.US,"%d",ent.getCount()));
         holder.master.setOnClickListener(v -> {
@@ -138,14 +130,14 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
                 else Snackbar.make(context.getViewPager(), context.getString(R.string.tags_max_reached, TagV2.MAXTAGS), Snackbar.LENGTH_LONG).show();
             }else{
                 try {
-                    onlineTagUpdate(ent,!Login.getOnlineTags().contains(ent),holder.imgView);
+                    onlineTagUpdate(ent,!Login.isOnlineTags(ent),holder.imgView);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         });
         if(!online&&logged)holder.master.setOnLongClickListener(view -> {
-            if(!Login.getOnlineTags().contains(ent)) showBlacklistDialog(ent,holder.imgView);
+            if(!Login.isOnlineTags(ent)) showBlacklistDialog(ent,holder.imgView);
             else Toast.makeText(context, R.string.tag_already_in_blacklist, Toast.LENGTH_SHORT).show();
             return true;
         });
@@ -215,41 +207,12 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         }
         Global.setTint(img.getDrawable());
     }
-    @Override
-    public int getItemCount() {
-        return filterTags.size();
+
+    private boolean force=false;
+    public void addItem(){
+        force=true;
+        getFilter().filter(lastQuery);
     }
 
-    public List<Tag> getDataset() {
-        return filterTags;
-    }
-    public List<Tag> getTrueDataset() {
-        return tags;
-    }
-    private void sortDataset(){
-        Collections.sort(filterTags, (o1, o2) -> o2.getCount()-o1.getCount());
-        notifyItemRangeChanged(0,filterTags.size());
-    }
-
-    public void addItem(Tag tag){
-        tags.add(tag);
-        if(tag.getName().contains(lastQuery)){
-            filterTags.add(tag);
-            context.runOnUiThread(() -> {
-                notifyItemInserted(filterTags.size());
-                //notifyDataSetChanged();
-            });
-        }
-    }
-    public void resetDataset(TagType type){
-        tags.clear();
-        int s=filterTags.size();
-        filterTags=new ArrayList<>();
-        notifyItemRangeRemoved(0,s);
-        if(online) new LoadTags(this).start();
-        else{
-            BulkScraper.addScrape(context,type);
-        }
-    }
 
 }

@@ -5,12 +5,11 @@ import android.content.Context;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.Tag;
+import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.loginapi.User;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,7 +18,6 @@ import okhttp3.HttpUrl;
 
 public class Login{
     private static User user;
-    private static final List<Tag> onlineTags=new ArrayList<>();
     private static boolean accountTag;
 
     public static void  initUseAccountTag(@NonNull Context context){accountTag=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_use_account_tag),false);}
@@ -31,12 +29,19 @@ public class Login{
     public static void logout(Context context){
         context.getSharedPreferences("OnlineFavorite",0).edit().clear().apply();
     }
-    public static List<Tag> getOnlineTags() {
-        return onlineTags;
+    public static Tag[] getOnlineTags() {
+        return Queries.TagTable.getAllOnlineFavorite(Database.getDatabase());
     }
-    public static void clearOnlineTags(){onlineTags.clear();}
-    public static void addOnlineTag(Tag tag){onlineTags.add(tag);}
-    public static void removeOnlineTag(Tag tag){onlineTags.remove(tag);}
+    public static void clearOnlineTags(){
+        Queries.TagTable.resetOnlineFavorite(Database.getDatabase());
+    }
+    public static void addOnlineTag(Tag tag){
+        Queries.TagTable.insert(Database.getDatabase(),tag);
+        Queries.TagTable.updateOnlineFavorite(Database.getDatabase(),tag,true);
+    }
+    public static void removeOnlineTag(Tag tag){
+        Queries.TagTable.updateOnlineFavorite(Database.getDatabase(),tag,false);
+    }
 
     public static boolean isLogged(){
         if(Global.client==null)return false;
@@ -78,5 +83,9 @@ public class Login{
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static boolean isOnlineTags(Tag tag){
+        return Queries.TagTable.isOnlineFavorite(Database.getDatabase(),tag);
     }
 }

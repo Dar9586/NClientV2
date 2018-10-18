@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 public class TagV2{
     public static final int MAXTAGS=100;
     private static int minCount;
+    private static boolean sortByName;
 
     public static Tag[] getTagSet(TagType type){
         return Queries.TagTable.getAllType(Database.getDatabase(),type);
@@ -36,13 +37,15 @@ public class TagV2{
     }
 
     public static TagStatus updateStatus(Tag t){
+        TagStatus old=t.getStatus();
         switch(t.getStatus()){
             case ACCEPTED:t.setStatus(TagStatus.AVOIDED);break;
             case AVOIDED:t.setStatus(TagStatus.DEFAULT);break;
             case DEFAULT:t.setStatus(TagStatus.ACCEPTED);break;
         }
-        Queries.TagTable.updateStatus(Database.getDatabase(),t);
-        return t.getStatus();
+        if(Queries.TagTable.updateStatus(Database.getDatabase(),t)==1)return t.getStatus();
+        throw new RuntimeException("Unable to update: "+t);
+
     }
     public static void resetAllStatus(){
         Queries.TagTable.resetAllStatus(Database.getDatabase());
@@ -51,12 +54,7 @@ public class TagV2{
         for(Tag t1:tags)if(t.equals(t1))return true;
         return false;
     }
-    public static void setPageReachedForType(@NonNull Context context , TagType type, int page){
-        context.getSharedPreferences("ScrapedTags",0).edit().putInt(type+"_page",page).apply();
-    }
-    public static int pageReachedForType(@NonNull Context context ,TagType type){
-        return context.getSharedPreferences("ScrapedTags",0).getInt(type+"_page",0);
-    }
+
 
     public static TagStatus getStatus(Tag tag){
         return Queries.TagTable.getStatus(Database.getDatabase(),tag);
@@ -75,8 +73,29 @@ public class TagV2{
     public static void initMinCount(Context context){
         minCount=context.getSharedPreferences("ScrapedTags",0).getInt("min_count",25);
     }
+    public static void initSortByName(Context context){
+        sortByName=context.getSharedPreferences("ScrapedTags",0).getBoolean("sort_by_name",false);
+    }
+    public static boolean updateSortByName(Context context){
+        context.getSharedPreferences("ScrapedTags",0).edit().putBoolean("sort_by_name",sortByName=!sortByName).apply();
+        return sortByName;
+    }
+    public static boolean isSortedByName(){
+        return sortByName;
+    }
 
     public static int getMinCount(){
         return minCount;
+    }
+
+
+
+    @Deprecated
+    public static void setPageReachedForType(@NonNull Context context , TagType type, int page){
+        context.getSharedPreferences("ScrapedTags",0).edit().putInt(type+"_page",page).apply();
+    }
+    @Deprecated
+    public static int pageReachedForType(@NonNull Context context ,TagType type){
+        return context.getSharedPreferences("ScrapedTags",0).getInt(type+"_page",0);
     }
 }

@@ -19,9 +19,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@SuppressWarnings("deprecation")
 public class DatabaseHelper extends SQLiteOpenHelper{
-    public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "Entries.db";
+    private static final int DATABASE_VERSION = 1;
+    private static final String DATABASE_NAME = "Entries.db";
     private final Context context;
     public DatabaseHelper(Context context){
         super(context,DATABASE_NAME,null,DATABASE_VERSION);

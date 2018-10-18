@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.annotation.Nullable;
+
 public class Queries{
     public static int getColumnFromName(Cursor cursor,String name){
         return cursor.getColumnIndex(name);
@@ -203,13 +205,14 @@ public class Queries{
     public static class TagTable{
         static final String TABLE_NAME="Tags";
         public static final String DROP_TABLE="DROP TABLE IF EXISTS "+normalizeName(TABLE_NAME);
-        static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `Tags` ( `idTag` INT  NOT NULL PRIMARY KEY, `name` TEXT NOT NULL , `type` TINYINT(1) NOT NULL , `count` INT NOT NULL,`status` TINYINT(1) NOT NULL );";
+        static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `Tags` ( `idTag` INT  NOT NULL PRIMARY KEY, `name` TEXT NOT NULL , `type` TINYINT(1) NOT NULL , `count` INT NOT NULL,`status` TINYINT(1) NOT NULL,`online` TINYINT(1) NOT NULL DEFAULT 0);";
 
         static final String IDTAG="idTag";
         static final String NAME="name";
         static final String TYPE="type";
         static final String COUNT="count";
         static final String STATUS="status";
+        static final String ONLINE="online";
         public static Tag cursorToTag(Cursor cursor){
             return  new Tag(
                     cursor.getString(cursor.getColumnIndex(NAME)),
@@ -230,6 +233,27 @@ public class Queries{
             cursor.close();
             return tags;
         }
+        public static Tag[]filterTags(SQLiteDatabase db, String query, @Nullable TagType type, boolean online,boolean sortByName){
+            return retrieveAll(getFilterCursor(db, query, type, online, sortByName));
+        }
+        public static Cursor getFilterCursor(SQLiteDatabase db,String query, TagType type, boolean online,boolean sortByName){
+            StringBuilder sql=new StringBuilder("SELECT * FROM ").append(normalizeName(TABLE_NAME));
+            sql.append(" WHERE ");
+            sql.append(normalizeName(COUNT)).append(">=? ");
+            if(query.length()>0)sql.append("AND ").append(normalizeName(NAME)).append(" LIKE ?");
+            if(type!=null)sql.append("AND ").append(normalizeName(TYPE)).append("=? ");
+            if(online)sql.append("AND ").append(normalizeName(ONLINE)).append("=1 ");//2 e 3 per online ed entrambi
+            if(!online&&type==null)sql.append("AND ").append(normalizeName(STATUS)).append("!=0 ");//DEFAULT STATUS
+            sql.append("ORDER BY ");
+            if(sortByName)sql.append(normalizeName(NAME)).append(" ASC");
+            else sql.append(normalizeName(COUNT)).append(" DESC,").append(normalizeName(NAME)).append(" ASC");
+            ArrayList<String>list=new ArrayList<>();
+            list.add(""+TagV2.getMinCount());
+            if(query.length()>0)list.add('%'+query+'%');
+            if(type!=null)list.add(""+type.ordinal());
+            Log.d(Global.LOGTAG,"FILTER QUERY: "+sql+", ARGS: "+list);
+            return db.rawQuery(sql.toString(),list.toArray(new String[0]));
+        }
         public static Tag[] getAllType(SQLiteDatabase db,TagType type){
             String query="SELECT * FROM "+normalizeName(TABLE_NAME)+" WHERE "+normalizeName(TYPE)+" = ? AND "+normalizeName(COUNT)+" >= ?";
             return retrieveAll(db.rawQuery(query,new String[]{""+type.ordinal(),""+TagV2.getMinCount()}));
@@ -242,6 +266,17 @@ public class Queries{
             String query="SELECT * FROM "+normalizeName(TABLE_NAME)+" WHERE "+normalizeName(STATUS)+" != ?";
             return retrieveAll(db.rawQuery(query,new String[]{""+TagStatus.DEFAULT.ordinal()}));
         }
+        public static Tag[]getAllOnlineFavorite(SQLiteDatabase db){
+            String query="SELECT * FROM "+normalizeName(TABLE_NAME)+" WHERE "+normalizeName(ONLINE)+" = 1";
+            return retrieveAll(db.rawQuery(query,null));
+        }
+        public static boolean isOnlineFavorite(SQLiteDatabase db,Tag tag){
+            String query="SELECT "+normalizeName(IDTAG)+" FROM "+normalizeName(TABLE_NAME)+" WHERE "+normalizeName(IDTAG)+"=? AND "+normalizeName(ONLINE)+"=1";
+            Cursor c=db.rawQuery(query,new String[]{""+tag.getId()});
+            boolean x=c.moveToFirst();
+            c.close();
+            return x;
+        }
 
         public static Tag getTag(SQLiteDatabase db,int id){
             String query="SELECT * FROM "+normalizeName(TABLE_NAME)+" WHERE "+normalizeName(IDTAG)+" = ?";
@@ -252,12 +287,12 @@ public class Queries{
             c.close();
             return t;
         }
-        public static void updateStatus(SQLiteDatabase db,Tag tag){
+        public static int updateStatus(SQLiteDatabase db,Tag tag){
             ContentValues values=new ContentValues(1);
             values.put(STATUS,tag.getStatus().ordinal());
-            db.updateWithOnConflict(TABLE_NAME,values,normalizeName(IDTAG)+"=?",new String[]{""+tag.getId()},SQLiteDatabase.CONFLICT_IGNORE);
-        }
 
+            return db.updateWithOnConflict(TABLE_NAME,values,normalizeName(IDTAG)+"=?",new String[]{""+tag.getId()},SQLiteDatabase.CONFLICT_IGNORE);
+        }
         public static void insert(SQLiteDatabase db,Tag tag){
             ContentValues values=new ContentValues(5);
             values.put(IDTAG,tag.getId());
@@ -265,15 +300,19 @@ public class Queries{
             values.put(TYPE,tag.getType().ordinal());
             values.put(COUNT,tag.getCount());
             values.put(STATUS,tag.getStatus().ordinal());
-            if(db!=null)db.insertWithOnConflict(TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_REPLACE);
+            db.insertWithOnConflict(TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_IGNORE);
         }
-
-        public static void updateAllStatus(SQLiteDatabase db){
+        public static void updateOnlineFavorite(SQLiteDatabase db,Tag tag,boolean online){
             ContentValues values=new ContentValues(1);
-            values.put(STATUS,TagStatus.DEFAULT.ordinal());
-            db.updateWithOnConflict(TABLE_NAME,values,null,null,SQLiteDatabase.CONFLICT_IGNORE);
+            values.put(ONLINE,online?1:0);
+            db.updateWithOnConflict(TABLE_NAME,values,normalizeName(IDTAG)+"=?",new String[]{""+tag.getId()},SQLiteDatabase.CONFLICT_IGNORE);
         }
-
+        public static void resetOnlineFavorite(SQLiteDatabase db){
+            ContentValues values=new ContentValues(1);
+            values.put(ONLINE,0);
+            db.updateWithOnConflict(TABLE_NAME,values,normalizeName(ONLINE)+"=1",null,SQLiteDatabase.CONFLICT_IGNORE);
+        }
+        @Deprecated
         public static void updateStatus(SQLiteDatabase db, int id, TagStatus status){
             ContentValues values=new ContentValues(1);
             values.put(STATUS,status.ordinal());
@@ -285,6 +324,7 @@ public class Queries{
             values.put(STATUS,TagStatus.DEFAULT.ordinal());
             db.updateWithOnConflict(TABLE_NAME,values,null,null,SQLiteDatabase.CONFLICT_IGNORE);
         }
+
         public static TagStatus getStatus(SQLiteDatabase db,Tag tag){
             String query="SELECT "+normalizeName(STATUS)+" FROM "+normalizeName(TABLE_NAME)+
                     " WHERE "+normalizeName(IDTAG)+" =?";
@@ -297,11 +337,13 @@ public class Queries{
             c.close();
             return null;
         }
+
+
     }
     static class BridgeTable{
         static final String TABLE_NAME="GalleryTags";
         public static final String DROP_TABLE="DROP TABLE IF EXISTS "+normalizeName(TABLE_NAME);
-        static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `GalleryTags` ( `id`  INTEGER PRIMARY KEY  , `id_gallery` INT NOT NULL , `id_tag` INT NOT NULL , FOREIGN KEY(`id_gallery`) REFERENCES `Gallery`(`idGallery`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`id_tag`) REFERENCES `Tags`(`idTag`) ON UPDATE CASCADE ON DELETE CASCADE );";
+        static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `GalleryTags` ( `id`  INTEGER PRIMARY KEY  , `id_gallery` INT NOT NULL , `id_tag` INT NOT NULL , FOREIGN KEY(`id_gallery`) REFERENCES `Gallery`(`idGallery`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`id_tag`) REFERENCES `Tags`(`idTag`) ON UPDATE CASCADE ON DELETE RESTRICT );";
 
         static final String ID="id";
         static final String ID_GALLERY="id_gallery";
@@ -311,6 +353,25 @@ public class Queries{
             values.put(ID_GALLERY,galleryId);
             values.put(ID_TAG,tagId);
             db.insertWithOnConflict(TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_ABORT);
+        }
+        public static class Temp{
+            public final int idTag,idGallery;
+
+            public Temp(int idTag, int idGallery){
+                this.idTag = idTag;
+                this.idGallery = idGallery;
+            }
+        }
+        public static Temp[] getAll(SQLiteDatabase db){
+            Cursor c=db.rawQuery("SELECT * FROM "+normalizeName(TABLE_NAME),null);
+            Temp[]array=new Temp[c.getCount()];
+            int i=0;
+            if(c.moveToFirst()){
+                do{
+                    array[i++]=new Temp(c.getInt(getColumnFromName(c,ID_TAG)),c.getInt(getColumnFromName(c,ID_GALLERY)));
+                }while(c.moveToNext());
+            }
+            return array;
         }
         private static Tag[] getTagsForGallery(SQLiteDatabase db,int id,TagType type){
             /*String query="SELECT "+normalizeName(ID_TAG)+" FROM "+normalizeName(TABLE_NAME)+","+normalizeName(TagTable.TABLE_NAME)+

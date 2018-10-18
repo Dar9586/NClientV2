@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.dar.nclientv2.adapters.TagsAdapter;
+import com.dar.nclientv2.adapters.paged.TagsAdapter;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.scrape.BulkScraper;
@@ -20,8 +20,6 @@ import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.settings.TagV2;
 import com.google.android.material.tabs.TabLayout;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -52,6 +50,7 @@ public class TagFilter extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
         TagV2.initMinCount(this);
+        TagV2.initSortByName(this);
         Global.initHttpClient(this);
         setContentView(R.layout.activity_tag_filter);
         BulkScraper.setActivity(this);
@@ -79,9 +78,9 @@ public class TagFilter extends AppCompatActivity{
 
             @Override
             public void onPageSelected(int position) {
-                Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + position);
+                PlaceholderFragment page = (PlaceholderFragment)getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + position);
                 if (page != null) {
-                    ((PlaceholderFragment)page).refilter(searchView==null?"":searchView.getQuery().toString());
+                    ((TagsAdapter)page.recyclerView.getAdapter()).addItem();
                 }
             }
 
@@ -111,10 +110,16 @@ public class TagFilter extends AppCompatActivity{
         return 0;
     }
     private androidx.appcompat.widget.SearchView searchView;
+    private void updateSortItem(MenuItem item){
+        item.setIcon(TagV2.isSortedByName()?R.drawable.ic_sort_by_alpha:R.drawable.ic_sort);
+        item.setTitle(TagV2.isSortedByName()?R.string.sort_by_title:R.string.sort_by_popular);
+        Global.setTint(item.getIcon());
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_tag_filter, menu);
+        updateSortItem(menu.findItem(R.id.sort_by_name));
         searchView=(androidx.appcompat.widget.SearchView)menu.findItem(R.id.search).getActionView();
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
@@ -157,10 +162,15 @@ public class TagFilter extends AppCompatActivity{
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         PlaceholderFragment page = (PlaceholderFragment)getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
-
         switch (id){
             case R.id.reset_tags:createDialog();break;
             case R.id.set_min_count:minCountBuild(); break;
+            case R.id.sort_by_name:
+                TagV2.updateSortByName(this);
+                updateSortItem(item);
+                page.refilter(searchView.getQuery().toString());
+
+                break;
             /*case R.id.load_next:
                 if(page.isNormalType())
                     new ScrapeTags(this,(TagsAdapter)page.recyclerView.getAdapter(),page.type).start();
@@ -185,6 +195,7 @@ public class TagFilter extends AppCompatActivity{
 
             }
         });
+        DefaultDialogs.pageChangerDialog(builder);
     }
 
 
@@ -218,7 +229,7 @@ public class TagFilter extends AppCompatActivity{
 
     public static class PlaceholderFragment extends Fragment {
         TagType type;
-        RecyclerView recyclerView;
+        public RecyclerView recyclerView;
 
         public boolean isNormalType(){
             return type!=TagType.UNKNOWN&&type!=TagType.CATEGORY;
@@ -277,9 +288,9 @@ public class TagFilter extends AppCompatActivity{
             TagsAdapter adapter;
             TagFilter cont=(TagFilter)getContext();
             switch(type){
-                case UNKNOWN:adapter=new TagsAdapter(cont,new ArrayList<>(Arrays.asList(TagV2.getListPrefer())),query);break;
-                case CATEGORY:adapter=new TagsAdapter(cont,query);break;
-                default:adapter=new TagsAdapter(cont,new ArrayList<>(Arrays.asList(TagV2.getTagSet(type))),query);break;
+                case UNKNOWN:adapter=new TagsAdapter(cont,query,null,false);break;
+                case CATEGORY:adapter=new TagsAdapter(cont,query,null,true);break;
+                default:adapter=new TagsAdapter(cont,query,type,false);break;
             }
             recyclerView.setAdapter(adapter);
         }
@@ -299,9 +310,7 @@ public class TagFilter extends AppCompatActivity{
             Log.d(Global.LOGTAG,"REACHED: "+type+", "+this.type+", "+tags.toString());
             if(this.type==type){
                 TagsAdapter adapter= (TagsAdapter)recyclerView.getAdapter();
-                for(Tag t:tags){
-                    adapter.addItem(t);
-                }
+                adapter.addItem();
             }
         }
     }

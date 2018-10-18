@@ -3,7 +3,7 @@ package com.dar.nclientv2.loginapi;
 import android.util.JsonReader;
 import android.util.Log;
 
-import com.dar.nclientv2.adapters.TagsAdapter;
+import com.dar.nclientv2.adapters.paged.TagsAdapter;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.settings.Global;
@@ -53,7 +53,7 @@ public class LoadTags extends Thread {
                         Tag tt=new Tag(reader);
                         if(tt.getType()!=TagType.LANGUAGE&&tt.getType()!=TagType.CATEGORY) {
                             Login.addOnlineTag(tt);
-                            if (adapter != null) adapter.addItem(tt);
+                            if (adapter != null) adapter.addItem();
                         }
                     }
                     reader.close();

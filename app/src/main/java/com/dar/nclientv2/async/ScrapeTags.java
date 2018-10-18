@@ -3,7 +3,7 @@ package com.dar.nclientv2.async;
 import android.content.Context;
 import android.util.Log;
 
-import com.dar.nclientv2.adapters.TagsAdapter;
+import com.dar.nclientv2.adapters.paged.TagsAdapter;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
@@ -24,7 +24,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;
 import okhttp3.Response;
-
+@Deprecated
 public class ScrapeTags extends Thread {
     private final TagsAdapter adapter;
     private final TagType tagType;
@@ -102,7 +102,7 @@ public class ScrapeTags extends Thread {
                         Integer.parseInt(x.attr("class").substring(x.attr("class").lastIndexOf('-')+1).trim()),
                         tagType,TagStatus.DEFAULT
                 );
-                adapter.addItem(t);
+                adapter.addItem();
                 loadedTags.add(t);
                 //tagsList.add(t);
             }

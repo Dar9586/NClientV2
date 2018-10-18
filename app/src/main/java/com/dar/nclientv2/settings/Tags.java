@@ -19,7 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 
 import static com.dar.nclientv2.settings.Global.LOGTAG;
-
+@Deprecated
 public class Tags{
     public static final int MAXTAGS=100;
     private static List<Tag> accepted=new ArrayList<>(),avoided=new ArrayList<>();
