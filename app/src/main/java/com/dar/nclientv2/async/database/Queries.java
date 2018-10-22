@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class Queries{
@@ -32,7 +33,7 @@ public class Queries{
     }
     public static class DebugDatabase{
         public static void dumpDatabase(SQLiteDatabase db){
-
+            Log.d(Global.LOGTAG,"START DUMPING");
             File f=new File(Global.GALLERYFOLDER,"DBDATA");
             f=new File(f,"7.log");
             Log.d(Global.LOGTAG,f.getAbsolutePath());
@@ -41,7 +42,7 @@ public class Queries{
                 f.createNewFile();
                 FileWriter fw=new FileWriter(f);
                 dumpTable(db,GalleryTable.TABLE_NAME,fw);
-                dumpTable(db,TagTable.TABLE_NAME,fw);
+                //dumpTable(db,TagTable.TABLE_NAME,fw);
                 //dumpTable(db,RelatedTable.TABLE_NAME);
                 dumpTable(db,BridgeTable.TABLE_NAME,fw);
                 fw.flush();
@@ -49,6 +50,7 @@ public class Queries{
             }catch(IOException e){
                 e.printStackTrace();
             }
+            Log.d(Global.LOGTAG,"END DUMPING");
         }
         private static void dumpTable(SQLiteDatabase db,String name,FileWriter sb) throws IOException{
 
@@ -57,7 +59,7 @@ public class Queries{
             sb.write("DUMPING: ");
             sb.write(name);
             sb.write(" count: ");
-            sb.write(c.getCount());
+            sb.write(""+c.getCount());
             sb.write(": ");
             if(c.moveToFirst()){
                 do{
@@ -85,26 +87,43 @@ public class Queries{
         public static final String FAVORITE="favorite";
         public static Gallery galleryFromId(SQLiteDatabase db,int id) throws IOException{
             String query="SELECT * FROM "+normalizeName(TABLE_NAME)+" WHERE "+normalizeName(IDGALLERY)+"=?";
-            Cursor cursor=db.rawQuery(query,null);
+            Cursor cursor=db.query(true,TABLE_NAME,null,normalizeName(IDGALLERY)+"=?",new String[]{""+id},null,null,null,null);
+
             Gallery g=null;
-            Log.d(Global.LOGTAG,"DUMP: "+cursor.getCount()+"; "+query+", "+id);
+            Log.d(Global.LOGTAG,"DUMP: "+cursor.getCount()+"; "+query+", "+id+",,"+cursor);
             if(cursor.moveToFirst()){
-                g=new Gallery(cursor,BridgeTable.getTagsForGallery(db,id));
+                g=cursorToGallery(db,cursor);
             }
             cursor.close();
             return g;
         }
-        public static List<Gallery>getAllFavorite(SQLiteDatabase db,boolean online) throws IOException{
-            List<Gallery>galleries=new ArrayList<>();
-            if(db==null)return galleries;
-            String query="SELECT * FROM "+normalizeName(TABLE_NAME)+" WHERE "+normalizeName(FAVORITE)+" =? OR "+normalizeName(FAVORITE)+"=3";
-            Log.d(Global.LOGTAG,query);
-            Cursor cursor=db.rawQuery(query,new String[]{""+(online?2:1)});
+        @NonNull
+        public static Cursor getAllFavoriteCursor(SQLiteDatabase db,CharSequence query,boolean online){
+            Log.i(Global.LOGTAG,"FILTER IN: "+query+";;"+online);
+            Cursor cursor;//=db.rawQuery(sql,new String[]{query,query,query,""+(online?2:1)});
+            String sql="SELECT * FROM "+normalizeName(TABLE_NAME)+" WHERE ("+
+                    normalizeName(FAVORITE)+" =? OR "+normalizeName(FAVORITE)+"=3)";
+            if(query!=null&&query.length()>0){
+                sql+=" AND ("+normalizeName(TITLE_ENG) + " LIKE ? OR" +
+                        normalizeName(TITLE_JP) + " LIKE ? OR" +
+                        normalizeName(TITLE_PRETTY) + " LIKE ? )";
+                String q='%'+query.toString()+'%';
+                cursor=db.rawQuery(sql,new String[]{q,q,q,""+(online?2:1)});
+            }else cursor=db.rawQuery(sql,new String[]{""+(online?2:1)});
+            Log.d(Global.LOGTAG,sql);
+            Log.d(Global.LOGTAG,"AFTER FILTERING: "+cursor.getCount());
+            Log.i(Global.LOGTAG,"END FILTER IN: "+query+";;"+online);
+            return cursor;
+        }
+        public static Gallery[] getAllFavorite(SQLiteDatabase db,CharSequence query,boolean online) throws IOException{
+            Cursor cursor=getAllFavoriteCursor(db, query, online);
+            Gallery[]galleries=new Gallery[cursor.getCount()];
+            int i=0;
             if(cursor.moveToFirst()){
                 do{
                     DatabaseUtils.dumpCurrentRow(cursor);
-                    Gallery g=new Gallery(cursor,BridgeTable.getTagsForGallery(db,cursor.getInt(getColumnFromName(cursor,IDGALLERY))));
-                    galleries.add(g);
+                    Gallery g=cursorToGallery(db,cursor);
+                    galleries[i++]=g;
                 }while(cursor.moveToNext());
             }
             cursor.close();
@@ -116,7 +135,7 @@ public class Queries{
             List<Gallery> galleries=new ArrayList<>(cursor.getCount());
             if(cursor.moveToFirst()){
                 do{
-                    galleries.add(new Gallery(cursor,BridgeTable.getTagsForGallery(db,cursor.getInt(getColumnFromName(cursor,IDGALLERY)))));
+                    galleries.add(cursorToGallery(db,cursor));
                 }while(cursor.moveToNext());
             }
             cursor.close();
@@ -126,7 +145,7 @@ public class Queries{
         /*
         * FAVORITE 0=no,1=local,2=online,3=both;
         * */
-        public static void insert(SQLiteDatabase db,Gallery gallery) throws IOException{
+        public static void insert(SQLiteDatabase db,Gallery gallery){
             ContentValues values=new ContentValues(12);
             values.put(IDGALLERY,gallery.getId());
             values.put(TITLE_ENG,gallery.getTitle(TitleType.ENGLISH));
@@ -140,6 +159,7 @@ public class Queries{
             values.put(FAVORITE,0);
             //Inserisci gallery
             db.insertWithOnConflict(TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_IGNORE);
+
             int len;Tag tag;
             for(TagType t:TagType.values()){
                 len=gallery.getTagCount(t);
@@ -150,18 +170,21 @@ public class Queries{
                 }
             }
         }
-        public static void addFavorite(SQLiteDatabase db,Gallery gallery,boolean online)throws IOException{
-            ContentValues values=new ContentValues(1);
-            values.put(FAVORITE,true);
+        public static void addFavorite(SQLiteDatabase db,Gallery gallery,boolean online){
+            Log.d(Global.LOGTAG,"ADDING: "+gallery);
             insert(db,gallery);
+            Log.d(Global.LOGTAG,"GG: ");
             int val=isFavorite(db,gallery);
+            Log.d(Global.LOGTAG,"IS "+val+" AND SHOULD: "+isFavorite(val,online));
             if(isFavorite(val,online))return;
+
+            ContentValues values=new ContentValues(1);
             values.put(FAVORITE,val+(online?2:1));
             db.update(TABLE_NAME,values,normalizeName(IDGALLERY)+"=?",new String[]{""+gallery.getId()});
+            Log.d(Global.LOGTAG,"AND NOW IS: "+isFavorite(db,gallery));
         }
         public static void removeFavorite(SQLiteDatabase db,Gallery gallery,boolean online){
             ContentValues values=new ContentValues(1);
-            values.put(FAVORITE,true);
             int val=isFavorite(db,gallery);
             if(!isFavorite(val,online))return;
             val-=online?2:1;
@@ -181,7 +204,7 @@ public class Queries{
             return false;
         }
         public static int isFavorite(SQLiteDatabase db,Gallery gallery){
-            String query="SELECT "+normalizeName(FAVORITE)+"FROM "+normalizeName(TABLE_NAME)+" WHERE "+normalizeName(IDGALLERY)+"=?";
+            String query="SELECT "+normalizeName(FAVORITE)+" FROM "+normalizeName(TABLE_NAME)+" WHERE "+normalizeName(IDGALLERY)+"=?";
             Cursor cursor=db.rawQuery(query,new String[]{""+gallery.getId()});
             int b=0;
             if(cursor.moveToFirst()){
@@ -200,6 +223,18 @@ public class Queries{
             int x=c.getCount();
             c.close();
             return x;
+        }
+
+        public static void removeAllFavorite(SQLiteDatabase db, boolean online){
+            db.delete(TABLE_NAME,normalizeName(FAVORITE)+"=?",new String[]{""+(online?2:1)});
+            ContentValues values=new ContentValues(1);
+            values.put(FAVORITE,online?1:2);//Si deve invertire perchè era 3
+            db.updateWithOnConflict(TABLE_NAME,values,normalizeName(FAVORITE)+"=3",null,SQLiteDatabase.CONFLICT_IGNORE);
+        }
+
+        public static Gallery cursorToGallery(SQLiteDatabase db,Cursor cursor) throws IOException{
+            DatabaseUtils.dumpCurrentRow(cursor);
+            return new Gallery(cursor,BridgeTable.getTagsForGallery(db,cursor.getInt(getColumnFromName(cursor,IDGALLERY))));
         }
     }
     public static class TagTable{
@@ -343,16 +378,15 @@ public class Queries{
     static class BridgeTable{
         static final String TABLE_NAME="GalleryTags";
         public static final String DROP_TABLE="DROP TABLE IF EXISTS "+normalizeName(TABLE_NAME);
-        static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `GalleryTags` ( `id`  INTEGER PRIMARY KEY  , `id_gallery` INT NOT NULL , `id_tag` INT NOT NULL , FOREIGN KEY(`id_gallery`) REFERENCES `Gallery`(`idGallery`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`id_tag`) REFERENCES `Tags`(`idTag`) ON UPDATE CASCADE ON DELETE RESTRICT );";
+        static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `GalleryTags` (`id_gallery` INT NOT NULL , `id_tag` INT NOT NULL ,PRIMARY KEY (`id_gallery`, `id_tag`), FOREIGN KEY(`id_gallery`) REFERENCES `Gallery`(`idGallery`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`id_tag`) REFERENCES `Tags`(`idTag`) ON UPDATE CASCADE ON DELETE RESTRICT );";
 
-        static final String ID="id";
         static final String ID_GALLERY="id_gallery";
         static final String ID_TAG="id_tag";
         static void insert(SQLiteDatabase db,int galleryId,int tagId){
-            ContentValues values=new ContentValues(3);
+            ContentValues values=new ContentValues(2);
             values.put(ID_GALLERY,galleryId);
             values.put(ID_TAG,tagId);
-            db.insertWithOnConflict(TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_ABORT);
+            db.insertWithOnConflict(TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_IGNORE);
         }
         public static class Temp{
             public final int idTag,idGallery;

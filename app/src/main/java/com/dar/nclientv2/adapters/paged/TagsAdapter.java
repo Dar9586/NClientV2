@@ -1,5 +1,6 @@
 package com.dar.nclientv2.adapters.paged;
 
+import android.database.Cursor;
 import android.graphics.Color;
 import android.util.JsonWriter;
 import android.util.Log;
@@ -26,15 +27,12 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -43,14 +41,14 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class TagsAdapter extends ListAdapter<Tag,TagsAdapter.ViewHolder> implements Filterable{
+public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> implements Filterable{
     private final TagFilter context;
     private final boolean logged=Login.isLogged(),black=Global.getTheme()==Global.ThemeScheme.BLACK,online;
     private String lastQuery=null;
     private final TagType type;
     private boolean wasSortedByName;
+    private Cursor cursor=null;
     public TagsAdapter(TagFilter cont, String query, TagType type, boolean online){
-        super(CALLBACK);
         context=cont;
         this.type=type;
         this.online=online;
@@ -70,19 +68,23 @@ public class TagsAdapter extends ListAdapter<Tag,TagsAdapter.ViewHolder> impleme
                     force=false;
                     wasSortedByName=TagV2.isSortedByName();
                     lastQuery = constraint.toString();
-                    Tag[] tags = Queries.TagTable.filterTags(Database.getDatabase(), lastQuery, type, online, TagV2.isSortedByName());
-                    results.count = tags.length;
-                    results.values = Arrays.asList(tags);
+                    Cursor tags = Queries.TagTable.getFilterCursor(Database.getDatabase(), lastQuery, type, online, TagV2.isSortedByName());
+                    results.count = tags.getCount();
+                    results.values = tags;
                 }
                 return results;
             }
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                //if(filterTags.size()>results.count)notifyItemRangeInserted(results.count,filterTags.size()-results.count);
-                //else if(filterTags.size()<results.count)notifyItemRangeRemoved(filterTags.size(),results.count-filterTags.size());
-                //sortDataset();
-                if(results.count!=-1) submitList((List<Tag>)results.values);
+                if(results.count==-1)return;
+                Cursor newCursor=(Cursor)results.values;
+                int oldCount=getItemCount(),newCount=results.count;
+                if(cursor!=null)cursor.close();
+                cursor=newCursor;
+                if(newCount>oldCount)notifyItemRangeInserted(oldCount,newCount-oldCount);
+                else notifyItemRangeRemoved(newCount,oldCount-newCount);
+                notifyItemRangeChanged(0,Math.min(newCount,oldCount));
             }
         };
     }
@@ -121,7 +123,8 @@ public class TagsAdapter extends ListAdapter<Tag,TagsAdapter.ViewHolder> impleme
     @Override
     public void onBindViewHolder(@NonNull final TagsAdapter.ViewHolder holder, int position) {
         if(black)holder.master.setBackgroundColor(Color.BLACK);
-        final Tag ent=getItem(position);
+        cursor.moveToPosition(position);
+        final Tag ent=Queries.TagTable.cursorToTag(cursor);
         holder.title.setText(ent.getName());
         holder.count.setText(String.format(Locale.US,"%d",ent.getCount()));
         holder.master.setOnClickListener(v -> {
@@ -143,6 +146,12 @@ public class TagsAdapter extends ListAdapter<Tag,TagsAdapter.ViewHolder> impleme
         });
         updateLogo(holder.imgView,online?TagStatus.AVOIDED:ent.getStatus());
     }
+
+    @Override
+    public int getItemCount(){
+        return cursor==null?0:cursor.getCount();
+    }
+
     private void showBlacklistDialog(final Tag tag,final ImageView imgView) {
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         builder.setIcon(R.drawable.ic_star_border).setTitle(R.string.add_to_online_blacklist).setMessage(R.string.are_you_sure);

@@ -26,8 +26,8 @@ public class Login{
         return accountTag;
     }
 
-    public static void logout(Context context){
-        context.getSharedPreferences("OnlineFavorite",0).edit().clear().apply();
+    public static void logout(){
+        Queries.GalleryTable.removeAllFavorite(Database.getDatabase(),true);
     }
     public static Tag[] getOnlineTags() {
         return Queries.TagTable.getAllOnlineFavorite(Database.getDatabase());
@@ -63,17 +63,27 @@ public class Login{
         Login.user = user;
     }
 
-    public static void saveOnlineFavorite(@NonNull Context context, Gallery gallery){
-        try {
-            context.getSharedPreferences("OnlineFavorite",0).edit().putString(""+gallery.getId(),gallery.writeGallery()).apply();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static void saveOnlineFavorite(Gallery gallery){
+        Queries.GalleryTable.addFavorite(Database.getDatabase(),gallery,true);
     }
-    public static void removeOnlineFavorite(@NonNull Context context,int id){
-        context.getSharedPreferences("OnlineFavorite",0).edit().remove(""+id).apply();
+    public static void removeOnlineFavorite(Gallery gallery){
+        Queries.GalleryTable.removeFavorite(Database.getDatabase(),gallery,true);
+    }
+    public static boolean isOnlineFavorite(int id){
+        Gallery g=getOnlineFavorite(id);
+        if(g==null)return false;
+        return Queries.GalleryTable.isFavorite(Queries.GalleryTable.isFavorite(Database.getDatabase(),g),true);
     }
     @Nullable
+    public static Gallery getOnlineFavorite(int id){
+        try{
+            return Queries.GalleryTable.galleryFromId(Database.getDatabase(),id);
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    @Nullable @Deprecated
     public static Gallery getOnlineFavorite(@NonNull Context context, int id){
         String s=context.getSharedPreferences("OnlineFavorite",0).getString(""+id,null);
         if(s==null)return null;

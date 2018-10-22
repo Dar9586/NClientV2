@@ -110,7 +110,7 @@ public class GalleryActivity extends BaseActivity{
         if(!isLocal&&Login.isLogged()){
             MenuItem item= menu.findItem(R.id.add_online_gallery);
             item.setVisible(true);
-            boolean x=gallery==null||Login.getOnlineFavorite(this,gallery.getId())==null;
+            boolean x=Login.isOnlineFavorite(gallery.getId());
             item.setIcon(x?R.drawable.ic_star_border:R.drawable.ic_star);
             item.setTitle(x?R.string.add_to_online_favorite:R.string.remove_from_online_favorites);
         }
@@ -152,9 +152,9 @@ public class GalleryActivity extends BaseActivity{
                     @Override
                     public void onResponse(@NonNull Call call,@NonNull Response response)  {
                         Log.d(Global.LOGTAG,"Called");
-                            final boolean x=Login.getOnlineFavorite(GalleryActivity.this,gallery.getId())==null;
-                            if (x) Login.saveOnlineFavorite(GalleryActivity.this, (Gallery) gallery);
-                            else Login.removeOnlineFavorite(GalleryActivity.this, gallery.getId());
+                        final boolean x=Login.isOnlineFavorite(gallery.getId());
+                        if(!x)Login.saveOnlineFavorite((Gallery)gallery);
+                        else Login.removeOnlineFavorite((Gallery)gallery);
                             GalleryActivity.this.runOnUiThread(() -> {
                                 item.setIcon(x?R.drawable.ic_star:R.drawable.ic_star_border);
                                 item.setTitle(x?R.string.remove_from_online_favorites:R.string.add_to_online_favorite);

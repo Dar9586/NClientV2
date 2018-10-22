@@ -60,7 +60,7 @@ public class Login {
             @Override
             public void onResponse(@NonNull Call call,@NonNull Response response) {
                 Log.d(Global.LOGTAG,"Logged out: "+response.networkResponse().code());
-                com.dar.nclientv2.settings.Login.logout(context);
+                com.dar.nclientv2.settings.Login.logout();
                 com.dar.nclientv2.settings.Login.updateUser(null);
             }
         });

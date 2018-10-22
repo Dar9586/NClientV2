@@ -71,10 +71,6 @@
             android:enabled="true"
             android:exported="false" />
         <service
-            android:name=".async.database.InitializeDatabase"
-            android:enabled="true"
-            android:exported="false" />
-        <service
             android:name=".async.CreatePDF"
             android:enabled="true"
             android:exported="false" />

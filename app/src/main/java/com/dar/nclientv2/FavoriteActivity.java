@@ -10,7 +10,6 @@ import android.view.View;
 
 import com.dar.nclientv2.adapters.FavoriteAdapter;
 import com.dar.nclientv2.components.BaseActivity;
-import com.dar.nclientv2.settings.Favorites;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 
@@ -33,12 +32,16 @@ public class FavoriteActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setTitle(online?R.string.favorite_online_manga:R.string.favorite_manga);
-        final FavoriteAdapter adapter=new FavoriteAdapter(this);
-        findViewById(R.id.page_switcher).setVisibility(View.GONE);
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
+        refresher.setRefreshing(true);
+        final FavoriteAdapter adapter=new FavoriteAdapter(this,online);
+
+        findViewById(R.id.page_switcher).setVisibility(View.GONE);
+
         refresher.setOnRefreshListener(() -> {
             if(online)adapter.reloadOnline();
+            else adapter.forceReload();
         });
         changeLayout(getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE);
         recycler.setAdapter(adapter);
@@ -50,9 +53,7 @@ public class FavoriteActivity extends BaseActivity {
     protected void onResume() {
         refresher.setEnabled(true);
         refresher.setRefreshing(true);
-        if(!online) {
-            Favorites.loadFavorites(this, (FavoriteAdapter) recycler.getAdapter());
-        }else ((FavoriteAdapter)recycler.getAdapter()).reloadOnline();
+        ((FavoriteAdapter) recycler.getAdapter()).forceReload();
         super.onResume();
     }
 

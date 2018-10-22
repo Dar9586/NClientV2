@@ -14,7 +14,6 @@ import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.async.database.Queries;
-import com.dar.nclientv2.loginapi.DownloadFavorite;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
 
@@ -542,21 +541,11 @@ public class Gallery extends GenericGallery{
         }
         jr.close();
     }
-    public static void galleryFromId(final DownloadFavorite download, int id){
+    public static Gallery galleryFromId(int id) throws IOException{
         String url="https://nhentai.net/api/gallery/"+id;
         Log.d(Global.LOGTAG,url);
-
-        Global.client.newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                download.addGallery(new Gallery(new JsonReader(response.body().charStream())),true);
-            }
-        });
+        Response response=Global.client.newCall(new Request.Builder().url(url).build()).execute();
+        return new Gallery(new JsonReader(response.body().charStream()));
     }
     public boolean hasIgnoredTags(String s){
         for(Tag[]t:tags)if(t!=null)for(Tag t1:t)if(s.contains(t1.toQueryTag()))return true;
