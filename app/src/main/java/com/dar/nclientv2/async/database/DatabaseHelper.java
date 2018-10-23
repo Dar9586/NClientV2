@@ -41,7 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         passOldFavorite(db);
         passOldFilters(db);
         passOldOnlineFavorite(db);
-        Queries.DebugDatabase.dumpDatabase(db);
+        //Queries.DebugDatabase.dumpDatabase(db);
     }
 
     @Override

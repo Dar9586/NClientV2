@@ -53,7 +53,7 @@ public class DownloadFavorite extends Thread{
             pauseMainLoop();
         }while (++page<=Login.getUser().getTotalPages());
         //end search
-        adapter.getActivity().runOnUiThread(() -> adapter.getActivity().getRefresher().setRefreshing(false));
+        adapter.setRefresh(false);
         Log.e(Global.LOGTAG,"Total: "+adapter.getItemCount());
         //Queries.DebugDatabase.dumpDatabase(Database.getDatabase());
     }

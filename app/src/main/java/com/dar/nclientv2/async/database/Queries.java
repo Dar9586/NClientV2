@@ -121,7 +121,6 @@ public class Queries{
             int i=0;
             if(cursor.moveToFirst()){
                 do{
-                    DatabaseUtils.dumpCurrentRow(cursor);
                     Gallery g=cursorToGallery(db,cursor);
                     galleries[i++]=g;
                 }while(cursor.moveToNext());
@@ -233,7 +232,6 @@ public class Queries{
         }
 
         public static Gallery cursorToGallery(SQLiteDatabase db,Cursor cursor) throws IOException{
-            DatabaseUtils.dumpCurrentRow(cursor);
             return new Gallery(cursor,BridgeTable.getTagsForGallery(db,cursor.getInt(getColumnFromName(cursor,IDGALLERY))));
         }
     }

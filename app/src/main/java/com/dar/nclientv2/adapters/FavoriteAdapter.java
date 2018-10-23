@@ -35,12 +35,12 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
     public FavoriteAdapter(FavoriteActivity activity,boolean online) {
         this.online=online;
         this.activity=activity;
-        this.lastQuery=null;
+        this.lastQuery="";
         new FavoriteLoader(this,online).start();
     }
     public void endLoader(){
         firstIsRunning=false;
-        activity.runOnUiThread(()->activity.getRefresher().setRefreshing(false));
+        forceReload();
     }
     @NonNull
     @Override
@@ -90,47 +90,58 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
         return new Filter(){
             @Override
             protected FilterResults performFiltering(CharSequence constraint){
+                constraint=constraint.toString().toLowerCase(Locale.US);
+                if(firstIsRunning||(!force&&lastQuery.equals(constraint)))return null;
                 Log.d(Global.LOGTAG,"FILTERING");
-                activity.runOnUiThread(()->activity.getRefresher().setRefreshing(true));
+                setRefresh(true);
                 FilterResults results=new FilterResults();
-                lastQuery=constraint;
+                lastQuery=constraint.toString();
                 force=false;
                 List<Gallery>gal=new ArrayList<>();
                 for(Gallery g:galleries){
-                   if(lastQuery==null||g.getTitle().contains(lastQuery))gal.add(g);
+                   if(g.getTitle().toLowerCase(Locale.US).contains(lastQuery))gal.add(g);
                 }
                 results.count=gal.size();
                 results.values=gal;
                 Log.d(Global.LOGTAG,"FILTERING3");
                 Log.e(Global.LOGTAG,results.count+";"+results.values);
+                setRefresh(false);
                 return results;
             }
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results){
-                if(results.count==-1||results.values==null)return;
+                if(results==null)return;
+                setRefresh(true);
+                Log.d(Global.LOGTAG,"After called2");
                 final int oldSize=getItemCount(),newSize=results.count;
                 filterGalleries=(List<Gallery>)results.values;
-                activity.runOnUiThread(()->{
                     if(oldSize>newSize)notifyItemRangeRemoved(newSize,oldSize-newSize);
                     else notifyItemRangeInserted(oldSize,newSize-oldSize);
                     notifyItemRangeChanged(0,Math.min(newSize,oldSize));
-                    if(!firstIsRunning)activity.getRefresher().setRefreshing(false);
-                });
+
+                setRefresh(false);
             }
         };
     }
     public void addItem(Gallery gallery){
         galleries.add(gallery);
-        if(lastQuery==null||gallery.getTitle().contains(lastQuery)){
+        if(gallery.getTitle().contains(lastQuery)){
             filterGalleries.add(gallery);
             activity.runOnUiThread(()->notifyItemInserted(filterGalleries.size()));
         }
 
     }
     public void forceReload(){
+        if(firstIsRunning)return;
+        Log.d(Global.LOGTAG,"FORCING",new Exception("STACK TRACE"));
         force=true;
         getFilter().filter(lastQuery);
+
+    }
+    public void setRefresh(boolean refresh){
+        Thread.dumpStack();
+        activity.runOnUiThread(()->activity.getRefresher().setRefreshing(refresh));
     }
     public void clearGalleries(){
         Queries.GalleryTable.removeAllFavorite(Database.getDatabase(),online);
@@ -141,9 +152,5 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
     }
     public void reloadOnline(){
         new DownloadFavorite(this).start();
-    }
-
-    public FavoriteActivity getActivity() {
-        return activity;
     }
 }
