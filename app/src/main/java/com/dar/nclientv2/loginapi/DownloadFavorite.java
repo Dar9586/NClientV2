@@ -16,11 +16,12 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 
+import androidx.annotation.Nullable;
 import okhttp3.Request;
 import okhttp3.Response;
 
 public class DownloadFavorite extends Thread{
-    private final FavoriteAdapter adapter;
+    @Nullable private final FavoriteAdapter adapter;
     private Gallery[]galleries;
     private final Object lock2=new Object();
     @Override
@@ -32,7 +33,8 @@ public class DownloadFavorite extends Thread{
             e.printStackTrace();
         }
         //clear online favorite
-        adapter.clearGalleries();
+        Queries.GalleryTable.removeAllFavorite(Database.getDatabase(),true);
+        if(adapter!=null)adapter.clearGalleries();
         int page=1;
         //Retrive favorite
         do {
@@ -49,12 +51,14 @@ public class DownloadFavorite extends Thread{
                 e.printStackTrace();
             }
             //reload galleries
-            adapter.forceReload();
+            if(adapter!=null)adapter.forceReload();
             pauseMainLoop();
         }while (++page<=Login.getUser().getTotalPages());
         //end search
-        adapter.setRefresh(false);
-        Log.e(Global.LOGTAG,"Total: "+adapter.getItemCount());
+        if(adapter!=null){
+            adapter.setRefresh(false);
+            Log.e(Global.LOGTAG, "Total: " + adapter.getItemCount());
+        }
         //Queries.DebugDatabase.dumpDatabase(Database.getDatabase());
     }
     private void pauseMainLoop(){

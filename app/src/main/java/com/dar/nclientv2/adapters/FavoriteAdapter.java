@@ -130,7 +130,6 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
         };
     }
     public void forceReload(){
-        Log.d(Global.LOGTAG,"FORCING",new Exception("STACK TRACE"));
         force=true;
         getFilter().filter(lastQuery);
 

@@ -80,7 +80,10 @@ public class Login {
                 Log.d(Global.LOGTAG,"Log in: "+response.networkResponse().code());
                 if(com.dar.nclientv2.settings.Login.isLogged()) {
                     activity.finish();
-                    User.createUser(user -> new LoadTags(null).start());
+                    User.createUser(user ->{
+                        new LoadTags(null).start();
+                        new DownloadFavorite(null).start();
+                    } );
                 }else activity.runOnUiThread(() -> activity.invalid.setVisibility(View.VISIBLE));
             }
         });
