@@ -1,10 +1,7 @@
 package com.dar.nclientv2.async.scrape;
 
-import android.util.Log;
-
 import com.dar.nclientv2.TagFilter;
 import com.dar.nclientv2.api.enums.TagType;
-import com.dar.nclientv2.settings.Global;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +31,14 @@ public class BulkScraper extends Thread{
         }
         setActivity(filter);
     }
-
-    private BulkScraper(){
+    public static void bulkAll(TagFilter activity){
+        BulkScraper.addScrape(activity,TagType.TAG);
+        BulkScraper.addScrape(activity,TagType.ARTIST);
+        BulkScraper.addScrape(activity,TagType.PARODY);
+        BulkScraper.addScrape(activity,TagType.GROUP);
+        BulkScraper.addScrape(activity,TagType.CHARACTER);
     }
+    private BulkScraper(){ }
 
     @Override
     public void run(){
@@ -48,8 +50,7 @@ public class BulkScraper extends Thread{
             TagPageScraper scraper=new TagPageScraper(status);
             scraper.start();
             startDownload();
-            Log.d(Global.LOGTAG,"STRING: "+activity.toString());
-            if(activity!=null)activity.addItems(scraper.getTags(),status.type);
+            if(activity!=null&&scraper.shouldUpdate())activity.addItems(status.type);
             if(status.actPage>status.maxPage){
                 types.remove(status);
                 actualScraping=0;

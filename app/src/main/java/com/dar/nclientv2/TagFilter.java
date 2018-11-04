@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.dar.nclientv2.adapters.paged.TagsAdapter;
-import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.scrape.BulkScraper;
 import com.dar.nclientv2.settings.DefaultDialogs;
@@ -48,6 +47,7 @@ public class TagFilter extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BulkScraper.setActivity(this);
         Global.loadTheme(this);
         TagV2.initMinCount(this);
         TagV2.initSortByName(this);
@@ -92,6 +92,13 @@ public class TagFilter extends AppCompatActivity{
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
         mViewPager.setCurrentItem(getPage());
     }
+
+    @Override
+    protected void onDestroy(){
+        BulkScraper.setActivity(null);
+        super.onDestroy();
+    }
+
     private int getPage(){
         Uri data = getIntent().getData();
         if(data != null){
@@ -150,10 +157,9 @@ public class TagFilter extends AppCompatActivity{
         }).setNegativeButton(android.R.string.no, null).setCancelable(true);
         builder.show();
     }
-    public void addItems(List<Tag>tags,TagType type){
-        Log.d(Global.LOGTAG,"CALLED"+type+", "+tags.toString());
+    public void addItems(TagType type){
         Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
-        ((PlaceholderFragment)page).addItems(tags,type);
+        if(page!=null)((PlaceholderFragment)page).addItems(type);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -181,13 +187,19 @@ public class TagFilter extends AppCompatActivity{
     }
 
     private void minCountBuild(){
+        int min=TagV2.getMinCount();
         DefaultDialogs.Builder builder=new DefaultDialogs.Builder(this);
-        builder.setActual(TagV2.getMinCount()).setMax(100);
+        builder.setActual(min).setMax(100).setMin(2);
         builder.setYesbtn(android.R.string.ok).setNobtn(android.R.string.cancel);
         builder.setTitle(R.string.set_minimum_count).setDialogs(new DefaultDialogs.DialogResults(){
             @Override
             public void positive(int actual){
+                Log.d(Global.LOGTAG,"ACTUAL: "+actual);
                 TagV2.updateMinCount(TagFilter.this,actual);
+                PlaceholderFragment page =(PlaceholderFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
+                if(page!=null){
+                    page.addItems(page.type);
+                }
             }
 
             @Override
@@ -230,13 +242,15 @@ public class TagFilter extends AppCompatActivity{
     public static class PlaceholderFragment extends Fragment {
         TagType type;
         public RecyclerView recyclerView;
+        TagFilter activity;
 
         public boolean isNormalType(){
             return type!=TagType.UNKNOWN&&type!=TagType.CATEGORY;
         }
 
         public PlaceholderFragment() { }
-
+        //UNKNOW sono gli status
+        //CATEGORY è la roba online
         private static int getTag(int page){
             switch (page){
                 case 0:return TagType.UNKNOWN.ordinal();
@@ -260,6 +274,7 @@ public class TagFilter extends AppCompatActivity{
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+            activity=(TagFilter)getActivity();
             type=TagType.values()[ getArguments().getInt("TAGTYPE")];
             View rootView = inflater.inflate(R.layout.fragment_tag_filter, container, false);
             recyclerView=rootView.findViewById(R.id.recycler);
@@ -283,14 +298,13 @@ public class TagFilter extends AppCompatActivity{
             return rootView;
         }
         public void loadTags(){
-            String query=((TagFilter)getActivity()).searchView==null?"":((TagFilter)getActivity()).searchView.getQuery().toString();
-            recyclerView.setLayoutManager(new GridLayoutManager(getContext(), getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE?4:2));
+            String query=activity.searchView==null?"":activity.searchView.getQuery().toString();
+            recyclerView.setLayoutManager(new GridLayoutManager(activity, getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE?4:2));
             TagsAdapter adapter;
-            TagFilter cont=(TagFilter)getContext();
             switch(type){
-                case UNKNOWN:adapter=new TagsAdapter(cont,query,null,false);break;
-                case CATEGORY:adapter=new TagsAdapter(cont,query,null,true);break;
-                default:adapter=new TagsAdapter(cont,query,type,false);break;
+                case UNKNOWN:adapter=new TagsAdapter(activity,query,null,false);break;
+                case CATEGORY:adapter=new TagsAdapter(activity,query,null,true);break;
+                default:adapter=new TagsAdapter(activity,query,type,false);break;
             }
             recyclerView.setAdapter(adapter);
         }
@@ -302,15 +316,13 @@ public class TagFilter extends AppCompatActivity{
             switch(type){
                 case UNKNOWN:TagV2.resetAllStatus();break;
                 case CATEGORY:break;
-                default:BulkScraper.addScrape(((TagFilter)getContext()),type);break;
+                default:BulkScraper.addScrape(activity,type);break;
             }
         }
 
-        public void addItems(List<Tag> tags, TagType type){
-            Log.d(Global.LOGTAG,"REACHED: "+type+", "+this.type+", "+tags.toString());
+        public void addItems(TagType type){
             if(this.type==type){
-                TagsAdapter adapter= (TagsAdapter)recyclerView.getAdapter();
-                adapter.addItem();
+                refilter(""+activity.searchView.getQuery());
             }
         }
     }

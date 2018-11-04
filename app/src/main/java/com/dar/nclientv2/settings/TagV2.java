@@ -43,7 +43,7 @@ public class TagV2{
             case AVOIDED:t.setStatus(TagStatus.DEFAULT);break;
             case DEFAULT:t.setStatus(TagStatus.ACCEPTED);break;
         }
-        if(Queries.TagTable.updateStatus(Database.getDatabase(),t)==1)return t.getStatus();
+        if(Queries.TagTable.updateTag(Database.getDatabase(),t)==1)return t.getStatus();
         throw new RuntimeException("Unable to update: "+t);
 
     }
@@ -60,6 +60,7 @@ public class TagV2{
         return Queries.TagTable.getStatus(Database.getDatabase(),tag);
     }
 
+    @Deprecated
     public static void updateSet(Set<Tag> loadedTags){
         for(Tag t:loadedTags)Queries.TagTable.insert(Database.getDatabase(),t);
     }

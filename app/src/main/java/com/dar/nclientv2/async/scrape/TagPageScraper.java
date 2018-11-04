@@ -16,25 +16,24 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.Request;
-import okhttp3.Response;
 
 class TagPageScraper extends Thread{
-    private final Object lock=new Object();
-    private final List<Tag>tags=new ArrayList<>();
 
     private final TagScrapeStatus status;
-    private final int minCount;
+    private static final int MIN_TAG_COUNT=2;
+    private boolean minReached=false,showed=false;
 
     public TagPageScraper(TagScrapeStatus status){
         this.status=status;
-        minCount=TagV2.getMinCount();
+    }
+    public boolean shouldUpdate(){
+        //la pagina attuale deve essere mostrata mentre quelle dopo no
+        if(!minReached)return true;
+        if(showed)return false;
+        return showed=true;
     }
 
     @Override
@@ -42,26 +41,10 @@ class TagPageScraper extends Thread{
         super.run();
         String url=String.format(Locale.US,"https://nhentai.net/%s/popular?page=%d",getMultipleName(status.type),status.actPage++);
         Log.d(Global.LOGTAG,"Downloading tag page: "+url);
-        Global.client.newCall(new Request.Builder().url(url).build()).enqueue(new Callback(){
-            @Override
-            public void onFailure(Call call, IOException e){
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException{
-                scrape(response.body().byteStream());
-                synchronized(lock){
-                    lock.notify();
-                }
-            }
-        });
         try{
-            synchronized(lock){
-                lock.wait();
-            }
+            scrape(Global.client.newCall(new Request.Builder().url(url).build()).execute().body().byteStream());
             Thread.sleep(1000);
-        }catch(InterruptedException e){
+        }catch(IOException|InterruptedException e){
             e.printStackTrace();
         }
         BulkScraper.thread.endDownload();
@@ -77,12 +60,13 @@ class TagPageScraper extends Thread{
                         Integer.parseInt(x.attr("class").substring(x.attr("class").lastIndexOf('-')+1).trim()),
                         status.type,TagStatus.DEFAULT
                 );
-                tags.add(t);
-                Queries.TagTable.insert(Database.getDatabase(),t);
-                if(t.getCount()<=minCount){
+                if(t.getCount()<MIN_TAG_COUNT){
                     status.maxPage=1;
                     return;
                 }
+                if(t.getCount()<TagV2.getMinCount())minReached=true;
+                Queries.TagTable.updateTag(Database.getDatabase(),t);
+
             }
         }
         if(status.maxPage==1){
@@ -91,10 +75,6 @@ class TagPageScraper extends Thread{
             s=s.substring(s.lastIndexOf('=')+1);
             status.maxPage=Integer.parseInt(s);
         }
-    }
-
-    public List<Tag> getTags(){
-        return tags;
     }
 
     private static String getSingleName(TagType type){

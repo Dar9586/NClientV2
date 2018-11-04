@@ -25,7 +25,7 @@ public class DefaultDialogs {
         private final Context context;
         private @StringRes int title,yesbtn,nobtn;
         private @DrawableRes int drawable;
-        private int max,actual;
+        private int max,actual,min;
         DialogResults dialogs;
 
         public Builder(Context context) {
@@ -34,7 +34,12 @@ public class DefaultDialogs {
             yesbtn=android.R.string.ok;
             nobtn=android.R.string.cancel;
             max=actual=1;
+            min=0;
             dialogs=null;
+        }
+
+        public void setMin(int min){
+            this.min = min;
         }
 
         public Builder setTitle(int title) {
@@ -83,18 +88,18 @@ public class DefaultDialogs {
         final EditText editText=v.findViewById(R.id.edit_page);
         v.findViewById(R.id.prev).setOnClickListener(v12 -> {
             edt.setProgress(edt.getProgress()-1);
-            editText.setText(String.format(Locale.US,"%d",edt.getProgress()+1));
+            editText.setText(String.format(Locale.US,"%d",edt.getProgress()+builder.min));
 
         });
         v.findViewById(R.id.next).setOnClickListener(v1 -> {
             edt.setProgress(edt.getProgress()+1);
-            editText.setText(String.format(Locale.US,"%d",edt.getProgress()+1));
+            editText.setText(String.format(Locale.US,"%d",edt.getProgress()+builder.min));
         });
-        edt.setMax(builder.max-1);
+        edt.setMax(builder.max-builder.min);
         edt.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(fromUser)editText.setText(String.format(Locale.US,"%d",progress+1));
+                if(fromUser)editText.setText(String.format(Locale.US,"%d",progress+builder.min));
             }
 
             @Override
@@ -104,7 +109,7 @@ public class DefaultDialogs {
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
         editText.setText(String.format(Locale.US,"%d",builder.actual));
-        edt.setProgress(builder.actual-1);
+        edt.setProgress(builder.actual-builder.min-1);
         pag.setText(String.format(Locale.US,"/%d",builder.max));
         InputFilter[] filterArray = new InputFilter[1];
         filterArray[0] = new InputFilter.LengthFilter(Integer.toString(builder.max).length());
@@ -119,13 +124,13 @@ public class DefaultDialogs {
                 int x;
                 try {
                     x = Integer.parseInt(s.toString());
-                }catch (NumberFormatException e){x=0;}
-                if(x<1)edt.setProgress(0);
-                else edt.setProgress(x-1);
+                }catch (NumberFormatException e){x=-1;}
+                if(x<builder.min)edt.setProgress(0);
+                else edt.setProgress(x-builder.min);
             }
         });
         if(builder.dialogs!=null)
-        build.setPositiveButton(builder.context.getString(builder.yesbtn), (dialog, id) -> builder.dialogs.positive(edt.getProgress()+1)).setNegativeButton(builder.context.getString(builder.nobtn), (dialog, which) -> builder.dialogs.negative());
+        build.setPositiveButton(builder.context.getString(builder.yesbtn), (dialog, id) -> builder.dialogs.positive(edt.getProgress()+builder.min)).setNegativeButton(builder.context.getString(builder.nobtn), (dialog, which) -> builder.dialogs.negative());
         build.setCancelable(true);
         build.show();
     }

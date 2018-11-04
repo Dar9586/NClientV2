@@ -62,22 +62,22 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults results=new FilterResults();
-                if(!force&&constraint.toString().equals(lastQuery)&&TagV2.isSortedByName()==wasSortedByName){
-                    results.count=-1;
-                }else{
-                    force=false;
-                    wasSortedByName=TagV2.isSortedByName();
-                    lastQuery = constraint.toString();
-                    Cursor tags = Queries.TagTable.getFilterCursor(Database.getDatabase(), lastQuery, type, online, TagV2.isSortedByName());
-                    results.count = tags.getCount();
-                    results.values = tags;
-                }
+
+                force=false;
+                wasSortedByName=TagV2.isSortedByName();
+                lastQuery = constraint.toString();
+                Cursor tags = Queries.TagTable.getFilterCursor(Database.getDatabase(), lastQuery, type, online, TagV2.isSortedByName());
+                results.count = tags.getCount();
+                results.values = tags;
+
+                Log.d(Global.LOGTAG,results.count+","+results.values);
                 return results;
             }
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 if(results.count==-1)return;
+                Log.d(Global.LOGTAG,"PASSED");
                 Cursor newCursor=(Cursor)results.values;
                 int oldCount=getItemCount(),newCount=results.count;
                 if(cursor!=null)cursor.close();

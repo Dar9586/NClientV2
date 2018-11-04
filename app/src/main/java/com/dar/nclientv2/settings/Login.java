@@ -70,9 +70,7 @@ public class Login{
         Queries.GalleryTable.removeFavorite(Database.getDatabase(),gallery,true);
     }
     public static boolean isOnlineFavorite(int id){
-        Gallery g=getOnlineFavorite(id);
-        if(g==null)return false;
-        return Queries.GalleryTable.isFavorite(Queries.GalleryTable.isFavorite(Database.getDatabase(),g),true);
+        return Queries.GalleryTable.isFavorite(Queries.GalleryTable.isFavorite(Database.getDatabase(),id),true);
     }
     @Nullable
     public static Gallery getOnlineFavorite(int id){

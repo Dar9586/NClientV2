@@ -122,7 +122,7 @@ public class GalleryActivity extends BaseActivity{
         Global.setTint(menu.findItem(R.id.share).getIcon());
         Global.setTint(menu.findItem(R.id.related).getIcon());
         menu.findItem(R.id.share).setVisible(gallery!=null&&gallery.isValid());
-        menu.findItem(R.id.favorite_manager).setIcon((isFavorite=Favorites.isFavorite((Gallery)gallery))?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
+        menu.findItem(R.id.favorite_manager).setIcon((isFavorite=Favorites.isFavorite(gallery))?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
         Global.setTint(menu.findItem(R.id.favorite_manager).getIcon());
         menu.findItem(R.id.favorite_manager).setVisible(!isLocal||isFavorite);
         menu.findItem(R.id.download_gallery).setVisible(!isLocal);

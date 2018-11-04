@@ -90,7 +90,6 @@ public class DownloadFavorite extends Thread{
                 g=Gallery.galleryFromId(id);
             }
             Queries.GalleryTable.addFavorite(Database.getDatabase(),g,true);
-            adapter.addItem(g);
         }
     }
     private Gallery hasId(int id){

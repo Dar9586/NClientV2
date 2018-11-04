@@ -65,6 +65,10 @@ public class MainActivity extends BaseActivity
         Global.initInfiniteScroll(this);
         com.dar.nclientv2.settings.Login.initUseAccountTag(this);
         setContentView(R.layout.activity_main);
+        if(getSharedPreferences("Settings",0).getBoolean("first_run",true)){
+            BulkScraper.bulkAll(null);
+            getSharedPreferences("Settings",0).edit().putBoolean("first_run",false).apply();
+        }
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);

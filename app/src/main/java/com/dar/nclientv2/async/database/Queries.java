@@ -28,9 +28,7 @@ public class Queries{
     public static int getColumnFromName(Cursor cursor,String name){
         return cursor.getColumnIndex(name);
     }
-    private static String normalizeName(String name){
-        return '`'+name+'`';
-    }
+
     public static class DebugDatabase{
         public static void dumpDatabase(SQLiteDatabase db){
             Log.d(Global.LOGTAG,"START DUMPING");
@@ -54,7 +52,7 @@ public class Queries{
         }
         private static void dumpTable(SQLiteDatabase db,String name,FileWriter sb) throws IOException{
 
-            String query="SELECT * FROM "+normalizeName(name);
+            String query="SELECT * FROM "+ name;
             Cursor c=db.rawQuery(query,null);
             sb.write("DUMPING: ");
             sb.write(name);
@@ -72,7 +70,7 @@ public class Queries{
     }
     public static class GalleryTable{
         static final String TABLE_NAME="Gallery";
-        public static final String DROP_TABLE="DROP TABLE IF EXISTS "+normalizeName(TABLE_NAME);
+        public static final String DROP_TABLE= "DROP TABLE IF EXISTS "+ TABLE_NAME;
         static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `Gallery` ( `idGallery` INT NOT NULL PRIMARY KEY , `title_eng` TINYTEXT NOT NULL , `title_jp` TINYTEXT NOT NULL , `title_pretty` TINYTEXT NOT NULL , `favorite_count` INT NOT NULL , `mediaId` INT NOT NULL , `scanlator` TINYTEXT NOT NULL , `pages` TEXT NOT NULL,`upload` UNSIGNED BIG INT,`favorite` TINYINT(1) NOT NULL);";
 
         public static final String IDGALLERY="idGallery";
@@ -86,8 +84,8 @@ public class Queries{
         public static final String UPLOAD="upload";
         public static final String FAVORITE="favorite";
         public static Gallery galleryFromId(SQLiteDatabase db,int id) throws IOException{
-            String query="SELECT * FROM "+normalizeName(TABLE_NAME)+" WHERE "+normalizeName(IDGALLERY)+"=?";
-            Cursor cursor=db.query(true,TABLE_NAME,null,normalizeName(IDGALLERY)+"=?",new String[]{""+id},null,null,null,null);
+            String query="SELECT * FROM "+ TABLE_NAME +" WHERE "+ IDGALLERY +"=?";
+            Cursor cursor=db.query(true,TABLE_NAME,null, IDGALLERY +"=?",new String[]{""+id},null,null,null,null);
 
             Gallery g=null;
             Log.d(Global.LOGTAG,"DUMP: "+cursor.getCount()+"; "+query+", "+id+",,"+cursor);
@@ -101,12 +99,12 @@ public class Queries{
         public static Cursor getAllFavoriteCursor(SQLiteDatabase db,CharSequence query,boolean online){
             Log.i(Global.LOGTAG,"FILTER IN: "+query+";;"+online);
             Cursor cursor;//=db.rawQuery(sql,new String[]{query,query,query,""+(online?2:1)});
-            String sql="SELECT * FROM "+normalizeName(TABLE_NAME)+" WHERE ("+
-                    normalizeName(FAVORITE)+" =? OR "+normalizeName(FAVORITE)+"=3)";
+            String sql="SELECT * FROM "+ TABLE_NAME +" WHERE ("+
+                    FAVORITE +" =? OR "+ FAVORITE +"=3)";
             if(query!=null&&query.length()>0){
-                sql+=" AND ("+normalizeName(TITLE_ENG) + " LIKE ? OR" +
-                        normalizeName(TITLE_JP) + " LIKE ? OR" +
-                        normalizeName(TITLE_PRETTY) + " LIKE ? )";
+                sql+=" AND ("+ TITLE_ENG + " LIKE ? OR" +
+                        TITLE_JP + " LIKE ? OR" +
+                        TITLE_PRETTY + " LIKE ? )";
                 String q='%'+query.toString()+'%';
                 cursor=db.rawQuery(sql,new String[]{q,q,q,""+(online?2:1)});
             }else cursor=db.rawQuery(sql,new String[]{""+(online?2:1)});
@@ -129,7 +127,7 @@ public class Queries{
             return galleries;
         }
         public static List<Gallery> getAll(SQLiteDatabase db) throws IOException{
-            String query="SELECT * FROM "+normalizeName(TABLE_NAME);
+            String query="SELECT * FROM "+ TABLE_NAME;
             Cursor cursor=db.rawQuery(query,null);
             List<Gallery> galleries=new ArrayList<>(cursor.getCount());
             if(cursor.moveToFirst()){
@@ -173,24 +171,24 @@ public class Queries{
             Log.d(Global.LOGTAG,"ADDING: "+gallery);
             insert(db,gallery);
             Log.d(Global.LOGTAG,"GG: ");
-            int val=isFavorite(db,gallery);
+            int val=isFavorite(db,gallery.getId());
             Log.d(Global.LOGTAG,"IS "+val+" AND SHOULD: "+isFavorite(val,online));
             if(isFavorite(val,online))return;
 
             ContentValues values=new ContentValues(1);
             values.put(FAVORITE,val+(online?2:1));
-            db.update(TABLE_NAME,values,normalizeName(IDGALLERY)+"=?",new String[]{""+gallery.getId()});
-            Log.d(Global.LOGTAG,"AND NOW IS: "+isFavorite(db,gallery));
+            db.update(TABLE_NAME,values, IDGALLERY +"=?",new String[]{""+gallery.getId()});
+            Log.d(Global.LOGTAG,"AND NOW IS: "+isFavorite(db,gallery.getId()));
         }
         public static void removeFavorite(SQLiteDatabase db,Gallery gallery,boolean online){
             ContentValues values=new ContentValues(1);
-            int val=isFavorite(db,gallery);
+            int val=isFavorite(db,gallery.getId());
             if(!isFavorite(val,online))return;
             val-=online?2:1;
             if(val==0)delete(db,gallery);
             else{
                 values.put(FAVORITE, val);
-                db.update(TABLE_NAME, values, normalizeName(IDGALLERY) + "=?", new String[]{"" + gallery.getId()});
+                db.update(TABLE_NAME, values, IDGALLERY + "=?", new String[]{"" + gallery.getId()});
             }
         }
         public static boolean isFavorite(int b,boolean online){
@@ -202,9 +200,9 @@ public class Queries{
             }
             return false;
         }
-        public static int isFavorite(SQLiteDatabase db,Gallery gallery){
-            String query="SELECT "+normalizeName(FAVORITE)+" FROM "+normalizeName(TABLE_NAME)+" WHERE "+normalizeName(IDGALLERY)+"=?";
-            Cursor cursor=db.rawQuery(query,new String[]{""+gallery.getId()});
+        public static int isFavorite(SQLiteDatabase db,int id){
+            String query="SELECT "+ FAVORITE +" FROM "+ TABLE_NAME +" WHERE "+ IDGALLERY +"=?";
+            Cursor cursor=db.rawQuery(query,new String[]{""+id});
             int b=0;
             if(cursor.moveToFirst()){
                 b=cursor.getInt(0);
@@ -213,11 +211,11 @@ public class Queries{
             return b;
         }
         public static void delete(SQLiteDatabase db,Gallery gallery){
-            db.delete(TABLE_NAME,normalizeName(IDGALLERY)+"=?",new String[]{""+gallery.getId()});
+            db.delete(TABLE_NAME, IDGALLERY +"=?",new String[]{""+gallery.getId()});
         }
 
         public static int countFavorite(SQLiteDatabase db){
-            String query="SELECT * FROM "+normalizeName(TABLE_NAME)+" WHERE "+normalizeName(FAVORITE)+">0";
+            String query="SELECT * FROM "+ TABLE_NAME +" WHERE "+ FAVORITE +">0";
             Cursor c=db.rawQuery(query,null);
             int x=c.getCount();
             c.close();
@@ -225,10 +223,10 @@ public class Queries{
         }
 
         public static void removeAllFavorite(SQLiteDatabase db, boolean online){
-            db.delete(TABLE_NAME,normalizeName(FAVORITE)+"=?",new String[]{""+(online?2:1)});
+            db.delete(TABLE_NAME, FAVORITE +"=?",new String[]{""+(online?2:1)});
             ContentValues values=new ContentValues(1);
             values.put(FAVORITE,online?1:2);//Si deve invertire perchè era 3
-            db.updateWithOnConflict(TABLE_NAME,values,normalizeName(FAVORITE)+"=3",null,SQLiteDatabase.CONFLICT_IGNORE);
+            db.updateWithOnConflict(TABLE_NAME,values, FAVORITE +"=3",null,SQLiteDatabase.CONFLICT_IGNORE);
         }
 
         public static Gallery cursorToGallery(SQLiteDatabase db,Cursor cursor) throws IOException{
@@ -237,7 +235,7 @@ public class Queries{
     }
     public static class TagTable{
         static final String TABLE_NAME="Tags";
-        public static final String DROP_TABLE="DROP TABLE IF EXISTS "+normalizeName(TABLE_NAME);
+        public static final String DROP_TABLE= "DROP TABLE IF EXISTS "+ TABLE_NAME;
         static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `Tags` ( `idTag` INT  NOT NULL PRIMARY KEY, `name` TEXT NOT NULL , `type` TINYINT(1) NOT NULL , `count` INT NOT NULL,`status` TINYINT(1) NOT NULL,`online` TINYINT(1) NOT NULL DEFAULT 0);";
 
         static final String IDTAG="idTag";
@@ -270,16 +268,16 @@ public class Queries{
             return retrieveAll(getFilterCursor(db, query, type, online, sortByName));
         }
         public static Cursor getFilterCursor(SQLiteDatabase db,String query, TagType type, boolean online,boolean sortByName){
-            StringBuilder sql=new StringBuilder("SELECT * FROM ").append(normalizeName(TABLE_NAME));
+            StringBuilder sql=new StringBuilder("SELECT * FROM ").append(TABLE_NAME);
             sql.append(" WHERE ");
-            sql.append(normalizeName(COUNT)).append(">=? ");
-            if(query.length()>0)sql.append("AND ").append(normalizeName(NAME)).append(" LIKE ?");
-            if(type!=null)sql.append("AND ").append(normalizeName(TYPE)).append("=? ");
-            if(online)sql.append("AND ").append(normalizeName(ONLINE)).append("=1 ");//2 e 3 per online ed entrambi
-            if(!online&&type==null)sql.append("AND ").append(normalizeName(STATUS)).append("!=0 ");//DEFAULT STATUS
+            sql.append(COUNT).append(">=? ");
+            if(query.length()>0) sql.append("AND ").append(NAME).append(" LIKE ?");
+            if(type!=null) sql.append("AND ").append(TYPE).append("=? ");
+            if(online) sql.append("AND ").append(ONLINE).append("=1 ");//2 e 3 per online ed entrambi
+            if(!online&&type==null) sql.append("AND ").append(STATUS).append("!=0 ");//DEFAULT STATUS
             sql.append("ORDER BY ");
-            if(sortByName)sql.append(normalizeName(NAME)).append(" ASC");
-            else sql.append(normalizeName(COUNT)).append(" DESC,").append(normalizeName(NAME)).append(" ASC");
+            if(sortByName) sql.append(NAME).append(" ASC");
+            else sql.append(COUNT).append(" DESC,").append(NAME).append(" ASC");
             ArrayList<String>list=new ArrayList<>();
             list.add(""+TagV2.getMinCount());
             if(query.length()>0)list.add('%'+query+'%');
@@ -288,23 +286,23 @@ public class Queries{
             return db.rawQuery(sql.toString(),list.toArray(new String[0]));
         }
         public static Tag[] getAllType(SQLiteDatabase db,TagType type){
-            String query="SELECT * FROM "+normalizeName(TABLE_NAME)+" WHERE "+normalizeName(TYPE)+" = ? AND "+normalizeName(COUNT)+" >= ?";
+            String query="SELECT * FROM "+ TABLE_NAME +" WHERE "+ TYPE +" = ? AND "+ COUNT +" >= ?";
             return retrieveAll(db.rawQuery(query,new String[]{""+type.ordinal(),""+TagV2.getMinCount()}));
         }
         public static Tag[]getAllStatus(SQLiteDatabase db,TagStatus status){
-            String query="SELECT * FROM "+normalizeName(TABLE_NAME)+" WHERE "+normalizeName(STATUS)+" = ?";
+            String query="SELECT * FROM "+ TABLE_NAME +" WHERE "+ STATUS +" = ?";
             return retrieveAll(db.rawQuery(query,new String[]{""+status.ordinal()}));
         }
         public static Tag[]getAllFiltered(SQLiteDatabase db){
-            String query="SELECT * FROM "+normalizeName(TABLE_NAME)+" WHERE "+normalizeName(STATUS)+" != ?";
+            String query="SELECT * FROM "+ TABLE_NAME +" WHERE "+ STATUS +" != ?";
             return retrieveAll(db.rawQuery(query,new String[]{""+TagStatus.DEFAULT.ordinal()}));
         }
         public static Tag[]getAllOnlineFavorite(SQLiteDatabase db){
-            String query="SELECT * FROM "+normalizeName(TABLE_NAME)+" WHERE "+normalizeName(ONLINE)+" = 1";
+            String query="SELECT * FROM "+ TABLE_NAME +" WHERE "+ ONLINE +" = 1";
             return retrieveAll(db.rawQuery(query,null));
         }
         public static boolean isOnlineFavorite(SQLiteDatabase db,Tag tag){
-            String query="SELECT "+normalizeName(IDTAG)+" FROM "+normalizeName(TABLE_NAME)+" WHERE "+normalizeName(IDTAG)+"=? AND "+normalizeName(ONLINE)+"=1";
+            String query="SELECT "+ IDTAG +" FROM "+ TABLE_NAME +" WHERE "+ IDTAG +"=? AND "+ ONLINE +"=1";
             Cursor c=db.rawQuery(query,new String[]{""+tag.getId()});
             boolean x=c.moveToFirst();
             c.close();
@@ -312,7 +310,7 @@ public class Queries{
         }
 
         public static Tag getTag(SQLiteDatabase db,int id){
-            String query="SELECT * FROM "+normalizeName(TABLE_NAME)+" WHERE "+normalizeName(IDTAG)+" = ?";
+            String query="SELECT * FROM "+ TABLE_NAME +" WHERE "+ IDTAG +" = ?";
             Cursor c=db.rawQuery(query,new String[]{""+id});
 
             c.moveToFirst();
@@ -320,12 +318,14 @@ public class Queries{
             c.close();
             return t;
         }
-        public static int updateStatus(SQLiteDatabase db,Tag tag){
+        public static int updateTag(SQLiteDatabase db,Tag tag){
+            insert(db,tag);
             ContentValues values=new ContentValues(1);
             values.put(STATUS,tag.getStatus().ordinal());
-
-            return db.updateWithOnConflict(TABLE_NAME,values,normalizeName(IDTAG)+"=?",new String[]{""+tag.getId()},SQLiteDatabase.CONFLICT_IGNORE);
+            values.put(COUNT,tag.getCount());
+            return db.updateWithOnConflict(TABLE_NAME,values, IDTAG +"=?",new String[]{""+tag.getId()},SQLiteDatabase.CONFLICT_IGNORE);
         }
+
         public static void insert(SQLiteDatabase db,Tag tag){
             ContentValues values=new ContentValues(5);
             values.put(IDTAG,tag.getId());
@@ -338,18 +338,18 @@ public class Queries{
         public static void updateOnlineFavorite(SQLiteDatabase db,Tag tag,boolean online){
             ContentValues values=new ContentValues(1);
             values.put(ONLINE,online?1:0);
-            db.updateWithOnConflict(TABLE_NAME,values,normalizeName(IDTAG)+"=?",new String[]{""+tag.getId()},SQLiteDatabase.CONFLICT_IGNORE);
+            db.updateWithOnConflict(TABLE_NAME,values, IDTAG +"=?",new String[]{""+tag.getId()},SQLiteDatabase.CONFLICT_IGNORE);
         }
         public static void resetOnlineFavorite(SQLiteDatabase db){
             ContentValues values=new ContentValues(1);
             values.put(ONLINE,0);
-            db.updateWithOnConflict(TABLE_NAME,values,normalizeName(ONLINE)+"=1",null,SQLiteDatabase.CONFLICT_IGNORE);
+            db.updateWithOnConflict(TABLE_NAME,values, ONLINE +"=1",null,SQLiteDatabase.CONFLICT_IGNORE);
         }
         @Deprecated
         public static void updateStatus(SQLiteDatabase db, int id, TagStatus status){
             ContentValues values=new ContentValues(1);
             values.put(STATUS,status.ordinal());
-            db.updateWithOnConflict(TABLE_NAME,values,normalizeName(IDTAG)+"=?",new String[]{""+id},SQLiteDatabase.CONFLICT_IGNORE);
+            db.updateWithOnConflict(TABLE_NAME,values, IDTAG +"=?",new String[]{""+id},SQLiteDatabase.CONFLICT_IGNORE);
 
         }
         public static void resetAllStatus(SQLiteDatabase db){
@@ -359,8 +359,8 @@ public class Queries{
         }
 
         public static TagStatus getStatus(SQLiteDatabase db,Tag tag){
-            String query="SELECT "+normalizeName(STATUS)+" FROM "+normalizeName(TABLE_NAME)+
-                    " WHERE "+normalizeName(IDTAG)+" =?";
+            String query="SELECT "+ STATUS +" FROM "+ TABLE_NAME +
+                    " WHERE "+ IDTAG +" =?";
             Cursor c=db.rawQuery(query,new String[]{""+tag.getId()});
             if(c.moveToFirst()){
                 TagStatus status=TagStatus.values()[c.getInt(0)];
@@ -375,7 +375,7 @@ public class Queries{
     }
     static class BridgeTable{
         static final String TABLE_NAME="GalleryTags";
-        public static final String DROP_TABLE="DROP TABLE IF EXISTS "+normalizeName(TABLE_NAME);
+        public static final String DROP_TABLE= "DROP TABLE IF EXISTS "+ TABLE_NAME;
         static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `GalleryTags` (`id_gallery` INT NOT NULL , `id_tag` INT NOT NULL ,PRIMARY KEY (`id_gallery`, `id_tag`), FOREIGN KEY(`id_gallery`) REFERENCES `Gallery`(`idGallery`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`id_tag`) REFERENCES `Tags`(`idTag`) ON UPDATE CASCADE ON DELETE RESTRICT );";
 
         static final String ID_GALLERY="id_gallery";
@@ -395,7 +395,7 @@ public class Queries{
             }
         }
         public static Temp[] getAll(SQLiteDatabase db){
-            Cursor c=db.rawQuery("SELECT * FROM "+normalizeName(TABLE_NAME),null);
+            Cursor c=db.rawQuery("SELECT * FROM "+ TABLE_NAME,null);
             Temp[]array=new Temp[c.getCount()];
             int i=0;
             if(c.moveToFirst()){
@@ -410,7 +410,7 @@ public class Queries{
                     " WHERE "+normalizeName(TABLE_NAME)+"."+normalizeName(ID_GALLERY)+"="+normalizeName(TagTable.TABLE_NAME)+"."+normalizeName(TagTable.IDTAG)+" AND "+
                     normalizeName(TABLE_NAME)+"."+normalizeName(ID_GALLERY)+"=? AND "+
                     normalizeName(TagTable.TABLE_NAME)+"."+normalizeName(TagTable.TYPE)+"=?";*/
-            String query="SELECT "+normalizeName(ID_TAG)+" FROM "+normalizeName(TABLE_NAME)+" WHERE "+normalizeName(ID_GALLERY)+"=?";
+            String query="SELECT "+ ID_TAG +" FROM "+ TABLE_NAME +" WHERE "+ ID_GALLERY +"=?";
             Log.d(Global.LOGTAG,query+".."+";"+id);
             Cursor cursor= db.rawQuery(query,new String[]{""+id});
             Log.d(Global.LOGTAG,"COHAOI:"+cursor.getCount());

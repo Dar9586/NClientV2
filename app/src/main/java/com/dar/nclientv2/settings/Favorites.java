@@ -3,6 +3,7 @@ package com.dar.nclientv2.settings;
 import android.util.Log;
 
 import com.dar.nclientv2.api.components.Gallery;
+import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.async.database.Queries;
 
 import static com.dar.nclientv2.settings.Global.LOGTAG;
@@ -26,9 +27,9 @@ public class Favorites{
         return false;
     }
 
-    public static boolean isFavorite(Gallery gallery){
-        if(gallery==null)return false;
-        return Queries.GalleryTable.isFavorite(Queries.GalleryTable.isFavorite(Database.getDatabase(),gallery),false);
+    public static boolean isFavorite(GenericGallery gallery){
+        if(gallery==null||!gallery.isValid())return false;
+        return Queries.GalleryTable.isFavorite(Queries.GalleryTable.isFavorite(Database.getDatabase(),gallery.getId()),false);
     }
 
     public static void countFavorite(){
