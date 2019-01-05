@@ -51,7 +51,7 @@ public final class Global {
     public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf";
     private static TitleType titleType=TitleType.PRETTY;
     private static Language onlyLanguage=null;
-    private static boolean byPopular,loadImages,hideFromGallery,highRes,onlyTag,infiniteScroll,removeIgnoredGalleries;
+    private static boolean byPopular,loadImages,hideFromGallery,highRes,onlyTag,infiniteScroll,removeIgnoredGalleries,sendReport;
     private static ThemeScheme theme;
     private static int notificationId,columnCount,maxId,imageQuality,galleryWidth=-1, galleryHeight =-1;
 
@@ -71,7 +71,12 @@ public final class Global {
         Global.galleryHeight = galleryHeight;
     }
 
+    public static boolean getSendReport(){
+        return sendReport;
+    }
+
     public static void     initTitleType    (@NonNull Context context){titleType=TitleType.values()[context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_title_type),1)];}
+    public static void     initSendReport    (@NonNull Context context){sendReport=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_send_report),true);}
     public static void     initByPopular    (@NonNull Context context){byPopular=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_by_popular),false);}
     public static void     initInfiniteScroll    (@NonNull Context context){infiniteScroll=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_infinite_scroll),false);}
     public static void  initHideFromGallery    (@NonNull Context context){hideFromGallery=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_hide_saved_images),false);}

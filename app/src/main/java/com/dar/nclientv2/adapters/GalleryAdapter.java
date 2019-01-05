@@ -146,7 +146,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         imgView.setOnClickListener(v -> {
             Intent intent = new Intent(context, ZoomActivity.class);
             intent.putExtra(context.getPackageName() + ".GALLERY", gallery);
-            intent.putExtra(context.getPackageName() + ".PAGE", holder.getAdapterPosition()-1);
+            intent.putExtra(context.getPackageName() + ".PAGE", holder.getAdapterPosition()-(gallery.isLocal()?0:1));
             context.startActivity(intent);
         });
     }

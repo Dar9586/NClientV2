@@ -28,6 +28,8 @@ import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
 import com.google.android.material.navigation.NavigationView;
 
+import org.acra.ACRA;
+
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
@@ -251,6 +253,7 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onResume() {
         super.onResume();
+        ACRA.getErrorReporter().setEnabled(getSharedPreferences("Settings",0).getBoolean(getString(R.string.key_send_report),true));
         com.dar.nclientv2.settings.Login.initUseAccountTag(this);
         if(setting!=null){
             Global.initHighRes(this);Global.initOnlyTag(this);Global.initInfiniteScroll(this);Global.initRemoveIgnoredGalleries(this);

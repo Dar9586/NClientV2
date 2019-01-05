@@ -24,6 +24,7 @@
     <string name="key_high_res_gallery">high_res_gallery</string>
     <string name="key_favorite_list">favorite_list</string>
     <string name="key_use_account_tag">use_account_tags</string>
+    <string name="key_send_report">send_report</string>
 
     <!--SUMMARY-->
     <string name="setting_on_hide_save">Saved images won\'t be shown into gallery</string>
@@ -40,8 +41,11 @@
     <string name="setting_on_infinite_scroll">Load another page when reaching the bottom</string>
     <string name="setting_off_infinite_scroll">Change page using the provided menu</string>
     <string name="theme_summary">Select theme colors</string>
+    <string name="setting_on_send_report">Report will be sent</string>
+    <string name="setting_off_send_report">Report will not be sent</string>
 
     <!--SETTINGS NAME-->
+    <string name="send_crash_report">Send crash report</string>
     <string name="change_theme">Change theme</string>
     <string name="clear_cache">Clear cache</string>
     <string name="load_images">Load images</string>

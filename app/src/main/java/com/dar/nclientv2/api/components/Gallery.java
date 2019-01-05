@@ -34,7 +34,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class Gallery extends GenericGallery{
-
+    private enum ImageExt{PNG,JPG,GIF}
     private Date uploadDate;
     private int favoriteCount,id,pageCount,mediaId;
     private final String[] titles=new String[]{"","",""};
@@ -42,8 +42,8 @@ public class Gallery extends GenericGallery{
     private String scanlator;
     private Tag[][] tags;
     //true=jpg, false=png
-    private boolean cover,thumbnail;
-    private boolean pages[];
+    private ImageExt cover,thumbnail;
+    private ImageExt pages[];
     private Language language= Language.UNKNOWN;
 
     public Gallery(Cursor cursor, Tag[][] tags) throws IOException{
@@ -64,41 +64,64 @@ public class Gallery extends GenericGallery{
     private boolean valid=true;
 
     public String getCover(){
-        return String.format(Locale.US,"https://t.nhentai.net/galleries/%d/cover.%s",mediaId,cover?"jpg":"png");
+        return String.format(Locale.US,"https://t.nhentai.net/galleries/%d/cover.%s",mediaId,extToString(cover));
     }
     public String getThumbnail(){
-        return String.format(Locale.US,"https://t.nhentai.net/galleries/%d/thumb.%s",mediaId,thumbnail?"jpg":"png");
+        return String.format(Locale.US,"https://t.nhentai.net/galleries/%d/thumb.%s",mediaId,extToString(thumbnail));
     }
 
     public String getPage(int page){
-        return String.format(Locale.US,"https://i.nhentai.net/galleries/%d/%d.%s",mediaId,page+1,pages[page]?"jpg":"png");
+        return String.format(Locale.US,"https://i.nhentai.net/galleries/%d/%d.%s",mediaId,page+1,extToString(pages[page]));
     }
     public String getLowPage(int page){
-        return String.format(Locale.US,"https://t.nhentai.net/galleries/%d/%dt.%s",mediaId,page+1,pages[page]?"jpg":"png");
+        return String.format(Locale.US,"https://t.nhentai.net/galleries/%d/%dt.%s",mediaId,page+1,extToString(pages[page]));
     }
-
-
-
-
+    private static String extToString(ImageExt ext){
+        switch(ext){
+            case GIF:return "gif";
+            case PNG:return "png";
+            case JPG:return "jpg";
+        }
+        return null;
+    }
+    private static char extToChar(ImageExt ext){
+        switch(ext){
+            case GIF:return 'g';
+            case PNG:return 'p';
+            case JPG:return 'j';
+        }
+        return '\0';
+    }
+    private static ImageExt chatToExt(int ext){
+        switch(ext){
+            case 'g':return ImageExt.GIF;
+            case 'p':return ImageExt.PNG;
+            case 'j':return ImageExt.JPG;
+        }
+        return null;
+    }
+    private static ImageExt stringToExt(String ext){
+        return chatToExt(ext.charAt(0));
+    }
 
     public String createPagePath(){
         StringWriter writer=new StringWriter();
         writer.write(Integer.toString(pages.length));
-        writer.write(cover?'j':'p');
-        writer.write(thumbnail?'j':'p');
-        boolean x=pages[0],act;
+        writer.write(extToChar(cover));
+        writer.write(extToChar(thumbnail));
+        ImageExt x=pages[0],act;
         int len=1;
         for(int i=1;i<pages.length;i++,len++){
             act=pages[i];
             if(act!=x){
                 writer.write(Integer.toString(len));
-                writer.write(x?'j':'p');
+                writer.write(extToChar(x));
                 len=0;
             }
             x=act;
         }
         writer.write(Integer.toString(len));
-        writer.write(x?'j':'p');
+        writer.write(extToChar(x));
         return writer.toString();
     }
 
@@ -113,10 +136,10 @@ public class Gallery extends GenericGallery{
                 val+=act-'0';
             }else{
                 if(pages==null){
-                    pages=new boolean[pageCount=val];
-                    cover=act=='j';
-                    thumbnail=reader.read()=='j';
-                }else for(int j=0;j<val;j++)pages[i++]=act=='j';
+                    pages=new ImageExt[pageCount=val];
+                    cover=chatToExt(act);
+                    thumbnail=chatToExt(reader.read());
+                }else for(int j=0;j<val;j++)pages[i++]=chatToExt(act);
                 val=0;
             }
         }
@@ -129,10 +152,13 @@ public class Gallery extends GenericGallery{
         mediaId=in.readInt();
         in.readStringArray(titles);
         scanlator=in.readString();
-        cover=in.readByte()==1;
-        thumbnail=in.readByte()==1;
-        pages=new boolean[pageCount];
-        in.readBooleanArray(pages);
+        cover=ImageExt.values()[in.readByte()];
+        thumbnail=ImageExt.values()[in.readByte()];
+        byte array[]=new byte[pageCount];
+        pages=new ImageExt[pageCount];
+        in.readByteArray(array);
+        int i=0;
+        for(byte b:array)pages[i++]=ImageExt.values()[b];
         language=Language.values()[in.readInt()];
         tags=new Tag[TagType.values().length][];
         for(int a=0;a<TagType.values().length;a++){
@@ -180,9 +206,12 @@ public class Gallery extends GenericGallery{
         dest.writeInt(mediaId);
         dest.writeStringArray(titles);
         dest.writeString(scanlator);
-        dest.writeByte((byte)(cover?1:0));
-        dest.writeByte((byte)(thumbnail?1:0));
-        dest.writeBooleanArray(pages);
+        dest.writeByte((byte)(cover.ordinal()));
+        dest.writeByte((byte)(thumbnail.ordinal()));
+        byte[] array=new byte[pages.length];
+        int i=0;
+        for(ImageExt e:pages)array[i++]=(byte)e.ordinal();
+        dest.writeByteArray(array);
         dest.writeInt(language.ordinal());
         for(Tag[] x:tags){
             int l=x==null?0:x.length;
@@ -298,31 +327,31 @@ public class Gallery extends GenericGallery{
 
     private void readImages(JsonReader jr) throws IOException {
 
-        List<Boolean>p=new ArrayList<>();
+        List<ImageExt>p=new ArrayList<>();
         jr.beginObject();
         int i=0;
         while (jr.peek()!=JsonToken.END_OBJECT){
             switch (jr.nextName()){
-                case "cover":cover=pageIsJpg(jr);break;
-                case "pages":jr.beginArray();while(jr.hasNext())p.add(pageIsJpg(jr));jr.endArray();break;
-                case "thumbnail":thumbnail=pageIsJpg(jr);break;
+                case "cover":cover= pageToExt(jr);break;
+                case "pages":jr.beginArray();while(jr.hasNext())p.add(pageToExt(jr));jr.endArray();break;
+                case "thumbnail":thumbnail= pageToExt(jr);break;
             }
         }
         jr.endObject();
-        pages=new boolean[p.size()];
-        for(boolean b:p)pages[i++]=b;
+        pages=new ImageExt[p.size()];
+        for(ImageExt b:p)pages[i++]=b;
         p.clear();
     }
 
-    private boolean pageIsJpg(JsonReader jr)throws IOException{
-        boolean jpg=false;
+    private ImageExt pageToExt(JsonReader jr)throws IOException{
+        ImageExt ext=null;
         jr.beginObject();
         while (jr.peek()!= JsonToken.END_OBJECT){
             if(!jr.nextName().equals("t"))jr.skipValue();
-            else jpg=jr.nextString().startsWith("j");
+            else ext=stringToExt(jr.nextString());
         }
         jr.endObject();
-        return jpg;
+        return ext;
     }
 
     private String unescapeUnicodeString(String t){
@@ -482,17 +511,20 @@ public class Gallery extends GenericGallery{
         jw.beginArray();
         jw.value(id).value(mediaId).value(language.ordinal()).value(favoriteCount).value(pageCount).value(uploadDate.getTime()/1000).value(scanlator);
         jw.value(titles[0]).value(titles[1]).value(titles[2]);
-        jw.value(thumbnail?"j":"p").value(cover?"j":"p");
-        boolean allPng=true,allJpg=true;
+        jw.value(""+extToChar(thumbnail)).value(""+extToChar(cover));
+        boolean allPng=true,allJpg=true,allGif=true;
         StringBuilder builder=new StringBuilder(pageCount);
-        for(boolean p:pages){
-            if(p)allPng=false;
-            else allJpg=false;
-            builder.append(p?"j":"p");
+        for(ImageExt p:pages){
+            switch(p){
+                case JPG:allGif=false;allPng=false;break;
+                case PNG:allGif=false;allJpg=false;break;
+                case GIF:allJpg=false;allPng=false;break;
+            }
+            builder.append(extToChar(p));
         }
-        if(!allPng&&!allJpg){
+        if(!allPng&&!allJpg&&!allGif){
             jw.value(builder.toString());
-        }else jw.value(allJpg?"j":"p");
+        }else jw.value(allJpg?"j":allPng?"p":"g");
         for(Tag[] array:tags){
             jw.beginArray();
             if(array!=null)
@@ -521,13 +553,13 @@ public class Gallery extends GenericGallery{
         titles[0]=jr.nextString();
         titles[1]=jr.nextString();
         titles[2]=jr.nextString();
-        thumbnail=jr.nextString().equals("j");
-        cover=jr.nextString().equals("j");
-        pages=new boolean[pageCount];
+        thumbnail=stringToExt(jr.nextString());
+        cover=stringToExt(jr.nextString());
+        pages=new ImageExt[pageCount];
         String pagstr=jr.nextString();
         if(pagstr.length()==1){
-            for(int a=0;a<pageCount;a++)pages[a]=pagstr.equals("j");
-        }else for(int a=0;a<pageCount;a++)pages[a]=pagstr.charAt(a)=='j';
+            for(int a=0;a<pageCount;a++)pages[a]=stringToExt(pagstr);
+        }else for(int a=0;a<pageCount;a++)pages[a]=chatToExt(pagstr.charAt(a));
         int len=TagType.values().length;
         tags=new Tag[len][];
         for(int a=0;a<len;a++){
