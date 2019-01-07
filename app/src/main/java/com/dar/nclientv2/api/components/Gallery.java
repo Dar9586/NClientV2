@@ -189,6 +189,10 @@ public class Gallery extends GenericGallery{
                 JsonReader jr=new JsonReader(response.body().charStream());
                 jr.beginObject();
                 jr.skipValue();
+                if(jr.peek()==JsonToken.BOOLEAN){
+                    jr.close();
+                    return;
+                }
                 jr.beginArray();
                 while(jr.hasNext())related.add(new Gallery(jr));
                 jr.close();
