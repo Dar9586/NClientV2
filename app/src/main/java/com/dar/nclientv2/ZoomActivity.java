@@ -200,7 +200,8 @@ public class ZoomActivity extends AppCompatActivity {
         final File output=new File(Global.GALLERYFOLDER,gallery.getId()+"-"+(mViewPager.getCurrentItem()+1)+".jpg");
         Bitmap bitmap;
         PlaceholderFragment page =(PlaceholderFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
-        if(page!=null){
+        //is useless to download the vector used by the app
+        if(page!=null&&page.photoView.getDrawable() instanceof BitmapDrawable){
             bitmap=((BitmapDrawable)page.photoView.getDrawable()).getBitmap();
             try {
                 if(!output.exists())output.createNewFile();

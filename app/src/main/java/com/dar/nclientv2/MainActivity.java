@@ -185,7 +185,7 @@ public class MainActivity extends BaseActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }else if(inspector.getRequestType()==ApiRequestType.BYSEARCH){
+        }else if(inspector!=null&&inspector.getRequestType()==ApiRequestType.BYSEARCH){
             removeQuery();
         } else {
             super.onBackPressed();

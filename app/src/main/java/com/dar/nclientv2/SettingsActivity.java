@@ -21,7 +21,7 @@ import java.nio.channels.FileChannel;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.SwitchPreferenceCompat;
+import androidx.preference.SwitchPreference;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -48,7 +48,7 @@ public class SettingsActivity extends AppCompatActivity {
             findPreference(getString(R.string.key_hide_saved_images)).setOnPreferenceClickListener(preference -> {
                 if(Global.hasStoragePermission(getActivity())) {
                     Global.saveNoMedia(GeneralPreferenceFragment.this.getActivity());
-                    if (!((SwitchPreferenceCompat) preference).isChecked()) galleryAddPics();
+                    if (!((SwitchPreference) preference).isChecked()) galleryAddPics();
                     else removePic();
                 }
                 return true;

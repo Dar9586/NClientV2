@@ -127,6 +127,7 @@ public class GalleryActivity extends BaseActivity{
         menu.findItem(R.id.favorite_manager).setVisible(!isLocal||isFavorite);
         menu.findItem(R.id.download_gallery).setVisible(!isLocal);
         menu.findItem(R.id.related).setVisible(!isLocal);
+        menu.findItem(R.id.add_online_gallery).setVisible(!isLocal);
         menu.findItem(R.id.load_internet).setVisible(isLocal&&gallery!=null&&gallery.getId()!=-1);
         updateColumnCount(false);
         return true;

@@ -14,8 +14,6 @@ import android.util.Log;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.settings.Global;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -27,18 +25,17 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.FileProvider;
 
 public class CreatePDF extends IntentService {
-    private final int notId;
+    private int notId;
     private int totalPage;
     private NotificationManagerCompat notificationManager;
     private NotificationCompat.Builder notification;
     public CreatePDF() {
         super("CreatePDF");
-        notId=Global.getNotificationId();
-
     }
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+        notId=Global.getNotificationId();
         File file=new File(intent.getStringExtra(getPackageName()+".PATH"));
         totalPage=intent.getIntExtra(getPackageName()+".PAGES",1);
         preExecute(file);
@@ -51,10 +48,8 @@ public class CreatePDF extends IntentService {
             Bitmap bitmap=BitmapFactory.decodeFile(files[a].getAbsolutePath(),options);
             PdfDocument.PageInfo info=new PdfDocument.PageInfo.Builder(bitmap.getWidth(),bitmap.getHeight(),a).create();
             PdfDocument.Page p=document.startPage(info);
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
-            Bitmap decoded = BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
-            p.getCanvas().drawBitmap(decoded,0f,0f,null);
+
+            p.getCanvas().drawBitmap(bitmap,0f,0f,null);
             document.finishPage(p);
             notification.setProgress(totalPage-1,a+1,false);
             notificationManager.notify(getString(R.string.channel2_name),notId,notification.build());

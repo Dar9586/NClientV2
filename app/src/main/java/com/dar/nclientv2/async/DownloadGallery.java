@@ -4,6 +4,8 @@ import android.app.IntentService;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.dar.nclientv2.GalleryActivity;
@@ -15,6 +17,7 @@ import com.dar.nclientv2.settings.Global;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -85,17 +88,24 @@ public class DownloadGallery extends IntentService {
             final File x=new File(folder,("000"+(a+1)+".jpg").substring(Integer.toString(a+1).length()));
             if(!x.exists()||Global.isCorrupted(x.getAbsolutePath())){
                 try{
-                    new DownloadPage(Global.client.newCall(new Request.Builder().url(gallery.getPage(a)).build()).execute().body().byteStream(),x).start();
+                    downloadPage(Global.client.newCall(new Request.Builder().url(gallery.getPage(a)).build()).execute().body().byteStream(),x);
                     downloadedPage();
-                }catch(IOException e){
-                    e.printStackTrace();
+                }catch(IOException|NullPointerException e){
+                    Log.e(Global.LOGTAG, e.getLocalizedMessage(),e);
+                    a--;
                 }
             }
-            else {downloadedPage();}
+            else downloadedPage();
         }
         onPostExecute();
     }
-
+    private void downloadPage(InputStream stream,File file)throws IOException,NullPointerException{
+        file.createNewFile();
+        Bitmap bitmap= BitmapFactory.decodeStream(stream);
+        FileOutputStream ostream = new FileOutputStream(file);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, Global.getImageQuality(), ostream);
+        ostream.flush();
+    }
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
         if(intent!=null&&"stop".equals(intent.getAction()))a=999;
