@@ -131,8 +131,12 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
     }
     public void forceReload(){
         force=true;
-        getFilter().filter(lastQuery);
-
+        activity.runOnUiThread(new Runnable(){
+            @Override
+            public void run(){
+                getFilter().filter(lastQuery);
+            }
+        });
     }
     public void setRefresh(boolean refresh){
         activity.runOnUiThread(()->activity.getRefresher().setRefreshing(refresh));
