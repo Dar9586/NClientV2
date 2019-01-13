@@ -27,8 +27,7 @@ public class CrashApplication extends Application{
     @Override
     public void onCreate(){
         super.onCreate();
-        Database.setHelper(new DatabaseHelper(getApplicationContext()));
-        Database.setDatabase(Database.getHelper().getWritableDatabase());
+        Database.setDatabase(new DatabaseHelper(getApplicationContext()).getWritableDatabase());
     }
 
     @Override

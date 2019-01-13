@@ -129,6 +129,8 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
             }
         };
     }
+
+    // TODO: 13/01/2019 Can't create handler inside thread that has not called Looper.prepare()
     public void forceReload(){
         force=true;
         activity.runOnUiThread(new Runnable(){

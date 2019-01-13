@@ -309,7 +309,12 @@ public class TagFilter extends AppCompatActivity{
             recyclerView.setAdapter(adapter);
         }
         public void refilter(String newText){
-            ((TagsAdapter)recyclerView.getAdapter()).getFilter().filter(newText);
+            if(activity!=null)activity.runOnUiThread(new Runnable(){
+                @Override
+                public void run(){
+                    ((TagsAdapter)recyclerView.getAdapter()).getFilter().filter(newText);
+                }
+            });
         }
 
         public void reset(){

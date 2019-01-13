@@ -35,8 +35,10 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class GalleryActivity extends BaseActivity{
-    private GenericGallery gallery;
+    @NonNull private GenericGallery gallery;
     private boolean isLocal;
+
+    // TODO: 13/01/2019 A volte può essere null la gallery
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,7 +117,13 @@ public class GalleryActivity extends BaseActivity{
             item.setTitle(x?R.string.add_to_online_favorite:R.string.remove_from_online_favorites);
         }
 
-        menu.findItem(R.id.add_online_gallery).setVisible(Login.isLogged());
+        menu.findItem(R.id.add_online_gallery).setVisible(!isLocal&&Login.isLogged());
+        if(menu.findItem(R.id.add_online_gallery).isVisible()){
+            boolean x=Login.isOnlineFavorite(gallery.getId());
+            menu.findItem(R.id.add_online_gallery).setTitle(x?R.string.remove_from_online_favorites:R.string.add_to_online_favorite);
+            menu.findItem(R.id.add_online_gallery).setIcon(x?R.drawable.ic_star:R.drawable.ic_star_border);
+        }
+            menu.findItem(R.id.add_online_gallery).setTitle(Login.isOnlineFavorite(gallery.getId())?R.string.remove_from_online_favorites:R.string.add_to_online_favorite);
         Global.setTint(menu.findItem(R.id.download_gallery).getIcon());
         Global.setTint(menu.findItem(R.id.load_internet).getIcon());
         Global.setTint(menu.findItem(R.id.change_view).getIcon());
@@ -127,7 +135,6 @@ public class GalleryActivity extends BaseActivity{
         menu.findItem(R.id.favorite_manager).setVisible(!isLocal||isFavorite);
         menu.findItem(R.id.download_gallery).setVisible(!isLocal);
         menu.findItem(R.id.related).setVisible(!isLocal);
-        menu.findItem(R.id.add_online_gallery).setVisible(!isLocal);
         menu.findItem(R.id.load_internet).setVisible(isLocal&&gallery!=null&&gallery.getId()!=-1);
         updateColumnCount(false);
         return true;
@@ -151,15 +158,15 @@ public class GalleryActivity extends BaseActivity{
                     public void onFailure(@NonNull Call call,@NonNull IOException e) {}
 
                     @Override
-                    public void onResponse(@NonNull Call call,@NonNull Response response)  {
-                        Log.d(Global.LOGTAG,"Called");
+                    public void onResponse(@NonNull Call call,@NonNull Response response){
+                        Log.d(Global.LOGTAG,"Called: ");
                         final boolean x=Login.isOnlineFavorite(gallery.getId());
                         if(!x)Login.saveOnlineFavorite((Gallery)gallery);
                         else Login.removeOnlineFavorite((Gallery)gallery);
-                            GalleryActivity.this.runOnUiThread(() -> {
-                                item.setIcon(x?R.drawable.ic_star:R.drawable.ic_star_border);
-                                item.setTitle(x?R.string.remove_from_online_favorites:R.string.add_to_online_favorite);
-                            });
+                        GalleryActivity.this.runOnUiThread(() -> {
+                            item.setIcon(x?R.drawable.ic_star_border:R.drawable.ic_star);
+                            item.setTitle(x?R.string.add_to_online_favorite:R.string.remove_from_online_favorites);
+                        });
                     }
                 });
                 break;

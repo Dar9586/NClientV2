@@ -24,7 +24,7 @@ public class Favorites{
     public static boolean removeFavorite(Gallery gallery){
         Log.i(LOGTAG,"Called remove");
         Queries.GalleryTable.removeFavorite(Database.getDatabase(),gallery,false);
-        return false;
+        return true;
     }
 
     public static boolean isFavorite(GenericGallery gallery){
