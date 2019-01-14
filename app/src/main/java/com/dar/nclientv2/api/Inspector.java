@@ -122,9 +122,10 @@ public class Inspector {
 
                 parseGalleries(requestType==ApiRequestType.BYSINGLE?d.getElementsByTag("script"):d.getElementsByClass("gallery"));
                 for (Gallery x:galleries)if(x.getId()>Global.getMaxId())Global.updateMaxId(activity,x.getId());
+                Elements elements=d.getElementsByClass("last");
+                if(elements.size()==1)findTotal(elements.first());
                 activity.runOnUiThread(() -> {
                     if(requestType!=ApiRequestType.BYSINGLE){
-                        findTotal(d.getElementsByClass("last").last());
                         if(update&&activity.getRecycler().getAdapter()!=null)((ListAdapter)activity.getRecycler().getAdapter()).addGalleries(galleries);
                         else activity.getRecycler().setAdapter(new ListAdapter(activity, galleries,Global.getRemoveIgnoredGalleries()?null:query));
                         ((MainActivity)activity).setInspector(Inspector.this);
