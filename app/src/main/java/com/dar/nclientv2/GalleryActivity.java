@@ -38,7 +38,6 @@ public class GalleryActivity extends BaseActivity{
     @NonNull private GenericGallery gallery;
     private boolean isLocal;
 
-    // TODO: 13/01/2019 A volte può essere null la gallery
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +46,7 @@ public class GalleryActivity extends BaseActivity{
         Global.loadNotificationChannel(this);
         Global.initColumnCount(this);
         Global.initImageQuality(this);
+        Global.initLoadImages(this);
         Favorites.countFavorite();
         setContentView(R.layout.activity_gallery);
         Toolbar toolbar = findViewById(R.id.toolbar);

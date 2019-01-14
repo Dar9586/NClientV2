@@ -1,6 +1,5 @@
 package com.dar.nclientv2.adapters;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.text.Layout;
 import android.util.Log;
@@ -10,7 +9,9 @@ import android.view.ViewGroup;
 
 import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.R;
+import com.dar.nclientv2.api.Inspector;
 import com.dar.nclientv2.api.components.Gallery;
+import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Global;
@@ -94,9 +95,10 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
                 else holder.layout.performClick();
             });
             holder.layout.setOnClickListener(v -> {
-              Intent intent = new Intent(context, GalleryActivity.class);
+              /*Intent intent = new Intent(context, GalleryActivity.class);
               intent.putExtra(context.getPackageName() + ".ID", ent.getId());
-              context.startActivity(intent);
+              context.startActivity(intent);*/
+                new Inspector(context,-1,""+ent.getId(),ApiRequestType.BYSINGLE);
               holder.overlay.setVisibility((queryString!=null&&ent.hasIgnoredTags(queryString))?View.VISIBLE:View.GONE);
             });
             holder.overlay.setOnClickListener(v -> holder.overlay.setVisibility(View.GONE));

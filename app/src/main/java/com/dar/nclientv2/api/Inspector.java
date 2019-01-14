@@ -114,10 +114,12 @@ public class Inspector {
             public void onResponse(@NonNull Call call,@NonNull Response response) throws IOException {
                 Log.d(Global.LOGTAG,"Response of "+url);
                 Document d=Jsoup.parse(response.body().byteStream(),"UTF-8","https://nhentai.net");
+
                 parseGalleries(requestType==ApiRequestType.BYSINGLE?d.getElementsByTag("script"):d.getElementsByClass("gallery"));
                 for (Gallery x:galleries)if(x.getId()>Global.getMaxId())Global.updateMaxId(activity,x.getId());
                 activity.runOnUiThread(() -> {
                     if(requestType!=ApiRequestType.BYSINGLE){
+                        findTotal(d.getElementsByClass("last").last());
                         if(update&&activity.getRecycler().getAdapter()!=null)((ListAdapter)activity.getRecycler().getAdapter()).addGalleries(galleries);
                         else activity.getRecycler().setAdapter(new ListAdapter(activity, galleries,Global.getRemoveIgnoredGalleries()?null:query));
                         ((MainActivity)activity).setInspector(Inspector.this);
@@ -138,6 +140,11 @@ public class Inspector {
 
     }
 
+    private void findTotal(Element e){
+        String temp=e.attr("href");
+        pageCount=Integer.parseInt(temp.substring(temp.lastIndexOf('=')+1));
+    }
+
     @Override
     public String toString() {
         return "Inspector{" +
@@ -150,6 +157,18 @@ public class Inspector {
                 ", galleries=" + galleries +
                 '}';
     }
+    public static List<Gallery> parseGalleries(Elements e,ApiRequestType type)throws IOException{
+        List<Gallery> galleries=new ArrayList<>(type==ApiRequestType.BYSINGLE?1:e.size());
+        if(type!=ApiRequestType.BYSINGLE){
+            for(Element el:e)galleries.add(new Gallery(el));
+        }else{
+            String x=e.last().html();
+            int s=x.indexOf("new N.gallery(")+14;
+            x=x.substring(s,x.indexOf('\n',s)-2);
+            galleries.add(new Gallery(new JsonReader(new StringReader(x))));
+        }
+        return galleries;
+    }
     private void parseGalleries(Elements e)throws IOException{
         galleries=new ArrayList<>(requestType==ApiRequestType.BYSINGLE?1:e.size());
         if(requestType!=ApiRequestType.BYSINGLE){
@@ -157,9 +176,7 @@ public class Inspector {
         }else{
             String x=e.last().html();
             int s=x.indexOf("new N.gallery(")+14;
-            Log.d(Global.LOGTAG,"SINGLE: "+x);
             x=x.substring(s,x.indexOf('\n',s)-2);
-            Log.d(Global.LOGTAG,"SINGLE: "+x);
             galleries.add(new Gallery(new JsonReader(new StringReader(x))));
         }
     }

@@ -1,6 +1,7 @@
 package com.dar.nclientv2.adapters;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,10 +85,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     }
 
     private void loadRelatedLayout(ViewHolder holder){
-        if(gallery.isLocal()){
-            holder.master.setVisibility(View.GONE);
-            return;
-        }
+        Log.d(Global.LOGTAG,"Called RElated");
         final RecyclerView recyclerView=(RecyclerView)holder.master;
         final Gallery gallery=(Gallery)this.gallery;
         recyclerView.setLayoutManager(new GridLayoutManager(context,1,RecyclerView.HORIZONTAL,false));
@@ -97,10 +95,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     }
 
     private void loadTagLayout(ViewHolder holder){
-            if(gallery.isLocal()){
-                holder.master.setVisibility(View.GONE);
-                return;
-            }
             final ViewGroup vg=(ViewGroup)holder.master;
             int i=0,len;
             ConstraintLayout lay;

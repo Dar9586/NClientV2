@@ -77,6 +77,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
         holder.layout.setOnClickListener(v -> {
             //Global.setLoadedGallery(ent);
             Intent intent = new Intent(activity, GalleryActivity.class);
+            Log.d(Global.LOGTAG,ent+"");
             intent.putExtra(activity.getPackageName()+ ".GALLERY",ent);
             activity.startActivity(intent);
         });

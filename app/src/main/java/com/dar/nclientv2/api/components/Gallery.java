@@ -9,6 +9,8 @@ import android.util.JsonWriter;
 import android.util.Log;
 
 import com.dar.nclientv2.adapters.GalleryAdapter;
+import com.dar.nclientv2.api.Inspector;
+import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
@@ -18,6 +20,7 @@ import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
 
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 
 import java.io.IOException;
@@ -43,15 +46,13 @@ public class Gallery extends GenericGallery{
         Log.d(Global.LOGTAG,"TAGS: "+tags);
         this.tags=Queries.TagTable.getTags(Database.getDatabase(),tags);
         loadLanguage();
-
         Element a=e.getElementsByTag("a").first();
         temp=a.attr("href");
         id=Integer.parseInt(temp.substring(3,temp.length()-1));
         Log.d(Global.LOGTAG,"LANGUAGE FOR ID: "+id+"= "+language);
         a=e.getElementsByTag("img").first();
-        temp=a.attr("data-src");
-        //32=https://t.nhentai.net/galleries/
-        mediaId=Integer.parseInt(temp.substring(32,temp.lastIndexOf('/')));
+        temp=a.hasAttr("data-src")?a.attr("data-src"):a.attr("src");
+        mediaId=Integer.parseInt(temp.substring(temp.indexOf("galleries")+10,temp.lastIndexOf('/')));
         thumbnail=charToExt(temp.charAt(temp.length()-3));
         titles[TitleType.ENGLISH.ordinal()]=e.getElementsByTag("div").first().text();
     }
@@ -153,7 +154,7 @@ public class Gallery extends GenericGallery{
         StringReader reader=new StringReader(path+"e");//flag per la fine
         int i=0,act,val=0;
         while((act=reader.read())!='e'){
-            if(act!='p'&&act!='j'){
+            if(act!='p'&&act!='j'&&act!='g'){
                 val*=10;
                 val+=act-'0';
             }else{
@@ -197,7 +198,7 @@ public class Gallery extends GenericGallery{
     }
 
     public void loadRelated(GalleryAdapter adapter){
-        String url=String.format(Locale.US,"https://nhentai.net/api/gallery/%d/related",adapter.getGallery().getId());
+        String url=String.format(Locale.US,"https://nhentai.net/g/%d",adapter.getGallery().getId());
         Global.client.newCall(new Request.Builder().url(url).build()).enqueue(new Callback(){
             @Override
             public void onFailure(Call call, IOException e){
@@ -206,18 +207,7 @@ public class Gallery extends GenericGallery{
 
             @Override
             public void onResponse(Call call, Response response) throws IOException{
-                int i=0;
-                related=new ArrayList<>(5);
-                JsonReader jr=new JsonReader(response.body().charStream());
-                jr.beginObject();
-                jr.skipValue();
-                if(jr.peek()==JsonToken.BOOLEAN){
-                    jr.close();
-                    return;
-                }
-                jr.beginArray();
-                while(jr.hasNext())related.add(new Gallery(jr));
-                jr.close();
+                related=Inspector.parseGalleries(Jsoup.parse(response.body().byteStream(),"UTF-8","https://nhentai.net").getElementsByClass("gallery"),ApiRequestType.RELATED);
             }
         });
     }
@@ -416,6 +406,9 @@ public class Gallery extends GenericGallery{
     }
 
     public String getTitle(int x){
+        if(titles[x]==null){
+            for(int i=2;i>=0;i--)if(titles[x=i]!=null)break;
+        }
         return titles[x];
     }
     public String getTitle(TitleType x){
