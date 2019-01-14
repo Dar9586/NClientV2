@@ -65,7 +65,12 @@ public class Inspector {
         StringBuilder builder = new StringBuilder("https://nhentai.net/");
         String tagQuery=TagV2.getQueryString(query);
         switch (requestType){
-            case BYALL: if(tagQuery.length()>0||Global.getOnlyLanguage()!=null) builder.append("search/?q=").append(appendedLanguage()).append(tagQuery);break;
+            case BYALL:
+                if(tagQuery.length()>0||Global.getOnlyLanguage()!=null)
+                    builder.append("search/?q=").append(appendedLanguage()).append(tagQuery);
+                else builder.append('?');
+                if(byPopular)builder.append("&sort=popular");
+                break;
             case BYSEARCH:case BYTAG:
                 builder.append("search/?q=").append(query).append('+').append(appendedLanguage());
                 if(requestType!=ApiRequestType.BYTAG||!Global.isOnlyTag())builder.append(tagQuery);
@@ -133,7 +138,6 @@ public class Inspector {
                         if(page!=-1)activity.finish();
                     }
                     activity.getRefresher().setRefreshing(false);
-                    Log.d(Global.LOGTAG,"EECUTED");
                 });
             }
         });

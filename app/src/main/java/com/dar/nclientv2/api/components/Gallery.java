@@ -43,13 +43,11 @@ public class Gallery extends GenericGallery{
     public Gallery(Element e){
         String temp;
         String tags=e.attr("data-tags").replace(' ',',');
-        Log.d(Global.LOGTAG,"TAGS: "+tags);
         this.tags=Queries.TagTable.getTags(Database.getDatabase(),tags);
         loadLanguage();
         Element a=e.getElementsByTag("a").first();
         temp=a.attr("href");
         id=Integer.parseInt(temp.substring(3,temp.length()-1));
-        Log.d(Global.LOGTAG,"LANGUAGE FOR ID: "+id+"= "+language);
         a=e.getElementsByTag("img").first();
         temp=a.hasAttr("data-src")?a.attr("data-src"):a.attr("src");
         mediaId=Integer.parseInt(temp.substring(temp.indexOf("galleries")+10,temp.lastIndexOf('/')));
@@ -312,7 +310,6 @@ public class Gallery extends GenericGallery{
         for(Tag[]t1:tags)if(t1!=null)for(Tag t2:t1)Queries.TagTable.insert(Database.getDatabase(),t2);
     }
     private void loadLanguage(){
-        Log.d(Global.LOGTAG,Arrays.toString(tags[TagType.LANGUAGE.ordinal()]));
         //CHINESE 29963 ENGLISH 12227 JAPANESE 6346
         for(Tag tag:tags[TagType.LANGUAGE.ordinal()]){
             switch (tag.getId()){
