@@ -56,6 +56,7 @@ public class GalleryActivity extends BaseActivity{
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
         gallery= getIntent().getParcelableExtra(getPackageName()+".GALLERY");
+        int id= getIntent().getIntExtra(getPackageName()+".ID",0);
         Log.d(Global.LOGTAG,""+gallery);
         if(getIntent().getBooleanExtra(getPackageName()+".INSTANTDOWNLOAD",false))downloadGallery();
         isLocal=getIntent().getBooleanExtra(getPackageName()+".ISLOCAL",false);
@@ -65,7 +66,9 @@ public class GalleryActivity extends BaseActivity{
 
         Uri data = getIntent().getData();
         int isZoom=0;
-        if(data != null && data.getPathSegments().size() >= 2){
+        if(id!=0){//if from main list
+            new Inspector(this,0,""+id,ApiRequestType.BYSINGLE);
+        }else if(data != null && data.getPathSegments().size() >= 2){//if using an URL
             List<String> params = data.getPathSegments();
             for(String x:params)Log.i(Global.LOGTAG,x);
             if(params.size()>2){
@@ -76,7 +79,7 @@ public class GalleryActivity extends BaseActivity{
                 }
             }
             new Inspector(this,isZoom,params.get(1),ApiRequestType.BYSINGLE);
-        }else loadGallery(gallery,zoom);
+        }else loadGallery(gallery,zoom);//if already has gallery
 
     }
     private void lookup(){
@@ -105,37 +108,35 @@ public class GalleryActivity extends BaseActivity{
 
 
     private boolean isFavorite;
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.gallery, menu);
-        if(!isLocal&&Login.isLogged()){
-            MenuItem item= menu.findItem(R.id.add_online_gallery);
-            item.setVisible(true);
-            boolean x=Login.isOnlineFavorite(gallery.getId());
-            item.setIcon(x?R.drawable.ic_star_border:R.drawable.ic_star);
-            item.setTitle(x?R.string.add_to_online_favorite:R.string.remove_from_online_favorites);
-        }
-
-        menu.findItem(R.id.add_online_gallery).setVisible(!isLocal&&Login.isLogged());
+    private Menu menu;
+    public void loadMenu(){
         if(menu.findItem(R.id.add_online_gallery).isVisible()){
             boolean x=Login.isOnlineFavorite(gallery.getId());
             menu.findItem(R.id.add_online_gallery).setTitle(x?R.string.remove_from_online_favorites:R.string.add_to_online_favorite);
             menu.findItem(R.id.add_online_gallery).setIcon(x?R.drawable.ic_star:R.drawable.ic_star_border);
         }
-            menu.findItem(R.id.add_online_gallery).setTitle(Login.isOnlineFavorite(gallery.getId())?R.string.remove_from_online_favorites:R.string.add_to_online_favorite);
+        menu.findItem(R.id.add_online_gallery).setTitle(Login.isOnlineFavorite(gallery.getId())?R.string.remove_from_online_favorites:R.string.add_to_online_favorite);
+        menu.findItem(R.id.share).setVisible(gallery!=null&&gallery.isValid());
+        menu.findItem(R.id.favorite_manager).setIcon((isFavorite=Favorites.isFavorite(gallery))?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
+        menu.findItem(R.id.load_internet).setVisible(isLocal&&gallery!=null&&gallery.getId()!=-1);
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.gallery, menu);
+        this.menu=menu;
+
+        menu.findItem(R.id.add_online_gallery).setVisible(!isLocal&&Login.isLogged());
         Global.setTint(menu.findItem(R.id.download_gallery).getIcon());
         Global.setTint(menu.findItem(R.id.load_internet).getIcon());
         Global.setTint(menu.findItem(R.id.change_view).getIcon());
         Global.setTint(menu.findItem(R.id.share).getIcon());
         Global.setTint(menu.findItem(R.id.related).getIcon());
-        menu.findItem(R.id.share).setVisible(gallery!=null&&gallery.isValid());
-        menu.findItem(R.id.favorite_manager).setIcon((isFavorite=Favorites.isFavorite(gallery))?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
         Global.setTint(menu.findItem(R.id.favorite_manager).getIcon());
         menu.findItem(R.id.favorite_manager).setVisible(!isLocal||isFavorite);
         menu.findItem(R.id.download_gallery).setVisible(!isLocal);
         menu.findItem(R.id.related).setVisible(!isLocal);
-        menu.findItem(R.id.load_internet).setVisible(isLocal&&gallery!=null&&gallery.getId()!=-1);
+        if(gallery!=null)loadMenu();
         updateColumnCount(false);
         return true;
     }

@@ -7,7 +7,10 @@ import com.dar.nclientv2.RandomActivity;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.settings.Global;
 
+import org.jsoup.Jsoup;
+
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -35,7 +38,7 @@ public class RandomLoader {
     private void loadRandomGallery(){
         if(galleries.size()>=MAXLOADED)return;
         final int id=random.nextInt(Global.getMaxId())+1;
-            Global.client.newCall(new Request.Builder().url("https://nhentai.net/api/gallery/" + id).build()).enqueue(new Callback() {
+            Global.client.newCall(new Request.Builder().url("https://nhentai.net/g/" + id).build()).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
 
@@ -44,7 +47,10 @@ public class RandomLoader {
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                     Log.d(Global.LOGTAG,"Random: "+id);
-                    Gallery x = new Gallery(new JsonReader(response.body().charStream()));
+                    String str=Jsoup.parse(response.body().byteStream(),"UTF-8","https://nhentai.net").getElementsByTag("script").last().html();
+                    int s=str.indexOf("new N.gallery(")+14;
+                    str=str.substring(s,str.indexOf('\n',s)-2);
+                    Gallery x = new Gallery(new JsonReader(new StringReader(str)));
                     if (!x.isValid()) {
                         loadRandomGallery();
                         return;

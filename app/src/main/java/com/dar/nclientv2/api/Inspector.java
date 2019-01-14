@@ -14,8 +14,14 @@ import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,7 +94,7 @@ public class Inspector {
             actualQuery=query;
             actualRequestType=requestType;
         }
-        createUrl();
+        url=getUsableURL();
         client.newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -107,7 +113,8 @@ public class Inspector {
             @Override
             public void onResponse(@NonNull Call call,@NonNull Response response) throws IOException {
                 Log.d(Global.LOGTAG,"Response of "+url);
-                parseGalleries(response.body().charStream());
+                Document d=Jsoup.parse(response.body().byteStream(),"UTF-8","https://nhentai.net");
+                parseGalleries(requestType==ApiRequestType.BYSINGLE?d.getElementsByTag("script"):d.getElementsByClass("gallery"));
                 for (Gallery x:galleries)if(x.getId()>Global.getMaxId())Global.updateMaxId(activity,x.getId());
                 activity.runOnUiThread(() -> {
                     if(requestType!=ApiRequestType.BYSINGLE){
@@ -115,8 +122,7 @@ public class Inspector {
                         else activity.getRecycler().setAdapter(new ListAdapter(activity, galleries,Global.getRemoveIgnoredGalleries()?null:query));
                         ((MainActivity)activity).setInspector(Inspector.this);
                         ((MainActivity)activity).showPageSwitcher(Inspector.this.page,Inspector.this.pageCount);
-                    }
-                    else{
+                    }else{
                         Intent intent=new Intent(activity, GalleryActivity.class);
                         intent.putExtra(activity.getPackageName()+".GALLERY",galleries.get(0));
                         intent.putExtra(activity.getPackageName()+".ZOOM",page-1);
@@ -125,6 +131,7 @@ public class Inspector {
                         if(page!=-1)activity.finish();
                     }
                     activity.getRefresher().setRefreshing(false);
+                    Log.d(Global.LOGTAG,"EECUTED");
                 });
             }
         });
@@ -143,7 +150,20 @@ public class Inspector {
                 ", galleries=" + galleries +
                 '}';
     }
-
+    private void parseGalleries(Elements e)throws IOException{
+        galleries=new ArrayList<>(requestType==ApiRequestType.BYSINGLE?1:e.size());
+        if(requestType!=ApiRequestType.BYSINGLE){
+            for(Element el:e)galleries.add(new Gallery(el));
+        }else{
+            String x=e.last().html();
+            int s=x.indexOf("new N.gallery(")+14;
+            Log.d(Global.LOGTAG,"SINGLE: "+x);
+            x=x.substring(s,x.indexOf('\n',s)-2);
+            Log.d(Global.LOGTAG,"SINGLE: "+x);
+            galleries.add(new Gallery(new JsonReader(new StringReader(x))));
+        }
+    }
+    @Deprecated
     private void parseGalleries(Reader s) throws IOException {
         JsonReader reader=new JsonReader(s);
         if (requestType == ApiRequestType.BYSINGLE){
@@ -190,7 +210,7 @@ public class Inspector {
         }
         return "";
     }
-
+    @Deprecated
     private void createUrl() {
         StringBuilder builder = new StringBuilder("https://nhentai.net/api/");
         String tagQuery=Global.getRemoveIgnoredGalleries()?TagV2.getQueryString(query):"";

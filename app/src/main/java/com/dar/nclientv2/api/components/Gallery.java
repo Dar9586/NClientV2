@@ -14,8 +14,11 @@ import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.async.database.Queries;
+import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
+
+import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -34,6 +37,25 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class Gallery extends GenericGallery{
+    public Gallery(Element e){
+        String temp;
+        String tags=e.attr("data-tags").replace(' ',',');
+        Log.d(Global.LOGTAG,"TAGS: "+tags);
+        this.tags=Queries.TagTable.getTags(Database.getDatabase(),tags);
+        loadLanguage();
+
+        Element a=e.getElementsByTag("a").first();
+        temp=a.attr("href");
+        id=Integer.parseInt(temp.substring(3,temp.length()-1));
+        Log.d(Global.LOGTAG,"LANGUAGE FOR ID: "+id+"= "+language);
+        a=e.getElementsByTag("img").first();
+        temp=a.attr("data-src");
+        //32=https://t.nhentai.net/galleries/
+        mediaId=Integer.parseInt(temp.substring(32,temp.lastIndexOf('/')));
+        thumbnail=charToExt(temp.charAt(temp.length()-3));
+        titles[TitleType.ENGLISH.ordinal()]=e.getElementsByTag("div").first().text();
+    }
+
     private enum ImageExt{PNG,JPG,GIF}
     private Date uploadDate;
     private int favoriteCount,id,pageCount,mediaId;
@@ -92,7 +114,7 @@ public class Gallery extends GenericGallery{
         }
         return '\0';
     }
-    private static ImageExt chatToExt(int ext){
+    private static ImageExt charToExt(int ext){
         switch(ext){
             case 'g':return ImageExt.GIF;
             case 'p':return ImageExt.PNG;
@@ -101,7 +123,7 @@ public class Gallery extends GenericGallery{
         return null;
     }
     private static ImageExt stringToExt(String ext){
-        return chatToExt(ext.charAt(0));
+        return charToExt(ext.charAt(0));
     }
 
     public String createPagePath(){
@@ -137,9 +159,9 @@ public class Gallery extends GenericGallery{
             }else{
                 if(pages==null){
                     pages=new ImageExt[pageCount=val];
-                    cover=chatToExt(act);
-                    thumbnail=chatToExt(reader.read());
-                }else for(int j=0;j<val;j++)pages[i++]=chatToExt(act);
+                    cover= charToExt(act);
+                    thumbnail= charToExt(reader.read());
+                }else for(int j=0;j<val;j++)pages[i++]= charToExt(act);
                 val=0;
             }
         }
@@ -297,8 +319,10 @@ public class Gallery extends GenericGallery{
         tags[type.ordinal()]=new Tag[t.size()-i];
         tags[type.ordinal()]=t.subList(i,t.size()).toArray(tags[type.ordinal()]);
         loadLanguage();
+        for(Tag[]t1:tags)if(t1!=null)for(Tag t2:t1)Queries.TagTable.insert(Database.getDatabase(),t2);
     }
     private void loadLanguage(){
+        Log.d(Global.LOGTAG,Arrays.toString(tags[TagType.LANGUAGE.ordinal()]));
         //CHINESE 29963 ENGLISH 12227 JAPANESE 6346
         for(Tag tag:tags[TagType.LANGUAGE.ordinal()]){
             switch (tag.getId()){
@@ -563,7 +587,7 @@ public class Gallery extends GenericGallery{
         String pagstr=jr.nextString();
         if(pagstr.length()==1){
             for(int a=0;a<pageCount;a++)pages[a]=stringToExt(pagstr);
-        }else for(int a=0;a<pageCount;a++)pages[a]=chatToExt(pagstr.charAt(a));
+        }else for(int a=0;a<pageCount;a++)pages[a]= charToExt(pagstr.charAt(a));
         int len=TagType.values().length;
         tags=new Tag[len][];
         for(int a=0;a<len;a++){

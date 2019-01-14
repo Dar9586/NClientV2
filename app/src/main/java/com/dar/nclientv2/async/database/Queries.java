@@ -372,6 +372,27 @@ public class Queries{
         }
 
 
+        public static Tag[][] getTags(SQLiteDatabase db, String tagString){
+            Tag[][]tags=new Tag[TagType.values().length][];
+            String query="SELECT * FROM "+TABLE_NAME+" WHERE "+IDTAG+" IN ("+tagString+")";
+            Cursor cursor=db.rawQuery(query,null);
+            Tag[]all=new Tag[cursor.getCount()];
+            int i=0;
+            if(cursor.moveToFirst()){
+                do{
+                    all[i++]=cursorToTag(cursor);
+                }while(cursor.moveToNext());
+            }
+            List<Tag>[]tt=new ArrayList[TagType.values().length];
+            for(int a=0;a<tt.length;a++)tt[a]=new ArrayList<>();
+            for(Tag s:all){
+                tt[s.getType().ordinal()].add(s);
+            }
+            for(TagType type:TagType.values()){
+                tags[type.ordinal()]=tt[type.ordinal()].toArray(new Tag[0]);
+            }
+            return tags;
+        }
     }
     static class BridgeTable{
         static final String TABLE_NAME="GalleryTags";

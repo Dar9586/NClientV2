@@ -11,13 +11,13 @@ import android.view.ViewGroup;
 import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Gallery;
+import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
 
 import java.io.File;
 import java.util.List;
-import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -77,7 +77,8 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
             if(black)holder.layout.setBackgroundColor(Color.BLACK);
             holder.overlay.setVisibility((queryString!=null&&ent.hasIgnoredTags(queryString))?View.VISIBLE:View.GONE);
             loadGallery(holder,ent);
-            holder.title.setText(ent.getTitle());
+            holder.pages.setVisibility(View.GONE);
+            holder.title.setText(ent.getTitle(TitleType.ENGLISH));
             if(Global.getOnlyLanguage()==null||context instanceof GalleryActivity) {
                 switch (ent.getLanguage()) {
                     case CHINESE:  holder.flag.setText("\uD83C\uDDE8\uD83C\uDDF3");break;
@@ -86,7 +87,6 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
                     case UNKNOWN:  holder.flag.setText("\uD83C\uDFF3");
                 }
             }else holder.flag.setVisibility(View.GONE);
-            holder.pages.setText(String.format(Locale.US, "%d", ent.getPageCount()));
             holder.title.setOnClickListener(v -> {
                 Layout layout = holder.title.getLayout();
                 if(layout.getEllipsisCount(layout.getLineCount()-1)>0)holder.title.setMaxLines(7);
@@ -95,7 +95,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
             });
             holder.layout.setOnClickListener(v -> {
               Intent intent = new Intent(context, GalleryActivity.class);
-              intent.putExtra(context.getPackageName() + ".GALLERY", ent);
+              intent.putExtra(context.getPackageName() + ".ID", ent.getId());
               context.startActivity(intent);
               holder.overlay.setVisibility((queryString!=null&&ent.hasIgnoredTags(queryString))?View.VISIBLE:View.GONE);
             });
