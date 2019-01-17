@@ -25,6 +25,7 @@ import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.components.CustomViewPager;
 import com.dar.nclientv2.settings.Global;
 import com.github.chrisbanes.photoview.PhotoView;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -41,6 +42,8 @@ import androidx.viewpager.widget.ViewPager;
 
 public class ZoomActivity extends AppCompatActivity {
     private GenericGallery gallery;
+    public int actualPage=0;
+    private static final Object preloadTag=new Object();
     private final static int hideFlags=View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
             | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -88,14 +91,16 @@ public class ZoomActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
+                actualPage=position;
                 pageManager.setText(getString(R.string.page_format,position+1,gallery.getPageCount()));
                 seekBar.setProgress(position);
-                if(!gallery.isLocal()){
+                /*if(!gallery.isLocal()){
+                    Picasso.get().cancelTag(preloadTag);
                     Gallery gallery=(Gallery)ZoomActivity.this.gallery;
-                    if(position<gallery.getPageCount()-1)Global.preloadImage(gallery.getPage(position+1));
-                    if(position>0)Global.preloadImage(gallery.getPage(position-1));
+                    if(position>0)Picasso.get().load(gallery.getPage(position-1)).tag(preloadTag).priority(Picasso.Priority.LOW).fetch();
+                    if(position<gallery.getPageCount()-1)Picasso.get().load(gallery.getPage(position+1)).tag(preloadTag).priority(Picasso.Priority.LOW).fetch();
 
-                }
+                }*/
             }
 
             @Override
@@ -267,11 +272,10 @@ public class ZoomActivity extends AppCompatActivity {
             int page=getArguments().getInt("PAGE",0);
             File file=x.directory==null?null:new File(x.directory,("000"+(page+1)+".jpg").substring(Integer.toString(page+1).length()));
             if(file==null||!file.exists()){
-                if(x.gallery.isLocal())Global.loadImage(R.mipmap.ic_launcher,photoView);
-                else Global.loadImage(((Gallery)x.gallery).getPage(page),photoView,true);
-
+                if(x.gallery.isLocal())Picasso.get().load(R.mipmap.ic_launcher).into(photoView);
+                else Picasso.get().load(((Gallery)x.gallery).getPage(page)).into(photoView);
             }
-            else Global.loadImage(file,photoView);
+            else Picasso.get().load(file).into(photoView);
             return rootView;
         }
     }
