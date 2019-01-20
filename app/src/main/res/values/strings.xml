@@ -204,6 +204,9 @@
     <string name="set_minimum_count">Set minimum count</string>
     <string name="sort_by_title">Sort by title</string>
     <string name="sort_by_popular">Sort by popular</string>
+    <string name="key_override_volume">volume_override</string>
+    <string name="setting_on_override_volume">The volume keys will change page</string>
+    <string name="setting_off_override_volume">The volume keys will change system volume</string>
 
 
     <string-array name="theme">

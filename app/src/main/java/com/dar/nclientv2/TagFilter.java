@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.dar.nclientv2.adapters.paged.TagsAdapter;
+import com.dar.nclientv2.adapters.TagsAdapter;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.scrape.BulkScraper;
 import com.dar.nclientv2.settings.DefaultDialogs;

@@ -45,12 +45,19 @@
         android:summaryOff="@string/setting_off_ignore_tags"
         android:title="@string/ignore_tags" />
     <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/key_override_volume"
+        android:summaryOn="@string/setting_on_override_volume"
+        android:summaryOff="@string/setting_off_override_volume"
+        android:title="Change page with volume buttons" />
+    <SwitchPreference
         android:defaultValue="false"
         android:enabled="false"
         android:key="@string/key_use_account_tag"
         android:summaryOn="@string/setting_on_use_account_tag"
         android:summaryOff="@string/setting_off_use_account_tag"
         android:title="@string/use_account_tag" />
+
     <SwitchPreference
         android:defaultValue="true"
         android:key="@string/key_check_update"
