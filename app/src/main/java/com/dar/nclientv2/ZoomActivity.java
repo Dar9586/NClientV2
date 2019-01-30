@@ -64,6 +64,7 @@ public class ZoomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
         Global.initHideFromGallery(this);
+        side=getSharedPreferences("Settings",0).getBoolean("volumeSide",true);
         overrideVolume=getSharedPreferences("Settings",0).getBoolean(getString(R.string.key_override_volume),true);
         setContentView(R.layout.activity_zoom);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -103,10 +104,10 @@ public class ZoomActivity extends AppCompatActivity {
         });
         changeLayout(getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE);
         findViewById(R.id.prev).setOnClickListener(v -> {
-            if(mViewPager.getCurrentItem()>0)changePage(mViewPager.getCurrentItem()-1);
+            changeClosePage(false);
         });
         findViewById(R.id.next).setOnClickListener(v -> {
-            if(mViewPager.getCurrentItem()<(mViewPager.getAdapter().getCount()-1))changePage(mViewPager.getCurrentItem()+1);
+            changeClosePage(true);
         });
 
         final int page=getIntent().getExtras().getInt(getPackageName()+".PAGE",0);
@@ -131,21 +132,40 @@ public class ZoomActivity extends AppCompatActivity {
         pageManager.setText(getString(R.string.page_format,page+1,gallery.getPageCount()));
 
     }
+    private boolean up=false,down=false,side;
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event){
+        if(overrideVolume){
+            switch(keyCode){
+                case KeyEvent.KEYCODE_VOLUME_UP:up = false;break;
+                case KeyEvent.KEYCODE_VOLUME_DOWN:down = false;break;
+            }
+        }
+        return super.onKeyUp(keyCode, event);
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event){
-        if(!overrideVolume)return super.onKeyDown(keyCode, event);
-        switch(keyCode){
-            case KeyEvent.KEYCODE_VOLUME_UP:
-                if(mViewPager.getCurrentItem()<(mViewPager.getAdapter().getCount()-1))changePage(mViewPager.getCurrentItem()+1);
-                return true;
-            case KeyEvent.KEYCODE_VOLUME_DOWN:
-                if(mViewPager.getCurrentItem()>0)changePage(mViewPager.getCurrentItem()-1);
-                return true;
+        if(overrideVolume){
+            switch(keyCode){
+                case KeyEvent.KEYCODE_VOLUME_UP:
+                    up = true;changeClosePage(side);if(up && down) changeSide();
+                    return true;
+                case KeyEvent.KEYCODE_VOLUME_DOWN:
+                    down = true;changeClosePage(!side);if(up && down) changeSide();
+                    return true;
+            }
         }
         return super.onKeyDown(keyCode, event);
     }
-
+    private void changeSide(){
+        getSharedPreferences("Settings",0).edit().putBoolean("volumeSide",side=!side).apply();
+        Toast.makeText(this, side?R.string.next_page_volume_up:R.string.next_page_volume_down, Toast.LENGTH_SHORT).show();
+    }
+    private void changeClosePage(boolean next){
+        if(next&&mViewPager.getCurrentItem()<(mViewPager.getAdapter().getCount()-1))changePage(mViewPager.getCurrentItem()+1);
+        if(!next&&mViewPager.getCurrentItem()>0)changePage(mViewPager.getCurrentItem()-1);
+    }
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);

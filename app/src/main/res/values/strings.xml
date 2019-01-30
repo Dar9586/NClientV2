@@ -207,6 +207,8 @@
     <string name="key_override_volume">volume_override</string>
     <string name="setting_on_override_volume">The volume keys will change page</string>
     <string name="setting_off_override_volume">The volume keys will change system volume</string>
+    <string name="next_page_volume_up">Go to next page with up volume</string>
+    <string name="next_page_volume_down">Go to next page with down volume</string>
 
 
     <string-array name="theme">

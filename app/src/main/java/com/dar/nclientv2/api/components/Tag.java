@@ -10,11 +10,7 @@ import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 @SuppressWarnings("unused")
 public class Tag implements Parcelable{
@@ -159,20 +155,6 @@ public class Tag implements Parcelable{
     }
     public String toScrapedString() {
         return String.format(Locale.US,"%d,%d,%d,%s",count,id,type.ordinal(),name);
-    }
-    public static ArrayList<Tag> toArrayList(Set<String> x){
-        ArrayList<Tag>tags=new ArrayList<>(x.size());
-        for(String y:x){
-            tags.add(new Tag(y));
-        }
-        return tags;
-    }
-    public static Set<String> toStringSet(List<Tag> x){
-        Set<String>tags=new HashSet<>(x.size());
-        for(Tag y:x){
-            tags.add(y.toScrapedString());
-        }
-        return tags;
     }
 
     @Override

@@ -8,7 +8,6 @@ import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
-import com.dar.nclientv2.settings.TagV2;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -23,15 +22,16 @@ import okhttp3.Request;
 class TagPageScraper extends Thread{
 
     private final TagScrapeStatus status;
-    private static final int MIN_TAG_COUNT=2;
-    private boolean minReached=false,showed=false;
+    public static final int MIN_TAG_COUNT=2;
+    private int minReached=99999;
+    private boolean showed=false;
 
     public TagPageScraper(TagScrapeStatus status){
         this.status=status;
     }
     public boolean shouldUpdate(){
         //la pagina attuale deve essere mostrata mentre quelle dopo no
-        if(!minReached)return true;
+        if(minReached>MIN_TAG_COUNT)return true;
         if(showed)return false;
         return showed=true;
     }
@@ -60,11 +60,12 @@ class TagPageScraper extends Thread{
                         Integer.parseInt(x.attr("class").substring(x.attr("class").lastIndexOf('-')+1).trim()),
                         status.type,TagStatus.DEFAULT
                 );
+                minReached=t.getCount();
                 if(t.getCount()<MIN_TAG_COUNT){
                     status.maxPage=1;
                     return;
                 }
-                if(t.getCount()<TagV2.getMinCount())minReached=true;
+
                 Queries.TagTable.updateTag(Database.getDatabase(),t);
 
             }
@@ -75,6 +76,10 @@ class TagPageScraper extends Thread{
             s=s.substring(s.lastIndexOf('=')+1);
             status.maxPage=Integer.parseInt(s);
         }
+    }
+
+    public int getMinReached(){
+        return minReached;
     }
 
     private static String getSingleName(TagType type){

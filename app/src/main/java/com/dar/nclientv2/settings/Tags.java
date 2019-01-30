@@ -1,7 +1,6 @@
 package com.dar.nclientv2.settings;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.dar.nclientv2.R;
@@ -67,14 +66,6 @@ public class Tags{
         sets[4]=getSet(context,getScraperId(TagType.CHARACTER));
     }
 
-    public static void  initTagPreferencesSets(@NonNull Context context){
-        if(accepted.size()!=0&&avoided.size()!=0)return;
-        SharedPreferences preferences=context.getSharedPreferences("TagPreferences", 0);
-        accepted=Tag.toArrayList(preferences.getStringSet(context.getString(R.string.key_accepted_tags), new HashSet<>()));
-        avoided=Tag.toArrayList(preferences.getStringSet(context.getString(R.string.key_avoided_tags), new HashSet<>()));
-        Log.i(LOGTAG,"Accepted"+accepted.toString());
-        Log.i(LOGTAG,"Avoided"+avoided.toString());
-    }
 
 
     public static TagStatus getStatus(Tag tag){
@@ -123,30 +114,6 @@ public class Tags{
     public static void resetAllStatus(@NonNull Context context){
         context.getSharedPreferences("TagPreferences",0).edit().clear().apply();
         avoided.clear();accepted.clear();
-    }
-
-    private static boolean updateSharedTagPreferences(Context context){
-        Log.i(LOGTAG,context.getSharedPreferences("TagPreferences",0).getAll().toString());
-        boolean x=context.getSharedPreferences("TagPreferences",0).edit().clear()
-                .putStringSet(context.getString(R.string.key_accepted_tags),Tag.toStringSet(accepted))
-                .putStringSet(context.getString(R.string.key_avoided_tags),Tag.toStringSet(avoided)).commit();
-        Log.i(LOGTAG,context.getSharedPreferences("TagPreferences",0).getAll().toString());
-        return x;
-
-    }
-    public static TagStatus updateStatus(@NonNull Context context,Tag tag){
-        if(accepted.contains(tag)){
-            accepted.remove(tag);
-            avoided.add(tag);
-            return updateSharedTagPreferences(context)?TagStatus.AVOIDED:TagStatus.ACCEPTED;
-        }
-        if(avoided.contains(tag)){
-            avoided.remove(tag);
-            return updateSharedTagPreferences(context)?TagStatus.DEFAULT:TagStatus.AVOIDED;
-        }
-        if(maxTagReached())return TagStatus.DEFAULT;
-        accepted.add(tag);
-        return updateSharedTagPreferences(context)?TagStatus.ACCEPTED:TagStatus.DEFAULT;
     }
     public static boolean maxTagReached(){
         return accepted.size()+avoided.size()>=MAXTAGS;

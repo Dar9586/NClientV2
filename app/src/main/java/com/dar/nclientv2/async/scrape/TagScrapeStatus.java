@@ -4,9 +4,10 @@ import com.dar.nclientv2.api.enums.TagType;
 
 class TagScrapeStatus{
     TagType type;
-    int maxPage=1,actPage=1;
-    public TagScrapeStatus(TagType type){
+    int maxPage=1,actPage;
+    public TagScrapeStatus(TagType type,int actPage){
         this.type = type;
+        this.actPage=actPage;
     }
     @Override
     public boolean equals(Object o){
