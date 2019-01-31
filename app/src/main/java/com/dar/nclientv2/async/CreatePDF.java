@@ -36,6 +36,7 @@ public class CreatePDF extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         notId=Global.getNotificationId();
+        System.gc();
         File file=new File(intent.getStringExtra(getPackageName()+".PATH"));
         totalPage=intent.getIntExtra(getPackageName()+".PAGES",1);
         preExecute(file);
@@ -48,11 +49,12 @@ public class CreatePDF extends IntentService {
             Bitmap bitmap=BitmapFactory.decodeFile(files[a].getAbsolutePath(),options);
             PdfDocument.PageInfo info=new PdfDocument.PageInfo.Builder(bitmap.getWidth(),bitmap.getHeight(),a).create();
             PdfDocument.Page p=document.startPage(info);
-
             p.getCanvas().drawBitmap(bitmap,0f,0f,null);
             document.finishPage(p);
+            bitmap.recycle();
             notification.setProgress(totalPage-1,a+1,false);
             notificationManager.notify(getString(R.string.channel2_name),notId,notification.build());
+
         }
         notification.setContentText(getString(R.string.writing_pdf));
         notification.setProgress(totalPage,0,true);

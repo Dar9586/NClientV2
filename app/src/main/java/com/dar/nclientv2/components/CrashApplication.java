@@ -15,10 +15,8 @@ import org.acra.annotation.AcraCore;
 
 @AcraCore(buildConfigClass = BuildConfig.class,reportSenderFactoryClasses = MySenderFactory.class,reportContent={
         ReportField.PACKAGE_NAME,
-        ReportField.APP_VERSION_CODE,
-        ReportField.USER_CRASH_DATE,
         ReportField.BUILD_CONFIG,
-        ReportField.APP_VERSION_NAME,
+        ReportField.APP_VERSION_CODE,
         ReportField.STACK_TRACE,
         ReportField.ANDROID_VERSION,
         ReportField.LOGCAT

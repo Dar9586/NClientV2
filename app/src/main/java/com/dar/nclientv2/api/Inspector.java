@@ -179,10 +179,12 @@ public class Inspector {
         if(requestType!=ApiRequestType.BYSINGLE){
             for(Element el:e)galleries.add(new Gallery(el));
         }else{
-            String x=e.last().html();
-            int s=x.indexOf("new N.gallery(")+14;
-            x=x.substring(s,x.indexOf('\n',s)-2);
-            galleries.add(new Gallery(new JsonReader(new StringReader(x))));
+            if(e.last()==null)return;
+            String str=e.last().html();
+            int s=str.indexOf("new N.gallery(")+14,s1=str.indexOf('\n', s) - 2;
+            if(s==13||s1<0)return;
+            str = str.substring(s, s1);
+            galleries.add(new Gallery(new JsonReader(new StringReader(str))));
         }
     }
     @Deprecated

@@ -10,6 +10,7 @@ import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 
@@ -36,7 +37,8 @@ public class Login {
             @Override
             public void onResponse(@NonNull Call call,@NonNull Response response) throws IOException {
                 Document jsoup=Jsoup.parse(response.body().byteStream(),null,login_url);
-                createCookieLogin(activity,username,password,jsoup.getElementsByAttributeValue("name","csrfmiddlewaretoken").first().attr("value"));
+                Element x=jsoup.getElementsByAttributeValue("name","csrfmiddlewaretoken").first();
+                if(x!=null) createCookieLogin(activity,username,password,x.attr("value"));
             }
         });
     }

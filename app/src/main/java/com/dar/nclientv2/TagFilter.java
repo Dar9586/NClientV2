@@ -158,6 +158,7 @@ public class TagFilter extends AppCompatActivity{
         builder.show();
     }
     public void addItems(TagType type){
+        if(mViewPager==null)return;
         Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
         if(page!=null)((PlaceholderFragment)page).addItems(type);
     }

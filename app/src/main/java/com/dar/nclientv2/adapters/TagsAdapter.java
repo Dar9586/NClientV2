@@ -32,6 +32,7 @@ import java.util.Locale;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import okhttp3.Call;
@@ -205,11 +206,11 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         jw.name("type").value(tag.getTypeString());
         jw.endObject();
     }
-    private static void updateLogo(ImageView img, TagStatus s){
+    private void updateLogo(ImageView img, TagStatus s){
         switch (s){
-            case DEFAULT:img.setImageResource(R.drawable.ic_void);break;
-            case ACCEPTED:img.setImageResource(R.drawable.ic_check);break;
-            case AVOIDED:img.setImageResource(R.drawable.ic_close);break;
+            case DEFAULT:img.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_void));break;
+            case ACCEPTED:img.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check));break;
+            case AVOIDED:img.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_close));break;
         }
         Global.setTint(img.getDrawable());
     }

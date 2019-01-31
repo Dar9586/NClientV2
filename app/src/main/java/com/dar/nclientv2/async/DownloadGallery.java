@@ -84,6 +84,7 @@ public class DownloadGallery extends IntentService {
             }catch (IOException e){
                 Log.e("IOException", e.getLocalizedMessage()); }
         }
+        System.gc();
         for(a=0;a<gallery.getPageCount();a++){
             final File x=new File(folder,("000"+(a+1)+".jpg").substring(Integer.toString(a+1).length()));
             if(!x.exists()||Global.isCorrupted(x.getAbsolutePath())){
@@ -105,6 +106,7 @@ public class DownloadGallery extends IntentService {
         FileOutputStream ostream = new FileOutputStream(file);
         bitmap.compress(Bitmap.CompressFormat.JPEG, Global.getImageQuality(), ostream);
         ostream.flush();
+        bitmap.recycle();
     }
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {

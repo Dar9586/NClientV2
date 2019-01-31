@@ -72,6 +72,7 @@ public class VersionChecker{
         builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(LATEST_RELEASE_URL));
             context.startActivity(browserIntent);
-        }).setNegativeButton(android.R.string.cancel,null).show();
+        }).setNegativeButton(android.R.string.cancel,null);
+        if(!context.isFinishing())builder.show();
     }
 }

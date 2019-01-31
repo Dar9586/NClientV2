@@ -8,6 +8,8 @@ import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.settings.Global;
 
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -47,9 +49,13 @@ public class RandomLoader {
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                     Log.d(Global.LOGTAG,"Random: "+id);
-                    String str=Jsoup.parse(response.body().byteStream(),"UTF-8","https://nhentai.net").getElementsByTag("script").last().html();
-                    int s=str.indexOf("new N.gallery(")+14;
-                    str=str.substring(s,str.indexOf('\n',s)-2);
+                    Document doc=Jsoup.parse(response.body().byteStream(),"UTF-8","https://nhentai.net");
+                    Element ele=doc.getElementsByTag("script").last();
+                    if(ele==null)return;
+                    String str=ele.html();
+                    int s=str.indexOf("new N.gallery(")+14,s1=str.indexOf('\n', s) - 2;
+                    if(s==13||s1<0)return;
+                    str = str.substring(s, s1);
                     Gallery x = new Gallery(new JsonReader(new StringReader(str)));
                     if (!x.isValid()) {
                         loadRandomGallery();
