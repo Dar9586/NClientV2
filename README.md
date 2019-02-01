@@ -1,6 +1,6 @@
 # NClientV2
 An unofficial NHentai Android Client.
-This app uses the NHentai API.
+This app uses the NHentai API and works for devices from API 14 (Android 4.0) and above.
 Releases: https://github.com/Dar9586/NClientV2/releases
 # API Features:
   - Browse main page

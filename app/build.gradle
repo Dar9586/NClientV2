@@ -8,10 +8,10 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.dar.nclientv2"
-        minSdkVersion 21
+        minSdkVersion 14
         targetSdkVersion 28
-        versionCode 169
-        versionName "1.6.9"
+        versionCode 170
+        versionName "1.7.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }
@@ -37,7 +37,6 @@ dependencies {
     implementation "androidx.cardview:cardview:$supportVersion"
     implementation "androidx.preference:preference:$supportVersion"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
-    testImplementation 'junit:junit:4.12'
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.11.0'
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
     implementation 'com.squareup.picasso:picasso:2.71828'

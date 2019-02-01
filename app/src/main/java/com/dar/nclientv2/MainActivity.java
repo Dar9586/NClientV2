@@ -97,7 +97,7 @@ public class MainActivity extends BaseActivity
         recycler.setItemViewCacheSize(24);
         recycler.addOnScrollListener(new RecyclerView.OnScrollListener(){
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy){
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy){
                 if(Global.isInfiniteScroll()&&!refresher.isRefreshing()){
                     GridLayoutManager manager = (GridLayoutManager)recycler.getLayoutManager();
                     if(actualPage < totalPage && manager.findLastVisibleItemPosition() >= (recycler.getAdapter().getItemCount()-1-manager.getSpanCount()))
@@ -390,9 +390,9 @@ public class MainActivity extends BaseActivity
         Intent intent;
         int id = item.getItemId();
         switch (id){
-            case R.id.pretty_title:Global.updateTitleType(this, TitleType.PRETTY);recycler.getAdapter().notifyItemRangeChanged(0,recycler.getAdapter().getItemCount());break;
-            case R.id.english_title:Global.updateTitleType(this, TitleType.ENGLISH);recycler.getAdapter().notifyItemRangeChanged(0,recycler.getAdapter().getItemCount());break;
-            case R.id.japanese_title:Global.updateTitleType(this, TitleType.JAPANESE);recycler.getAdapter().notifyItemRangeChanged(0,recycler.getAdapter().getItemCount());break;
+            case R.id.pretty_title:Global.updateTitleType(this, TitleType.PRETTY);break;
+            case R.id.english_title:Global.updateTitleType(this, TitleType.ENGLISH);break;
+            case R.id.japanese_title:Global.updateTitleType(this, TitleType.JAPANESE);break;
             case R.id.by_popular:item.setIcon(Global.updateByPopular(this,!Global.isByPopular())?R.drawable.ic_check:R.drawable.ic_close);new Inspector(this,1,Inspector.getActualQuery(),Inspector.getActualRequestType());break;
             case R.id.only_language:updateLanguageIcon(item,true);break;
             case R.id.downloaded:if(Global.hasStoragePermission(this))startLocalActivity();else requestStorage();break;
