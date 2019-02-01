@@ -21,6 +21,7 @@ public class DefaultDialogs {
         void positive(int actual);
         void negative();
     }
+    @SuppressWarnings("UnusedReturnValue")
     public static class Builder{
         private final Context context;
         private @StringRes int title,yesbtn,nobtn;

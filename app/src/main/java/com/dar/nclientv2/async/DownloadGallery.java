@@ -1,11 +1,13 @@
 package com.dar.nclientv2.async;
 
+import android.annotation.SuppressLint;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.util.Log;
 
 import com.dar.nclientv2.GalleryActivity;
@@ -43,9 +45,12 @@ public class DownloadGallery extends IntentService {
         Intent resultIntent = new Intent(this, GalleryActivity.class);
         resultIntent.putExtra(getPackageName()+".GALLERY",gallery);
         resultIntent.putExtra(getPackageName()+".INSTANTDOWNLOAD",true);
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addNextIntentWithParentStack(resultIntent);
-        PendingIntent resultPendingIntent =stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent resultPendingIntent=null;
+        if(Build.VERSION.SDK_INT>Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1){
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+            stackBuilder.addNextIntentWithParentStack(resultIntent);
+            resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        }
         notificationManager = NotificationManagerCompat.from(getApplicationContext());
         notification=new NotificationCompat.Builder(getApplicationContext(), Global.CHANNEL_ID1);
         //notification.addAction(R.drawable.ic_close,"Stop",new PendingIntent.)
@@ -115,9 +120,10 @@ public class DownloadGallery extends IntentService {
         return super.onStartCommand(intent, flags, startId);
     }
 
+    @SuppressLint("RestrictedApi")
     private void onPostExecute() {
         notification.setProgress(0,0,false);
-        notification.mActions.clear();
+        if(Build.VERSION.SDK_INT>Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) notification.mActions.clear();
         notification.setContentTitle(getString(a==999?R.string.download_canceled :R.string.download_completed)).setOnlyAlertOnce(false);
         notificationManager.notify(getString(R.string.channel1_name),notId,notification.build());
     }

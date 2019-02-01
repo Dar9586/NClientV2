@@ -15,6 +15,7 @@ import com.dar.nclientv2.settings.Global;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.ImageViewCompat;
 
 public class RandomActivity extends AppCompatActivity {
     private TextView language;
@@ -70,10 +71,11 @@ public class RandomActivity extends AppCompatActivity {
                     }
                 }
             }
+            Global.setTint(favorite.getDrawable());
         });
-        shuffle.setImageTintList (ColorStateList.valueOf(Global.getTheme()== Global.ThemeScheme.LIGHT? Color.WHITE:Color.BLACK));
-        share.setImageTintList   (ColorStateList.valueOf(Global.getTheme()== Global.ThemeScheme.LIGHT? Color.BLACK:Color.WHITE));
-        favorite.setImageTintList(ColorStateList.valueOf(Global.getTheme()== Global.ThemeScheme.LIGHT? Color.BLACK:Color.WHITE));
+        ImageViewCompat.setImageTintList(shuffle,ColorStateList.valueOf(Global.getTheme()== Global.ThemeScheme.LIGHT? Color.WHITE:Color.BLACK));
+        ImageViewCompat.setImageTintList(share,ColorStateList.valueOf(Global.getTheme()== Global.ThemeScheme.LIGHT? Color.WHITE:Color.BLACK));
+        ImageViewCompat.setImageTintList(favorite,ColorStateList.valueOf(Global.getTheme()== Global.ThemeScheme.LIGHT? Color.WHITE:Color.BLACK));
         Global.setTint(shuffle.getContentBackground());
         Global.setTint(favorite.getDrawable());
         Global.setTint(share.getDrawable());
@@ -91,6 +93,7 @@ public class RandomActivity extends AppCompatActivity {
         }
         isFavorite=Favorites.isFavorite(loadedGallery);
         favorite.setImageResource(isFavorite?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
+        Global.setTint(favorite.getDrawable());
         title.setText(gallery.getTitle());
         page.setText(getString(R.string.page_count_format,gallery.getPageCount()));
         censor.setVisibility(gallery.hasIgnoredTags()?View.VISIBLE:View.GONE);

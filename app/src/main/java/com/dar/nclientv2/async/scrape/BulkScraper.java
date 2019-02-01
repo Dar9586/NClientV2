@@ -16,7 +16,7 @@ public class BulkScraper extends Thread{
 
 
     private final Object lock=new Object();
-    private static List<TagScrapeStatus>types=new ArrayList<>();
+    private static final List<TagScrapeStatus>types=new ArrayList<>();
     static BulkScraper thread=null;
     @Nullable private TagFilter activity=null;
 

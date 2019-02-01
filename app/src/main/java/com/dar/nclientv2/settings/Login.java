@@ -81,17 +81,7 @@ public class Login{
         }
         return null;
     }
-    @Nullable @Deprecated
-    public static Gallery getOnlineFavorite(@NonNull Context context, int id){
-        String s=context.getSharedPreferences("OnlineFavorite",0).getString(""+id,null);
-        if(s==null)return null;
-        try {
-            return new Gallery(s);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+
 
     public static boolean isOnlineTags(Tag tag){
         return Queries.TagTable.isOnlineFavorite(Database.getDatabase(),tag);

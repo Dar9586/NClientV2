@@ -3,6 +3,7 @@ package com.dar.nclientv2.adapters;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.text.Layout;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -15,7 +16,6 @@ import com.dar.nclientv2.async.CreatePDF;
 import com.dar.nclientv2.settings.Global;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
@@ -39,9 +39,12 @@ public class LocalAdapter extends GenericAdapter<LocalGallery>{
         holder.pages.setText(String.format(Locale.US, "%d", ent.getPageCount()));
         holder.title.setOnClickListener(v -> {
             Layout layout = holder.title.getLayout();
-            if(layout.getEllipsisCount(layout.getLineCount()-1)>0)holder.title.setMaxLines(7);
-            else if(holder.title.getMaxLines()==7)holder.title.setMaxLines(3);
-            else holder.layout.performClick();
+            if(Build.VERSION.SDK_INT>Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1){
+                if(layout.getEllipsisCount(layout.getLineCount() - 1) > 0)
+                    holder.title.setMaxLines(7);
+                else if(holder.title.getMaxLines() == 7) holder.title.setMaxLines(3);
+                else holder.layout.performClick();
+            }else holder.layout.performClick();
         });
         holder.layout.setOnClickListener(v -> {
             //Global.setLoadedGallery(ent);
@@ -83,7 +86,7 @@ public class LocalAdapter extends GenericAdapter<LocalGallery>{
     private void createPDF(final int pos){
         ArrayAdapter<String>adapter=new ArrayAdapter<>(context,android.R.layout.select_dialog_item);
         adapter.add(context.getString(R.string.delete_gallery));
-        adapter.add(context.getString(R.string.create_pdf));
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT)adapter.add(context.getString(R.string.create_pdf));//api 19
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         builder.setTitle(R.string.settings).setIcon(R.drawable.ic_settings);
         builder.setAdapter(adapter, (dialog, which) -> {
@@ -96,9 +99,5 @@ public class LocalAdapter extends GenericAdapter<LocalGallery>{
     @Override
     public int getItemCount() {
         return filter.size();
-    }
-
-    private List<LocalGallery> getDataset() {
-        return filter;
     }
 }

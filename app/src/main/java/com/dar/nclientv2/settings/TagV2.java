@@ -7,10 +7,7 @@ import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.database.Queries;
 
-import java.util.Set;
-
-import androidx.annotation.NonNull;
-
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class TagV2{
     public static final int MAXTAGS=100;
     private static int minCount;
@@ -60,10 +57,7 @@ public class TagV2{
         return Queries.TagTable.getStatus(Database.getDatabase(),tag);
     }
 
-    @Deprecated
-    public static void updateSet(Set<Tag> loadedTags){
-        for(Tag t:loadedTags)Queries.TagTable.insert(Database.getDatabase(),t);
-    }
+
 
     public static boolean maxTagReached(){
         return getListPrefer().length>=MAXTAGS;
@@ -89,14 +83,4 @@ public class TagV2{
         return minCount;
     }
 
-
-
-    @Deprecated
-    public static void setPageReachedForType(@NonNull Context context , TagType type, int page){
-        context.getSharedPreferences("ScrapedTags",0).edit().putInt(type+"_page",page).apply();
-    }
-    @Deprecated
-    public static int pageReachedForType(@NonNull Context context ,TagType type){
-        return context.getSharedPreferences("ScrapedTags",0).getInt(type+"_page",0);
-    }
 }

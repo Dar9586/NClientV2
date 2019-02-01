@@ -345,13 +345,7 @@ public class Queries{
             values.put(ONLINE,0);
             db.updateWithOnConflict(TABLE_NAME,values, ONLINE +"=1",null,SQLiteDatabase.CONFLICT_IGNORE);
         }
-        @Deprecated
-        public static void updateStatus(SQLiteDatabase db, int id, TagStatus status){
-            ContentValues values=new ContentValues(1);
-            values.put(STATUS,status.ordinal());
-            db.updateWithOnConflict(TABLE_NAME,values, IDTAG +"=?",new String[]{""+id},SQLiteDatabase.CONFLICT_IGNORE);
 
-        }
         public static void resetAllStatus(SQLiteDatabase db){
             ContentValues values=new ContentValues(1);
             values.put(STATUS,TagStatus.DEFAULT.ordinal());

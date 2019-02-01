@@ -2,7 +2,6 @@ package com.dar.nclientv2.api;
 
 import android.content.Intent;
 import android.util.JsonReader;
-import android.util.JsonToken;
 import android.util.Log;
 
 import com.dar.nclientv2.GalleryActivity;
@@ -20,7 +19,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -187,42 +185,6 @@ public class Inspector {
             galleries.add(new Gallery(new JsonReader(new StringReader(str))));
         }
     }
-    @Deprecated
-    private void parseGalleries(Reader s) throws IOException {
-        JsonReader reader=new JsonReader(s);
-        if (requestType == ApiRequestType.BYSINGLE){
-            galleries = new ArrayList<>(1);
-            galleries.add(new Gallery(reader));
-            pageCount=1;
-        } else {
-            switch (requestType) {
-                case RELATED:
-                    galleries = new ArrayList<>(5);
-                    break;
-                default:
-                    galleries = new ArrayList<>(25);
-            }
-            reader.beginObject();
-            while (reader.peek() != JsonToken.END_OBJECT) {
-                switch (reader.nextName()) {
-                    case "error":
-                        reader.skipValue();
-                        break;
-                    case "result":
-                        reader.beginArray();
-                        while (reader.hasNext()) galleries.add(new Gallery(reader));
-                        reader.endArray();
-                        break;
-                    case "num_pages":
-                        pageCount = reader.nextInt();
-                        break;
-                    case "per_page":
-                        reader.skipValue();
-                }
-            }
-        }
-        reader.close();
-    }
 
     private String appendedLanguage(){
         if(Global.getOnlyLanguage()==null)return "";
@@ -233,36 +195,6 @@ public class Inspector {
             case UNKNOWN:return "-language:japanese+-language:chinese+-language:english";
         }
         return "";
-    }
-    @Deprecated
-    private void createUrl() {
-        StringBuilder builder = new StringBuilder("https://nhentai.net/api/");
-        String tagQuery=Global.getRemoveIgnoredGalleries()?TagV2.getQueryString(query):"";
-        switch (requestType) {
-            case BYSINGLE:
-            case RELATED:
-                builder.append("gallery/").append(query);
-                break;
-            default:
-                builder.append("galleries/");
-        }
-        switch (requestType) {
-            case RELATED:
-                builder.append("/related");
-                break;
-            case BYALL:
-                if(tagQuery.length()==0&&Global.getOnlyLanguage()==null)builder.append("all?");
-                else builder.append("search?query=").append(appendedLanguage()).append(tagQuery).append('&');
-                break;
-            case BYSEARCH:case BYTAG:
-                builder.append("search?query=").append(query).append('+').append(appendedLanguage());
-                if(requestType!=ApiRequestType.BYTAG||!Global.isOnlyTag())builder.append(tagQuery);
-                builder.append('&');
-                break;
-        }
-        if (page > 1&&requestType!=ApiRequestType.BYSINGLE) builder.append("page=").append(page);
-        if (byPopular&&requestType!=ApiRequestType.BYSINGLE) builder.append("&sort=popular");
-        url = builder.toString().replace(' ','+');
     }
 
     public boolean isByPopular() {

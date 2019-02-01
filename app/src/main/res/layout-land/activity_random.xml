@@ -18,7 +18,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/thumbnail"
-        app:srcCompat="@drawable/ic_shuffle" />
+        app:srcCompat="@drawable/ic_shuffle"
+        android:layout_marginLeft="8dp" />
 
     <TextView
         android:id="@+id/title"
@@ -44,7 +45,8 @@
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toEndOf="@+id/thumbnail"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="SpUsage"/>
+        tools:ignore="SpUsage"
+        android:layout_marginLeft="8dp" />
 
     <ImageButton
         android:id="@+id/thumbnail"
@@ -57,12 +59,13 @@
         android:clickable="true"
         android:contentDescription="@string/thumbnail"
         android:focusable="true"
-        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="3:4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="8dp" />
     <View
         android:id="@+id/censor"
         android:layout_width="0dp"
@@ -93,7 +96,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/favorite_manga"
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="@+id/shuffle"
@@ -110,7 +113,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/share"
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="@+id/shuffle"

@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -45,12 +46,14 @@ public class ZoomActivity extends AppCompatActivity {
     private GenericGallery gallery;
     private boolean overrideVolume;
     public int actualPage=0;
-    private final static int hideFlags=View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+    @TargetApi(16)
+    private final static int hideFlags= View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
             | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
             | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
             | View.SYSTEM_UI_FLAG_FULLSCREEN
-            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            | (Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT?View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY:0);
+    @TargetApi(16)
     private final static int showFlags=View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
     private boolean isHidden=false;
 
@@ -103,12 +106,8 @@ public class ZoomActivity extends AppCompatActivity {
             public void onPageScrollStateChanged(int state) { }
         });
         changeLayout(getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE);
-        findViewById(R.id.prev).setOnClickListener(v -> {
-            changeClosePage(false);
-        });
-        findViewById(R.id.next).setOnClickListener(v -> {
-            changeClosePage(true);
-        });
+        findViewById(R.id.prev).setOnClickListener(v -> changeClosePage(false));
+        findViewById(R.id.next).setOnClickListener(v -> changeClosePage(true));
 
         final int page=getIntent().getExtras().getInt(getPackageName()+".PAGE",0);
 
@@ -286,10 +285,15 @@ public class ZoomActivity extends AppCompatActivity {
                 activity.findViewById(R.id.page_switcher).setVisibility(activity.isHidden?View.VISIBLE:View.GONE);
                 activity.findViewById(R.id.appbar).setVisibility(activity.isHidden?View.VISIBLE:View.GONE);
                 activity.isHidden=!activity.isHidden;*/
-                final View y= activity.findViewById(R.id.page_switcher);
-                final View z= activity.findViewById(R.id.appbar);
-                activity.isHidden=!activity.isHidden;
-                activity.getWindow().getDecorView().setSystemUiVisibility(activity.isHidden?hideFlags:showFlags);
+                final View y = activity.findViewById(R.id.page_switcher);
+                final View z = activity.findViewById(R.id.appbar);
+                activity.isHidden = !activity.isHidden;
+                if(Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1){
+                    activity.getWindow().getDecorView().setSystemUiVisibility(activity.isHidden ? hideFlags : showFlags);
+                }else{
+                    activity.getWindow().addFlags(activity.isHidden ? WindowManager.LayoutParams.FLAG_FULLSCREEN : WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+                    activity.getWindow().clearFlags(activity.isHidden ? WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN : WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                }
                 y.setVisibility(View.VISIBLE);
                 z.setVisibility(View.VISIBLE);
                 y.animate().alpha(activity.isHidden?0f:0.75f).setDuration(150).setListener(new AnimatorListenerAdapter() {

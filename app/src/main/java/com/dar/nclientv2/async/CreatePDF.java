@@ -1,5 +1,6 @@
 package com.dar.nclientv2.async;
 
+import android.annotation.TargetApi;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -23,7 +24,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.FileProvider;
-
+@TargetApi(19)
 public class CreatePDF extends IntentService {
     private int notId;
     private int totalPage;

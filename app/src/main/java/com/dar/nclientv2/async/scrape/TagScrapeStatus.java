@@ -3,7 +3,7 @@ package com.dar.nclientv2.async.scrape;
 import com.dar.nclientv2.api.enums.TagType;
 
 class TagScrapeStatus{
-    TagType type;
+    final TagType type;
     int maxPage=1,actPage;
     public TagScrapeStatus(TagType type,int actPage){
         this.type = type;

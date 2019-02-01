@@ -15,12 +15,12 @@
             app:titleEnabled="false"
             app:toolbarId="@+id/toolbar"
             app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
-            app:contentScrim="?android:attr/colorPrimary">
+            app:contentScrim="?attr/colorPrimary">
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
-            android:background="?android:attr/colorPrimary" />
+            android:background="?attr/colorPrimary" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
