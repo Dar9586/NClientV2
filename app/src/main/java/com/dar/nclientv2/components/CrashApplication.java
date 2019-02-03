@@ -12,6 +12,8 @@ import org.acra.ACRA;
 import org.acra.ReportField;
 import org.acra.annotation.AcraCore;
 
+import androidx.appcompat.app.AppCompatDelegate;
+
 
 @AcraCore(buildConfigClass = BuildConfig.class,reportSenderFactoryClasses = MySenderFactory.class,reportContent={
         ReportField.PACKAGE_NAME,
@@ -25,6 +27,7 @@ public class CrashApplication extends Application{
     @Override
     public void onCreate(){
         super.onCreate();
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         Database.setDatabase(new DatabaseHelper(getApplicationContext()).getWritableDatabase());
     }
 

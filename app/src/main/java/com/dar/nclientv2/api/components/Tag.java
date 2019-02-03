@@ -151,8 +151,10 @@ public class Tag implements Parcelable{
                 ", count=" + count +
                 ", id=" + id +
                 ", type=" + type +
+                ", status=" + status +
                 '}';
     }
+
     public String toScrapedString() {
         return String.format(Locale.US,"%d,%d,%d,%s",count,id,type.ordinal(),name);
     }

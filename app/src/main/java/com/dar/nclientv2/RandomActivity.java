@@ -62,12 +62,12 @@ public class RandomActivity extends AppCompatActivity {
                 if(isFavorite){
                     if(Favorites.removeFavorite(loadedGallery)){
                         isFavorite=false;
-                        favorite.setImageResource(R.drawable.ic_favorite_border);
+                        Global.loadImage(R.drawable.ic_favorite_border,favorite);
                     }
                 }else{
                     if(Favorites.addFavorite(loadedGallery)){
                         isFavorite=true;
-                        favorite.setImageResource(R.drawable.ic_favorite);
+                        Global.loadImage(R.drawable.ic_favorite,favorite);
                     }
                 }
             }
@@ -92,7 +92,7 @@ public class RandomActivity extends AppCompatActivity {
             case UNKNOWN :language.setText("\uD83C\uDFF3"); break;
         }
         isFavorite=Favorites.isFavorite(loadedGallery);
-        favorite.setImageResource(isFavorite?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
+        Global.loadImage(isFavorite?R.drawable.ic_favorite:R.drawable.ic_favorite_border,favorite);
         Global.setTint(favorite.getDrawable());
         title.setText(gallery.getTitle());
         page.setText(getString(R.string.page_count_format,gallery.getPageCount()));

@@ -32,7 +32,6 @@ import java.util.Locale;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import okhttp3.Call;
@@ -127,7 +126,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         holder.count.setText(String.format(Locale.US,"%d",ent.getCount()));
         holder.master.setOnClickListener(v -> {
             if(!online) {
-                if (!TagV2.maxTagReached() || ent.getStatus() != TagStatus.DEFAULT) updateLogo(holder.imgView, TagV2.updateStatus(ent));
+                if (!TagV2.maxTagReached() || ent.getStatus() != TagStatus.DEFAULT) updateLogo(ent, holder.imgView, TagV2.updateStatus(ent));
                 else Snackbar.make(context.getViewPager(), context.getString(R.string.tags_max_reached, TagV2.MAXTAGS), Snackbar.LENGTH_LONG).show();
             }else{
                 try {
@@ -142,7 +141,8 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
             else Toast.makeText(context, R.string.tag_already_in_blacklist, Toast.LENGTH_SHORT).show();
             return true;
         });
-        updateLogo(holder.imgView,online?TagStatus.AVOIDED:ent.getStatus());
+        updateLogo(ent,holder.imgView,online?TagStatus.AVOIDED:ent.getStatus());
+        Log.d(Global.LOGTAG,"PASSED: "+ent);
     }
 
     @Override
@@ -192,7 +192,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
                         if(s.equals("{\"status\": \"ok\"}")) {
                             if (add) Login.addOnlineTag(tag);
                             else Login.removeOnlineTag(tag);
-                            if(online)updateLogo(imgView, add ? TagStatus.AVOIDED : TagStatus.DEFAULT);
+                            if(online)updateLogo(tag, imgView, add ? TagStatus.AVOIDED : TagStatus.DEFAULT);
                         }
                     }
                 });
@@ -206,13 +206,19 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         jw.name("type").value(tag.getTypeString());
         jw.endObject();
     }
-    private void updateLogo(ImageView img, TagStatus s){
+    private void updateLogo(Tag tag, ImageView img, TagStatus s){
+try{
+        Log.d(Global.LOGTAG,"Changineg to: "+s);
         switch (s){
-            case DEFAULT:img.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_void));break;
-            case ACCEPTED:img.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check));break;
-            case AVOIDED:img.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_close));break;
+            case DEFAULT:Global.loadImage(R.drawable.ic_void,img); break;
+            case ACCEPTED:Global.loadImage(R.drawable.ic_check,img);break;
+            case AVOIDED:Global.loadImage(R.drawable.ic_close,img);break;
         }
         Global.setTint(img.getDrawable());
+        }catch (Exception e){
+    Log.e(Global.LOGTAG,tag.toString());
+    throw e;
+        }
     }
 
     private boolean force=false;

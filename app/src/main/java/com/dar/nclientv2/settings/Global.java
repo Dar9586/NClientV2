@@ -39,6 +39,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import okhttp3.OkHttpClient;
 
 public final class Global {
@@ -112,6 +113,7 @@ public final class Global {
         return context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_check_update),true);
     }
     private static int getLogo(){ return theme==ThemeScheme.LIGHT?R.drawable.ic_logo_dark:R.drawable.ic_logo; }
+    private static Drawable getLogo(Resources resources){ return resources.getDrawable(theme==ThemeScheme.LIGHT?R.drawable.ic_logo_dark:R.drawable.ic_logo); }
     public static TitleType getTitleType() {
         return titleType;
     }
@@ -234,14 +236,14 @@ public final class Global {
 
     public static void loadImage(String url, final ImageView imageView){loadImage(url,imageView,false);}
     public static void loadImage(String url, final ImageView imageView,boolean force){
-        if(loadImages||force)Picasso.get().load(url).placeholder(getLogo()).into(imageView);
-        else Picasso.get().load(getLogo()).placeholder(getLogo()).into(imageView);
+        if(loadImages||force)Picasso.get().load(url).placeholder(getLogo(imageView.getResources())).into(imageView);
+        else Picasso.get().load((String)null).placeholder(getLogo(imageView.getResources())).into(imageView);
     }
     public static void loadImage(File file, ImageView imageView){
-        Picasso.get().load(file).placeholder(getLogo()).into(imageView);
+        Picasso.get().load(file).placeholder(getLogo(imageView.getResources())).into(imageView);
     }
     public static void loadImage(@DrawableRes int drawable, ImageView imageView){
-        Picasso.get().load(drawable).into(imageView);
+        Picasso.get().load((String)null).placeholder(imageView.getResources().getDrawable(drawable)).into(imageView);
         //GlideApp.with(context).load(drawable).into(imageView);
     }
 

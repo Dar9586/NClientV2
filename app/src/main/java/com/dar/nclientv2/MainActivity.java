@@ -139,8 +139,8 @@ public class MainActivity extends BaseActivity
 
     private void changeNavigationImage(NavigationView navigationView) {
         switch (Global.getTheme()){
-            case BLACK: ((ImageView)navigationView.getHeaderView(0).findViewById(R.id.imageView)).setImageResource(R.drawable.ic_logo);navigationView.getHeaderView(0).findViewById(R.id.layout_header).setBackgroundResource(android.R.color.black);break;
-            default:((ImageView)navigationView.getHeaderView(0).findViewById(R.id.imageView)).setImageResource(R.mipmap.ic_launcher);navigationView.getHeaderView(0).findViewById(R.id.layout_header).setBackgroundResource(R.drawable.side_nav_bar);break;
+            case BLACK:Global.loadImage(R.drawable.ic_logo,navigationView.getHeaderView(0).findViewById(R.id.imageView));navigationView.getHeaderView(0).findViewById(R.id.layout_header).setBackgroundResource(android.R.color.black);break;
+            default:Global.loadImage(R.mipmap.ic_launcher,navigationView.getHeaderView(0).findViewById(R.id.imageView));navigationView.getHeaderView(0).findViewById(R.id.layout_header).setBackgroundResource(R.drawable.side_nav_bar);break;
         }
     }
 

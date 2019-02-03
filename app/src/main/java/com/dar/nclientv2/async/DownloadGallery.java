@@ -54,8 +54,7 @@ public class DownloadGallery extends IntentService {
         notificationManager = NotificationManagerCompat.from(getApplicationContext());
         notification=new NotificationCompat.Builder(getApplicationContext(), Global.CHANNEL_ID1);
         //notification.addAction(R.drawable.ic_close,"Stop",new PendingIntent.)
-        notification.setSmallIcon(R.drawable.ic_file)
-                .setOnlyAlertOnce(true)
+        notification.setOnlyAlertOnce(true)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(gallery.getTitle()))
                 .setContentTitle(getString(R.string.channel1_title))
                 .setContentText(gallery.getTitle(TitleType.PRETTY))
@@ -63,6 +62,7 @@ public class DownloadGallery extends IntentService {
                 .setProgress(gallery.getPageCount()-1,0,false)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setCategory(NotificationCompat.CATEGORY_STATUS);
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP)notification.setSmallIcon(R.drawable.ic_file);
         notificationManager.notify(getString(R.string.channel1_name),notId,notification.build());
     }
     private int a;
@@ -106,7 +106,8 @@ public class DownloadGallery extends IntentService {
         onPostExecute();
     }
     private void downloadPage(InputStream stream,File file)throws IOException,NullPointerException{
-        file.createNewFile();
+        if(!file.getParentFile().exists()&&!file.getParentFile().mkdirs())return;
+        if(!file.createNewFile())return;
         Bitmap bitmap= BitmapFactory.decodeStream(stream);
         FileOutputStream ostream = new FileOutputStream(file);
         bitmap.compress(Bitmap.CompressFormat.JPEG, Global.getImageQuality(), ostream);
