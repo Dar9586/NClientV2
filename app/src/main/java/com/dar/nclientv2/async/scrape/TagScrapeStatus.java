@@ -20,4 +20,13 @@ class TagScrapeStatus{
     public int hashCode(){
         return type.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return "TagScrapeStatus{" +
+                "type=" + type +
+                ", maxPage=" + maxPage +
+                ", actPage=" + actPage +
+                '}';
+    }
 }

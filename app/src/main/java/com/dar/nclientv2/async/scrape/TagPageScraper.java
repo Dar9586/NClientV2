@@ -53,6 +53,7 @@ class TagPageScraper extends Thread{
     private void scrape(InputStream stream)throws IOException{
         Element doc = Jsoup.parse(stream,null,"https://nhentai.net/").body();
         Elements y=doc.getElementsByTag("a");
+        Log.d(Global.LOGTAG,y.size()+"size");
         for(Element x:y){
             if(x.attr("href").startsWith("/"+getSingleName(status.type)+"/")){
                 Tag t=new Tag(x.text().substring(0,x.text().lastIndexOf('(')-1),
@@ -71,7 +72,7 @@ class TagPageScraper extends Thread{
             }
         }
         if(status.maxPage==1){
-            doc=doc.getElementsByClass("last").first();
+            doc=doc.getElementsByTag("a").last();
             String s=doc.attr("href");
             s=s.substring(s.lastIndexOf('=')+1);
             status.maxPage=Integer.parseInt(s);

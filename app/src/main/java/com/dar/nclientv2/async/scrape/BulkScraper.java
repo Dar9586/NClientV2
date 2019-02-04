@@ -1,10 +1,12 @@
 package com.dar.nclientv2.async.scrape;
 
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.dar.nclientv2.MainActivity;
 import com.dar.nclientv2.TagFilter;
 import com.dar.nclientv2.api.enums.TagType;
+import com.dar.nclientv2.settings.Global;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,7 @@ public class BulkScraper extends Thread{
     public static void addScrape(TagFilter filter, TagType type){
         TagScrapeStatus status=new TagScrapeStatus(type,filter==null?preferences.getInt(type.toString()+"_page",1):1);
         if(types.contains(status))return;
+        Log.d(Global.LOGTAG,"Added scraper: "+status+","+(preferences.getInt(type.toString()+"_count",99999))+","+(preferences.getInt(type.toString()+"_page",1)));
         types.add(status);
         if(thread==null){
             thread=new BulkScraper();
@@ -54,9 +57,11 @@ public class BulkScraper extends Thread{
             TagPageScraper scraper=new TagPageScraper(status);
             scraper.start();
             startDownload();
-            preferences.edit().putInt(status.type.toString()+"_page",status.actPage).putInt(status.type.toString()+"_count",scraper.getMinReached()).apply();
+            Log.d(Global.LOGTAG,scraper.getMinReached()+"min");
+            preferences.edit().putInt(status.type.toString()+"_page",Math.min(status.actPage,status.maxPage)).putInt(status.type.toString()+"_count",scraper.getMinReached()).apply();
             if(activity!=null&&scraper.shouldUpdate())activity.addItems(status.type);
             if(status.actPage>status.maxPage||scraper.getMinReached()<TagPageScraper.MIN_TAG_COUNT){
+                Log.d(Global.LOGTAG,"Removed scraper: "+status);
                 types.remove(status);
                 actualScraping=0;
             }else actualScraping=(actualScraping+1)%types.size();
