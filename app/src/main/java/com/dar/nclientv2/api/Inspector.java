@@ -118,7 +118,7 @@ public class Inspector {
                 Log.d(Global.LOGTAG,"Response of "+url);
                 Document d=Jsoup.parse(response.body().byteStream(),"UTF-8","https://nhentai.net");
 
-                parseGalleries(requestType==ApiRequestType.BYSINGLE?d.getElementsByTag("script"):d.getElementsByClass("gallery"));
+                parseGalleries(d.getElementsByTag("script"),d.getElementsByClass("gallery"));
                 for (Gallery x:galleries)if(x.getId()>Global.getMaxId())Global.updateMaxId(activity,x.getId());
                 Elements elements=d.getElementsByClass("last");
                 if(elements.size()==1)findTotal(elements.first());
@@ -168,22 +168,22 @@ public class Inspector {
             String x=e.last().html();
             int s=x.indexOf("new N.gallery(")+14;
             x=x.substring(s,x.indexOf('\n',s)-2);
-            galleries.add(new Gallery(new JsonReader(new StringReader(x))));
+            galleries.add(new Gallery(new JsonReader(new StringReader(x)), null));
         }
         return galleries;
     }
-    private void parseGalleries(Elements e)throws IOException{
-        galleries=new ArrayList<>(requestType==ApiRequestType.BYSINGLE?1:e.size());
-        if(requestType!=ApiRequestType.BYSINGLE){
-            for(Element el:e)galleries.add(new Gallery(el));
-        }else{
-            if(e.last()==null)return;
-            String str=e.last().html();
+    private void parseGalleries(Elements scripts, Elements gals)throws IOException{
+        List<Gallery>galle=new ArrayList<>(gals.size());
+        for(Element el:gals)galle.add(new Gallery(el));
+        if(requestType==ApiRequestType.BYSINGLE){
+            galleries=new ArrayList<>(1);
+            if(scripts.last()==null)return;
+            String str=scripts.last().html();
             int s=str.indexOf("new N.gallery(")+14,s1=str.indexOf('\n', s) - 2;
             if(s==13||s1<0)return;
             str = str.substring(s, s1);
-            galleries.add(new Gallery(new JsonReader(new StringReader(str))));
-        }
+            galleries.add(new Gallery(new JsonReader(new StringReader(str)),galle));
+        }else galleries=galle;
     }
 
     private String appendedLanguage(){

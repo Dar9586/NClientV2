@@ -39,7 +39,6 @@ public class LocalActivity extends BaseActivity {
         menu.findItem(R.id.action_settings).setVisible(false);
         menu.findItem(R.id.action_login).setVisible(false);
         menu.findItem(R.id.open_browser).setVisible(false);
-        menu.findItem(R.id.random).setVisible(false);
         Global.setTint(menu.findItem(R.id.search).getIcon());
         final androidx.appcompat.widget.SearchView searchView=(androidx.appcompat.widget.SearchView)menu.findItem(R.id.search).getActionView();
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {

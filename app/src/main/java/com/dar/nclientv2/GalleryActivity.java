@@ -42,6 +42,7 @@ public class GalleryActivity extends BaseActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
+        Global.initTitleType(this);
         Global.initHttpClient(this);
         Global.loadNotificationChannel(this);
         Global.initColumnCount(this);
@@ -115,7 +116,6 @@ public class GalleryActivity extends BaseActivity{
             menu.findItem(R.id.add_online_gallery).setTitle(x?R.string.remove_from_online_favorites:R.string.add_to_online_favorite);
             menu.findItem(R.id.add_online_gallery).setIcon(x?R.drawable.ic_star:R.drawable.ic_star_border);
         }
-        menu.findItem(R.id.add_online_gallery).setTitle(Login.isOnlineFavorite(gallery.getId())?R.string.remove_from_online_favorites:R.string.add_to_online_favorite);
         menu.findItem(R.id.share).setVisible(gallery!=null&&gallery.isValid());
         menu.findItem(R.id.favorite_manager).setIcon((isFavorite=Favorites.isFavorite(gallery))?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
         menu.findItem(R.id.load_internet).setVisible(isLocal&&gallery!=null&&gallery.getId()!=-1);
@@ -127,16 +127,16 @@ public class GalleryActivity extends BaseActivity{
         this.menu=menu;
 
         menu.findItem(R.id.add_online_gallery).setVisible(!isLocal&&Login.isLogged());
+        menu.findItem(R.id.favorite_manager).setVisible(!isLocal||isFavorite);
+        menu.findItem(R.id.download_gallery).setVisible(!isLocal);
+        menu.findItem(R.id.related).setVisible(!isLocal);
+        if(gallery!=null)loadMenu();
         Global.setTint(menu.findItem(R.id.download_gallery).getIcon());
         Global.setTint(menu.findItem(R.id.load_internet).getIcon());
         Global.setTint(menu.findItem(R.id.change_view).getIcon());
         Global.setTint(menu.findItem(R.id.share).getIcon());
         Global.setTint(menu.findItem(R.id.related).getIcon());
         Global.setTint(menu.findItem(R.id.favorite_manager).getIcon());
-        menu.findItem(R.id.favorite_manager).setVisible(!isLocal||isFavorite);
-        menu.findItem(R.id.download_gallery).setVisible(!isLocal);
-        menu.findItem(R.id.related).setVisible(!isLocal);
-        if(gallery!=null)loadMenu();
         updateColumnCount(false);
         return true;
     }
@@ -181,7 +181,7 @@ public class GalleryActivity extends BaseActivity{
                 /*Intent intent = new Intent(this, MainActivity.class);
                 intent.putExtra(getPackageName() + ".RELATED", gallery.getId());
                 startActivity(intent);*/
-                recycler.smoothScrollToPosition(recycler.getAdapter().getItemCount()-1);
+                recycler.smoothScrollToPosition(recycler.getAdapter().getItemCount());
                 break;
             case R.id.favorite_manager:
                 if(isFavorite){

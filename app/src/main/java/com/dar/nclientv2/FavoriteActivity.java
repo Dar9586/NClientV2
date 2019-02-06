@@ -21,6 +21,7 @@ public class FavoriteActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
+        Global.initTitleType(this);
         Global.initHttpClient(this);
         Global.initLoadImages(this);
         Global.initHighRes(this);
@@ -62,7 +63,6 @@ public class FavoriteActivity extends BaseActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         menu.findItem(R.id.action_settings).setVisible(false);
         menu.findItem(R.id.action_login).setVisible(false);
-        menu.findItem(R.id.random).setVisible(false);
         if(online||Login.isLogged())menu.findItem(R.id.online_favorite).setVisible(true);
         menu.findItem(R.id.online_favorite).setTitle(online?R.string.offline_favorites:R.string.online_favorites);
         final androidx.appcompat.widget.SearchView searchView=(androidx.appcompat.widget.SearchView)menu.findItem(R.id.search).getActionView();

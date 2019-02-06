@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -15,6 +16,7 @@ import com.dar.nclientv2.settings.Global;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.widget.ImageViewCompat;
 
 public class RandomActivity extends AppCompatActivity {
@@ -31,10 +33,15 @@ public class RandomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
         Global.initHttpClient(this);
+        Global.initTitleType(this);
         Global.initImageQuality(this);
         Favorites.countFavorite();
         Global.initLoadImages(this);
         setContentView(R.layout.activity_random);
+        Toolbar toolbar=findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
         FloatingActionButton shuffle = findViewById(R.id.shuffle);
         censor=findViewById(R.id.censor);
         language=findViewById(R.id.language);
@@ -80,6 +87,17 @@ public class RandomActivity extends AppCompatActivity {
         Global.setTint(favorite.getDrawable());
         Global.setTint(share.getDrawable());
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     public static Gallery loadedGallery=null;
     private boolean isFavorite;
     public void loadGallery(Gallery gallery){

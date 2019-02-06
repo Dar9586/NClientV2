@@ -56,7 +56,7 @@ public class RandomLoader {
                     int s=str.indexOf("new N.gallery(")+14,s1=str.indexOf('\n', s) - 2;
                     if(s==13||s1<0)return;
                     str = str.substring(s, s1);
-                    Gallery x = new Gallery(new JsonReader(new StringReader(str)));
+                    Gallery x = new Gallery(new JsonReader(new StringReader(str)), null);
                     if (!x.isValid()) {
                         loadRandomGallery();
                         return;

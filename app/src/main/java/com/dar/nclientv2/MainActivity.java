@@ -45,6 +45,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private Inspector inspector=null;
+    private NavigationView navigationView;
     private Tag tag;
     private int related=-1;
     public void setInspector(Inspector inspector) {
@@ -56,7 +57,6 @@ public class MainActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
         Global.initHttpClient(this);
-        Global.initTitleType(this);
         Global.initRemoveIgnoredGalleries(this);
         Global.initHighRes(this);
         Global.initOnlyTag(this);
@@ -79,16 +79,13 @@ public class MainActivity extends BaseActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+
+        navigationView = findViewById(R.id.nav_view);
         changeNavigationImage(navigationView);
         navigationView.setNavigationItemSelectedListener(this);
-        switch (Global.getTitleType()){
-            case PRETTY:navigationView.setCheckedItem(R.id.pretty_title);break;
-            case ENGLISH:navigationView.setCheckedItem(R.id.english_title);break;
-            case JAPANESE:navigationView.setCheckedItem(R.id.japanese_title);break;
-        }
 
         navigationView.getMenu().findItem(R.id.by_popular).setIcon(Global.isByPopular()?R.drawable.ic_check:R.drawable.ic_close);
+        navigationView.getMenu().findItem(R.id.online_favorite_manager).setVisible(com.dar.nclientv2.settings.Login.isLogged());
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
         prepareUpdateIcon();
@@ -253,6 +250,7 @@ public class MainActivity extends BaseActivity
         super.onResume();
         ACRA.getErrorReporter().setEnabled(getSharedPreferences("Settings",0).getBoolean(getString(R.string.key_send_report),true));
         com.dar.nclientv2.settings.Login.initUseAccountTag(this);
+        if(com.dar.nclientv2.settings.Login.isLogged())navigationView.getMenu().findItem(R.id.online_favorite_manager).setVisible(true);
         if(setting!=null){
             Global.initHighRes(this);Global.initOnlyTag(this);Global.initInfiniteScroll(this);Global.initRemoveIgnoredGalleries(this);
             if(com.dar.nclientv2.settings.Login.isLogged()!=setting.logged)supportInvalidateOptionsMenu();
@@ -287,12 +285,10 @@ public class MainActivity extends BaseActivity
                 Global.setTint(menu.findItem(R.id.tag_manager).getIcon());
             }
             menu.findItem(R.id.action_settings).setVisible(false);
-            menu.findItem(R.id.random).setVisible(false);
             menu.findItem(R.id.action_login).setVisible(false);
         }else {
             menu.findItem(R.id.action_login).setTitle(com.dar.nclientv2.settings.Login.isLogged()?R.string.logout:R.string.login);
             Global.setTint(menu.findItem(R.id.search).getIcon());
-            Global.setTint(menu.findItem(R.id.random).getIcon());
         }
         searchView =(SearchView)menu.findItem(R.id.search).getActionView();
         if(related!=-1){
@@ -351,10 +347,6 @@ public class MainActivity extends BaseActivity
                 i = new Intent(this, SettingsActivity.class);
                 startActivity(i);
                 break;
-            case R.id.random:
-                i = new Intent(this, RandomActivity.class);
-                startActivity(i);
-                break;
             case R.id.open_browser:
                 if(inspector!=null) {
                     i = new Intent(Intent.ACTION_VIEW);
@@ -380,24 +372,30 @@ public class MainActivity extends BaseActivity
         builder.setIcon(R.drawable.ic_exit_to_app).setTitle(R.string.logout).setMessage(R.string.are_you_sure);
         builder.setPositiveButton(android.R.string.yes, (dialogInterface, i) -> {
             Login.logout(MainActivity.this);
+            navigationView.getMenu().findItem(R.id.online_favorite_manager).setVisible(false);
             item.setTitle(R.string.login);
         }).setNegativeButton(android.R.string.no,null).show();
     }
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         Intent intent;
         int id = item.getItemId();
         switch (id){
-            case R.id.pretty_title:Global.updateTitleType(this, TitleType.PRETTY);break;
-            case R.id.english_title:Global.updateTitleType(this, TitleType.ENGLISH);break;
-            case R.id.japanese_title:Global.updateTitleType(this, TitleType.JAPANESE);break;
             case R.id.by_popular:item.setIcon(Global.updateByPopular(this,!Global.isByPopular())?R.drawable.ic_check:R.drawable.ic_close);new Inspector(this,1,Inspector.getActualQuery(),Inspector.getActualRequestType());break;
             case R.id.only_language:updateLanguageIcon(item,true);break;
             case R.id.downloaded:if(Global.hasStoragePermission(this))startLocalActivity();else requestStorage();break;
             case R.id.favorite_manager:
                 intent=new Intent(this,FavoriteActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.online_favorite_manager:
+                intent=new Intent(this,FavoriteActivity.class);
+                intent.putExtra(getPackageName()+".ONLINE",true);
+                startActivity(intent);
+                break;
+            case R.id.random:
+                intent = new Intent(this, RandomActivity.class);
                 startActivity(intent);
                 break;
             case R.id.tag_manager:

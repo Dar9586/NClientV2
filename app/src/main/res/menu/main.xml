@@ -8,11 +8,6 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
     <item
-    android:id="@+id/random"
-    android:icon="@drawable/ic_shuffle"
-    android:title="@string/random_manga"
-    app:showAsAction="ifRoom|collapseActionView" />
-    <item
         android:id="@+id/tag_manager"
         android:icon="@drawable/ic_help"
         android:title="@string/update_tag_status"

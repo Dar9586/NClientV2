@@ -57,6 +57,7 @@ public class SettingsActivity extends AppCompatActivity {
                 act.recreate();
                 return true;
             });
+            findPreference("version").setTitle(getString(R.string.app_version_format,Global.getVersionName(getContext())));
             findPreference(getString(R.string.key_cache)).setOnPreferenceClickListener(preference -> {
                 AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
                 builder.setTitle(R.string.clear_cache);

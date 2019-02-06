@@ -50,8 +50,8 @@ public final class Global {
     public static final File DOWNLOADFOLDER=new File(Environment.getExternalStorageDirectory(),"NClientV2");
     public static final String LOGTAG="NCLIENTLOG";
     public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf";
-    private static TitleType titleType=TitleType.PRETTY;
     private static Language onlyLanguage=null;
+    private static TitleType titleType;
     private static boolean byPopular,loadImages,hideFromGallery,highRes,onlyTag,infiniteScroll,removeIgnoredGalleries,sendReport;
     private static ThemeScheme theme;
     private static int notificationId,columnCount,maxId,imageQuality,galleryWidth=-1, galleryHeight =-1;
@@ -76,7 +76,14 @@ public final class Global {
         return sendReport;
     }
 
-    public static void     initTitleType    (@NonNull Context context){titleType=TitleType.values()[context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_title_type),1)];}
+    public static void initTitleType(@NonNull Context context){
+        String s=context.getSharedPreferences("Settings", 0).getString(context.getString(R.string.key_title_type),"pretty");
+        switch (s){
+            case "pretty":titleType= TitleType.PRETTY;break;
+            case "english":titleType=  TitleType.ENGLISH;break;
+            case "japanese":titleType=  TitleType.JAPANESE;break;
+        }
+    }
     public static void     initSendReport    (@NonNull Context context){sendReport=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_send_report),true);}
     public static void     initByPopular    (@NonNull Context context){byPopular=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_by_popular),false);}
     public static void     initInfiniteScroll    (@NonNull Context context){infiniteScroll=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_infinite_scroll),false);}
@@ -86,7 +93,7 @@ public final class Global {
     public static void     initOnlyTag    (@NonNull Context context){onlyTag=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_ignore_tags),true);}
     public static boolean  initLoadImages   (@NonNull Context context){loadImages=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_load_images),true);return loadImages;}
     public static void     initOnlyLanguage (@NonNull Context context){int x=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_only_language),-1);onlyLanguage=x==-1?null:Language.values()[x];}
-    public static void     initColumnCount  (@NonNull Context context){columnCount=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_column_count),1);}
+    public static void     initColumnCount  (@NonNull Context context){columnCount=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_column_count),2);}
     public static int      initImageQuality (@NonNull Context context){imageQuality=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_image_quality),90);return imageQuality;}
     public static void     initMaxId        (@NonNull Context context){maxId=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_max_id),236000);}
 
@@ -175,7 +182,6 @@ public final class Global {
         }
     }
 
-    public static void updateTitleType(@NonNull Context context, TitleType type){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_title_type)),type.ordinal()).apply();titleType=type; }
     public static void updateOnlyLanguage(@NonNull Context context, @Nullable Language type){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_only_language)),type==null?-1:type.ordinal()).apply();onlyLanguage=type; }
     public static boolean  updateByPopular(@NonNull Context context,boolean popular){context.getSharedPreferences("Settings", 0).edit().putBoolean(context.getString((R.string.key_by_popular)),popular).apply();byPopular=popular; return byPopular;}
     public static boolean  updateLoadImages(@NonNull Context context,boolean load){context.getSharedPreferences("Settings", 0).edit().putBoolean(context.getString((R.string.key_load_images)),load).apply();loadImages=load; return loadImages;}
@@ -240,7 +246,9 @@ public final class Global {
         else Picasso.get().load((String)null).placeholder(getLogo(imageView.getResources())).into(imageView);
     }
     public static void loadImage(File file, ImageView imageView){
-        Picasso.get().load(file).placeholder(getLogo(imageView.getResources())).into(imageView);
+        if(loadImages) Picasso.get().load(file).placeholder(getLogo(imageView.getResources())).into(imageView);
+        else Picasso.get().load((String)null).placeholder(getLogo(imageView.getResources())).into(imageView);
+
     }
     public static void loadImage(@DrawableRes int drawable, ImageView imageView){
         Picasso.get().load((String)null).placeholder(imageView.getResources().getDrawable(drawable)).into(imageView);

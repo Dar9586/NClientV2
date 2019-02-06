@@ -22,7 +22,7 @@ import okhttp3.Request;
 class TagPageScraper extends Thread{
 
     private final TagScrapeStatus status;
-    public static final int MIN_TAG_COUNT=2;
+    public static final int MIN_TAG_COUNT=5;
     private int minReached=99999;
     private boolean showed=false;
 
