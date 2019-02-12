@@ -8,7 +8,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0'
+        classpath 'com.android.tools.build:gradle:3.3.1'
         
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -24,6 +24,11 @@ allprojects {
     }
     repositories {
         maven { url "https://jitpack.io" }
+    }
+    gradle.projectsEvaluated{
+        tasks.withType(JavaCompile){
+            options.compilerArgs<<"-Xlint:deprecation"
+        }
     }
 }
 

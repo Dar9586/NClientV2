@@ -191,9 +191,10 @@ public class Gallery extends GenericGallery{
             tags[a]=new Tag[l];
             in.readTypedArray(tags[a],Tag.CREATOR);
         }
-        if(in.readByte()==1){
-            related=new ArrayList<>(5);
-            for(int j=0;j<5;j++)related.add(in.readParcelable(Gallery.class.getClassLoader()));
+        byte x;
+        if((x=in.readByte())>0){
+            related=new ArrayList<>(x);
+            for(int j=0;j<x;j++)related.add(in.readParcelable(Gallery.class.getClassLoader()));
         }
     }
     public boolean isRelatedLoaded(){return related!=null;}
@@ -241,7 +242,7 @@ public class Gallery extends GenericGallery{
             if(l>0) dest.writeTypedArray(x,Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
         }
         boolean x=isRelatedLoaded();
-        dest.writeByte((byte)(x?1:0));
+        dest.writeByte((byte)(x?related.size():0));
         if(x){
             for(Gallery g:related)dest.writeParcelable(g,Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
         }

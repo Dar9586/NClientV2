@@ -28,10 +28,8 @@ public class RandomLoader {
     private final List<Gallery> galleries;
     private final RandomActivity activity;
     private boolean hasRequested;
-    private final Random random;
     public RandomLoader(RandomActivity activity) {
         this.activity = activity;
-        random=new Random(System.nanoTime());
         galleries=new ArrayList<>(MAXLOADED);
         hasRequested=RandomActivity.loadedGallery==null;
         for(int a=0;a<MAXLOADED;a++)loadRandomGallery();
@@ -39,8 +37,7 @@ public class RandomLoader {
     }
     private void loadRandomGallery(){
         if(galleries.size()>=MAXLOADED)return;
-        final int id=random.nextInt(Global.getMaxId())+1;
-            Global.client.newCall(new Request.Builder().url("https://nhentai.net/g/" + id).build()).enqueue(new Callback() {
+            Global.client.newCall(new Request.Builder().url("https://nhentai.net/random").build()).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
 
@@ -48,7 +45,6 @@ public class RandomLoader {
 
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                    Log.d(Global.LOGTAG,"Random: "+id);
                     Document doc=Jsoup.parse(response.body().byteStream(),"UTF-8","https://nhentai.net");
                     Element ele=doc.getElementsByTag("script").last();
                     if(ele==null)return;
