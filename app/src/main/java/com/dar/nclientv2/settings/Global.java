@@ -1,6 +1,7 @@
 package com.dar.nclientv2.settings;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -38,6 +39,7 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import okhttp3.OkHttpClient;
@@ -52,7 +54,7 @@ public final class Global {
     public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf";
     private static Language onlyLanguage=null;
     private static TitleType titleType;
-    private static boolean byPopular,loadImages,hideFromGallery,highRes,onlyTag,infiniteScroll,removeIgnoredGalleries,sendReport;
+    private static boolean byPopular,loadImages,hideFromGallery,highRes,onlyTag,infiniteScroll,removeIgnoredGalleries;
     private static ThemeScheme theme;
     private static int notificationId,columnCount,maxId,imageQuality,galleryWidth=-1, galleryHeight =-1;
 
@@ -72,9 +74,6 @@ public final class Global {
         Global.galleryHeight = galleryHeight;
     }
 
-    public static boolean getSendReport(){
-        return sendReport;
-    }
 
     public static void initTitleType(@NonNull Context context){
         String s=context.getSharedPreferences("Settings", 0).getString(context.getString(R.string.key_title_type),"pretty");
@@ -84,7 +83,6 @@ public final class Global {
             case "japanese":titleType=  TitleType.JAPANESE;break;
         }
     }
-    public static void     initSendReport    (@NonNull Context context){sendReport=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_send_report),true);}
     public static void     initByPopular    (@NonNull Context context){byPopular=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_by_popular),false);}
     public static void     initInfiniteScroll    (@NonNull Context context){infiniteScroll=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_infinite_scroll),false);}
     public static void  initHideFromGallery    (@NonNull Context context){hideFromGallery=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_hide_saved_images),false);}
@@ -120,7 +118,7 @@ public final class Global {
         return context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_check_update),true);
     }
     private static int getLogo(){ return theme==ThemeScheme.LIGHT?R.drawable.ic_logo_dark:R.drawable.ic_logo; }
-    private static Drawable getLogo(Resources resources){ return resources.getDrawable(theme==ThemeScheme.LIGHT?R.drawable.ic_logo_dark:R.drawable.ic_logo); }
+    private static Drawable getLogo(Resources resources){ return ResourcesCompat.getDrawable(resources,theme==ThemeScheme.LIGHT?R.drawable.ic_logo_dark:R.drawable.ic_logo,null); }
     public static TitleType getTitleType() {
         return titleType;
     }
@@ -251,7 +249,7 @@ public final class Global {
 
     }
     public static void loadImage(@DrawableRes int drawable, ImageView imageView){
-        Picasso.get().load((String)null).placeholder(imageView.getResources().getDrawable(drawable)).into(imageView);
+        Picasso.get().load((String)null).placeholder(ResourcesCompat.getDrawable(imageView.getResources(),drawable,null)).into(imageView);
         //GlideApp.with(context).load(drawable).into(imageView);
     }
 
