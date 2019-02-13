@@ -50,6 +50,7 @@ public class MainActivity extends BaseActivity
     private NavigationView navigationView;
     private Tag tag;
     private int related=-1;
+    private boolean tagFromURL=false;
     public void setInspector(Inspector inspector) {
         this.inspector = inspector;
     }
@@ -141,7 +142,10 @@ public class MainActivity extends BaseActivity
             related = getIntent().getExtras().getInt(getPackageName()+".RELATED", -1);
             tag = getIntent().getExtras().getParcelable(getPackageName()+".TAG");
         }
-        if(dataType!=null&&q!=null)tag=new Tag(q,0,0,dataType,TagStatus.DEFAULT);
+        if(dataType!=null&&q!=null){
+            tag=new Tag(q,0,0,dataType,TagStatus.DEFAULT);
+            tagFromURL=true;
+        }
         if(q!=null&&dataType==null){
             toolbar.setTitle(q);
             new Inspector(this,1,q,ApiRequestType.BYSEARCH);
@@ -305,7 +309,7 @@ public class MainActivity extends BaseActivity
 
         if(tag!=null||related!=-1){
             if(tag!=null){
-                MenuItem item=menu.findItem(R.id.tag_manager).setVisible(true);
+                MenuItem item=menu.findItem(R.id.tag_manager).setVisible(!tagFromURL);
                 TagStatus ts=tag.getStatus();
                 switch (ts){
                     case DEFAULT:item.setIcon(R.drawable.ic_help);break;
