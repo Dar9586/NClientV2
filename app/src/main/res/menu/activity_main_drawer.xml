@@ -38,4 +38,16 @@
     </group>
         </menu>
     </item>
+    <item android:title="@string/settings">
+        <menu>
+            <group android:checkableBehavior="none">
+                <item android:title="@string/settings"
+                android:icon="@drawable/ic_settings"
+                android:id="@+id/action_settings"/>
+                <item android:title="@string/login"
+                    android:icon="@drawable/ic_person"
+                    android:id="@+id/action_login"/>
+            </group>
+        </menu>
+    </item>
 </menu>

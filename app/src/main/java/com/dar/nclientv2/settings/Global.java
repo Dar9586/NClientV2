@@ -1,7 +1,6 @@
 package com.dar.nclientv2.settings;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -41,10 +40,18 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import okhttp3.OkHttpClient;
 
 public final class Global {
+    public static long recursiveSize(File path) {
+        if(path.isFile())return path.length();
+        long size=0;
+        for(File f:path.listFiles())
+            size+=f.isFile()?f.length():recursiveSize(f);
+
+        return size;
+    }
+
     public enum ThemeScheme{LIGHT,DARK,BLACK}
 
     public static OkHttpClient client=null;

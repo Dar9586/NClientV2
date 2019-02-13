@@ -15,19 +15,7 @@
         app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/open_browser"
+        android:icon="@drawable/ic_world"
         android:title="@string/open_in_browser"
         app:showAsAction="ifRoom|collapseActionView" />
-    <item
-        android:id="@+id/action_settings"
-        android:title="@string/settings"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_login"
-        android:title="@string/login"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/online_favorite"
-        android:title="@string/online_favorites"
-        android:visible="false"
-        app:showAsAction="never"/>
 </menu>

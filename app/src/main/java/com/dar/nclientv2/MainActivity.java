@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,7 +19,7 @@ import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
-import com.dar.nclientv2.api.enums.TitleType;
+import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.VersionChecker;
 import com.dar.nclientv2.async.scrape.BulkScraper;
 import com.dar.nclientv2.components.BaseActivity;
@@ -30,6 +31,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import org.acra.ACRA;
 
+import java.util.List;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
@@ -78,14 +80,35 @@ public class MainActivity extends BaseActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
-
+        Uri data=getIntent().getData();
+        String q=null;
+        TagType dataType=null;
+        if(data!=null) {
+            List<String>datas=data.getPathSegments();
+            Log.d(Global.LOGTAG,datas.size()+"COUNTTTTT");
+            for(String s:datas)Log.d(Global.LOGTAG,"PARAMM: "+s);
+            if(datas.size()>0){
+                switch (datas.get(0)){
+                    case "parody":dataType=TagType.PARODY; break;
+                    case "character":dataType=TagType.CHARACTER; break;
+                    case "tag":dataType=TagType.TAG; break;
+                    case "artist":dataType=TagType.ARTIST; break;
+                    case "group":dataType=TagType.GROUP; break;
+                    case "language":dataType=TagType.LANGUAGE; break;
+                    case "category":dataType=TagType.CATEGORY; break;
+                    case "search": q=data.getQueryParameter("q");break;
+                }
+                if(q==null&&datas.size()>1)q=datas.get(1);
+            }
+            Log.d(Global.LOGTAG, "Q: " + data.getQueryParameter("q"));
+        }
         navigationView = findViewById(R.id.nav_view);
         changeNavigationImage(navigationView);
         navigationView.setNavigationItemSelectedListener(this);
 
         navigationView.getMenu().findItem(R.id.by_popular).setIcon(Global.isByPopular()?R.drawable.ic_check:R.drawable.ic_close);
         navigationView.getMenu().findItem(R.id.online_favorite_manager).setVisible(com.dar.nclientv2.settings.Login.isLogged());
+        navigationView.getMenu().findItem(R.id.action_login).setTitle(com.dar.nclientv2.settings.Login.isLogged()?R.string.logout:R.string.login);
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
         prepareUpdateIcon();
@@ -120,7 +143,11 @@ public class MainActivity extends BaseActivity
             related = getIntent().getExtras().getInt(getPackageName()+".RELATED", -1);
             tag = getIntent().getExtras().getParcelable(getPackageName()+".TAG");
         }
-        if(related!=-1){
+        if(dataType!=null&&q!=null)tag=new Tag(q,0,0,dataType,TagStatus.DEFAULT);
+        if(q!=null&&dataType==null){
+            toolbar.setTitle(q);
+            new Inspector(this,1,q,ApiRequestType.BYSEARCH);
+        }else if(related!=-1){
             new Inspector(this,1,""+related,ApiRequestType.RELATED);
             toolbar.setTitle(R.string.related);
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -250,10 +277,10 @@ public class MainActivity extends BaseActivity
         super.onResume();
         ACRA.getErrorReporter().setEnabled(getSharedPreferences("Settings",0).getBoolean(getString(R.string.key_send_report),true));
         com.dar.nclientv2.settings.Login.initUseAccountTag(this);
+        navigationView.getMenu().findItem(R.id.action_login).setTitle(com.dar.nclientv2.settings.Login.isLogged()?R.string.logout:R.string.login);
         if(com.dar.nclientv2.settings.Login.isLogged())navigationView.getMenu().findItem(R.id.online_favorite_manager).setVisible(true);
         if(setting!=null){
             Global.initHighRes(this);Global.initOnlyTag(this);Global.initInfiniteScroll(this);Global.initRemoveIgnoredGalleries(this);
-            if(com.dar.nclientv2.settings.Login.isLogged()!=setting.logged)supportInvalidateOptionsMenu();
             if(setting.remove!=Global.getRemoveIgnoredGalleries()){
                 new Inspector(this,1,inspector.getQuery(),inspector.getRequestType());
             }else if(setting.infinite!=Global.isInfiniteScroll()){
@@ -284,12 +311,10 @@ public class MainActivity extends BaseActivity
                 }
                 Global.setTint(menu.findItem(R.id.tag_manager).getIcon());
             }
-            menu.findItem(R.id.action_settings).setVisible(false);
-            menu.findItem(R.id.action_login).setVisible(false);
         }else {
-            menu.findItem(R.id.action_login).setTitle(com.dar.nclientv2.settings.Login.isLogged()?R.string.logout:R.string.login);
             Global.setTint(menu.findItem(R.id.search).getIcon());
         }
+        Global.setTint(menu.findItem(R.id.open_browser).getIcon());
         searchView =(SearchView)menu.findItem(R.id.search).getActionView();
         if(related!=-1){
             menu.findItem(R.id.search).setVisible(false);
@@ -333,20 +358,6 @@ public class MainActivity extends BaseActivity
         int id = item.getItemId();
         Intent i;
         switch (id){
-            case R.id.action_login:
-                if(item.getTitle().equals(getString(R.string.logout))){
-                    showLogoutForm(item);
-
-                }else {
-                    i = new Intent(this, LoginActivity.class);
-                    startActivity(i);
-                }
-                break;
-            case R.id.action_settings:
-                setting=new Setting();
-                i = new Intent(this, SettingsActivity.class);
-                startActivity(i);
-                break;
             case R.id.open_browser:
                 if(inspector!=null) {
                     i = new Intent(Intent.ACTION_VIEW);
@@ -361,19 +372,21 @@ public class MainActivity extends BaseActivity
                     case AVOIDED:item.setIcon(R.drawable.ic_close);break;
                     case ACCEPTED:item.setIcon(R.drawable.ic_check);break;
                 }
+                Global.setTint(item.getIcon());
                 break;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void showLogoutForm(final MenuItem item) {
+    private void showLogoutForm() {
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.ic_exit_to_app).setTitle(R.string.logout).setMessage(R.string.are_you_sure);
         builder.setPositiveButton(android.R.string.yes, (dialogInterface, i) -> {
             Login.logout(MainActivity.this);
             navigationView.getMenu().findItem(R.id.online_favorite_manager).setVisible(false);
-            item.setTitle(R.string.login);
+            navigationView.getMenu().findItem(R.id.action_login).setTitle(R.string.login);
+
         }).setNegativeButton(android.R.string.no,null).show();
     }
     @Override
@@ -385,8 +398,22 @@ public class MainActivity extends BaseActivity
             case R.id.by_popular:item.setIcon(Global.updateByPopular(this,!Global.isByPopular())?R.drawable.ic_check:R.drawable.ic_close);new Inspector(this,1,Inspector.getActualQuery(),Inspector.getActualRequestType());break;
             case R.id.only_language:updateLanguageIcon(item,true);break;
             case R.id.downloaded:if(Global.hasStoragePermission(this))startLocalActivity();else requestStorage();break;
+            case R.id.action_login:
+                if(item.getTitle().equals(getString(R.string.logout))){
+                    showLogoutForm();
+
+                }else {
+                    intent = new Intent(this, LoginActivity.class);
+                    startActivity(intent);
+                }
+                break;
             case R.id.favorite_manager:
                 intent=new Intent(this,FavoriteActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.action_settings:
+                setting=new Setting();
+                intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
                 break;
             case R.id.online_favorite_manager:

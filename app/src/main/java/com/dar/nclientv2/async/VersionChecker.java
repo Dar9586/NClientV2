@@ -35,7 +35,6 @@ public class VersionChecker{
                     context.runOnUiThread(()->{
                         if(!silent) Toast.makeText(context, R.string.error_retrieving, Toast.LENGTH_SHORT).show();
                     });
-
                 }
 
                 @Override

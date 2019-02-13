@@ -61,10 +61,6 @@ public class FavoriteActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        menu.findItem(R.id.action_settings).setVisible(false);
-        menu.findItem(R.id.action_login).setVisible(false);
-        if(online||Login.isLogged())menu.findItem(R.id.online_favorite).setVisible(true);
-        menu.findItem(R.id.online_favorite).setTitle(online?R.string.offline_favorites:R.string.online_favorites);
         final androidx.appcompat.widget.SearchView searchView=(androidx.appcompat.widget.SearchView)menu.findItem(R.id.search).getActionView();
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
@@ -78,6 +74,7 @@ public class FavoriteActivity extends BaseActivity {
                 return true;
             }
         });
+        Global.setTint(menu.findItem(R.id.open_browser).getIcon());
         return true;
     }
 
@@ -85,11 +82,6 @@ public class FavoriteActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent i;
         switch (item.getItemId()){
-            case R.id.online_favorite:
-                i=new Intent(this,FavoriteActivity.class);
-                i.putExtra(getPackageName()+".ONLINE",!online);
-                startActivity(i);
-                break;
             case R.id.open_browser:
                 i=new Intent(Intent.ACTION_VIEW, Uri.parse("https://nhentai.net/favorites/"));
                 startActivity(i);
