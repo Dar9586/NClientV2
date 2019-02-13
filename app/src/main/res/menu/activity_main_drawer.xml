@@ -26,18 +26,6 @@
             android:title="@string/manage_tags" />
 
     </group>
-    <item android:title="@string/filters">
-        <menu>
-    <group android:checkableBehavior="none">
-        <item
-            android:id="@+id/only_language"
-            android:title="@string/all_languages"/>
-        <item
-            android:id="@+id/by_popular"
-            android:title="@string/sort_popular"/>
-    </group>
-        </menu>
-    </item>
     <item android:title="@string/settings">
         <menu>
             <group android:checkableBehavior="none">

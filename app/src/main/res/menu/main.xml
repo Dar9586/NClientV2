@@ -14,6 +14,14 @@
         android:visible="false"
         app:showAsAction="ifRoom|collapseActionView" />
     <item
+        android:id="@+id/only_language"
+        android:title="@string/all_languages"
+        app:showAsAction="ifRoom|collapseActionView"/>
+    <item
+        android:id="@+id/by_popular"
+        android:title="@string/sort_popular"
+        app:showAsAction="ifRoom|collapseActionView"/>
+    <item
         android:id="@+id/open_browser"
         android:icon="@drawable/ic_world"
         android:title="@string/open_in_browser"

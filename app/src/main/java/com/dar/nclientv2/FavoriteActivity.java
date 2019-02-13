@@ -61,6 +61,8 @@ public class FavoriteActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        menu.findItem(R.id.by_popular).setVisible(false);
+        menu.findItem(R.id.only_language).setVisible(false);
         final androidx.appcompat.widget.SearchView searchView=(androidx.appcompat.widget.SearchView)menu.findItem(R.id.search).getActionView();
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override

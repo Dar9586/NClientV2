@@ -106,13 +106,11 @@ public class MainActivity extends BaseActivity
         changeNavigationImage(navigationView);
         navigationView.setNavigationItemSelectedListener(this);
 
-        navigationView.getMenu().findItem(R.id.by_popular).setIcon(Global.isByPopular()?R.drawable.ic_check:R.drawable.ic_close);
         navigationView.getMenu().findItem(R.id.online_favorite_manager).setVisible(com.dar.nclientv2.settings.Login.isLogged());
         navigationView.getMenu().findItem(R.id.action_login).setTitle(com.dar.nclientv2.settings.Login.isLogged()?R.string.logout:R.string.login);
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
         prepareUpdateIcon();
-        updateLanguageIcon(navigationView.getMenu().findItem(R.id.only_language),false);
         recycler.setHasFixedSize(true);
         recycler.setItemViewCacheSize(24);
         recycler.addOnScrollListener(new RecyclerView.OnScrollListener(){
@@ -201,6 +199,7 @@ public class MainActivity extends BaseActivity
                 case UNKNOWN:Global.updateOnlyLanguage(this, null);item.setTitle(R.string.all_languages);item.setIcon(R.drawable.ic_world);break;
             }
             if(update)new Inspector(MainActivity.this,Inspector.getActualPage(),Inspector.getActualQuery(),Inspector.getActualRequestType());
+        Global.setTint(item.getIcon());
     }
     @Override
     public void onBackPressed() {
@@ -300,6 +299,10 @@ public class MainActivity extends BaseActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        menu.findItem(R.id.by_popular).setIcon(Global.isByPopular()?R.drawable.ic_star_border:R.drawable.ic_access_time);
+        menu.findItem(R.id.by_popular).setTitle(Global.isByPopular()?R.string.sort_by_popular:R.string.sort_by_latest);
+        updateLanguageIcon(menu.findItem(R.id.only_language),false);
+
         if(tag!=null||related!=-1){
             if(tag!=null){
                 MenuItem item=menu.findItem(R.id.tag_manager).setVisible(true);
@@ -315,6 +318,7 @@ public class MainActivity extends BaseActivity
             Global.setTint(menu.findItem(R.id.search).getIcon());
         }
         Global.setTint(menu.findItem(R.id.open_browser).getIcon());
+        Global.setTint(menu.findItem(R.id.by_popular).getIcon());
         searchView =(SearchView)menu.findItem(R.id.search).getActionView();
         if(related!=-1){
             menu.findItem(R.id.search).setVisible(false);
@@ -358,6 +362,12 @@ public class MainActivity extends BaseActivity
         int id = item.getItemId();
         Intent i;
         switch (id){
+            case R.id.by_popular:
+                item.setIcon(Global.updateByPopular(this,!Global.isByPopular())?R.drawable.ic_star_border:R.drawable.ic_access_time);
+                item.setTitle(Global.isByPopular()?R.string.sort_by_popular:R.string.sort_by_latest);
+                Global.setTint(item.getIcon());
+                new Inspector(this,1,Inspector.getActualQuery(),Inspector.getActualRequestType());break;
+            case R.id.only_language:updateLanguageIcon(item,true);break;
             case R.id.open_browser:
                 if(inspector!=null) {
                     i = new Intent(Intent.ACTION_VIEW);
@@ -395,8 +405,7 @@ public class MainActivity extends BaseActivity
         Intent intent;
         int id = item.getItemId();
         switch (id){
-            case R.id.by_popular:item.setIcon(Global.updateByPopular(this,!Global.isByPopular())?R.drawable.ic_check:R.drawable.ic_close);new Inspector(this,1,Inspector.getActualQuery(),Inspector.getActualRequestType());break;
-            case R.id.only_language:updateLanguageIcon(item,true);break;
+
             case R.id.downloaded:if(Global.hasStoragePermission(this))startLocalActivity();else requestStorage();break;
             case R.id.action_login:
                 if(item.getTitle().equals(getString(R.string.logout))){

@@ -221,6 +221,7 @@
     <string name="online_favorite_manga">Online favorite manga</string>
     <string name="cache_size_formatted">Cache size: %.2f MB</string>
     <string name="cache_cleared">Cache cleared</string>
+    <string name="sort_by_latest">Sort by latest</string>
 
 
     <string-array name="theme">
