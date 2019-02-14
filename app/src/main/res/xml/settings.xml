@@ -51,6 +51,12 @@
             android:summaryOn="@string/setting_on_infinite_scroll"
             android:summaryOff="@string/setting_off_infinite_scroll"
             android:title="@string/infinite_scroll" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/key_keep_history"
+            android:summaryOn="@string/setting_on_keep_history"
+            android:summaryOff="@string/setting_off_keep_history"
+            android:title="@string/keep_history" />
     <SwitchPreference
         android:defaultValue="true"
         android:key="@string/key_remove_ignored"

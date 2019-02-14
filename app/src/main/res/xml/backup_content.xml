@@ -5,6 +5,4 @@
     ./adb shell bmgr restore com.dar.nclientv2
     -->
     <include domain="sharedpref" path="."/>
-    <exclude domain="sharedpref" path="ScrapedTags.xml"/>
-    <exclude domain="sharedpref" path="OnlineFavorite.xml"/>
 </full-backup-content>

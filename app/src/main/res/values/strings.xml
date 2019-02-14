@@ -81,7 +81,6 @@
     <string name="tags_max_reached" formatted="true">You can have a maximum of %d selected tags.</string>
 
 
-
     <string name="filters">Filters</string>
     <string name="only_english">Only english</string>
     <string name="only_japanese">Only japanese</string>
@@ -165,8 +164,6 @@
     <string name="page_placeholder">999/999</string>
 
 
-
-
     <string name="share_with">Share with</string>
     <string name="link_copied_to_clipboard">Link copied to clipboard</string>
     <string name="open_in_browser">Open in browser</string>
@@ -222,6 +219,12 @@
     <string name="cache_size_formatted">Cache size: %.2f MB</string>
     <string name="cache_cleared">Cache cleared</string>
     <string name="sort_by_latest">Sort by latest</string>
+    <string name="edit">Edit</string>
+    <string name="options">Options</string>
+    <string name="key_keep_history">keep_history</string>
+    <string name="setting_on_keep_history">The searches will be stored</string>
+    <string name="setting_off_keep_history">The searched will not be stored</string>
+    <string name="keep_history">Keep search history</string>
 
 
     <string-array name="theme">

@@ -2,6 +2,7 @@ package com.dar.nclientv2;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -12,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 
 import com.dar.nclientv2.api.Inspector;
 import com.dar.nclientv2.api.components.Tag;
@@ -35,9 +35,9 @@ import java.util.List;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -51,6 +51,7 @@ public class MainActivity extends BaseActivity
     private Tag tag;
     private int related=-1;
     private boolean tagFromURL=false;
+    private static boolean firstTime=true;
     public void setInspector(Inspector inspector) {
         this.inspector = inspector;
     }
@@ -106,12 +107,10 @@ public class MainActivity extends BaseActivity
         navigationView = findViewById(R.id.nav_view);
         changeNavigationImage(navigationView);
         navigationView.setNavigationItemSelectedListener(this);
-
         navigationView.getMenu().findItem(R.id.online_favorite_manager).setVisible(com.dar.nclientv2.settings.Login.isLogged());
         navigationView.getMenu().findItem(R.id.action_login).setTitle(com.dar.nclientv2.settings.Login.isLogged()?R.string.logout:R.string.login);
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
-        prepareUpdateIcon();
         recycler.setHasFixedSize(true);
         recycler.setItemViewCacheSize(24);
         recycler.addOnScrollListener(new RecyclerView.OnScrollListener(){
@@ -160,7 +159,10 @@ public class MainActivity extends BaseActivity
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             toggle.setDrawerIndicatorEnabled(false);
         } else new Inspector(this,1,"",ApiRequestType.BYALL);
-        if(Global.shouldCheckForUpdates(this))new VersionChecker(this,true);
+        if(firstTime){
+            if(Global.shouldCheckForUpdates(this))new VersionChecker(this,true);
+            firstTime=false;
+        }
     }
 
     private void changeNavigationImage(NavigationView navigationView) {
@@ -176,33 +178,18 @@ public class MainActivity extends BaseActivity
         super.onDestroy();
     }
 
-    private void prepareUpdateIcon(){
-        if(Global.getOnlyLanguage()==null)Global.updateOnlyLanguage(this,Language.UNKNOWN);
-        else{
-            switch (Global.getOnlyLanguage()){
-                case ENGLISH:Global.updateOnlyLanguage(this,null);break;
-                case JAPANESE:Global.updateOnlyLanguage(this,Language.ENGLISH);break;
-                case CHINESE:Global.updateOnlyLanguage(this,Language.JAPANESE);break;
-                case UNKNOWN:Global.updateOnlyLanguage(this,Language.CHINESE);break;
-            }
-        }
-    }
-    private void updateLanguageIcon(MenuItem item,boolean update){
+    private void updateLanguageIcon(MenuItem item){
         //ALL,ENGLISH;JAPANESE;CHINESE;OTHER
 
-        if(Global.getOnlyLanguage()==null){
-            Global.updateOnlyLanguage(this,Language.ENGLISH);
-            item.setTitle(R.string.only_english);
-            item.setIcon(R.drawable.ic_gbbw);
-        }
+        if(Global.getOnlyLanguage()==null) Global.updateOnlyLanguage(this,Language.ENGLISH);
         else
             switch (Global.getOnlyLanguage()){
-                case ENGLISH:Global.updateOnlyLanguage(this, Language.JAPANESE);item.setTitle(R.string.only_japanese);item.setIcon(R.drawable.ic_jpbw);break;
-                case JAPANESE:Global.updateOnlyLanguage(this, Language.CHINESE);item.setTitle(R.string.only_chinese);item.setIcon(R.drawable.ic_cnbw);break;
-                case CHINESE:Global.updateOnlyLanguage(this, Language.UNKNOWN);item.setTitle(R.string.only_other);item.setIcon(R.drawable.ic_help);break;
-                case UNKNOWN:Global.updateOnlyLanguage(this, null);item.setTitle(R.string.all_languages);item.setIcon(R.drawable.ic_world);break;
+                case ENGLISH:Global.updateOnlyLanguage(this, Language.JAPANESE);break;
+                case JAPANESE:Global.updateOnlyLanguage(this, Language.CHINESE);break;
+                case CHINESE:Global.updateOnlyLanguage(this, Language.UNKNOWN);break;
+                case UNKNOWN:Global.updateOnlyLanguage(this, null);break;
             }
-            if(update)new Inspector(MainActivity.this,Inspector.getActualPage(),Inspector.getActualQuery(),Inspector.getActualRequestType());
+            new Inspector(MainActivity.this,Inspector.getActualPage(),Inspector.getActualQuery(),Inspector.getActualRequestType());
         Global.setTint(item.getIcon());
     }
     @Override
@@ -259,7 +246,6 @@ public class MainActivity extends BaseActivity
         }
     }
     private void removeQuery(){
-        searchView.setQuery("",false);
         getSupportActionBar().setTitle(R.string.app_name);
         if(related!=-1){
             new Inspector(this,1,""+related,ApiRequestType.RELATED);
@@ -298,14 +284,13 @@ public class MainActivity extends BaseActivity
         }
         invalidateOptionsMenu();
     }
-    private SearchView searchView;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         menu.findItem(R.id.by_popular).setIcon(Global.isByPopular()?R.drawable.ic_star_border:R.drawable.ic_access_time);
         menu.findItem(R.id.by_popular).setTitle(Global.isByPopular()?R.string.sort_by_popular:R.string.sort_by_latest);
-        updateLanguageIcon(menu.findItem(R.id.only_language),false);
+        showLanguageIcon(menu.findItem(R.id.only_language));
 
         if(tag!=null||related!=-1){
             if(tag!=null){
@@ -323,12 +308,12 @@ public class MainActivity extends BaseActivity
         }
         Global.setTint(menu.findItem(R.id.open_browser).getIcon());
         Global.setTint(menu.findItem(R.id.by_popular).getIcon());
-        searchView =(SearchView)menu.findItem(R.id.search).getActionView();
         if(related!=-1){
             menu.findItem(R.id.search).setVisible(false);
             return true;
         }
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        menu.findItem(R.id.search).setActionView(null);
+        /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if(query.length()==0)return true;
@@ -352,10 +337,23 @@ public class MainActivity extends BaseActivity
             public boolean onQueryTextChange(String newText) {
                 return true;
             }
-        });
-        ImageView closeButton = searchView.findViewById(R.id.search_close_btn);
-        closeButton.setOnClickListener(v -> removeQuery());
+        });*/
         return true;
+    }
+
+    private void showLanguageIcon(MenuItem item) {
+        if(Global.getOnlyLanguage()==null){
+            item.setTitle(R.string.all_languages);item.setIcon(R.drawable.ic_world);
+
+        }
+        else
+            switch (Global.getOnlyLanguage()){
+                case JAPANESE:item.setTitle(R.string.only_japanese);item.setIcon(R.drawable.ic_jpbw);break;
+                case CHINESE:item.setTitle(R.string.only_chinese);item.setIcon(R.drawable.ic_cnbw);break;
+                case UNKNOWN:item.setTitle(R.string.only_other);item.setIcon(R.drawable.ic_help);break;
+                case ENGLISH:item.setTitle(R.string.only_english);item.setIcon(R.drawable.ic_gbbw);break;
+            }
+            Global.setTint(item.getIcon());
     }
 
     @Override
@@ -371,7 +369,11 @@ public class MainActivity extends BaseActivity
                 item.setTitle(Global.isByPopular()?R.string.sort_by_popular:R.string.sort_by_latest);
                 Global.setTint(item.getIcon());
                 new Inspector(this,1,Inspector.getActualQuery(),Inspector.getActualRequestType());break;
-            case R.id.only_language:updateLanguageIcon(item,true);break;
+            case R.id.only_language:updateLanguageIcon(item);showLanguageIcon(item); break;
+            case R.id.search:
+                i=new Intent(this,SearchActivity.class);
+                startActivityForResult(i,1);
+                break;
             case R.id.open_browser:
                 if(inspector!=null) {
                     i = new Intent(Intent.ACTION_VIEW);
@@ -391,6 +393,29 @@ public class MainActivity extends BaseActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode==1&&resultCode== Activity.RESULT_OK){
+            manageQuery(data.getStringExtra("query"));
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+    private void manageQuery(String query){
+        if(query.length()==0)return;
+        try {
+            if (tag == null && related == -1) {
+                int id=Integer.parseInt(query);
+                if(id>0&&id<=Global.getMaxId()){
+                    new Inspector(MainActivity.this, -1, "" + id, ApiRequestType.BYSINGLE);
+                    return;
+                }
+            }
+        }catch (NumberFormatException ignore){}
+        query=query.trim();
+        getSupportActionBar().setTitle(query+(tag!=null?' '+tag.getName():""));
+        new Inspector(MainActivity.this,1,query+(tag!=null?(' '+tag.toQueryTag(TagStatus.DEFAULT)):""),ApiRequestType.BYSEARCH);
     }
 
     private void showLogoutForm() {
@@ -419,6 +444,10 @@ public class MainActivity extends BaseActivity
                     intent = new Intent(this, LoginActivity.class);
                     startActivity(intent);
                 }
+                break;
+            case R.id.search:
+                intent=new Intent(this,SearchActivity.class);
+                startActivity(intent);
                 break;
             case R.id.favorite_manager:
                 intent=new Intent(this,FavoriteActivity.class);

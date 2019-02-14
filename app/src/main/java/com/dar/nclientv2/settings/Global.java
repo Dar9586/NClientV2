@@ -21,6 +21,7 @@ import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TitleType;
+import com.dar.nclientv2.components.CustomSSLSocketFactory;
 import com.dar.nclientv2.loginapi.LoadTags;
 import com.dar.nclientv2.loginapi.User;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
@@ -61,7 +62,7 @@ public final class Global {
     public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf";
     private static Language onlyLanguage=null;
     private static TitleType titleType;
-    private static boolean byPopular,loadImages,hideFromGallery,highRes,onlyTag,infiniteScroll,removeIgnoredGalleries;
+    private static boolean byPopular,keepHistory,loadImages,hideFromGallery,highRes,onlyTag,infiniteScroll,removeIgnoredGalleries;
     private static ThemeScheme theme;
     private static int notificationId,columnCount,maxId,imageQuality,galleryWidth=-1, galleryHeight =-1;
 
@@ -91,6 +92,7 @@ public final class Global {
         }
     }
     public static void     initByPopular    (@NonNull Context context){byPopular=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_by_popular),false);}
+    public static void     initKeepHistory    (@NonNull Context context){keepHistory=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_keep_history),true);}
     public static void     initInfiniteScroll    (@NonNull Context context){infiniteScroll=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_infinite_scroll),false);}
     public static void  initHideFromGallery    (@NonNull Context context){hideFromGallery=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_hide_saved_images),false);}
     public static void     initHighRes    (@NonNull Context context){highRes=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_high_res_gallery),true);}
@@ -104,9 +106,12 @@ public final class Global {
 
     public static void initHttpClient(@NonNull Context context){
         if(client!=null)return;
-        client=new OkHttpClient.Builder()
-                .cookieJar(new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context.getSharedPreferences("Login",0))))
-                .build();
+        OkHttpClient.Builder builder=new OkHttpClient.Builder()
+                .cookieJar(new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context.getSharedPreferences("Login",0))));
+
+        CustomSSLSocketFactory.enableTls12OnPreLollipop(builder);
+        client=builder.build();
+
         client.dispatcher().setMaxRequests(25);
         client.dispatcher().setMaxRequestsPerHost(25);
         if(Login.isLogged()&&Login.getUser()==null){
@@ -151,6 +156,11 @@ public final class Global {
     public static boolean isOnlyTag() {
         return onlyTag;
     }
+
+    public static boolean isKeepHistory() {
+        return keepHistory;
+    }
+
     public static boolean isByPopular() {
         return byPopular;
     }

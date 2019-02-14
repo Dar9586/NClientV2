@@ -33,6 +33,7 @@ public class VersionChecker{
                 @Override
                 public void onFailure(@NonNull Call call,@NonNull IOException e){
                     context.runOnUiThread(()->{
+                        Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
                         if(!silent) Toast.makeText(context, R.string.error_retrieving, Toast.LENGTH_SHORT).show();
                     });
                 }
