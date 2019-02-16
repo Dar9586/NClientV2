@@ -35,7 +35,7 @@
     <item
         android:id="@+id/add_online_gallery"
         android:orderInCategory="500"
-        android:icon="@drawable/ic_world"
+        android:icon="@drawable/ic_star"
         android:title="@string/remove_from_online_favorites"
         app:showAsAction="ifRoom|collapseActionView"/>
     <item

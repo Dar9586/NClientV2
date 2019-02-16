@@ -1,7 +1,12 @@
 package com.dar.nclientv2.async.scrape;
 
+import android.content.SharedPreferences;
+import android.util.Log;
+
+import com.dar.nclientv2.MainActivity;
 import com.dar.nclientv2.TagFilter;
 import com.dar.nclientv2.api.enums.TagType;
+import com.dar.nclientv2.settings.Global;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,11 +14,11 @@ import java.util.List;
 import androidx.annotation.Nullable;
 
 public class BulkScraper extends Thread{
-
+    private static SharedPreferences preferences;
 
 
     private final Object lock=new Object();
-    private static List<TagScrapeStatus>types=new ArrayList<>();
+    private static final List<TagScrapeStatus>types=new ArrayList<>();
     static BulkScraper thread=null;
     @Nullable private TagFilter activity=null;
 
@@ -22,8 +27,9 @@ public class BulkScraper extends Thread{
     }
 
     public static void addScrape(TagFilter filter, TagType type){
-        TagScrapeStatus status=new TagScrapeStatus(type);
+        TagScrapeStatus status=new TagScrapeStatus(type,filter==null?preferences.getInt(type.toString()+"_page",1):1);
         if(types.contains(status))return;
+        Log.d(Global.LOGTAG,"Added scraper: "+status+","+(preferences.getInt(type.toString()+"_count",99999))+","+(preferences.getInt(type.toString()+"_page",1)));
         types.add(status);
         if(thread==null){
             thread=new BulkScraper();
@@ -31,12 +37,13 @@ public class BulkScraper extends Thread{
         }
         setActivity(filter);
     }
-    public static void bulkAll(TagFilter activity){
-        BulkScraper.addScrape(activity,TagType.TAG);
-        BulkScraper.addScrape(activity,TagType.ARTIST);
-        BulkScraper.addScrape(activity,TagType.PARODY);
-        BulkScraper.addScrape(activity,TagType.GROUP);
-        BulkScraper.addScrape(activity,TagType.CHARACTER);
+    public static void bulkAll(MainActivity activity){
+        preferences=activity.getSharedPreferences("ScraperStatus",0);
+        if(preferences.getInt(TagType.TAG.toString()+"_count",99999)>=TagPageScraper.MIN_TAG_COUNT)BulkScraper.addScrape(null,TagType.TAG);
+        if(preferences.getInt(TagType.ARTIST.toString()+"_count",99999)>=TagPageScraper.MIN_TAG_COUNT)BulkScraper.addScrape(null,TagType.ARTIST);
+        if(preferences.getInt(TagType.PARODY.toString()+"_count",99999)>=TagPageScraper.MIN_TAG_COUNT)BulkScraper.addScrape(null,TagType.PARODY);
+        if(preferences.getInt(TagType.GROUP.toString()+"_count",99999)>=TagPageScraper.MIN_TAG_COUNT)BulkScraper.addScrape(null,TagType.GROUP);
+        if(preferences.getInt(TagType.CHARACTER.toString()+"_count",99999)>=TagPageScraper.MIN_TAG_COUNT)BulkScraper.addScrape(null,TagType.CHARACTER);
     }
     private BulkScraper(){ }
 
@@ -50,8 +57,11 @@ public class BulkScraper extends Thread{
             TagPageScraper scraper=new TagPageScraper(status);
             scraper.start();
             startDownload();
+            Log.d(Global.LOGTAG,scraper.getMinReached()+"min");
+            preferences.edit().putInt(status.type.toString()+"_page",Math.min(status.actPage,status.maxPage)).putInt(status.type.toString()+"_count",scraper.getMinReached()).apply();
             if(activity!=null&&scraper.shouldUpdate())activity.addItems(status.type);
-            if(status.actPage>status.maxPage){
+            if(status.actPage>status.maxPage||scraper.getMinReached()<TagPageScraper.MIN_TAG_COUNT){
+                Log.d(Global.LOGTAG,"Removed scraper: "+status);
                 types.remove(status);
                 actualScraping=0;
             }else actualScraping=(actualScraping+1)%types.size();

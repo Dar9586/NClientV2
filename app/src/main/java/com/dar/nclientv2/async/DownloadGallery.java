@@ -1,9 +1,13 @@
 package com.dar.nclientv2.async;
 
+import android.annotation.SuppressLint;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.util.Log;
 
 import com.dar.nclientv2.GalleryActivity;
@@ -15,6 +19,7 @@ import com.dar.nclientv2.settings.Global;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -40,14 +45,16 @@ public class DownloadGallery extends IntentService {
         Intent resultIntent = new Intent(this, GalleryActivity.class);
         resultIntent.putExtra(getPackageName()+".GALLERY",gallery);
         resultIntent.putExtra(getPackageName()+".INSTANTDOWNLOAD",true);
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addNextIntentWithParentStack(resultIntent);
-        PendingIntent resultPendingIntent =stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent resultPendingIntent=null;
+        if(Build.VERSION.SDK_INT>Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1){
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+            stackBuilder.addNextIntentWithParentStack(resultIntent);
+            resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        }
         notificationManager = NotificationManagerCompat.from(getApplicationContext());
         notification=new NotificationCompat.Builder(getApplicationContext(), Global.CHANNEL_ID1);
         //notification.addAction(R.drawable.ic_close,"Stop",new PendingIntent.)
-        notification.setSmallIcon(R.drawable.ic_file)
-                .setOnlyAlertOnce(true)
+        notification.setOnlyAlertOnce(true)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(gallery.getTitle()))
                 .setContentTitle(getString(R.string.channel1_title))
                 .setContentText(gallery.getTitle(TitleType.PRETTY))
@@ -55,6 +62,7 @@ public class DownloadGallery extends IntentService {
                 .setProgress(gallery.getPageCount()-1,0,false)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setCategory(NotificationCompat.CATEGORY_STATUS);
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP)notification.setSmallIcon(R.drawable.ic_file);
         notificationManager.notify(getString(R.string.channel1_name),notId,notification.build());
     }
     private int a;
@@ -81,21 +89,31 @@ public class DownloadGallery extends IntentService {
             }catch (IOException e){
                 Log.e("IOException", e.getLocalizedMessage()); }
         }
+        System.gc();
         for(a=0;a<gallery.getPageCount();a++){
             final File x=new File(folder,("000"+(a+1)+".jpg").substring(Integer.toString(a+1).length()));
             if(!x.exists()||Global.isCorrupted(x.getAbsolutePath())){
                 try{
-                    new DownloadPage(Global.client.newCall(new Request.Builder().url(gallery.getPage(a)).build()).execute().body().byteStream(),x).start();
+                    downloadPage(Global.client.newCall(new Request.Builder().url(gallery.getPage(a)).build()).execute().body().byteStream(),x);
                     downloadedPage();
-                }catch(IOException e){
-                    e.printStackTrace();
+                }catch(IOException|NullPointerException e){
+                    Log.e(Global.LOGTAG, e.getLocalizedMessage(),e);
+                    a--;
                 }
             }
-            else {downloadedPage();}
+            else downloadedPage();
         }
         onPostExecute();
     }
-
+    private void downloadPage(InputStream stream,File file)throws IOException,NullPointerException{
+        if(!file.getParentFile().exists()&&!file.getParentFile().mkdirs())return;
+        if(!file.createNewFile())return;
+        Bitmap bitmap= BitmapFactory.decodeStream(stream);
+        FileOutputStream ostream = new FileOutputStream(file);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, Global.getImageQuality(), ostream);
+        ostream.flush();
+        bitmap.recycle();
+    }
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
         if(intent!=null&&"stop".equals(intent.getAction()))a=999;
@@ -103,9 +121,10 @@ public class DownloadGallery extends IntentService {
         return super.onStartCommand(intent, flags, startId);
     }
 
+    @SuppressLint("RestrictedApi")
     private void onPostExecute() {
         notification.setProgress(0,0,false);
-        notification.mActions.clear();
+        if(Build.VERSION.SDK_INT>Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) notification.mActions.clear();
         notification.setContentTitle(getString(a==999?R.string.download_canceled :R.string.download_completed)).setOnlyAlertOnce(false);
         notificationManager.notify(getString(R.string.channel1_name),notId,notification.build());
     }

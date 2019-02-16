@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -15,6 +16,8 @@ import com.dar.nclientv2.settings.Global;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.ImageViewCompat;
 
 public class RandomActivity extends AppCompatActivity {
     private TextView language;
@@ -30,10 +33,15 @@ public class RandomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
         Global.initHttpClient(this);
+        Global.initTitleType(this);
         Global.initImageQuality(this);
         Favorites.countFavorite();
         Global.initLoadImages(this);
         setContentView(R.layout.activity_random);
+        Toolbar toolbar=findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
         FloatingActionButton shuffle = findViewById(R.id.shuffle);
         censor=findViewById(R.id.censor);
         language=findViewById(R.id.language);
@@ -61,23 +69,35 @@ public class RandomActivity extends AppCompatActivity {
                 if(isFavorite){
                     if(Favorites.removeFavorite(loadedGallery)){
                         isFavorite=false;
-                        favorite.setImageResource(R.drawable.ic_favorite_border);
+                        Global.loadImage(R.drawable.ic_favorite_border,favorite);
                     }
                 }else{
                     if(Favorites.addFavorite(loadedGallery)){
                         isFavorite=true;
-                        favorite.setImageResource(R.drawable.ic_favorite);
+                        Global.loadImage(R.drawable.ic_favorite,favorite);
                     }
                 }
             }
+            Global.setTint(favorite.getDrawable());
         });
-        shuffle.setImageTintList (ColorStateList.valueOf(Global.getTheme()== Global.ThemeScheme.LIGHT? Color.WHITE:Color.BLACK));
-        share.setImageTintList   (ColorStateList.valueOf(Global.getTheme()== Global.ThemeScheme.LIGHT? Color.BLACK:Color.WHITE));
-        favorite.setImageTintList(ColorStateList.valueOf(Global.getTheme()== Global.ThemeScheme.LIGHT? Color.BLACK:Color.WHITE));
+        ImageViewCompat.setImageTintList(shuffle,ColorStateList.valueOf(Global.getTheme()== Global.ThemeScheme.LIGHT? Color.WHITE:Color.BLACK));
+        ImageViewCompat.setImageTintList(share,ColorStateList.valueOf(Global.getTheme()== Global.ThemeScheme.LIGHT? Color.WHITE:Color.BLACK));
+        ImageViewCompat.setImageTintList(favorite,ColorStateList.valueOf(Global.getTheme()== Global.ThemeScheme.LIGHT? Color.WHITE:Color.BLACK));
         Global.setTint(shuffle.getContentBackground());
         Global.setTint(favorite.getDrawable());
         Global.setTint(share.getDrawable());
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     public static Gallery loadedGallery=null;
     private boolean isFavorite;
     public void loadGallery(Gallery gallery){
@@ -90,7 +110,8 @@ public class RandomActivity extends AppCompatActivity {
             case UNKNOWN :language.setText("\uD83C\uDFF3"); break;
         }
         isFavorite=Favorites.isFavorite(loadedGallery);
-        favorite.setImageResource(isFavorite?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
+        Global.loadImage(isFavorite?R.drawable.ic_favorite:R.drawable.ic_favorite_border,favorite);
+        Global.setTint(favorite.getDrawable());
         title.setText(gallery.getTitle());
         page.setText(getString(R.string.page_count_format,gallery.getPageCount()));
         censor.setVisibility(gallery.hasIgnoredTags()?View.VISIBLE:View.GONE);

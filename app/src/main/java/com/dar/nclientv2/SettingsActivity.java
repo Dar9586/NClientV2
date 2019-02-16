@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.dar.nclientv2.async.VersionChecker;
 import com.dar.nclientv2.settings.DefaultDialogs;
@@ -21,7 +22,7 @@ import java.nio.channels.FileChannel;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.SwitchPreferenceCompat;
+import androidx.preference.SwitchPreference;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -48,7 +49,7 @@ public class SettingsActivity extends AppCompatActivity {
             findPreference(getString(R.string.key_hide_saved_images)).setOnPreferenceClickListener(preference -> {
                 if(Global.hasStoragePermission(getActivity())) {
                     Global.saveNoMedia(GeneralPreferenceFragment.this.getActivity());
-                    if (!((SwitchPreferenceCompat) preference).isChecked()) galleryAddPics();
+                    if (!((SwitchPreference) preference).isChecked()) galleryAddPics();
                     else removePic();
                 }
                 return true;
@@ -57,11 +58,23 @@ public class SettingsActivity extends AppCompatActivity {
                 act.recreate();
                 return true;
             });
+            findPreference("version").setTitle(getString(R.string.app_version_format,Global.getVersionName(getContext())));
+            double cacheSize=Global.recursiveSize(getActivity().getCacheDir())/((double)(2<<20));
+
+            findPreference(getString(R.string.key_cache)).setSummary(getString(R.string.cache_size_formatted,cacheSize));
             findPreference(getString(R.string.key_cache)).setOnPreferenceClickListener(preference -> {
                 AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
                 builder.setTitle(R.string.clear_cache);
-                builder.setPositiveButton(android.R.string.yes, (dialog, which) -> Global.recursiveDelete(getActivity().getCacheDir())).setNegativeButton(android.R.string.no,null).setCancelable(true);
+                builder.setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                    Global.recursiveDelete(getActivity().getCacheDir());
+                    act.runOnUiThread(() -> {
+                        Toast.makeText(act, act.getString(R.string.cache_cleared), Toast.LENGTH_SHORT).show();
+                        double cSize=Global.recursiveSize(getActivity().getCacheDir())/((double)(2<<20));
+                        findPreference(getString(R.string.key_cache)).setSummary(getString(R.string.cache_size_formatted,cSize));
+                    });
+                }).setNegativeButton(android.R.string.no,null).setCancelable(true);
                 builder.show();
+
                 return true;
             });
             findPreference(getString(R.string.key_update)).setOnPreferenceClickListener(preference -> {

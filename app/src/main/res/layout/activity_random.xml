@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".RandomActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/shuffle"
         android:layout_width="wrap_content"
@@ -23,8 +34,6 @@
         android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="4"
@@ -39,10 +48,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:textSize="48dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
         tools:ignore="SpUsage" />
 
     <ImageButton
@@ -57,7 +67,7 @@
         android:clickable="true"
         android:contentDescription="@string/thumbnail"
         android:focusable="true"
-        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toTopOf="@+id/pages"
         app:layout_constraintDimensionRatio="3:4"
@@ -95,7 +105,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/favorite_manga"
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="@+id/shuffle"
@@ -112,7 +122,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/share"
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="@+id/shuffle"
@@ -121,4 +131,5 @@
         app:layout_constraintStart_toEndOf="@+id/shuffle"
         app:layout_constraintTop_toTopOf="@+id/shuffle"
         app:srcCompat="@drawable/ic_share" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

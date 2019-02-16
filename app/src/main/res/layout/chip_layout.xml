@@ -2,7 +2,4 @@
 <com.google.android.material.chip.Chip xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content" android:layout_height="wrap_content"
     style="@style/Widget.MaterialComponents.Chip.Action"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:chipBackgroundColor="?android:attr/colorPrimary"
-    android:textColor="?android:attr/colorForeground"
     />

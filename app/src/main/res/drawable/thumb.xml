@@ -12,6 +12,6 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp" />
 
-    <solid android:color="?android:attr/colorAccent" />
+    <solid android:color="?attr/colorAccent" />
 
 </shape>

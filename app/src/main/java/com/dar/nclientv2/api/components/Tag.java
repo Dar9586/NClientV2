@@ -10,11 +10,7 @@ import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 @SuppressWarnings("unused")
 public class Tag implements Parcelable{
@@ -77,23 +73,23 @@ public class Tag implements Parcelable{
     }
 
     public String toQueryTag(TagStatus status){
-        if(name.contains(" "))return (status==TagStatus.AVOIDED?"-":"")+findTagString()+":\""+name+'"';
-        return (status==TagStatus.AVOIDED?"-":"")+findTagString()+":"+name;
+        if(name.contains(" "))return (status==TagStatus.AVOIDED?"-":"")+findTagString()+"\""+name+'"';
+        return (status==TagStatus.AVOIDED?"-":"")+findTagString()+name;
     }
     public String toQueryTag(){
         return toQueryTag(status);
     }
     String findTagString(){
         switch (type){
-            case PARODY:return "parody";
-            case CHARACTER:return "character";
-            case TAG:return "tag";
-            case ARTIST:return "artist";
-            case GROUP:return "group";
-            case LANGUAGE:return "language";
-            case CATEGORY:return "category";
+            case PARODY:return "parody:";
+            case CHARACTER:return "character:";
+            case TAG:return "tag:";
+            case ARTIST:return "artist:";
+            case GROUP:return "group:";
+            case LANGUAGE:return "language:";
+            case CATEGORY:return "category:";
         }
-        return "unknown";
+        return "";
     }
     private TagType findType(String s) {
         switch (s){
@@ -155,24 +151,12 @@ public class Tag implements Parcelable{
                 ", count=" + count +
                 ", id=" + id +
                 ", type=" + type +
+                ", status=" + status +
                 '}';
     }
+
     public String toScrapedString() {
         return String.format(Locale.US,"%d,%d,%d,%s",count,id,type.ordinal(),name);
-    }
-    public static ArrayList<Tag> toArrayList(Set<String> x){
-        ArrayList<Tag>tags=new ArrayList<>(x.size());
-        for(String y:x){
-            tags.add(new Tag(y));
-        }
-        return tags;
-    }
-    public static Set<String> toStringSet(List<Tag> x){
-        Set<String>tags=new HashSet<>(x.size());
-        for(Tag y:x){
-            tags.add(y.toScrapedString());
-        }
-        return tags;
     }
 
     @Override

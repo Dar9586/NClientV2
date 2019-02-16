@@ -1,5 +1,6 @@
 package com.dar.nclientv2.async;
 
+import android.annotation.TargetApi;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -14,8 +15,6 @@ import android.util.Log;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.settings.Global;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,20 +24,20 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.FileProvider;
-
+@TargetApi(19)
 public class CreatePDF extends IntentService {
-    private final int notId;
+    private int notId;
     private int totalPage;
     private NotificationManagerCompat notificationManager;
     private NotificationCompat.Builder notification;
     public CreatePDF() {
         super("CreatePDF");
-        notId=Global.getNotificationId();
-
     }
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+        notId=Global.getNotificationId();
+        System.gc();
         File file=new File(intent.getStringExtra(getPackageName()+".PATH"));
         totalPage=intent.getIntExtra(getPackageName()+".PAGES",1);
         preExecute(file);
@@ -49,15 +48,16 @@ public class CreatePDF extends IntentService {
             BitmapFactory.Options options=new BitmapFactory.Options();
             options.inSampleSize=2;
             Bitmap bitmap=BitmapFactory.decodeFile(files[a].getAbsolutePath(),options);
-            PdfDocument.PageInfo info=new PdfDocument.PageInfo.Builder(bitmap.getWidth(),bitmap.getHeight(),a).create();
-            PdfDocument.Page p=document.startPage(info);
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
-            Bitmap decoded = BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
-            p.getCanvas().drawBitmap(decoded,0f,0f,null);
-            document.finishPage(p);
+            if(bitmap!=null) {
+                PdfDocument.PageInfo info = new PdfDocument.PageInfo.Builder(bitmap.getWidth(), bitmap.getHeight(), a).create();
+                PdfDocument.Page p = document.startPage(info);
+                p.getCanvas().drawBitmap(bitmap, 0f, 0f, null);
+                document.finishPage(p);
+                bitmap.recycle();
+            }
             notification.setProgress(totalPage-1,a+1,false);
             notificationManager.notify(getString(R.string.channel2_name),notId,notification.build());
+
         }
         notification.setContentText(getString(R.string.writing_pdf));
         notification.setProgress(totalPage,0,true);
@@ -92,8 +92,7 @@ public class CreatePDF extends IntentService {
             notificationManager.notify(getString(R.string.channel2_name),notId,notification.build());
             Log.d(Global.LOGTAG,finalPath.getAbsolutePath());
             Log.d(Global.LOGTAG,apkURI.toString());
-        }
-        catch(IOException e){
+        }catch(IOException e){
             notification.setContentTitle(getString(R.string.error_pdf));
             notification.setContentText(getString(R.string.failed));
             notification.setProgress(0,0,false);

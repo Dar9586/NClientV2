@@ -21,6 +21,7 @@ import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TitleType;
+import com.dar.nclientv2.components.CustomSSLSocketFactory;
 import com.dar.nclientv2.loginapi.LoadTags;
 import com.dar.nclientv2.loginapi.User;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
@@ -38,10 +39,20 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import okhttp3.OkHttpClient;
 
 public final class Global {
+    public static long recursiveSize(File path) {
+        if(path.isFile())return path.length();
+        long size=0;
+        for(File f:path.listFiles())
+            size+=f.isFile()?f.length():recursiveSize(f);
+
+        return size;
+    }
+
     public enum ThemeScheme{LIGHT,DARK,BLACK}
 
     public static OkHttpClient client=null;
@@ -49,9 +60,9 @@ public final class Global {
     public static final File DOWNLOADFOLDER=new File(Environment.getExternalStorageDirectory(),"NClientV2");
     public static final String LOGTAG="NCLIENTLOG";
     public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf";
-    private static TitleType titleType=TitleType.PRETTY;
     private static Language onlyLanguage=null;
-    private static boolean byPopular,loadImages,hideFromGallery,highRes,onlyTag,infiniteScroll,removeIgnoredGalleries;
+    private static TitleType titleType;
+    private static boolean byPopular,keepHistory,loadImages,hideFromGallery,highRes,onlyTag,infiniteScroll,removeIgnoredGalleries;
     private static ThemeScheme theme;
     private static int notificationId,columnCount,maxId,imageQuality,galleryWidth=-1, galleryHeight =-1;
 
@@ -71,8 +82,17 @@ public final class Global {
         Global.galleryHeight = galleryHeight;
     }
 
-    public static void     initTitleType    (@NonNull Context context){titleType=TitleType.values()[context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_title_type),1)];}
+
+    public static void initTitleType(@NonNull Context context){
+        String s=context.getSharedPreferences("Settings", 0).getString(context.getString(R.string.key_title_type),"pretty");
+        switch (s){
+            case "pretty":titleType= TitleType.PRETTY;break;
+            case "english":titleType=  TitleType.ENGLISH;break;
+            case "japanese":titleType=  TitleType.JAPANESE;break;
+        }
+    }
     public static void     initByPopular    (@NonNull Context context){byPopular=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_by_popular),false);}
+    public static void     initKeepHistory    (@NonNull Context context){keepHistory=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_keep_history),true);}
     public static void     initInfiniteScroll    (@NonNull Context context){infiniteScroll=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_infinite_scroll),false);}
     public static void  initHideFromGallery    (@NonNull Context context){hideFromGallery=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_hide_saved_images),false);}
     public static void     initHighRes    (@NonNull Context context){highRes=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_high_res_gallery),true);}
@@ -80,15 +100,18 @@ public final class Global {
     public static void     initOnlyTag    (@NonNull Context context){onlyTag=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_ignore_tags),true);}
     public static boolean  initLoadImages   (@NonNull Context context){loadImages=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_load_images),true);return loadImages;}
     public static void     initOnlyLanguage (@NonNull Context context){int x=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_only_language),-1);onlyLanguage=x==-1?null:Language.values()[x];}
-    public static void     initColumnCount  (@NonNull Context context){columnCount=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_column_count),1);}
+    public static void     initColumnCount  (@NonNull Context context){columnCount=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_column_count),2);}
     public static int      initImageQuality (@NonNull Context context){imageQuality=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_image_quality),90);return imageQuality;}
     public static void     initMaxId        (@NonNull Context context){maxId=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_max_id),236000);}
 
     public static void initHttpClient(@NonNull Context context){
         if(client!=null)return;
-        client=new OkHttpClient.Builder()
-                .cookieJar(new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context.getSharedPreferences("Login",0))))
-                .build();
+        OkHttpClient.Builder builder=new OkHttpClient.Builder()
+                .cookieJar(new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context.getSharedPreferences("Login",0))));
+
+        CustomSSLSocketFactory.enableTls12OnPreLollipop(builder);
+        client=builder.build();
+
         client.dispatcher().setMaxRequests(25);
         client.dispatcher().setMaxRequestsPerHost(25);
         if(Login.isLogged()&&Login.getUser()==null){
@@ -107,6 +130,7 @@ public final class Global {
         return context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_check_update),true);
     }
     private static int getLogo(){ return theme==ThemeScheme.LIGHT?R.drawable.ic_logo_dark:R.drawable.ic_logo; }
+    private static Drawable getLogo(Resources resources){ return ResourcesCompat.getDrawable(resources,theme==ThemeScheme.LIGHT?R.drawable.ic_logo_dark:R.drawable.ic_logo,null); }
     public static TitleType getTitleType() {
         return titleType;
     }
@@ -132,6 +156,11 @@ public final class Global {
     public static boolean isOnlyTag() {
         return onlyTag;
     }
+
+    public static boolean isKeepHistory() {
+        return keepHistory;
+    }
+
     public static boolean isByPopular() {
         return byPopular;
     }
@@ -168,7 +197,6 @@ public final class Global {
         }
     }
 
-    public static void updateTitleType(@NonNull Context context, TitleType type){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_title_type)),type.ordinal()).apply();titleType=type; }
     public static void updateOnlyLanguage(@NonNull Context context, @Nullable Language type){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_only_language)),type==null?-1:type.ordinal()).apply();onlyLanguage=type; }
     public static boolean  updateByPopular(@NonNull Context context,boolean popular){context.getSharedPreferences("Settings", 0).edit().putBoolean(context.getString((R.string.key_by_popular)),popular).apply();byPopular=popular; return byPopular;}
     public static boolean  updateLoadImages(@NonNull Context context,boolean load){context.getSharedPreferences("Settings", 0).edit().putBoolean(context.getString((R.string.key_load_images)),load).apply();loadImages=load; return loadImages;}
@@ -229,14 +257,16 @@ public final class Global {
 
     public static void loadImage(String url, final ImageView imageView){loadImage(url,imageView,false);}
     public static void loadImage(String url, final ImageView imageView,boolean force){
-        if(loadImages||force)Picasso.get().load(url).placeholder(getLogo()).into(imageView);
-        else Picasso.get().load(getLogo()).placeholder(getLogo()).into(imageView);
+        if(loadImages||force)Picasso.get().load(url).placeholder(getLogo(imageView.getResources())).into(imageView);
+        else Picasso.get().load((String)null).placeholder(getLogo(imageView.getResources())).into(imageView);
     }
     public static void loadImage(File file, ImageView imageView){
-        Picasso.get().load(file).placeholder(getLogo()).into(imageView);
+        if(loadImages) Picasso.get().load(file).placeholder(getLogo(imageView.getResources())).into(imageView);
+        else Picasso.get().load((String)null).placeholder(getLogo(imageView.getResources())).into(imageView);
+
     }
     public static void loadImage(@DrawableRes int drawable, ImageView imageView){
-        Picasso.get().load(drawable).into(imageView);
+        Picasso.get().load((String)null).placeholder(ResourcesCompat.getDrawable(imageView.getResources(),drawable,null)).into(imageView);
         //GlideApp.with(context).load(drawable).into(imageView);
     }
 

@@ -8,43 +8,34 @@
             android:icon="@drawable/ic_file"
             android:title="@string/downloaded_manga" />
         <item
+            android:id="@+id/random"
+            android:icon="@drawable/ic_shuffle"
+            android:title="@string/random_manga"
+            />
+        <item
             android:id="@+id/favorite_manager"
             android:icon="@drawable/ic_favorite"
             android:title="@string/favorite_manga" />
+        <item
+            android:id="@+id/online_favorite_manager"
+            android:icon="@drawable/ic_star"
+            android:title="@string/online_favorite_manga" />
         <item
             android:id="@+id/tag_manager"
             android:icon="@drawable/ic_hashtag"
             android:title="@string/manage_tags" />
 
     </group>
-    <item android:title="@string/filters">
+    <item android:title="@string/settings">
         <menu>
-    <group android:checkableBehavior="none">
-        <item
-            android:id="@+id/only_language"
-            android:title="@string/all_languages"/>
-        <item
-            android:id="@+id/by_popular"
-            android:title="@string/sort_popular"/>
-    </group>
-        </menu>
-    </item>
-    <item android:title="@string/title_type">
-        <menu>
-            <group android:checkableBehavior="single">
-                <item
-                    android:id="@+id/pretty_title"
-                    android:title="@string/pretty_title" />
-                <item
-                    android:id="@+id/english_title"
-                    android:title="@string/english_title" />
-                <item
-                    android:id="@+id/japanese_title"
-                    android:title="@string/japanese_title" />
+            <group android:checkableBehavior="none">
+                <item android:title="@string/settings"
+                android:icon="@drawable/ic_settings"
+                android:id="@+id/action_settings"/>
+                <item android:title="@string/login"
+                    android:icon="@drawable/ic_person"
+                    android:id="@+id/action_login"/>
             </group>
         </menu>
     </item>
-
-
-
 </menu>

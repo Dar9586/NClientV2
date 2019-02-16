@@ -8,31 +8,22 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
     <item
-    android:id="@+id/random"
-    android:icon="@drawable/ic_shuffle"
-    android:title="@string/random_manga"
-    app:showAsAction="ifRoom|collapseActionView" />
-    <item
         android:id="@+id/tag_manager"
         android:icon="@drawable/ic_help"
         android:title="@string/update_tag_status"
         android:visible="false"
         app:showAsAction="ifRoom|collapseActionView" />
     <item
+        android:id="@+id/only_language"
+        android:title="@string/all_languages"
+        app:showAsAction="ifRoom|collapseActionView"/>
+    <item
+        android:id="@+id/by_popular"
+        android:title="@string/sort_popular"
+        app:showAsAction="ifRoom|collapseActionView"/>
+    <item
         android:id="@+id/open_browser"
+        android:icon="@drawable/ic_world"
         android:title="@string/open_in_browser"
         app:showAsAction="ifRoom|collapseActionView" />
-    <item
-        android:id="@+id/action_settings"
-        android:title="@string/settings"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_login"
-        android:title="@string/login"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/online_favorite"
-        android:title="@string/online_favorites"
-        android:visible="false"
-        app:showAsAction="never"/>
 </menu>

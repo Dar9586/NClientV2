@@ -289,11 +289,19 @@ public class Queries{
             String query="SELECT * FROM "+ TABLE_NAME +" WHERE "+ TYPE +" = ? AND "+ COUNT +" >= ?";
             return retrieveAll(db.rawQuery(query,new String[]{""+type.ordinal(),""+TagV2.getMinCount()}));
         }
+        public static Tag[] getTrueAllType(SQLiteDatabase db,TagType type){
+            String query="SELECT * FROM "+ TABLE_NAME +" WHERE "+ TYPE +" = ?";
+            return retrieveAll(db.rawQuery(query,new String[]{""+type.ordinal()}));
+        }
         public static Tag[]getAllStatus(SQLiteDatabase db,TagStatus status){
             String query="SELECT * FROM "+ TABLE_NAME +" WHERE "+ STATUS +" = ?";
             return retrieveAll(db.rawQuery(query,new String[]{""+status.ordinal()}));
         }
         public static Tag[]getAllFiltered(SQLiteDatabase db){
+            String query="SELECT * FROM "+ TABLE_NAME +" WHERE "+ STATUS +" != ?";
+            return retrieveAll(db.rawQuery(query,new String[]{""+TagStatus.DEFAULT.ordinal()}));
+        }
+        public static Tag[]getAllFilteredByType(SQLiteDatabase db,TagType type){
             String query="SELECT * FROM "+ TABLE_NAME +" WHERE "+ STATUS +" != ?";
             return retrieveAll(db.rawQuery(query,new String[]{""+TagStatus.DEFAULT.ordinal()}));
         }
@@ -345,13 +353,7 @@ public class Queries{
             values.put(ONLINE,0);
             db.updateWithOnConflict(TABLE_NAME,values, ONLINE +"=1",null,SQLiteDatabase.CONFLICT_IGNORE);
         }
-        @Deprecated
-        public static void updateStatus(SQLiteDatabase db, int id, TagStatus status){
-            ContentValues values=new ContentValues(1);
-            values.put(STATUS,status.ordinal());
-            db.updateWithOnConflict(TABLE_NAME,values, IDTAG +"=?",new String[]{""+id},SQLiteDatabase.CONFLICT_IGNORE);
 
-        }
         public static void resetAllStatus(SQLiteDatabase db){
             ContentValues values=new ContentValues(1);
             values.put(STATUS,TagStatus.DEFAULT.ordinal());
@@ -372,6 +374,41 @@ public class Queries{
         }
 
 
+        public static Tag[][] getTags(SQLiteDatabase db, String tagString){
+            Tag[][]tags=new Tag[TagType.values().length][];
+            String query="SELECT * FROM "+TABLE_NAME+" WHERE "+IDTAG+" IN ("+tagString+")";
+            Cursor cursor=db.rawQuery(query,null);
+            Tag[]all=new Tag[cursor.getCount()];
+            int i=0;
+            if(cursor.moveToFirst()){
+                do{
+                    all[i++]=cursorToTag(cursor);
+                }while(cursor.moveToNext());
+            }
+            List<Tag>[]tt=new ArrayList[TagType.values().length];
+            for(int a=0;a<tt.length;a++)tt[a]=new ArrayList<>();
+            for(Tag s:all){
+                tt[s.getType().ordinal()].add(s);
+            }
+            for(TagType type:TagType.values()){
+                tags[type.ordinal()]=tt[type.ordinal()].toArray(new Tag[0]);
+            }
+            return tags;
+        }
+
+        public static Tag[] search(SQLiteDatabase db, String str, TagType type) {
+            String query="SELECT * FROM "+TABLE_NAME+" WHERE "+NAME+" LIKE ? AND "+TYPE+"=?";
+            Log.d(Global.LOGTAG,query);
+            Cursor c=db.rawQuery(query,new String[]{'%'+str+'%',""+type.ordinal()});
+            Tag[] tags=new Tag[c.getCount()];
+            int i=0;
+            if(c.moveToFirst()){
+                do{
+                    tags[i++]=cursorToTag(c);
+                }while (c.moveToNext());
+            }
+            return tags;
+        }
     }
     static class BridgeTable{
         static final String TABLE_NAME="GalleryTags";

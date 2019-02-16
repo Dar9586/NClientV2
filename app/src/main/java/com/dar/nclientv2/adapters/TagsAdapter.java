@@ -1,4 +1,4 @@
-package com.dar.nclientv2.adapters.paged;
+package com.dar.nclientv2.adapters;
 
 import android.database.Cursor;
 import android.graphics.Color;
@@ -88,8 +88,6 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
             }
         };
     }
-
-
     static class ViewHolder extends RecyclerView.ViewHolder {
         final ImageView imgView;
         final TextView title,count;
@@ -119,7 +117,6 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
     public TagsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new TagsAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.entry_tag_layout, parent, false));
     }
-
     @Override
     public void onBindViewHolder(@NonNull final TagsAdapter.ViewHolder holder, int position) {
         if(black)holder.master.setBackgroundColor(Color.BLACK);
@@ -145,6 +142,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
             return true;
         });
         updateLogo(holder.imgView,online?TagStatus.AVOIDED:ent.getStatus());
+        Log.d(Global.LOGTAG,"PASSED: "+ent);
     }
 
     @Override
@@ -208,13 +206,12 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         jw.name("type").value(tag.getTypeString());
         jw.endObject();
     }
-    private static void updateLogo(ImageView img, TagStatus s){
+    private void updateLogo(ImageView img, TagStatus s){
         switch (s){
-            case DEFAULT:img.setImageResource(R.drawable.ic_void);break;
-            case ACCEPTED:img.setImageResource(R.drawable.ic_check);break;
-            case AVOIDED:img.setImageResource(R.drawable.ic_close);break;
+            case DEFAULT:img.setImageDrawable(null);break;//Global.loadImage(R.drawable.ic_void,img); break;
+            case ACCEPTED:Global.loadImage(R.drawable.ic_check,img);Global.setTint(img.getDrawable());break;
+            case AVOIDED:Global.loadImage(R.drawable.ic_close,img);Global.setTint(img.getDrawable());break;
         }
-        Global.setTint(img.getDrawable());
     }
 
     private boolean force=false;

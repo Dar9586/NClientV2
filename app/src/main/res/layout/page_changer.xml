@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -21,8 +23,8 @@
             android:id="@+id/prev"
             android:layout_width="0dp"
             android:layout_weight="2"
-            android:src="@drawable/ic_keyboard_arrow_left"
-            android:backgroundTint="@android:color/transparent"
+            app:srcCompat="@drawable/ic_keyboard_arrow_left"
+            app:backgroundTint="@android:color/transparent"
             android:tint="?android:attr/colorForeground"
             android:layout_height="wrap_content" />
         <EditText
@@ -33,7 +35,8 @@
             android:layout_weight="3"
             android:textSize="24sp"
             android:gravity="center"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            tools:ignore="Autofill" />
         <TextView
             android:id="@+id/page"
             android:layout_width="0dp"
@@ -46,8 +49,8 @@
             android:id="@+id/next"
             android:layout_width="0dp"
             android:layout_weight="2"
-            android:backgroundTint="@android:color/transparent"
-            android:src="@drawable/ic_keyboard_arrow_right"
+            app:backgroundTint="@android:color/transparent"
+            app:srcCompat="@drawable/ic_keyboard_arrow_right"
             android:tint="?android:attr/colorForeground"
             android:layout_height="wrap_content" />
     </LinearLayout>

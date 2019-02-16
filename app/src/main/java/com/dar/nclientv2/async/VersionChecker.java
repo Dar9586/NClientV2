@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.JsonReader;
+import android.util.JsonToken;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -32,21 +33,21 @@ public class VersionChecker{
                 @Override
                 public void onFailure(@NonNull Call call,@NonNull IOException e){
                     context.runOnUiThread(()->{
+                        Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
                         if(!silent) Toast.makeText(context, R.string.error_retrieving, Toast.LENGTH_SHORT).show();
                     });
-
                 }
 
                 @Override
                 public void onResponse(@NonNull Call call,@NonNull  Response response) throws IOException{
                     JsonReader jr=new JsonReader(response.body().charStream());
                     jr.beginObject();
-                    while(!jr.nextName().equals("tag_name"))jr.skipValue();
-                    String latestVersion=jr.nextString();
+                    while(jr.peek()==JsonToken.NAME&&!jr.nextName().equals("tag_name"))jr.skipValue();
+                    String latestVersion=jr.peek()==JsonToken.STRING?jr.nextString():null;
                     Log.d(Global.LOGTAG,"LATEST VERSION: "+latestVersion);
                     jr.close();
                     context.runOnUiThread(()->{
-                        if(latestVersion.equals(versionName)){
+                        if(versionName.equals(latestVersion)){
                             if(!silent)
                                 Toast.makeText(context, R.string.no_updates_found, Toast.LENGTH_SHORT).show();
                         }else{
@@ -71,6 +72,7 @@ public class VersionChecker{
         builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(LATEST_RELEASE_URL));
             context.startActivity(browserIntent);
-        }).setNegativeButton(android.R.string.cancel,null).show();
+        }).setNegativeButton(android.R.string.cancel,null);
+        if(!context.isFinishing())builder.show();
     }
 }

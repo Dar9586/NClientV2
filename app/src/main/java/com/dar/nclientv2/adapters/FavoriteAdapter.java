@@ -2,6 +2,7 @@ package com.dar.nclientv2.adapters;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Build;
 import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -70,13 +71,17 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
         }
         holder.title.setOnClickListener(v -> {
             Layout layout = holder.title.getLayout();
-            if(layout.getEllipsisCount(layout.getLineCount()-1)>0)holder.title.setMaxLines(7);
-            else if(holder.title.getMaxLines()==7)holder.title.setMaxLines(3);
-            else holder.layout.performClick();
+            if(Build.VERSION.SDK_INT>Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1){
+                if(layout.getEllipsisCount(layout.getLineCount() - 1) > 0)
+                    holder.title.setMaxLines(7);
+                else if(holder.title.getMaxLines() == 7) holder.title.setMaxLines(3);
+                else holder.layout.performClick();
+            }else holder.layout.performClick();
         });
         holder.layout.setOnClickListener(v -> {
             //Global.setLoadedGallery(ent);
             Intent intent = new Intent(activity, GalleryActivity.class);
+            Log.d(Global.LOGTAG,ent+"");
             intent.putExtra(activity.getPackageName()+ ".GALLERY",ent);
             activity.startActivity(intent);
         });
@@ -131,8 +136,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
     }
     public void forceReload(){
         force=true;
-        getFilter().filter(lastQuery);
-
+        activity.runOnUiThread(() -> getFilter().filter(lastQuery));
     }
     public void setRefresh(boolean refresh){
         activity.runOnUiThread(()->activity.getRefresher().setRefreshing(refresh));

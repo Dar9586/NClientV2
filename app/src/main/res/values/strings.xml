@@ -1,6 +1,6 @@
 <resources>
     <!--KEYS-->
-    <string name="key_title_type">title_type</string>
+    <string name="key_title_type">title_type_str</string>
     <string name="key_by_popular">is_by_popular</string>
     <string name="key_load_images">load_images</string>
     <string name="key_column_count">column_count</string>
@@ -24,6 +24,7 @@
     <string name="key_high_res_gallery">high_res_gallery</string>
     <string name="key_favorite_list">favorite_list</string>
     <string name="key_use_account_tag">use_account_tags</string>
+    <string name="key_send_report">send_report</string>
 
     <!--SUMMARY-->
     <string name="setting_on_hide_save">Saved images won\'t be shown into gallery</string>
@@ -32,16 +33,19 @@
     <string name="setting_off_ignore_tags">Other tags will be queried when a tag is selected from the gallery menu</string>
     <string name="setting_on_high_res">Best resolution images will be loaded (more data)</string>
     <string name="setting_off_high_res">Thumbnails images will be loaded (less data)</string>
-    <string name="setting_on_load">The images will be loaded from Internet</string>
-    <string name="setting_off_load">The images won\'t be loaded from Internet</string>
+    <string name="setting_on_load">Images will be loaded in all activities</string>
+    <string name="setting_off_load">Images will be loaded only in single page viewer</string>
     <string name="setting_on_use_account_tag">Use the account tags into the search query (Local tags will have priority)</string>
     <string name="image_quality_summary">Resolution quality in percentage when a gallery is downloaded</string>
     <string name="setting_off_use_account_tag">Account tags will be ignored for the query</string>
     <string name="setting_on_infinite_scroll">Load another page when reaching the bottom</string>
     <string name="setting_off_infinite_scroll">Change page using the provided menu</string>
     <string name="theme_summary">Select theme colors</string>
+    <string name="setting_on_send_report">Report will be sent</string>
+    <string name="setting_off_send_report">Report will not be sent</string>
 
     <!--SETTINGS NAME-->
+    <string name="send_crash_report">Send crash report</string>
     <string name="change_theme">Change theme</string>
     <string name="clear_cache">Clear cache</string>
     <string name="load_images">Load images</string>
@@ -75,7 +79,6 @@
 
     <string name="favorite_max_reached" formatted="true">You can have a maximum of %d favorite manga.</string>
     <string name="tags_max_reached" formatted="true">You can have a maximum of %d selected tags.</string>
-
 
 
     <string name="filters">Filters</string>
@@ -161,8 +164,6 @@
     <string name="page_placeholder">999/999</string>
 
 
-
-
     <string name="share_with">Share with</string>
     <string name="link_copied_to_clipboard">Link copied to clipboard</string>
     <string name="open_in_browser">Open in browser</string>
@@ -200,6 +201,33 @@
     <string name="set_minimum_count">Set minimum count</string>
     <string name="sort_by_title">Sort by title</string>
     <string name="sort_by_popular">Sort by popular</string>
+    <string name="key_override_volume">volume_override</string>
+    <string name="setting_on_override_volume">The volume keys will change page</string>
+    <string name="setting_off_override_volume">The volume keys will change system volume</string>
+    <string name="next_page_volume_up">Go to next page with up volume</string>
+    <string name="next_page_volume_down">Go to next page with down volume</string>
+    <string name="change_title_type">Change title type</string>
+    <string name="title_type_summary">Select the default title type for the galleries</string>
+
+    <string name="app_version_format" formatted="true">NClientV2 %s</string>
+    <string name="search_settings">Search settings</string>
+    <string name="global_settings">Global settings</string>
+    <string name="images_settings">Images settings</string>
+    <string name="miscellaneous">Miscellaneous</string>
+    <string name="update_settings">Update settings</string>
+    <string name="online_favorite_manga">Online favorite manga</string>
+    <string name="cache_size_formatted">Cache size: %.2f MB</string>
+    <string name="cache_cleared">Cache cleared</string>
+    <string name="sort_by_latest">Sort by latest</string>
+    <string name="edit">Edit</string>
+    <string name="options">Options</string>
+    <string name="key_keep_history">keep_history</string>
+    <string name="setting_on_keep_history">The searches will be stored</string>
+    <string name="setting_off_keep_history">The searched will not be stored</string>
+    <string name="keep_history">Keep search history</string>
+    <string name="add">Add</string>
+    <string name="insert_tag_name">Insert tag name:</string>
+    <string name="other">other</string>
 
 
     <string-array name="theme">
@@ -211,5 +239,16 @@
         <item>light</item>
         <item>dark</item>
         <item>black</item>
+    </string-array>
+
+    <string-array name="title_type_array">
+        <item>English</item>
+        <item>Japanese</item>
+        <item>Pretty</item>
+    </string-array>
+    <string-array name="title_type_array_data">
+        <item>english</item>
+        <item>japanese</item>
+        <item>pretty</item>
     </string-array>
 </resources>

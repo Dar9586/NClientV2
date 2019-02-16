@@ -1,7 +1,7 @@
 package com.dar.nclientv2.adapters;
 
-import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,14 +10,16 @@ import android.view.ViewGroup;
 
 import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.R;
+import com.dar.nclientv2.api.Inspector;
 import com.dar.nclientv2.api.components.Gallery;
+import com.dar.nclientv2.api.enums.ApiRequestType;
+import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
 
 import java.io.File;
 import java.util.List;
-import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -77,7 +79,8 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
             if(black)holder.layout.setBackgroundColor(Color.BLACK);
             holder.overlay.setVisibility((queryString!=null&&ent.hasIgnoredTags(queryString))?View.VISIBLE:View.GONE);
             loadGallery(holder,ent);
-            holder.title.setText(ent.getTitle());
+            holder.pages.setVisibility(View.GONE);
+            holder.title.setText(ent.getTitle(TitleType.ENGLISH));
             if(Global.getOnlyLanguage()==null||context instanceof GalleryActivity) {
                 switch (ent.getLanguage()) {
                     case CHINESE:  holder.flag.setText("\uD83C\uDDE8\uD83C\uDDF3");break;
@@ -86,17 +89,20 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
                     case UNKNOWN:  holder.flag.setText("\uD83C\uDFF3");
                 }
             }else holder.flag.setVisibility(View.GONE);
-            holder.pages.setText(String.format(Locale.US, "%d", ent.getPageCount()));
             holder.title.setOnClickListener(v -> {
                 Layout layout = holder.title.getLayout();
-                if(layout.getEllipsisCount(layout.getLineCount()-1)>0)holder.title.setMaxLines(7);
-                else if(holder.title.getMaxLines()==7)holder.title.setMaxLines(3);
-                else holder.layout.performClick();
+                if(Build.VERSION.SDK_INT>Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1){
+                    if(layout.getEllipsisCount(layout.getLineCount() - 1) > 0)
+                        holder.title.setMaxLines(7);
+                    else if(holder.title.getMaxLines() == 7) holder.title.setMaxLines(3);
+                    else holder.layout.performClick();
+                }else holder.layout.performClick();
             });
             holder.layout.setOnClickListener(v -> {
-              Intent intent = new Intent(context, GalleryActivity.class);
-              intent.putExtra(context.getPackageName() + ".GALLERY", ent);
-              context.startActivity(intent);
+              /*Intent intent = new Intent(context, GalleryActivity.class);
+              intent.putExtra(context.getPackageName() + ".ID", ent.getId());
+              context.startActivity(intent);*/
+                new Inspector(context,-1,""+ent.getId(),ApiRequestType.BYSINGLE);
               holder.overlay.setVisibility((queryString!=null&&ent.hasIgnoredTags(queryString))?View.VISIBLE:View.GONE);
             });
             holder.overlay.setOnClickListener(v -> holder.overlay.setVisibility(View.GONE));

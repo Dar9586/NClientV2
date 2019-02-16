@@ -2,23 +2,24 @@ package com.dar.nclientv2;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 
 import com.dar.nclientv2.api.Inspector;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
-import com.dar.nclientv2.api.enums.TitleType;
+import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.VersionChecker;
 import com.dar.nclientv2.async.scrape.BulkScraper;
 import com.dar.nclientv2.components.BaseActivity;
@@ -28,12 +29,16 @@ import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
 import com.google.android.material.navigation.NavigationView;
 
+import org.acra.ACRA;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -43,8 +48,11 @@ import androidx.recyclerview.widget.RecyclerView;
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private Inspector inspector=null;
+    private NavigationView navigationView;
     private Tag tag;
     private int related=-1;
+    private boolean tagFromURL=false,advanced=false;
+    private static boolean firstTime=true;
     public void setInspector(Inspector inspector) {
         this.inspector = inspector;
     }
@@ -54,7 +62,6 @@ public class MainActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
         Global.initHttpClient(this);
-        Global.initTitleType(this);
         Global.initRemoveIgnoredGalleries(this);
         Global.initHighRes(this);
         Global.initOnlyTag(this);
@@ -65,10 +72,8 @@ public class MainActivity extends BaseActivity
         Global.initInfiniteScroll(this);
         com.dar.nclientv2.settings.Login.initUseAccountTag(this);
         setContentView(R.layout.activity_main);
-        if(getSharedPreferences("Settings",0).getBoolean("first_run",true)){
-            BulkScraper.bulkAll(null);
-            getSharedPreferences("Settings",0).edit().putBoolean("first_run",false).apply();
-        }
+        BulkScraper.bulkAll(this);
+        //getSharedPreferences("Settings",0).edit().remove("first_run").apply();
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -78,42 +83,56 @@ public class MainActivity extends BaseActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        Uri data=getIntent().getData();
+        String q=null;
+        TagType dataType=null;
+        if(data!=null) {
+            List<String>datas=data.getPathSegments();
+            Log.d(Global.LOGTAG,datas.size()+"COUNTTTTT");
+            for(String s:datas)Log.d(Global.LOGTAG,"PARAMM: "+s);
+            if(datas.size()>0){
+                switch (datas.get(0)){
+                    case "parody":dataType=TagType.PARODY; break;
+                    case "character":dataType=TagType.CHARACTER; break;
+                    case "tag":dataType=TagType.TAG; break;
+                    case "artist":dataType=TagType.ARTIST; break;
+                    case "group":dataType=TagType.GROUP; break;
+                    case "language":dataType=TagType.LANGUAGE; break;
+                    case "category":dataType=TagType.CATEGORY; break;
+                    case "search": q=data.getQueryParameter("q");break;
+                }
+                if(q==null&&datas.size()>1)q=datas.get(1);
+            }
+            Log.d(Global.LOGTAG, "Q: " + data.getQueryParameter("q"));
+        }
+        navigationView = findViewById(R.id.nav_view);
         changeNavigationImage(navigationView);
         navigationView.setNavigationItemSelectedListener(this);
-        switch (Global.getTitleType()){
-            case PRETTY:navigationView.setCheckedItem(R.id.pretty_title);break;
-            case ENGLISH:navigationView.setCheckedItem(R.id.english_title);break;
-            case JAPANESE:navigationView.setCheckedItem(R.id.japanese_title);break;
-        }
-
-        navigationView.getMenu().findItem(R.id.by_popular).setIcon(Global.isByPopular()?R.drawable.ic_check:R.drawable.ic_close);
+        navigationView.getMenu().findItem(R.id.online_favorite_manager).setVisible(com.dar.nclientv2.settings.Login.isLogged());
+        navigationView.getMenu().findItem(R.id.action_login).setTitle(com.dar.nclientv2.settings.Login.isLogged()?R.string.logout:R.string.login);
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
-        prepareUpdateIcon();
-        updateLanguageIcon(navigationView.getMenu().findItem(R.id.only_language),false);
         recycler.setHasFixedSize(true);
         recycler.setItemViewCacheSize(24);
         recycler.addOnScrollListener(new RecyclerView.OnScrollListener(){
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy){
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy){
                 if(Global.isInfiniteScroll()&&!refresher.isRefreshing()){
                     GridLayoutManager manager = (GridLayoutManager)recycler.getLayoutManager();
                     if(actualPage < totalPage && manager.findLastVisibleItemPosition() >= (recycler.getAdapter().getItemCount()-1-manager.getSpanCount()))
-                        new Inspector(MainActivity.this, actualPage + 1, Inspector.getActualQuery(), Inspector.getActualRequestType(),true);
+                        new Inspector(MainActivity.this, actualPage + 1, Inspector.getActualQuery(), Inspector.getActualRequestType(),true,inspector==null?null:inspector.getTags());
                 }
 
             }
         });
-        refresher.setOnRefreshListener(() -> new Inspector(MainActivity.this,Inspector.getActualPage(),Inspector.getActualQuery(),Inspector.getActualRequestType()));
+        refresher.setOnRefreshListener(() -> new Inspector(MainActivity.this,Inspector.getActualPage(),Inspector.getActualQuery(),Inspector.getActualRequestType(),false,inspector==null?null:inspector.getTags()));
         findViewById(R.id.prev).setOnClickListener(v -> {
             if (actualPage > 1)
-                new Inspector(MainActivity.this, actualPage - 1, Inspector.getActualQuery(), Inspector.getActualRequestType());
+                new Inspector(MainActivity.this, actualPage - 1, Inspector.getActualQuery(), Inspector.getActualRequestType(),false,inspector==null?null:inspector.getTags());
         });
         findViewById(R.id.next).setOnClickListener(v -> {
             if (actualPage < totalPage)
-                new Inspector(MainActivity.this, actualPage + 1, Inspector.getActualQuery(), Inspector.getActualRequestType());
+                new Inspector(MainActivity.this, actualPage + 1, Inspector.getActualQuery(), Inspector.getActualRequestType(),false,inspector==null?null:inspector.getTags());
 
         });
         findViewById(R.id.page_index).setOnClickListener(v -> loadDialog());
@@ -123,7 +142,14 @@ public class MainActivity extends BaseActivity
             related = getIntent().getExtras().getInt(getPackageName()+".RELATED", -1);
             tag = getIntent().getExtras().getParcelable(getPackageName()+".TAG");
         }
-        if(related!=-1){
+        if(dataType!=null&&q!=null){
+            tag=new Tag(q,0,0,dataType,TagStatus.DEFAULT);
+            tagFromURL=true;
+        }
+        if(q!=null&&dataType==null){
+            toolbar.setTitle(q);
+            new Inspector(this,1,q,ApiRequestType.BYSEARCH);
+        }else if(related!=-1){
             new Inspector(this,1,""+related,ApiRequestType.RELATED);
             toolbar.setTitle(R.string.related);
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -134,13 +160,16 @@ public class MainActivity extends BaseActivity
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             toggle.setDrawerIndicatorEnabled(false);
         } else new Inspector(this,1,"",ApiRequestType.BYALL);
-        if(Global.shouldCheckForUpdates(this))new VersionChecker(this,true);
+        if(firstTime){
+            if(Global.shouldCheckForUpdates(this))new VersionChecker(this,true);
+            firstTime=false;
+        }
     }
 
     private void changeNavigationImage(NavigationView navigationView) {
         switch (Global.getTheme()){
-            case BLACK: ((ImageView)navigationView.getHeaderView(0).findViewById(R.id.imageView)).setImageResource(R.drawable.ic_logo);navigationView.getHeaderView(0).findViewById(R.id.layout_header).setBackgroundResource(android.R.color.black);break;
-            default:((ImageView)navigationView.getHeaderView(0).findViewById(R.id.imageView)).setImageResource(R.mipmap.ic_launcher);navigationView.getHeaderView(0).findViewById(R.id.layout_header).setBackgroundResource(R.drawable.side_nav_bar);break;
+            case BLACK:Global.loadImage(R.drawable.ic_logo,navigationView.getHeaderView(0).findViewById(R.id.imageView));navigationView.getHeaderView(0).findViewById(R.id.layout_header).setBackgroundResource(android.R.color.black);break;
+            default:Global.loadImage(R.mipmap.ic_launcher,navigationView.getHeaderView(0).findViewById(R.id.imageView));navigationView.getHeaderView(0).findViewById(R.id.layout_header).setBackgroundResource(R.drawable.side_nav_bar);break;
         }
     }
 
@@ -150,40 +179,26 @@ public class MainActivity extends BaseActivity
         super.onDestroy();
     }
 
-    private void prepareUpdateIcon(){
-        if(Global.getOnlyLanguage()==null)Global.updateOnlyLanguage(this,Language.UNKNOWN);
-        else{
-            switch (Global.getOnlyLanguage()){
-                case ENGLISH:Global.updateOnlyLanguage(this,null);break;
-                case JAPANESE:Global.updateOnlyLanguage(this,Language.ENGLISH);break;
-                case CHINESE:Global.updateOnlyLanguage(this,Language.JAPANESE);break;
-                case UNKNOWN:Global.updateOnlyLanguage(this,Language.CHINESE);break;
-            }
-        }
-    }
-    private void updateLanguageIcon(MenuItem item,boolean update){
+    private void updateLanguageIcon(MenuItem item){
         //ALL,ENGLISH;JAPANESE;CHINESE;OTHER
 
-        if(Global.getOnlyLanguage()==null){
-            Global.updateOnlyLanguage(this,Language.ENGLISH);
-            item.setTitle(R.string.only_english);
-            item.setIcon(R.drawable.ic_gbbw);
-        }
+        if(Global.getOnlyLanguage()==null) Global.updateOnlyLanguage(this,Language.ENGLISH);
         else
             switch (Global.getOnlyLanguage()){
-                case ENGLISH:Global.updateOnlyLanguage(this, Language.JAPANESE);item.setTitle(R.string.only_japanese);item.setIcon(R.drawable.ic_jpbw);break;
-                case JAPANESE:Global.updateOnlyLanguage(this, Language.CHINESE);item.setTitle(R.string.only_chinese);item.setIcon(R.drawable.ic_cnbw);break;
-                case CHINESE:Global.updateOnlyLanguage(this, Language.UNKNOWN);item.setTitle(R.string.only_other);item.setIcon(R.drawable.ic_help);break;
-                case UNKNOWN:Global.updateOnlyLanguage(this, null);item.setTitle(R.string.all_languages);item.setIcon(R.drawable.ic_world);break;
+                case ENGLISH:Global.updateOnlyLanguage(this, Language.JAPANESE);break;
+                case JAPANESE:Global.updateOnlyLanguage(this, Language.CHINESE);break;
+                case CHINESE:Global.updateOnlyLanguage(this, Language.UNKNOWN);break;
+                case UNKNOWN:Global.updateOnlyLanguage(this, null);break;
             }
-            if(update)new Inspector(MainActivity.this,Inspector.getActualPage(),Inspector.getActualQuery(),Inspector.getActualRequestType());
+            new Inspector(MainActivity.this,Inspector.getActualPage(),Inspector.getActualQuery(),Inspector.getActualRequestType());
+        Global.setTint(item.getIcon());
     }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }else if(inspector.getRequestType()==ApiRequestType.BYSEARCH){
+        }else if(inspector!=null&&inspector.getRequestType()==ApiRequestType.BYSEARCH){
             removeQuery();
         } else {
             super.onBackPressed();
@@ -211,7 +226,7 @@ public class MainActivity extends BaseActivity
                 new DefaultDialogs.Builder(this).setActual(actualPage).setMax(totalPage).setDialogs(new DefaultDialogs.DialogResults() {
                     @Override
                     public void positive(int actual) {
-                        new Inspector(MainActivity.this,actual,Inspector.getActualQuery(),Inspector.getActualRequestType());
+                        new Inspector(MainActivity.this,actual,Inspector.getActualQuery(),Inspector.getActualRequestType(),false,inspector==null?null:inspector.getTags());
                     }
                     @Override
                     public void negative() {}
@@ -232,7 +247,6 @@ public class MainActivity extends BaseActivity
         }
     }
     private void removeQuery(){
-        searchView.setQuery("",false);
         getSupportActionBar().setTitle(R.string.app_name);
         if(related!=-1){
             new Inspector(this,1,""+related,ApiRequestType.RELATED);
@@ -246,22 +260,28 @@ public class MainActivity extends BaseActivity
             new Inspector(this,1,"",ApiRequestType.BYALL);
             getSupportActionBar().setTitle(R.string.app_name);
         }
+        if(advanced){
+            advanced=false;
+            supportInvalidateOptionsMenu();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        ACRA.getErrorReporter().setEnabled(getSharedPreferences("Settings",0).getBoolean(getString(R.string.key_send_report),true));
         com.dar.nclientv2.settings.Login.initUseAccountTag(this);
+        navigationView.getMenu().findItem(R.id.action_login).setTitle(com.dar.nclientv2.settings.Login.isLogged()?R.string.logout:R.string.login);
+        if(com.dar.nclientv2.settings.Login.isLogged())navigationView.getMenu().findItem(R.id.online_favorite_manager).setVisible(true);
         if(setting!=null){
             Global.initHighRes(this);Global.initOnlyTag(this);Global.initInfiniteScroll(this);Global.initRemoveIgnoredGalleries(this);
-            if(com.dar.nclientv2.settings.Login.isLogged()!=setting.logged)supportInvalidateOptionsMenu();
             if(setting.remove!=Global.getRemoveIgnoredGalleries()){
-                new Inspector(this,1,inspector.getQuery(),inspector.getRequestType());
+                new Inspector(this,1,inspector.getQuery(),inspector.getRequestType(),false,inspector==null?null:inspector.getTags());
             }else if(setting.infinite!=Global.isInfiniteScroll()){
                 if(Global.isInfiniteScroll()){
                     hidePageSwitcher();
-                    if(actualPage != 1) new Inspector(this, 1, inspector.getQuery(), inspector.getRequestType());
-                }else new Inspector(this, actualPage, inspector.getQuery(), inspector.getRequestType());
+                    if(actualPage != 1) new Inspector(this, 1, inspector.getQuery(), inspector.getRequestType(),false,inspector==null?null:inspector.getTags());
+                }else new Inspector(this, actualPage, inspector.getQuery(), inspector.getRequestType(),false,inspector==null?null:inspector.getTags());
             }
             if(Global.initLoadImages(this)!=setting.loadImages) recycler.getAdapter().notifyItemRangeChanged(0,recycler.getAdapter().getItemCount());
             if(Global.getTheme()!=setting.theme)recreate();
@@ -269,14 +289,16 @@ public class MainActivity extends BaseActivity
         }
         invalidateOptionsMenu();
     }
-    private SearchView searchView;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        menu.findItem(R.id.by_popular).setIcon(Global.isByPopular()?R.drawable.ic_star_border:R.drawable.ic_access_time);
+        menu.findItem(R.id.by_popular).setTitle(Global.isByPopular()?R.string.sort_by_latest:R.string.sort_by_popular);
+        showLanguageIcon(menu.findItem(R.id.only_language));
+        menu.findItem(R.id.only_language).setVisible(!advanced);
         if(tag!=null||related!=-1){
             if(tag!=null){
-                MenuItem item=menu.findItem(R.id.tag_manager).setVisible(true);
+                MenuItem item=menu.findItem(R.id.tag_manager).setVisible(!tagFromURL);
                 TagStatus ts=tag.getStatus();
                 switch (ts){
                     case DEFAULT:item.setIcon(R.drawable.ic_help);break;
@@ -285,47 +307,32 @@ public class MainActivity extends BaseActivity
                 }
                 Global.setTint(menu.findItem(R.id.tag_manager).getIcon());
             }
-            menu.findItem(R.id.action_settings).setVisible(false);
-            menu.findItem(R.id.random).setVisible(false);
-            menu.findItem(R.id.action_login).setVisible(false);
         }else {
-            menu.findItem(R.id.action_login).setTitle(com.dar.nclientv2.settings.Login.isLogged()?R.string.logout:R.string.login);
             Global.setTint(menu.findItem(R.id.search).getIcon());
-            Global.setTint(menu.findItem(R.id.random).getIcon());
         }
-        searchView =(SearchView)menu.findItem(R.id.search).getActionView();
+        Global.setTint(menu.findItem(R.id.open_browser).getIcon());
+        Global.setTint(menu.findItem(R.id.by_popular).getIcon());
         if(related!=-1){
             menu.findItem(R.id.search).setVisible(false);
             return true;
         }
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                if(query.length()==0)return true;
-                try {
-                    if (tag == null && related == -1) {
-                        int id=Integer.parseInt(query);
-                        if(id<=Global.getMaxId()){
-                            new Inspector(MainActivity.this, -1, "" + id, ApiRequestType.BYSINGLE);
-                            return true;
-                        }
-                    }
-                }catch (NumberFormatException ignore){}
-                query=query.trim();
-                getSupportActionBar().setTitle(query+(tag!=null?' '+tag.getName():""));
-                new Inspector(MainActivity.this,1,query+(tag!=null?(' '+tag.toQueryTag(TagStatus.DEFAULT)):""),ApiRequestType.BYSEARCH);
-                searchView.setIconified(true);
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return true;
-            }
-        });
-        ImageView closeButton = searchView.findViewById(R.id.search_close_btn);
-        closeButton.setOnClickListener(v -> removeQuery());
+        menu.findItem(R.id.search).setActionView(null);
         return true;
+    }
+
+    private void showLanguageIcon(MenuItem item) {
+        if(Global.getOnlyLanguage()==null){
+            item.setTitle(R.string.all_languages);item.setIcon(R.drawable.ic_world);
+
+        }
+        else
+            switch (Global.getOnlyLanguage()){
+                case JAPANESE:item.setTitle(R.string.only_japanese);item.setIcon(R.drawable.ic_jpbw);break;
+                case CHINESE:item.setTitle(R.string.only_chinese);item.setIcon(R.drawable.ic_cnbw);break;
+                case UNKNOWN:item.setTitle(R.string.only_other);item.setIcon(R.drawable.ic_help);break;
+                case ENGLISH:item.setTitle(R.string.only_english);item.setIcon(R.drawable.ic_gbbw);break;
+            }
+            Global.setTint(item.getIcon());
     }
 
     @Override
@@ -336,23 +343,15 @@ public class MainActivity extends BaseActivity
         int id = item.getItemId();
         Intent i;
         switch (id){
-            case R.id.action_login:
-                if(item.getTitle().equals(getString(R.string.logout))){
-                    showLogoutForm(item);
-
-                }else {
-                    i = new Intent(this, LoginActivity.class);
-                    startActivity(i);
-                }
-                break;
-            case R.id.action_settings:
-                setting=new Setting();
-                i = new Intent(this, SettingsActivity.class);
-                startActivity(i);
-                break;
-            case R.id.random:
-                i = new Intent(this, RandomActivity.class);
-                startActivity(i);
+            case R.id.by_popular:
+                item.setIcon(Global.updateByPopular(this,!Global.isByPopular())?R.drawable.ic_star_border:R.drawable.ic_access_time);
+                item.setTitle(Global.isByPopular()?R.string.sort_by_latest:R.string.sort_by_popular);
+                Global.setTint(item.getIcon());
+                new Inspector(this,1,Inspector.getActualQuery(),Inspector.getActualRequestType(),false,inspector==null?null:inspector.getTags());break;
+            case R.id.only_language:updateLanguageIcon(item);showLanguageIcon(item); break;
+            case R.id.search:
+                i=new Intent(this,SearchActivity.class);
+                startActivityForResult(i,1);
                 break;
             case R.id.open_browser:
                 if(inspector!=null) {
@@ -368,35 +367,89 @@ public class MainActivity extends BaseActivity
                     case AVOIDED:item.setIcon(R.drawable.ic_close);break;
                     case ACCEPTED:item.setIcon(R.drawable.ic_check);break;
                 }
+                Global.setTint(item.getIcon());
                 break;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void showLogoutForm(final MenuItem item) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode==1&&resultCode== Activity.RESULT_OK){
+            ArrayList<Tag>tags=data.getParcelableArrayListExtra("tags");
+            manageQuery(data.getStringExtra("query"),tags);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+    private void manageQuery(String query, ArrayList<Tag> tags){
+        query=query.trim();
+        if(query.length()==0&&tags==null)return;
+        try {
+            if (tag == null && related == -1) {
+                int id=Integer.parseInt(query);
+                if(id>0&&id<=Global.getMaxId()){
+                    new Inspector(MainActivity.this, -1, "" + id, ApiRequestType.BYSINGLE);
+                    return;
+                }
+            }
+        }catch (NumberFormatException ignore){}
+
+        getSupportActionBar().setTitle(query.length()==0?getString(R.string.app_name):query+(tag!=null?' '+tag.getName():""));
+        advanced=tags!=null;
+        supportInvalidateOptionsMenu();
+
+        Log.d(Global.LOGTAG,"TAGS: "+tags);
+        new Inspector(MainActivity.this,1,query+(tag!=null?(' '+tag.toQueryTag(TagStatus.DEFAULT)):""),tags);
+    }
+
+    private void showLogoutForm() {
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.ic_exit_to_app).setTitle(R.string.logout).setMessage(R.string.are_you_sure);
         builder.setPositiveButton(android.R.string.yes, (dialogInterface, i) -> {
             Login.logout(MainActivity.this);
-            item.setTitle(R.string.login);
+            navigationView.getMenu().findItem(R.id.online_favorite_manager).setVisible(false);
+            navigationView.getMenu().findItem(R.id.action_login).setTitle(R.string.login);
+
         }).setNegativeButton(android.R.string.no,null).show();
     }
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         Intent intent;
         int id = item.getItemId();
         switch (id){
-            case R.id.pretty_title:Global.updateTitleType(this, TitleType.PRETTY);recycler.getAdapter().notifyItemRangeChanged(0,recycler.getAdapter().getItemCount());break;
-            case R.id.english_title:Global.updateTitleType(this, TitleType.ENGLISH);recycler.getAdapter().notifyItemRangeChanged(0,recycler.getAdapter().getItemCount());break;
-            case R.id.japanese_title:Global.updateTitleType(this, TitleType.JAPANESE);recycler.getAdapter().notifyItemRangeChanged(0,recycler.getAdapter().getItemCount());break;
-            case R.id.by_popular:item.setIcon(Global.updateByPopular(this,!Global.isByPopular())?R.drawable.ic_check:R.drawable.ic_close);new Inspector(this,1,Inspector.getActualQuery(),Inspector.getActualRequestType());break;
-            case R.id.only_language:updateLanguageIcon(item,true);break;
+
             case R.id.downloaded:if(Global.hasStoragePermission(this))startLocalActivity();else requestStorage();break;
+            case R.id.action_login:
+                if(item.getTitle().equals(getString(R.string.logout))){
+                    showLogoutForm();
+
+                }else {
+                    intent = new Intent(this, LoginActivity.class);
+                    startActivity(intent);
+                }
+                break;
+            case R.id.search:
+                intent=new Intent(this,SearchActivity.class);
+                startActivity(intent);
+                break;
             case R.id.favorite_manager:
                 intent=new Intent(this,FavoriteActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.action_settings:
+                setting=new Setting();
+                intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.online_favorite_manager:
+                intent=new Intent(this,FavoriteActivity.class);
+                intent.putExtra(getPackageName()+".ONLINE",true);
+                startActivity(intent);
+                break;
+            case R.id.random:
+                intent = new Intent(this, RandomActivity.class);
                 startActivity(intent);
                 break;
             case R.id.tag_manager:
