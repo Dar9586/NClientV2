@@ -31,6 +31,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import org.acra.ACRA;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -50,7 +51,7 @@ public class MainActivity extends BaseActivity
     private NavigationView navigationView;
     private Tag tag;
     private int related=-1;
-    private boolean tagFromURL=false;
+    private boolean tagFromURL=false,advanced=false;
     private static boolean firstTime=true;
     public void setInspector(Inspector inspector) {
         this.inspector = inspector;
@@ -119,19 +120,19 @@ public class MainActivity extends BaseActivity
                 if(Global.isInfiniteScroll()&&!refresher.isRefreshing()){
                     GridLayoutManager manager = (GridLayoutManager)recycler.getLayoutManager();
                     if(actualPage < totalPage && manager.findLastVisibleItemPosition() >= (recycler.getAdapter().getItemCount()-1-manager.getSpanCount()))
-                        new Inspector(MainActivity.this, actualPage + 1, Inspector.getActualQuery(), Inspector.getActualRequestType(),true);
+                        new Inspector(MainActivity.this, actualPage + 1, Inspector.getActualQuery(), Inspector.getActualRequestType(),true,inspector==null?null:inspector.getTags());
                 }
 
             }
         });
-        refresher.setOnRefreshListener(() -> new Inspector(MainActivity.this,Inspector.getActualPage(),Inspector.getActualQuery(),Inspector.getActualRequestType()));
+        refresher.setOnRefreshListener(() -> new Inspector(MainActivity.this,Inspector.getActualPage(),Inspector.getActualQuery(),Inspector.getActualRequestType(),false,inspector==null?null:inspector.getTags()));
         findViewById(R.id.prev).setOnClickListener(v -> {
             if (actualPage > 1)
-                new Inspector(MainActivity.this, actualPage - 1, Inspector.getActualQuery(), Inspector.getActualRequestType());
+                new Inspector(MainActivity.this, actualPage - 1, Inspector.getActualQuery(), Inspector.getActualRequestType(),false,inspector==null?null:inspector.getTags());
         });
         findViewById(R.id.next).setOnClickListener(v -> {
             if (actualPage < totalPage)
-                new Inspector(MainActivity.this, actualPage + 1, Inspector.getActualQuery(), Inspector.getActualRequestType());
+                new Inspector(MainActivity.this, actualPage + 1, Inspector.getActualQuery(), Inspector.getActualRequestType(),false,inspector==null?null:inspector.getTags());
 
         });
         findViewById(R.id.page_index).setOnClickListener(v -> loadDialog());
@@ -225,7 +226,7 @@ public class MainActivity extends BaseActivity
                 new DefaultDialogs.Builder(this).setActual(actualPage).setMax(totalPage).setDialogs(new DefaultDialogs.DialogResults() {
                     @Override
                     public void positive(int actual) {
-                        new Inspector(MainActivity.this,actual,Inspector.getActualQuery(),Inspector.getActualRequestType());
+                        new Inspector(MainActivity.this,actual,Inspector.getActualQuery(),Inspector.getActualRequestType(),false,inspector==null?null:inspector.getTags());
                     }
                     @Override
                     public void negative() {}
@@ -259,6 +260,10 @@ public class MainActivity extends BaseActivity
             new Inspector(this,1,"",ApiRequestType.BYALL);
             getSupportActionBar().setTitle(R.string.app_name);
         }
+        if(advanced){
+            advanced=false;
+            supportInvalidateOptionsMenu();
+        }
     }
 
     @Override
@@ -271,12 +276,12 @@ public class MainActivity extends BaseActivity
         if(setting!=null){
             Global.initHighRes(this);Global.initOnlyTag(this);Global.initInfiniteScroll(this);Global.initRemoveIgnoredGalleries(this);
             if(setting.remove!=Global.getRemoveIgnoredGalleries()){
-                new Inspector(this,1,inspector.getQuery(),inspector.getRequestType());
+                new Inspector(this,1,inspector.getQuery(),inspector.getRequestType(),false,inspector==null?null:inspector.getTags());
             }else if(setting.infinite!=Global.isInfiniteScroll()){
                 if(Global.isInfiniteScroll()){
                     hidePageSwitcher();
-                    if(actualPage != 1) new Inspector(this, 1, inspector.getQuery(), inspector.getRequestType());
-                }else new Inspector(this, actualPage, inspector.getQuery(), inspector.getRequestType());
+                    if(actualPage != 1) new Inspector(this, 1, inspector.getQuery(), inspector.getRequestType(),false,inspector==null?null:inspector.getTags());
+                }else new Inspector(this, actualPage, inspector.getQuery(), inspector.getRequestType(),false,inspector==null?null:inspector.getTags());
             }
             if(Global.initLoadImages(this)!=setting.loadImages) recycler.getAdapter().notifyItemRangeChanged(0,recycler.getAdapter().getItemCount());
             if(Global.getTheme()!=setting.theme)recreate();
@@ -286,12 +291,11 @@ public class MainActivity extends BaseActivity
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         menu.findItem(R.id.by_popular).setIcon(Global.isByPopular()?R.drawable.ic_star_border:R.drawable.ic_access_time);
-        menu.findItem(R.id.by_popular).setTitle(Global.isByPopular()?R.string.sort_by_popular:R.string.sort_by_latest);
+        menu.findItem(R.id.by_popular).setTitle(Global.isByPopular()?R.string.sort_by_latest:R.string.sort_by_popular);
         showLanguageIcon(menu.findItem(R.id.only_language));
-
+        menu.findItem(R.id.only_language).setVisible(!advanced);
         if(tag!=null||related!=-1){
             if(tag!=null){
                 MenuItem item=menu.findItem(R.id.tag_manager).setVisible(!tagFromURL);
@@ -313,31 +317,6 @@ public class MainActivity extends BaseActivity
             return true;
         }
         menu.findItem(R.id.search).setActionView(null);
-        /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                if(query.length()==0)return true;
-                try {
-                    if (tag == null && related == -1) {
-                        int id=Integer.parseInt(query);
-                        if(id<=Global.getMaxId()){
-                            new Inspector(MainActivity.this, -1, "" + id, ApiRequestType.BYSINGLE);
-                            return true;
-                        }
-                    }
-                }catch (NumberFormatException ignore){}
-                query=query.trim();
-                getSupportActionBar().setTitle(query+(tag!=null?' '+tag.getName():""));
-                new Inspector(MainActivity.this,1,query+(tag!=null?(' '+tag.toQueryTag(TagStatus.DEFAULT)):""),ApiRequestType.BYSEARCH);
-                searchView.setIconified(true);
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return true;
-            }
-        });*/
         return true;
     }
 
@@ -366,9 +345,9 @@ public class MainActivity extends BaseActivity
         switch (id){
             case R.id.by_popular:
                 item.setIcon(Global.updateByPopular(this,!Global.isByPopular())?R.drawable.ic_star_border:R.drawable.ic_access_time);
-                item.setTitle(Global.isByPopular()?R.string.sort_by_popular:R.string.sort_by_latest);
+                item.setTitle(Global.isByPopular()?R.string.sort_by_latest:R.string.sort_by_popular);
                 Global.setTint(item.getIcon());
-                new Inspector(this,1,Inspector.getActualQuery(),Inspector.getActualRequestType());break;
+                new Inspector(this,1,Inspector.getActualQuery(),Inspector.getActualRequestType(),false,inspector==null?null:inspector.getTags());break;
             case R.id.only_language:updateLanguageIcon(item);showLanguageIcon(item); break;
             case R.id.search:
                 i=new Intent(this,SearchActivity.class);
@@ -398,12 +377,14 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode==1&&resultCode== Activity.RESULT_OK){
-            manageQuery(data.getStringExtra("query"));
+            ArrayList<Tag>tags=data.getParcelableArrayListExtra("tags");
+            manageQuery(data.getStringExtra("query"),tags);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-    private void manageQuery(String query){
-        if(query.length()==0)return;
+    private void manageQuery(String query, ArrayList<Tag> tags){
+        query=query.trim();
+        if(query.length()==0&&tags==null)return;
         try {
             if (tag == null && related == -1) {
                 int id=Integer.parseInt(query);
@@ -413,9 +394,13 @@ public class MainActivity extends BaseActivity
                 }
             }
         }catch (NumberFormatException ignore){}
-        query=query.trim();
-        getSupportActionBar().setTitle(query+(tag!=null?' '+tag.getName():""));
-        new Inspector(MainActivity.this,1,query+(tag!=null?(' '+tag.toQueryTag(TagStatus.DEFAULT)):""),ApiRequestType.BYSEARCH);
+
+        getSupportActionBar().setTitle(query.length()==0?getString(R.string.app_name):query+(tag!=null?' '+tag.getName():""));
+        advanced=tags!=null;
+        supportInvalidateOptionsMenu();
+
+        Log.d(Global.LOGTAG,"TAGS: "+tags);
+        new Inspector(MainActivity.this,1,query+(tag!=null?(' '+tag.toQueryTag(TagStatus.DEFAULT)):""),tags);
     }
 
     private void showLogoutForm() {

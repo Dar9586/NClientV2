@@ -12,7 +12,7 @@ import com.dar.nclientv2.settings.Global;
 
 @SuppressWarnings("deprecation")
 public class DatabaseHelper extends SQLiteOpenHelper{
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     private static final String DATABASE_NAME = "Entries.db";
     public DatabaseHelper(Context context){
         super(context,DATABASE_NAME,null,DATABASE_VERSION);
@@ -26,7 +26,17 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         createLanguageTags(db);
         //Queries.DebugDatabase.dumpDatabase(db);
     }
-
+    private void createCategoryTags(SQLiteDatabase db){
+        Tag[] languages = {
+                new Tag("doujinshi", 0, 33172, TagType.CATEGORY, TagStatus.DEFAULT),
+                new Tag("manga", 0, 33173, TagType.CATEGORY, TagStatus.DEFAULT),
+                new Tag("misc", 0, 97152, TagType.CATEGORY, TagStatus.DEFAULT),
+                new Tag("western", 0, 34125, TagType.CATEGORY, TagStatus.DEFAULT),
+                new Tag("non-h", 0, 34065, TagType.CATEGORY, TagStatus.DEFAULT),
+                new Tag("artistcg", 0, 36320, TagType.CATEGORY, TagStatus.DEFAULT),
+        };
+        for(Tag t:languages)Queries.TagTable.insert(db,t);
+    }
     private void createLanguageTags(SQLiteDatabase db){
         Tag[] languages = {
             new Tag("english", 0, 12227, TagType.LANGUAGE, TagStatus.DEFAULT),
@@ -38,7 +48,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
-        if(oldVersion==2&&newVersion==3)createLanguageTags(db);
+        if(oldVersion==2)createLanguageTags(db);
+        if(oldVersion<=3)createCategoryTags(db);
     }
 
     @Override

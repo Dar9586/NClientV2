@@ -289,11 +289,19 @@ public class Queries{
             String query="SELECT * FROM "+ TABLE_NAME +" WHERE "+ TYPE +" = ? AND "+ COUNT +" >= ?";
             return retrieveAll(db.rawQuery(query,new String[]{""+type.ordinal(),""+TagV2.getMinCount()}));
         }
+        public static Tag[] getTrueAllType(SQLiteDatabase db,TagType type){
+            String query="SELECT * FROM "+ TABLE_NAME +" WHERE "+ TYPE +" = ?";
+            return retrieveAll(db.rawQuery(query,new String[]{""+type.ordinal()}));
+        }
         public static Tag[]getAllStatus(SQLiteDatabase db,TagStatus status){
             String query="SELECT * FROM "+ TABLE_NAME +" WHERE "+ STATUS +" = ?";
             return retrieveAll(db.rawQuery(query,new String[]{""+status.ordinal()}));
         }
         public static Tag[]getAllFiltered(SQLiteDatabase db){
+            String query="SELECT * FROM "+ TABLE_NAME +" WHERE "+ STATUS +" != ?";
+            return retrieveAll(db.rawQuery(query,new String[]{""+TagStatus.DEFAULT.ordinal()}));
+        }
+        public static Tag[]getAllFilteredByType(SQLiteDatabase db,TagType type){
             String query="SELECT * FROM "+ TABLE_NAME +" WHERE "+ STATUS +" != ?";
             return retrieveAll(db.rawQuery(query,new String[]{""+TagStatus.DEFAULT.ordinal()}));
         }
@@ -384,6 +392,20 @@ public class Queries{
             }
             for(TagType type:TagType.values()){
                 tags[type.ordinal()]=tt[type.ordinal()].toArray(new Tag[0]);
+            }
+            return tags;
+        }
+
+        public static Tag[] search(SQLiteDatabase db, String str, TagType type) {
+            String query="SELECT * FROM "+TABLE_NAME+" WHERE "+NAME+" LIKE ? AND "+TYPE+"=?";
+            Log.d(Global.LOGTAG,query);
+            Cursor c=db.rawQuery(query,new String[]{'%'+str+'%',""+type.ordinal()});
+            Tag[] tags=new Tag[c.getCount()];
+            int i=0;
+            if(c.moveToFirst()){
+                do{
+                    tags[i++]=cursorToTag(c);
+                }while (c.moveToNext());
             }
             return tags;
         }

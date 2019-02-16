@@ -16,9 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/LightTheme">
-        <activity android:name=".SearchActivity"
-            android:windowSoftInputMode="stateAlwaysVisible">
-        </activity>
+        <activity android:name=".SearchActivity"/>
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize"

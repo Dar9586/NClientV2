@@ -225,6 +225,9 @@
     <string name="setting_on_keep_history">The searches will be stored</string>
     <string name="setting_off_keep_history">The searched will not be stored</string>
     <string name="keep_history">Keep search history</string>
+    <string name="add">Add</string>
+    <string name="insert_tag_name">Insert tag name:</string>
+    <string name="other">other</string>
 
 
     <string-array name="theme">

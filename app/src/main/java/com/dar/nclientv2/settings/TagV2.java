@@ -20,7 +20,10 @@ public class TagV2{
         return Queries.TagTable.getAllStatus(Database.getDatabase(),status);
     }
     public static String getQueryString(String query){
-        Tag[]all=getListPrefer();
+        return getQueryString(query,getListPrefer());
+    }
+    public static String getQueryString(String query,Tag[] all){
+        if(all==null)all=getListPrefer();
         StringBuilder builder=new StringBuilder();
         for(Tag t:all)if(!query.contains(t.getName()))builder.append('+').append(t.toQueryTag());
         if(Login.useAccountTag())

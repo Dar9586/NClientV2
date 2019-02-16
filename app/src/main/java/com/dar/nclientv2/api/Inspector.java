@@ -8,6 +8,7 @@ import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.MainActivity;
 import com.dar.nclientv2.adapters.ListAdapter;
 import com.dar.nclientv2.api.components.Gallery;
+import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Global;
@@ -21,6 +22,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -34,6 +36,9 @@ public class Inspector {
     private static int actualPage;
     private static String actualQuery;
     private static ApiRequestType actualRequestType;
+    public Inspector(MainActivity activity, int page, String query, ArrayList<Tag> tags) {
+        this(activity,page,query,ApiRequestType.BYSEARCH,false,tags==null?null:tags.toArray(new Tag[0]));
+    }
 
     public static int getActualPage() {
         return actualPage;
@@ -53,6 +58,7 @@ public class Inspector {
     private String query;
     private String url;
     private ApiRequestType requestType;
+    private Tag[] tags=null;
     private List<Gallery> galleries;
     private static final OkHttpClient client=new OkHttpClient();
 
@@ -61,7 +67,8 @@ public class Inspector {
     }
     public String getUsableURL(){
         StringBuilder builder = new StringBuilder("https://nhentai.net/");
-        String tagQuery=TagV2.getQueryString(query);
+        String tagQuery=TagV2.getQueryString(query,tags);
+        Log.d(Global.LOGTAG,"TAGQUR: "+tagQuery);
         switch (requestType){
             case BYALL:
                 if(tagQuery.length()>0||Global.getOnlyLanguage()!=null)
@@ -70,9 +77,10 @@ public class Inspector {
                 if(byPopular)builder.append("&sort=popular");
                 break;
             case BYSEARCH:case BYTAG:
-                builder.append("search/?q=").append(query).append('+').append(appendedLanguage());
-                if(requestType!=ApiRequestType.BYTAG||!Global.isOnlyTag())builder.append(tagQuery);
-                if(byPopular)builder.append("&sort=popular");
+                builder.append("search/?q=").append(query);
+                if(tags==null) builder.append('+').append(appendedLanguage());
+                if (requestType != ApiRequestType.BYTAG || !Global.isOnlyTag()||tags!=null) builder.append(tagQuery);
+                if (byPopular) builder.append("&sort=popular");
                 break;
             case RELATED: case BYSINGLE:builder.append("g/").append(query);if(requestType==ApiRequestType.RELATED)builder.append("/#related-container");break;
 
@@ -81,13 +89,14 @@ public class Inspector {
         return builder.toString();
     }
     public Inspector(final BaseActivity activity, final int page, String query, final ApiRequestType requestType) {
-        this(activity,page,query,requestType,false);
+        this(activity,page,query,requestType,false,null);
     }
-    public Inspector(final BaseActivity activity, final int page, final String query, final ApiRequestType requestType, final boolean update) {
+    public Inspector(final BaseActivity activity, final int page, final String query, final ApiRequestType requestType, final boolean update,Tag[]tags) {
         Log.d(Global.LOGTAG,"COUNT: "+client.dispatcher().runningCallsCount());
         if(!update)client.dispatcher().cancelAll();
         else if(client.dispatcher().runningCallsCount()>0)return;
         activity.getRefresher().setRefreshing(true);
+        this.tags=tags;
         this.byPopular = Global.isByPopular();
         this.page=page;
         this.query=query;
@@ -146,6 +155,10 @@ public class Inspector {
     private void findTotal(Element e){
         String temp=e.attr("href");
         pageCount=Integer.parseInt(temp.substring(temp.lastIndexOf('=')+1));
+    }
+
+    public Tag[] getTags() {
+        return tags;
     }
 
     @Override

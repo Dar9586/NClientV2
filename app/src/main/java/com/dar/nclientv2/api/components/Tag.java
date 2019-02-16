@@ -73,23 +73,23 @@ public class Tag implements Parcelable{
     }
 
     public String toQueryTag(TagStatus status){
-        if(name.contains(" "))return (status==TagStatus.AVOIDED?"-":"")+findTagString()+":\""+name+'"';
-        return (status==TagStatus.AVOIDED?"-":"")+findTagString()+":"+name;
+        if(name.contains(" "))return (status==TagStatus.AVOIDED?"-":"")+findTagString()+"\""+name+'"';
+        return (status==TagStatus.AVOIDED?"-":"")+findTagString()+name;
     }
     public String toQueryTag(){
         return toQueryTag(status);
     }
     String findTagString(){
         switch (type){
-            case PARODY:return "parody";
-            case CHARACTER:return "character";
-            case TAG:return "tag";
-            case ARTIST:return "artist";
-            case GROUP:return "group";
-            case LANGUAGE:return "language";
-            case CATEGORY:return "category";
+            case PARODY:return "parody:";
+            case CHARACTER:return "character:";
+            case TAG:return "tag:";
+            case ARTIST:return "artist:";
+            case GROUP:return "group:";
+            case LANGUAGE:return "language:";
+            case CATEGORY:return "category:";
         }
-        return "unknown";
+        return "";
     }
     private TagType findType(String s) {
         switch (s){
