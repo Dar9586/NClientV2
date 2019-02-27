@@ -8,7 +8,7 @@
         android:entryValues="@array/theme_data"
         android:entries="@array/theme"
         android:summary="@string/theme_summary"
-        android:defaultValue="light"/>
+        android:defaultValue="dark"/>
     <ListPreference
         android:title="@string/change_title_type"
         android:key="@string/key_title_type"

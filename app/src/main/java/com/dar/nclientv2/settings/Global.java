@@ -41,7 +41,10 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public final class Global {
     public static long recursiveSize(File path) {
@@ -110,8 +113,8 @@ public final class Global {
                 .cookieJar(new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context.getSharedPreferences("Login",0))));
 
         CustomSSLSocketFactory.enableTls12OnPreLollipop(builder);
+        builder.addInterceptor(new CustomInterceptor());
         client=builder.build();
-
         client.dispatcher().setMaxRequests(25);
         client.dispatcher().setMaxRequestsPerHost(25);
         if(Login.isLogged()&&Login.getUser()==null){

@@ -11,6 +11,7 @@ import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.components.BaseActivity;
+import com.dar.nclientv2.settings.CustomInterceptor;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
 
@@ -60,29 +61,35 @@ public class Inspector {
     private ApiRequestType requestType;
     private Tag[] tags=null;
     private List<Gallery> galleries;
-    private static final OkHttpClient client=new OkHttpClient();
+    private static final OkHttpClient client;
+    static{
+        OkHttpClient.Builder builder=new OkHttpClient.Builder();
+        builder.addInterceptor(new CustomInterceptor());
+        client=builder.build();
+    }
 
     public String getUrl() {
         return url;
     }
     public String getUsableURL(){
         StringBuilder builder = new StringBuilder("https://nhentai.net/");
-        String tagQuery=TagV2.getQueryString(query,tags);
+        String tagQuery=(Global.getRemoveIgnoredGalleries()||tags!=null)?TagV2.getQueryString(query,tags):"";
         Log.d(Global.LOGTAG,"TAGQUR: "+tagQuery);
+        Log.d(Global.LOGTAG,Global.getRemoveIgnoredGalleries()+","+Global.isOnlyTag()+","+requestType);
+        if(requestType==ApiRequestType.BYALL&&(tagQuery.length()>0||Global.getOnlyLanguage()!=null))requestType=ApiRequestType.BYSEARCH;
+        if(tags!=null&&tagQuery.length()==0)requestType=ApiRequestType.BYALL;
         switch (requestType){
             case BYALL:
-                if(tagQuery.length()>0||Global.getOnlyLanguage()!=null)
-                    builder.append("search/?q=").append(appendedLanguage()).append(tagQuery);
-                else builder.append('?');
-                if(byPopular)builder.append("&sort=popular");
+                builder.append('?');
                 break;
             case BYSEARCH:case BYTAG:
                 builder.append("search/?q=").append(query);
-                if(tags==null) builder.append('+').append(appendedLanguage());
-                if (requestType != ApiRequestType.BYTAG || !Global.isOnlyTag()||tags!=null) builder.append(tagQuery);
+                if(tags==null&&Global.getOnlyLanguage()!=null) builder.append(appendedLanguage());
+                if(requestType == ApiRequestType.BYTAG && !Global.isOnlyTag())builder.append(tagQuery);
+                if(requestType == ApiRequestType.BYSEARCH) builder.append(tagQuery);
                 if (byPopular) builder.append("&sort=popular");
                 break;
-            case RELATED: case BYSINGLE:builder.append("g/").append(query);if(requestType==ApiRequestType.RELATED)builder.append("/#related-container");break;
+            case RELATED: case BYSINGLE:builder.append("g/").append(query);break;
 
         }
         if(page>1)builder.append("&page=").append(page);
@@ -107,6 +114,7 @@ public class Inspector {
             actualRequestType=requestType;
         }
         url=getUsableURL();
+        Log.d(Global.LOGTAG,"Requesting "+url);
         client.newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
