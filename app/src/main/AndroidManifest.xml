@@ -85,7 +85,10 @@
             android:name=".async.CreatePDF"
             android:enabled="true"
             android:exported="false" />
-
+        <service
+            android:name=".async.ScrapeTags"
+            android:enabled="true"
+            android:exported="false" />
         <activity
             android:name=".LocalActivity"
             android:configChanges="orientation|screenSize"

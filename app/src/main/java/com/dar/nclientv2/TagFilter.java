@@ -1,5 +1,6 @@
 package com.dar.nclientv2;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,7 +13,7 @@ import android.view.ViewGroup;
 
 import com.dar.nclientv2.adapters.TagsAdapter;
 import com.dar.nclientv2.api.enums.TagType;
-import com.dar.nclientv2.async.scrape.BulkScraper;
+import com.dar.nclientv2.async.ScrapeTags;
 import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
@@ -50,13 +51,11 @@ public class TagFilter extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        BulkScraper.setActivity(this);
         Global.loadTheme(this);
         TagV2.initMinCount(this);
         TagV2.initSortByName(this);
         Global.initHttpClient(this);
         setContentView(R.layout.activity_tag_filter);
-        BulkScraper.setActivity(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -98,7 +97,6 @@ public class TagFilter extends AppCompatActivity{
 
     @Override
     protected void onDestroy(){
-        BulkScraper.setActivity(null);
         super.onDestroy();
     }
 
@@ -320,7 +318,10 @@ public class TagFilter extends AppCompatActivity{
             switch(type){
                 case UNKNOWN:TagV2.resetAllStatus();break;
                 case CATEGORY:break;
-                default:BulkScraper.addScrape(activity,type);break;
+                default:
+                    Intent i=new Intent(activity, ScrapeTags.class);
+                    activity.startService(i);
+                    break;
             }
         }
 

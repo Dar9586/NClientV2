@@ -20,8 +20,8 @@ import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
+import com.dar.nclientv2.async.ScrapeTags;
 import com.dar.nclientv2.async.VersionChecker;
-import com.dar.nclientv2.async.scrape.BulkScraper;
 import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.loginapi.Login;
 import com.dar.nclientv2.settings.DefaultDialogs;
@@ -72,7 +72,8 @@ public class MainActivity extends BaseActivity
         Global.initInfiniteScroll(this);
         com.dar.nclientv2.settings.Login.initUseAccountTag(this);
         setContentView(R.layout.activity_main);
-        BulkScraper.bulkAll(this);
+        Intent i=new Intent(this,ScrapeTags.class);
+        startService(i);
         //getSharedPreferences("Settings",0).edit().remove("first_run").apply();
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -175,7 +176,6 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void onDestroy(){
-        BulkScraper.setActivity(null);
         super.onDestroy();
     }
 

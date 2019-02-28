@@ -74,7 +74,8 @@
     <string name="channel2_name">Create PDF</string>
     <string name="channel1_description">Used to show progress of the download of a gallery</string>
     <string name="channel2_description">Used to show progress of the creation of the pdf</string>
-    <string name="channel1_title">Downloading gallery:</string>
+    <string name="channel1_title" formatted="true">Downloading gallery:</string>
+    <string name="channel1_title_format">Downloading gallery: (%d/%d)</string>
     <string name="channel2_title">Creating PDF:</string>
 
     <string name="favorite_max_reached" formatted="true">You can have a maximum of %d favorite manga.</string>
@@ -117,6 +118,7 @@
 
     <string name="tag_format" formatted="true">%s (%d)</string>
     <string name="page_format" formatted="true">%d/%d</string>
+    <string name="percentage_format" formatted="true">%d%%</string>
 
     <string name="are_you_sure">Are you sure?</string>
     <string name="thumbnail">Thumbnail</string>
@@ -228,6 +230,7 @@
     <string name="add">Add</string>
     <string name="insert_tag_name">Insert tag name:</string>
     <string name="other">other</string>
+    <string name="cancelling">Cancelling…</string>
 
 
     <string-array name="theme">

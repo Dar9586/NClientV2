@@ -37,7 +37,10 @@ public class DownloadGallery extends IntentService {
         notId=Global.getNotificationId();
     }
     private void downloadedPage(){
-        notification.setProgress(gallery.getPageCount()-1,++page,false);
+        notification.setProgress(gallery.getPageCount()-1,++page,false)
+                .setStyle(new NotificationCompat.BigTextStyle().setBigContentTitle(getString(R.string.channel1_title_format,page,gallery.getPageCount())).bigText(gallery.getTitle()))
+                .setContentText(getString(R.string.percentage_format,(page*100)/gallery.getPageCount()))
+                .setContentTitle(getString(R.string.channel1_title));
         notificationManager.notify(getString(R.string.channel1_name),notId,notification.build());
     }
     private void onPreExecute() {
@@ -55,9 +58,9 @@ public class DownloadGallery extends IntentService {
         notification=new NotificationCompat.Builder(getApplicationContext(), Global.CHANNEL_ID1);
         //notification.addAction(R.drawable.ic_close,"Stop",new PendingIntent.)
         notification.setOnlyAlertOnce(true)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(gallery.getTitle()))
+                .setStyle(new NotificationCompat.BigTextStyle().setBigContentTitle(getString(R.string.channel1_title_format,0,gallery.getPageCount())).bigText(gallery.getTitle()))
                 .setContentTitle(getString(R.string.channel1_title))
-                .setContentText(gallery.getTitle(TitleType.PRETTY))
+                .setContentText(getString(R.string.percentage_format,0))
                 .setContentIntent(resultPendingIntent)
                 .setProgress(gallery.getPageCount()-1,0,false)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -116,16 +119,27 @@ public class DownloadGallery extends IntentService {
     }
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
-        if(intent!=null&&"stop".equals(intent.getAction()))a=999;
-        Log.d(Global.LOGTAG,flags+","+startId);
+        if(intent!=null&&"stop".equals(intent.getAction())){
+            a=999;
+            Log.d(Global.LOGTAG,flags+","+startId);
+            if(notification!=null) {
+                notification.setStyle(null)
+                        .setContentTitle(getString(R.string.cancelling)).
+                        setContentText("").setProgress(0, 0, true);
+                notificationManager.notify(getString(R.string.channel1_name), notId, notification.build());
+            }
+        }
+
         return super.onStartCommand(intent, flags, startId);
     }
 
     @SuppressLint("RestrictedApi")
     private void onPostExecute() {
+        Log.d(Global.LOGTAG,"End reached");
+        downloadedPage();
         notification.setProgress(0,0,false);
         if(Build.VERSION.SDK_INT>Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) notification.mActions.clear();
-        notification.setContentTitle(getString(a==999?R.string.download_canceled :R.string.download_completed)).setOnlyAlertOnce(false);
+        notification.setStyle(null).setContentTitle(getString(a==1000?R.string.download_canceled :R.string.download_completed)).setContentText(gallery.getTitle()).setOnlyAlertOnce(false);
         notificationManager.notify(getString(R.string.channel1_name),notId,notification.build());
     }
 }
