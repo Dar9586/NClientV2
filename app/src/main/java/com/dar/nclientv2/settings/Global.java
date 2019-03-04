@@ -41,6 +41,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.fragment.app.FragmentActivity;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -56,6 +57,12 @@ public final class Global {
         return size;
     }
 
+    public static void updateFavoriteLimit(Context context, int limit) {
+        context.getSharedPreferences("Settings", 0).edit().putInt(context.getString(R.string.key_favorite_limit),limit).apply();
+    }
+    public static int getFavoriteLimit(Context context) {
+        return context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_favorite_limit),10);
+    }
     public enum ThemeScheme{LIGHT,DARK,BLACK}
 
     public static OkHttpClient client=null;

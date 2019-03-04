@@ -76,6 +76,10 @@
             android:summaryOn="@string/setting_on_use_account_tag"
             android:summaryOff="@string/setting_off_use_account_tag"
             android:title="@string/use_account_tag" />
+        <Preference android:title="@string/favorite_count"
+            android:key="@string/key_favorite_limit"
+            android:summary="The number of popular tags shown while in Advanced search"
+            />
     </PreferenceCategory>
     <PreferenceCategory
         android:title="@string/miscellaneous">

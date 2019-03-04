@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -359,7 +360,20 @@ public class Queries{
             values.put(STATUS,TagStatus.DEFAULT.ordinal());
             db.updateWithOnConflict(TABLE_NAME,values,null,null,SQLiteDatabase.CONFLICT_IGNORE);
         }
+        public static Tag[] getTopTags(SQLiteDatabase db,TagType type,int count){
+            String query="SELECT * FROM "+TABLE_NAME+" WHERE "+TYPE+"=? ORDER BY "+COUNT+" DESC LIMIT ?;";
 
+            int i=0;
+            Cursor cursor=db.rawQuery(query,new String[]{""+type.ordinal(),""+count});
+            Tag[]tags=new Tag[cursor.getCount()];
+            if(cursor.moveToFirst()){
+                do{
+                    tags[i++]=cursorToTag(cursor);
+                }while(cursor.moveToNext());
+            }
+            cursor.close();
+            return tags;
+        }
         public static TagStatus getStatus(SQLiteDatabase db,Tag tag){
             String query="SELECT "+ STATUS +" FROM "+ TABLE_NAME +
                     " WHERE "+ IDTAG +" =?";

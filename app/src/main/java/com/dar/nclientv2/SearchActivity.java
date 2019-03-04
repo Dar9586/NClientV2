@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.core.view.inputmethod.EditorInfoCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,6 +16,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -128,7 +130,10 @@ public class SearchActivity extends AppCompatActivity {
 
     }
     private void populateGroup(){
-        for(Tag t:Queries.TagTable.getAllFiltered(Database.getDatabase()))addTag(t);
+        for(TagType type:new TagType[]{TagType.TAG,TagType.PARODY,TagType.CHARACTER,TagType.ARTIST,TagType.GROUP}) {
+            for (Tag t : Queries.TagTable.getTopTags(Database.getDatabase(),type,Global.getFavoriteLimit(this)))addTopTag(t);
+        }
+        for(Tag t:Queries.TagTable.getAllFiltered(Database.getDatabase()))if(!tagAlreadyExist(t.getName()))addTag(t);
         for(Tag t:Queries.TagTable.getTrueAllType(Database.getDatabase(),TagType.CATEGORY))addSpecialTag(t);
         for(Tag t:Queries.TagTable.getTrueAllType(Database.getDatabase(),TagType.LANGUAGE)){
             if(Global.getOnlyLanguage()== Language.UNKNOWN)t.setStatus(TagStatus.AVOIDED);
@@ -153,11 +158,30 @@ public class SearchActivity extends AppCompatActivity {
             Chip c=(Chip)getLayoutInflater().inflate(R.layout.chip_layout,cg,false);
             c.setCloseIconVisible(false);
             c.setChipIconResource(R.drawable.ic_add);
+            DrawableCompat.setTint(c.getChipIcon(), Color.BLACK);
             c.setText(getString(R.string.add));
             c.setOnClickListener(v -> loadTag(type));
             addChip[type.ordinal()]=c;
             cg.addView(c);
         }
+    }
+    private boolean tagAlreadyExist(String s){
+        for(ChipTag t:tags){
+            if(t.getTag().getName().equals(s))return true;
+        }
+        return false;
+    }
+    private void addTopTag(Tag t) {
+        ChipGroup cg=getGroup(t.getType());
+        ChipTag c=(ChipTag)getLayoutInflater().inflate(R.layout.chip_layout_entry,cg,false);
+        c.setTag(t);
+        c.setCloseIconVisible(false);
+        c.setOnClickListener(v -> {
+            c.changeStatus(t.getStatus()== TagStatus.ACCEPTED?TagStatus.AVOIDED:t.getStatus()==TagStatus.AVOIDED?TagStatus.DEFAULT:TagStatus.ACCEPTED);
+            advanced=true;
+        });
+        cg.addView(c);
+        tags.add(c);
     }
 
     private void addSpecialTag(Tag t) {
@@ -216,6 +240,7 @@ public class SearchActivity extends AppCompatActivity {
     private void addDialog(){
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
         builder.setView(autoComplete);
+        autoComplete.setText("");
         builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
             createChip();
         });
@@ -232,6 +257,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private void createChip() {
         Tag t=new Tag(autoComplete.getText().toString().toLowerCase(Locale.US),0,0,editTag,TagStatus.ACCEPTED);
+        if(tagAlreadyExist(t.getName()))return;
         getGroup(editTag).removeView(addChip[editTag.ordinal()]);
         addTag(t);
         getGroup(editTag).addView(addChip[editTag.ordinal()]);

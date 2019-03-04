@@ -72,9 +72,7 @@ public class MainActivity extends BaseActivity
         Global.initInfiniteScroll(this);
         com.dar.nclientv2.settings.Login.initUseAccountTag(this);
         setContentView(R.layout.activity_main);
-        Intent i=new Intent(this,ScrapeTags.class);
-        startService(i);
-        //getSharedPreferences("Settings",0).edit().remove("first_run").apply();
+
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -163,6 +161,8 @@ public class MainActivity extends BaseActivity
         } else new Inspector(this,1,"",ApiRequestType.BYALL);
         if(firstTime){
             if(Global.shouldCheckForUpdates(this))new VersionChecker(this,true);
+            Intent i=new Intent(this,ScrapeTags.class);
+            startService(i);
             firstTime=false;
         }
     }

@@ -23,15 +23,18 @@ public class LocalGallery extends GenericGallery{
         //Inizio ricerca pagine
         File[] files=file.listFiles((dir, name) -> name.endsWith(".jpg")&&name.length()==7);
         //trova la pagina col numero piu grande
-        if(files.length<1) Log.e(Global.LOGTAG,"FILE INESISTENTI");
-        for(File f:files){
-            try {
-                int x = Integer.parseInt(f.getName().substring(0, 3));
-                if(x>max)max=x;
-                if(x<min)min=x;
-            }catch (NumberFormatException e){Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);}
+        if(files!=null) {
+            if (files.length < 1) Log.e(Global.LOGTAG, "FILE INESISTENTI");
+            for (File f : files) {
+                try {
+                    int x = Integer.parseInt(f.getName().substring(0, 3));
+                    if (x > max) max = x;
+                    if (x < min) min = x;
+                } catch (NumberFormatException e) {
+                    Log.e(Global.LOGTAG, e.getLocalizedMessage(), e);
+                }
+            }
         }
-
         this.max=max;
         this.min=min;
         valid=max<1000&&min>0&&id!=-1;

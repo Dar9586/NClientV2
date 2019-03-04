@@ -39,8 +39,9 @@ public class DefaultDialogs {
             dialogs=null;
         }
 
-        public void setMin(int min){
+        public Builder setMin(int min){
             this.min = min;
+            return this;
         }
 
         public Builder setTitle(int title) {

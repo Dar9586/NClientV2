@@ -100,6 +100,25 @@ public class SettingsActivity extends AppCompatActivity {
                 );
                 return true;
             });
+            findPreference(getString(R.string.key_favorite_limit)).setOnPreferenceClickListener(preference -> {
+                DefaultDialogs.pageChangerDialog(
+                        new DefaultDialogs.Builder(getActivity())
+                                .setDrawable(R.drawable.ic_hashtag)
+                                .setTitle(R.string.favorite_count)
+                                .setMax(20)
+                                .setActual(Global.getFavoriteLimit(getActivity()))
+                                .setMin(0)
+                                .setDialogs(new DefaultDialogs.DialogResults() {
+                                    @Override
+                                    public void positive(int actual) {
+                                        Global.updateFavoriteLimit(getActivity(),actual);
+                                    }
+
+                                    @Override public void negative() {}
+                                })
+                );
+                return true;
+            });
         }
 
         private void removePic(){

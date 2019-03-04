@@ -231,6 +231,8 @@
     <string name="insert_tag_name">Insert tag name:</string>
     <string name="other">other</string>
     <string name="cancelling">Cancelling…</string>
+    <string name="key_favorite_limit">favorite_limit</string>
+    <string name="favorite_count">Favorite count</string>
 
 
     <string-array name="theme">
