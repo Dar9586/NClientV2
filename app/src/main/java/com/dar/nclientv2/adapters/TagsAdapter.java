@@ -207,11 +207,14 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         jw.endObject();
     }
     private void updateLogo(ImageView img, TagStatus s){
-        switch (s){
-            case DEFAULT:img.setImageDrawable(null);break;//Global.loadImage(R.drawable.ic_void,img); break;
-            case ACCEPTED:Global.loadImage(R.drawable.ic_check,img);Global.setTint(img.getDrawable());break;
-            case AVOIDED:Global.loadImage(R.drawable.ic_close,img);Global.setTint(img.getDrawable());break;
-        }
+        context.runOnUiThread(() -> {
+            switch (s){
+                case DEFAULT:img.setImageDrawable(null);break;//Global.loadImage(R.drawable.ic_void,img); break;
+                case ACCEPTED:Global.loadImage(R.drawable.ic_check,img);Global.setTint(img.getDrawable());break;
+                case AVOIDED:Global.loadImage(R.drawable.ic_close,img);Global.setTint(img.getDrawable());break;
+            }
+        });
+
     }
 
     private boolean force=false;

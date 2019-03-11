@@ -72,6 +72,7 @@ public class Inspector {
         return url;
     }
     public String getUsableURL(){
+        ApiRequestType requestType=this.requestType;
         StringBuilder builder = new StringBuilder("https://nhentai.net/");
         String tagQuery=(Global.getRemoveIgnoredGalleries()||tags!=null)?TagV2.getQueryString(query,tags):"";
         Log.d(Global.LOGTAG,"TAGQUR: "+tagQuery);
