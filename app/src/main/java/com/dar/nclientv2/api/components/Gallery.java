@@ -12,7 +12,6 @@ import com.dar.nclientv2.adapters.GalleryAdapter;
 import com.dar.nclientv2.api.Inspector;
 import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.api.enums.Language;
-import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.async.database.Queries;
@@ -62,6 +61,7 @@ public class Gallery extends GenericGallery{
     private int favoriteCount,id,pageCount,mediaId;
     private final String[] titles=new String[]{"","",""};
     private List<Gallery>related;
+    private List<Comment>comments;
     private String scanlator;
     private Tag[][] tags;
     //true=jpg, false=png
@@ -78,6 +78,7 @@ public class Gallery extends GenericGallery{
         titles[2]=cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.TITLE_ENG));
         uploadDate=new Date(cursor.getLong(Queries.getColumnFromName(cursor,Queries.GalleryTable.UPLOAD)));
         scanlator=cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.SCANLATOR));
+        comments=null;
         readPagePath(cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.PAGES)));
         this.tags=tags;
         loadLanguage();
@@ -191,12 +192,22 @@ public class Gallery extends GenericGallery{
             tags[a]=new Tag[l];
             in.readTypedArray(tags[a],Tag.CREATOR);
         }
-        byte x;
+        int x;
         if((x=in.readByte())>0){
             related=new ArrayList<>(x);
             for(int j=0;j<x;j++)related.add(in.readParcelable(Gallery.class.getClassLoader()));
         }
+        if((x=in.readInt())>0){
+            comments=new ArrayList<>(x);
+            for(int j=0;j<x;j++)comments.add(in.readParcelable(Comment.class.getClassLoader()));
+        }else comments=null;
     }
+
+    @Override
+    public List<Comment> getComments() {
+        return comments;
+    }
+
     public boolean isRelatedLoaded(){return related!=null;}
 
     public List<Gallery> getRelated(){
@@ -246,14 +257,20 @@ public class Gallery extends GenericGallery{
         if(x){
             for(Gallery g:related)dest.writeParcelable(g,Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
         }
+        x=comments!=null;
+        dest.writeInt(x?comments.size():0);
+        if(x){
+            for(Comment g:comments)dest.writeParcelable(g,Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
+        }
     }
     @Override
     public boolean isValid() {
         return valid;
     }
 
-    public Gallery(JsonReader jr, List<Gallery> related) throws IOException {
+    public Gallery(JsonReader jr, List<Gallery> related, List<Comment> comments) throws IOException {
         valid=true;
+        this.comments=comments;
         jr.beginObject();
         while(jr.peek()!= JsonToken.END_OBJECT){
             switch(jr.nextName()){
@@ -488,125 +505,6 @@ public class Gallery extends GenericGallery{
     public Tag getTag(@NonNull TagType type,int index){
         return getTag(type.ordinal(),index);
     }
-    /*private String toJSON() throws IOException{
-        StringWriter sw=new StringWriter();
-        JsonWriter jw=new JsonWriter(sw);
-        jw.beginObject();
-        jw.name("id").value(id);
-        jw.name("media_id").value(mediaId);
-        jw.name("title").beginObject()
-                .name("english").value(getTitle(TitleType.ENGLISH))
-                .name("japanese").value(getTitle(TitleType.JAPANESE))
-                .name("pretty").value(getTitle(TitleType.PRETTY)).endObject();
-        jw.name("images").beginObject().name("pages").beginArray();
-        pageLoader(ImageType.PAGE,jw);
-        jw.endArray();
-        jw.name("cover");
-        pageLoader(ImageType.COVER,jw);
-        jw.name("thumbnail");
-        pageLoader(ImageType.THUMBNAIL,jw);
-        jw.endObject();
-        jw.name("scanlator").value(scanlator);
-        jw.name("upload_date").value(uploadDate.getTime()/1000);
-        jw.name("tags").beginArray();
-        tagsLoader(jw);
-        jw.endArray();
-        jw.name("num_pages").value(pageCount);
-        jw.name("num_favorites").value(favoriteCount);
-        jw.endObject();
-        return  sw.toString();
-    }*/
-    private void tagsLoader(JsonWriter jw) throws IOException{
-        for(Tag[]type:tags)
-            if(type!=null)
-            for(Tag x:type){
-                jw.beginObject();
-                jw.name("id").value(x.getId());
-                jw.name("type").value(x.findTagString());
-                jw.name("name").value(x.getName());
-                jw.name("count").value(x.getCount());
-                jw.endObject();
-            }
-    }
-    /*private void pageLoader(ImageType type,JsonWriter jw) throws IOException{
-        switch (type){
-            case PAGE:
-                for(Page x:pages)
-                    jw.beginObject().name("t").value(x.jpg?"j":"p").endObject();
-                break;
-            default:
-                jw.beginObject().name("t").value((type==ImageType.COVER?cover:thumbnail)?"j":"p").endObject();
-        }
-    }*/
-    public String writeGallery() throws IOException{
-        StringWriter stringWriter=new StringWriter();
-        JsonWriter jw=new JsonWriter(stringWriter);
-        jw.beginArray();
-        jw.value(id).value(mediaId).value(language.ordinal()).value(favoriteCount).value(pageCount).value(uploadDate.getTime()/1000).value(scanlator);
-        jw.value(titles[0]).value(titles[1]).value(titles[2]);
-        jw.value(""+extToChar(thumbnail)).value(""+extToChar(cover));
-        boolean allPng=true,allJpg=true,allGif=true;
-        StringBuilder builder=new StringBuilder(pageCount);
-        for(ImageExt p:pages){
-            switch(p){
-                case JPG:allGif=false;allPng=false;break;
-                case PNG:allGif=false;allJpg=false;break;
-                case GIF:allJpg=false;allPng=false;break;
-            }
-            builder.append(extToChar(p));
-        }
-        if(!allPng&&!allJpg&&!allGif){
-            jw.value(builder.toString());
-        }else jw.value(allJpg?"j":allPng?"p":"g");
-        for(Tag[] array:tags){
-            jw.beginArray();
-            if(array!=null)
-                for(Tag x:array) {
-                    jw.value(x.getName()).value(x.getCount()).value(x.getId());
-                }
-            jw.endArray();
-        }
-        String fin=stringWriter.toString();
-        stringWriter.close();
-        return fin;
-    }
-    public Gallery(String x) throws IOException{
-        //Vero inizio
-        JsonReader jr=new JsonReader(new StringReader("{\"f\":"+x+"]}"));
-        jr.beginObject();
-        jr.skipValue();
-        jr.beginArray();
-        id=jr.nextInt();
-        mediaId=jr.nextInt();
-        language=Language.values()[jr.nextInt()];
-        favoriteCount=jr.nextInt();
-        pageCount=jr.nextInt();
-        uploadDate=new Date(jr.nextLong());
-        scanlator=jr.nextString();
-        titles[0]=jr.nextString();
-        titles[1]=jr.nextString();
-        titles[2]=jr.nextString();
-        thumbnail=stringToExt(jr.nextString());
-        cover=stringToExt(jr.nextString());
-        pages=new ImageExt[pageCount];
-        String pagstr=jr.nextString();
-        if(pagstr.length()==1){
-            for(int a=0;a<pageCount;a++)pages[a]=stringToExt(pagstr);
-        }else for(int a=0;a<pageCount;a++)pages[a]= charToExt(pagstr.charAt(a));
-        int len=TagType.values().length;
-        tags=new Tag[len][];
-        for(int a=0;a<len;a++){
-            List<Tag>list=new ArrayList<>();
-            jr.beginArray();
-            while (jr.hasNext()) {
-                list.add(new Tag(jr.nextString(),jr.nextInt(),jr.nextInt(),TagType.values()[a],TagStatus.DEFAULT));
-            }
-            if(list.size()>0) tags[a]=list.toArray(new Tag[0]);
-            jr.endArray();
-        }
-        jr.close();
-    }
-
     public static Gallery galleryFromId(int id) throws IOException{
         String url="https://nhentai.net/g/"+id;
         Log.d(Global.LOGTAG,url);

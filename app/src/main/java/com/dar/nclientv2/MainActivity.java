@@ -53,6 +53,7 @@ public class MainActivity extends BaseActivity
     private int related=-1;
     private boolean tagFromURL=false,advanced=false;
     private static boolean firstTime=true;
+    public MenuItem loginItem;
     public void setInspector(Inspector inspector) {
         this.inspector = inspector;
     }
@@ -108,7 +109,8 @@ public class MainActivity extends BaseActivity
         changeNavigationImage(navigationView);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.getMenu().findItem(R.id.online_favorite_manager).setVisible(com.dar.nclientv2.settings.Login.isLogged());
-        navigationView.getMenu().findItem(R.id.action_login).setTitle(com.dar.nclientv2.settings.Login.isLogged()?R.string.logout:R.string.login);
+        loginItem=navigationView.getMenu().findItem(R.id.action_login);
+        loadStringLogin();
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
         recycler.setHasFixedSize(true);
@@ -165,6 +167,12 @@ public class MainActivity extends BaseActivity
             startService(i);
             firstTime=false;
         }
+    }
+
+    private void loadStringLogin() {
+        if(com.dar.nclientv2.settings.Login.getUser()!=null)loginItem.setTitle(getString(R.string.login_formatted, com.dar.nclientv2.settings.Login.getUser().getUsername()));
+        else loginItem.setTitle(com.dar.nclientv2.settings.Login.isLogged()?R.string.logout :R.string.login);
+
     }
 
     private void changeNavigationImage(NavigationView navigationView) {
@@ -269,9 +277,10 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onResume() {
         super.onResume();
+        loadStringLogin();
         ACRA.getErrorReporter().setEnabled(getSharedPreferences("Settings",0).getBoolean(getString(R.string.key_send_report),true));
         com.dar.nclientv2.settings.Login.initUseAccountTag(this);
-        navigationView.getMenu().findItem(R.id.action_login).setTitle(com.dar.nclientv2.settings.Login.isLogged()?R.string.logout:R.string.login);
+        loadStringLogin();
         if(com.dar.nclientv2.settings.Login.isLogged())navigationView.getMenu().findItem(R.id.online_favorite_manager).setVisible(true);
         if(setting!=null){
             Global.initHighRes(this);Global.initOnlyTag(this);Global.initInfiniteScroll(this);Global.initRemoveIgnoredGalleries(this);
@@ -409,7 +418,7 @@ public class MainActivity extends BaseActivity
         builder.setPositiveButton(android.R.string.yes, (dialogInterface, i) -> {
             Login.logout(MainActivity.this);
             navigationView.getMenu().findItem(R.id.online_favorite_manager).setVisible(false);
-            navigationView.getMenu().findItem(R.id.action_login).setTitle(R.string.login);
+            loginItem.setTitle(R.string.login);
 
         }).setNegativeButton(android.R.string.no,null).show();
     }
@@ -422,7 +431,7 @@ public class MainActivity extends BaseActivity
 
             case R.id.downloaded:if(Global.hasStoragePermission(this))startLocalActivity();else requestStorage();break;
             case R.id.action_login:
-                if(item.getTitle().equals(getString(R.string.logout))){
+                if(com.dar.nclientv2.settings.Login.isLogged()){
                     showLogoutForm();
 
                 }else {

@@ -92,6 +92,11 @@ public class DownloadFavorite extends Thread{
             if (g==null) {
                 Log.d(Global.LOGTAG,"Gallery "+id+" Not found, so download it!!");
                 g=Gallery.galleryFromId(id);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
             Queries.GalleryTable.addFavorite(Database.getDatabase(),g,true);
         }

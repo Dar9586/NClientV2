@@ -17,6 +17,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.dar.nclientv2.CopyToClipboardActivity;
+import com.dar.nclientv2.MainActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.enums.Language;
@@ -126,7 +127,12 @@ public final class Global {
         client.dispatcher().setMaxRequestsPerHost(25);
         if(Login.isLogged()&&Login.getUser()==null){
             User.createUser(user -> {
-                if(user!=null)new LoadTags(null).start();
+                if(user!=null){
+                    new LoadTags(null).start();
+                    if(context instanceof MainActivity){
+                        ((MainActivity) context).runOnUiThread(() -> ((MainActivity)context).loginItem.setTitle(context.getString(R.string.login_formatted,user.getUsername())));
+                    }
+                }
             });
         }
     }

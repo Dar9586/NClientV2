@@ -3,10 +3,12 @@ package com.dar.nclientv2.api.local;
 import android.os.Parcel;
 import android.util.Log;
 
+import com.dar.nclientv2.api.components.Comment;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.settings.Global;
 
 import java.io.File;
+import java.util.List;
 
 import androidx.annotation.Nullable;
 
@@ -38,6 +40,11 @@ public class LocalGallery extends GenericGallery{
         this.max=max;
         this.min=min;
         valid=max<1000&&min>0&&id!=-1;
+    }
+
+    @Override
+    public List<Comment> getComments() {
+        return null;
     }
 
     private LocalGallery(Parcel in) {

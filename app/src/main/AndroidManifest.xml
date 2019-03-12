@@ -16,7 +16,8 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/LightTheme">
-        <activity android:name=".SearchActivity"/>
+        <activity android:name=".CommentActivity"></activity>
+        <activity android:name=".SearchActivity" />
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize"
@@ -89,6 +90,7 @@
             android:name=".async.ScrapeTags"
             android:enabled="true"
             android:exported="false" />
+
         <activity
             android:name=".LocalActivity"
             android:configChanges="orientation|screenSize"

@@ -117,6 +117,7 @@ public class GalleryActivity extends BaseActivity{
             menu.findItem(R.id.add_online_gallery).setIcon(x?R.drawable.ic_star:R.drawable.ic_star_border);
         }
         menu.findItem(R.id.share).setVisible(gallery!=null&&gallery.isValid());
+        menu.findItem(R.id.comments).setVisible(gallery!=null&&gallery.getComments()!=null);
         menu.findItem(R.id.favorite_manager).setIcon((isFavorite=Favorites.isFavorite(gallery))?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
         menu.findItem(R.id.load_internet).setVisible(isLocal&&gallery!=null&&gallery.getId()!=-1);
     }
@@ -174,6 +175,11 @@ public class GalleryActivity extends BaseActivity{
             case R.id.download_gallery:if(Global.hasStoragePermission(this))downloadGallery();else{requestStorage();}break;
             case R.id.change_view:updateColumnCount(true); break;
             case R.id.load_internet:toInternet();break;
+            case R.id.comments:
+                Intent i=new Intent(this, CommentActivity.class);
+                i.putExtra(getPackageName()+".GALLERY",gallery);
+                startActivity(i);
+                break;
             case R.id.share:
                 Global.shareGallery(this,gallery);
                 break;

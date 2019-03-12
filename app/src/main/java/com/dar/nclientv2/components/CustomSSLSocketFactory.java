@@ -24,7 +24,7 @@ import okhttp3.TlsVersion;
 public class CustomSSLSocketFactory extends SSLSocketFactory {
     private static final String[] TLS_V12_ONLY = {"TLSv1.2"};
 
-    final SSLSocketFactory delegate;
+    private final SSLSocketFactory delegate;
 
     public CustomSSLSocketFactory(SSLSocketFactory base) {
         this.delegate = base;
@@ -46,12 +46,12 @@ public class CustomSSLSocketFactory extends SSLSocketFactory {
     }
 
     @Override
-    public Socket createSocket(String host, int port) throws IOException, UnknownHostException {
+    public Socket createSocket(String host, int port) throws IOException {
         return patch(delegate.createSocket(host, port));
     }
 
     @Override
-    public Socket createSocket(String host, int port, InetAddress localHost, int localPort) throws IOException, UnknownHostException {
+    public Socket createSocket(String host, int port, InetAddress localHost, int localPort) throws IOException {
         return patch(delegate.createSocket(host, port, localHost, localPort));
     }
 

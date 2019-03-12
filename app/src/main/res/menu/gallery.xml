@@ -44,4 +44,10 @@
         android:icon="@drawable/ic_share"
         android:title="@string/share"
         app:showAsAction="ifRoom|collapseActionView"/>
+    <item
+        android:id="@+id/comments"
+        android:orderInCategory="700"
+        android:icon="@drawable/ic_share"
+        android:title="@string/comments"
+        app:showAsAction="ifRoom|collapseActionView"/>
 </menu>

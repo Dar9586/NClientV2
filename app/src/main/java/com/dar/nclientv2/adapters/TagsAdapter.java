@@ -169,7 +169,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         jw.endArray().name("removed").beginArray();
         if(!add)writeTag(jw,tag);
         jw.endArray().endObject();
-        final String url=String.format(Locale.US,"https://nhentai.net/users/%s/%s/blacklist",Login.getUser().getId(),Login.getUser().getCodename());
+        final String url=String.format(Locale.US,"https://nhentai.net/users/%d/%s/blacklist",Login.getUser().getId(),Login.getUser().getCodename());
         final RequestBody ss=RequestBody.create(MediaType.get("application/json"),sw.toString());
         Global.client.newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
             @Override

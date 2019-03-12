@@ -17,7 +17,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class User {
-    private final String username,id,codename;
+    private final String username,codename;
+    private final int id;
     private int totalPages=0;
     public interface CreateUser{
         void onCreateUser(User user);
@@ -45,7 +46,7 @@ public class User {
     }
     private User(String username, String id, String codename) {
         this.username = username;
-        this.id = id;
+        this.id = Integer.parseInt(id);
         this.codename = codename;
     }
 
@@ -58,7 +59,7 @@ public class User {
         return username;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 

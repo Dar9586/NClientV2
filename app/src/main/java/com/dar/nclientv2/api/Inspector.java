@@ -7,6 +7,7 @@ import android.util.Log;
 import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.MainActivity;
 import com.dar.nclientv2.adapters.ListAdapter;
+import com.dar.nclientv2.api.components.Comment;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.ApiRequestType;
@@ -23,7 +24,6 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -85,7 +85,10 @@ public class Inspector {
                 break;
             case BYSEARCH:case BYTAG:
                 builder.append("search/?q=").append(query);
-                if(tags==null&&Global.getOnlyLanguage()!=null) builder.append(appendedLanguage());
+                if(tags==null&&Global.getOnlyLanguage()!=null){
+                    String lang=appendedLanguage();
+                    if(!query.contains(lang)) builder.append('+').append(lang);
+                }
                 if(requestType == ApiRequestType.BYTAG && !Global.isOnlyTag())builder.append(tagQuery);
                 if(requestType == ApiRequestType.BYSEARCH) builder.append(tagQuery);
                 if (byPopular) builder.append("&sort=popular");
@@ -135,8 +138,7 @@ public class Inspector {
             public void onResponse(@NonNull Call call,@NonNull Response response) throws IOException {
                 Log.d(Global.LOGTAG,"Response of "+url);
                 Document d=Jsoup.parse(response.body().byteStream(),"UTF-8","https://nhentai.net");
-
-                parseGalleries(d.getElementsByTag("script"),d.getElementsByClass("gallery"));
+                parseGalleries(d.getElementsByTag("script"),d.getElementsByClass("gallery"),requestType==ApiRequestType.BYSINGLE? parseComments(d.getElementById("comments")):null);
                 for (Gallery x:galleries)if(x.getId()>Global.getMaxId())Global.updateMaxId(activity,x.getId());
                 Elements elements=d.getElementsByClass("last");
                 if(elements.size()==1)findTotal(elements.first());
@@ -157,10 +159,20 @@ public class Inspector {
                     activity.getRefresher().setRefreshing(false);
                 });
             }
+
+
         });
 
     }
+    private List<Comment> parseComments(Element e) {
+        Elements el=e.getElementsByClass("comment");
+        List<Comment>comments=new ArrayList<>(el.size());
 
+        for (Element x:el) {
+            try{comments.add(new Comment(x.attr("data-state")));}catch (IOException ignore){}
+        }
+        return comments;
+    }
     private void findTotal(Element e){
         String temp=e.attr("href");
         pageCount=Integer.parseInt(temp.substring(temp.lastIndexOf('=')+1));
@@ -170,6 +182,7 @@ public class Inspector {
         return tags;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Inspector{" +
@@ -190,11 +203,11 @@ public class Inspector {
             String x=e.last().html();
             int s=x.indexOf("new N.gallery(")+14;
             x=x.substring(s,x.indexOf('\n',s)-2);
-            galleries.add(new Gallery(new JsonReader(new StringReader(x)), null));
+            galleries.add(new Gallery(new JsonReader(new StringReader(x)), null, null));
         }
         return galleries;
     }
-    private void parseGalleries(Elements scripts, Elements gals)throws IOException{
+    private void parseGalleries(Elements scripts, Elements gals, List<Comment> comments)throws IOException{
         List<Gallery>galle=new ArrayList<>(gals.size());
         for(Element el:gals)galle.add(new Gallery(el));
         if(requestType==ApiRequestType.BYSINGLE){
@@ -204,7 +217,8 @@ public class Inspector {
             int s=str.indexOf("new N.gallery(")+14,s1=str.indexOf('\n', s) - 2;
             if(s==13||s1<0)return;
             str = str.substring(s, s1);
-            galleries.add(new Gallery(new JsonReader(new StringReader(str)),galle));
+
+            galleries.add(new Gallery(new JsonReader(new StringReader(str)),galle,comments));
         }else galleries=galle;
     }
 

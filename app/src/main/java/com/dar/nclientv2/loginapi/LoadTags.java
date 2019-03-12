@@ -34,7 +34,7 @@ public class LoadTags extends Thread {
     public void run() {
         super.run();
         if(Login.getUser()==null)return;
-        Log.d(Global.LOGTAG,String.format("Creating blacklist of: https://nhentai.net/users/%s/%s/blacklist",Login.getUser().getId(),Login.getUser().getCodename()));
+        Log.d(Global.LOGTAG,String.format("Creating blacklist of: https://nhentai.net/users/%d/%s/blacklist",Login.getUser().getId(),Login.getUser().getCodename()));
         Global.client.newCall(new Request.Builder().url(String.format(Locale.US,"https://nhentai.net/users/%s/%s/blacklist",Login.getUser().getId(),Login.getUser().getCodename())).build()).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {

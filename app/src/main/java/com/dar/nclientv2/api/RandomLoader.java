@@ -1,7 +1,6 @@
 package com.dar.nclientv2.api;
 
 import android.util.JsonReader;
-import android.util.Log;
 
 import com.dar.nclientv2.RandomActivity;
 import com.dar.nclientv2.api.components.Gallery;
@@ -15,7 +14,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import androidx.annotation.NonNull;
 import okhttp3.Call;
@@ -52,7 +50,7 @@ public class RandomLoader {
                     int s=str.indexOf("new N.gallery(")+14,s1=str.indexOf('\n', s) - 2;
                     if(s==13||s1<0)return;
                     str = str.substring(s, s1);
-                    Gallery x = new Gallery(new JsonReader(new StringReader(str)), null);
+                    Gallery x = new Gallery(new JsonReader(new StringReader(str)), null, null);
                     if (!x.isValid()) {
                         loadRandomGallery();
                         return;

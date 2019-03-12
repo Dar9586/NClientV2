@@ -100,7 +100,8 @@
     <string name="username_or_email">Username or Email</string>
     <string name="password">Password</string>
     <string name="login">Log in</string>
-    <string name="logout">Log out</string>
+    <string name="login_formatted" formatted="true">Logged as %s</string>
+    <string name="logout">Logout</string>
     <string name="sign_in">Sign in</string>
     <string name="forgot_password">Forgot your password? <b>Reset it</b></string>
     <string name="register">Don\'t have an account? <b>Register</b></string>
@@ -233,6 +234,9 @@
     <string name="cancelling">Cancelling…</string>
     <string name="key_favorite_limit">favorite_limit</string>
     <string name="favorite_count">Favorite count</string>
+    <string name="comments">Comments</string>
+    <string name="send">Send</string>
+    <string name="send_comment">Send comment…</string>
 
 
     <string-array name="theme">
