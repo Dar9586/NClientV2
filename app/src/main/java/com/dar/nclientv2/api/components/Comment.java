@@ -4,9 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.JsonReader;
 import android.util.JsonToken;
-import android.util.Log;
-
-import com.dar.nclientv2.settings.Global;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -103,7 +100,6 @@ public class Comment implements Parcelable {
     }
 
     public Date getDate() {
-        Log.d(Global.LOGTAG,id+","+date.getTime());
         return date;
     }
 

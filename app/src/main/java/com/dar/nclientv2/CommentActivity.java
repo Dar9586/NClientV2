@@ -1,7 +1,28 @@
 package com.dar.nclientv2;
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.content.res.Configuration;
+import android.os.Bundle;
+import android.util.JsonReader;
+import android.util.JsonToken;
+import android.util.JsonWriter;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+
+import com.dar.nclientv2.adapters.CommentAdapter;
+import com.dar.nclientv2.api.components.Comment;
+import com.dar.nclientv2.api.components.Gallery;
+import com.dar.nclientv2.components.BaseActivity;
+import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.settings.Login;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import okhttp3.Call;
@@ -10,28 +31,6 @@ import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-
-import android.content.res.Configuration;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.JsonReader;
-import android.util.JsonToken;
-import android.util.JsonWriter;
-import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
-
-import com.dar.nclientv2.adapters.CommentAdapter;
-import com.dar.nclientv2.api.components.Comment;
-import com.dar.nclientv2.api.components.Gallery;
-import com.dar.nclientv2.api.local.FakeInspector;
-import com.dar.nclientv2.components.BaseActivity;
-import com.dar.nclientv2.settings.Global;
-import com.dar.nclientv2.settings.Login;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 
 public class CommentActivity extends BaseActivity {
 
@@ -105,7 +104,11 @@ public class CommentActivity extends BaseActivity {
                                 reader.close();
                                 if(success){
                                     ((CommentAdapter)recycler.getAdapter()).addComment(c);
-                                    ((EditText)findViewById(R.id.commentText)).setText("");
+                                    CommentActivity.this.runOnUiThread(() -> {
+                                        ((EditText)findViewById(R.id.commentText)).setText("");
+                                        recycler.smoothScrollToPosition(0);
+                                    });
+
                                 }
                             }
                         });
@@ -118,7 +121,11 @@ public class CommentActivity extends BaseActivity {
             }
         });
         changeLayout(getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE);
+        refresher.setRefreshing(true);
         recycler.setAdapter(new CommentAdapter(this,g.getComments(),g.getId()));
+        recycler.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+        refresher.setRefreshing(false);
+        refresher.setEnabled(false);
     }
     @Override
     protected void changeLayout(boolean landscape){
@@ -129,5 +136,13 @@ public class CommentActivity extends BaseActivity {
         recycler.setLayoutManager(gridLayoutManager);
         recycler.setAdapter(adapter);
         recycler.scrollToPosition(first);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home: onBackPressed();return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

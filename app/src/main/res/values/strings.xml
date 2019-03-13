@@ -237,6 +237,8 @@
     <string name="comments">Comments</string>
     <string name="send">Send</string>
     <string name="send_comment">Send comment…</string>
+    <string name="remove_comment">Remove comment</string>
+    <string name="profile_picture">Profile picture</string>
 
 
     <string-array name="theme">

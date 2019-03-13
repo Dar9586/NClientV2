@@ -1,34 +1,34 @@
 package com.dar.nclientv2.adapters;
 
 import android.app.Activity;
-import android.content.Context;
+import android.os.Build;
 import android.util.JsonReader;
 import android.util.JsonToken;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Comment;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
-import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.AppCompatImageButton;
-import androidx.appcompat.widget.AppCompatTextView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.Cookie;
+import okhttp3.FormBody;
+import okhttp3.HttpUrl;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -55,12 +55,17 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull CommentAdapter.ViewHolder holder, int position) {
         Comment c=comments.get(holder.getAdapterPosition());
-        Log.d(Global.LOGTAG,"CONFRONTO "+c.getUsername()+": "+c.getPosterId()+","+userId+","+(c.getPosterId()!=userId?"GONE":"VISIBLE"));
-        //holder.close.setVisibility(c.getPosterId()!=userId?View.GONE:View.VISIBLE);
-        holder.close.setVisibility(View.GONE);
+        holder.layout.setOnClickListener(v1 -> {
+            if(Build.VERSION.SDK_INT>Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1){
+                context.runOnUiThread(() -> {
+                    holder.body.setMaxLines(holder.body.getMaxLines()==7?999:7);
+                });
+            }
+        });
+        holder.close.setVisibility(c.getPosterId()!=userId?View.GONE:View.VISIBLE);
         holder.close.setOnClickListener(v -> {
             Comment cr=comments.get(holder.getAdapterPosition());
-            Global.client.newCall(new Request.Builder().url("https://nhentai.net/g/"+galleryId).build()).enqueue(new Callback() {
+            Global.client.newCall(new Request.Builder().post(new FormBody.Builder().build()).url("https://nhentai.net/g/"+galleryId).build()).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
 
@@ -72,8 +77,19 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                     token=token.substring(token.lastIndexOf("csrf_token"));
                     token=token.substring(token.indexOf('"')+1);
                     token=token.substring(0,token.indexOf('"'));
-                    Log.d(Global.LOGTAG,"TOKEN: "+token);
-                    Global.client.newCall(new Request.Builder().addHeader("Referer","https://nhentai.net/g/"+galleryId).addHeader("X-Requested-With","XMLHttpRequest").addHeader("X-CSRFToken",token).url("https://nhentai.net/api/comments/"+cr.getId()+"/delete").build()).enqueue(new Callback() {
+                    Request.Builder builder=new Request.Builder()
+                            .addHeader("Referer","https://nhentai.net/g/"+galleryId)
+                            .addHeader("X-Requested-With","XMLHttpRequest")
+                            .addHeader("X-CSRFToken",token)
+                            .post(new FormBody.Builder().add("x","x").build())
+                            .url("https://nhentai.net/api/comments/"+cr.getId()+"/delete");
+
+                    StringBuilder builder1=new StringBuilder();
+                    for (Cookie cookie:Global.client.cookieJar().loadForRequest(HttpUrl.get("https://nhentai.net/api/comments/"+cr.getId()+"/delete"))){
+                        builder1.append(cookie.name()).append('=').append(cookie.value()).append("; ");
+                    }
+                    builder.addHeader("Cookie",builder1.toString());
+                    Global.client.newCall(builder.build()).enqueue(new Callback() {
                         @Override
                         public void onFailure(Call call, IOException e) {
 
@@ -81,9 +97,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                         @Override
                         public void onResponse(Call call, Response response) throws IOException {
                             String xxx=response.body().string();
-                            Log.d(Global.LOGTAG,"RESULTTT: "+xxx);
-                            Log.d(Global.LOGTAG,"https://nhentai.net/api/comments/"+cr.getId()+"/delete");
-
                             //JsonReader reader =new JsonReader(response.body().charStream());
                             JsonReader reader =new JsonReader(new StringReader(xxx));
                             boolean success=false;
@@ -97,7 +110,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                             reader.close();
                             if(success){
                                 comments.remove(holder.getAdapterPosition());
-                                context.runOnUiThread(()->notifyItemInserted(holder.getAdapterPosition()));
+                                context.runOnUiThread(()->notifyItemRemoved(holder.getAdapterPosition()));
                             }
                         }
                     });
@@ -122,10 +135,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         context.runOnUiThread(()->notifyItemInserted(0));
     }
     public class ViewHolder extends RecyclerView.ViewHolder {
-        AppCompatImageButton userImage,close;
-        AppCompatTextView user,body,date;
+        ImageButton userImage,close;
+        TextView user,body,date;
+        ConstraintLayout layout;
         public ViewHolder(@NonNull View v) {
             super(v);
+            layout=v.findViewById(R.id.master_layout);
             userImage=v.findViewById(R.id.propic);
             close=v.findViewById(R.id.close);
             user=v.findViewById(R.id.username);

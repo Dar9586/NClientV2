@@ -5,13 +5,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.JsonReader;
 import android.util.JsonToken;
-import android.util.JsonWriter;
 import android.util.Log;
 
 import com.dar.nclientv2.adapters.GalleryAdapter;
 import com.dar.nclientv2.api.Inspector;
 import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.api.enums.Language;
+import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.async.database.Queries;
@@ -197,10 +197,11 @@ public class Gallery extends GenericGallery{
             related=new ArrayList<>(x);
             for(int j=0;j<x;j++)related.add(in.readParcelable(Gallery.class.getClassLoader()));
         }
-        if((x=in.readInt())>0){
-            comments=new ArrayList<>(x);
+        if(in.readByte()==0)comments=null;
+        else{
+            comments=new ArrayList<>(x=in.readInt());
             for(int j=0;j<x;j++)comments.add(in.readParcelable(Comment.class.getClassLoader()));
-        }else comments=null;
+        }
     }
 
     @Override
@@ -257,11 +258,10 @@ public class Gallery extends GenericGallery{
         if(x){
             for(Gallery g:related)dest.writeParcelable(g,Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
         }
-        x=comments!=null;
-        dest.writeInt(x?comments.size():0);
-        if(x){
-            for(Comment g:comments)dest.writeParcelable(g,Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
-        }
+        dest.writeByte((byte)(comments==null?0:1));
+        if(comments==null)return;
+        dest.writeInt(comments.size());
+        for(Comment g:comments)dest.writeParcelable(g,Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
     }
     @Override
     public boolean isValid() {
@@ -513,7 +513,10 @@ public class Gallery extends GenericGallery{
         return Inspector.parseGalleries(document.getElementsByTag("script"),ApiRequestType.BYSINGLE).get(0);
     }
     public boolean hasIgnoredTags(String s){
-        for(Tag[]t:tags)if(t!=null)for(Tag t1:t)if(s.contains(t1.toQueryTag()))return true;
+        for(Tag[]t:tags)if(t!=null)for(Tag t1:t)if(s.contains(t1.toQueryTag(TagStatus.AVOIDED))){
+            Log.d(Global.LOGTAG,"FINDED BRUTTO: "+s+",,"+t1.toQueryTag());
+            return true;
+        }
         return false;
     }
     public boolean hasIgnoredTags(){
