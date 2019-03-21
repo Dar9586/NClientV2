@@ -239,6 +239,10 @@
     <string name="send_comment">Send comment…</string>
     <string name="remove_comment">Remove comment</string>
     <string name="profile_picture">Profile picture</string>
+    <string name="send_bug_on_github">Send bug on Github</string>
+    <string name="github">Github</string>
+    <string name="install">Install</string>
+    <string name="download_update_failed">Unable to download updated version</string>
 
 
     <string-array name="theme">

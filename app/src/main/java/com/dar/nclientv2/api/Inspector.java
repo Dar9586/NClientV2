@@ -34,25 +34,9 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class Inspector {
-    private static int actualPage;
-    private static String actualQuery;
-    private static ApiRequestType actualRequestType;
     public Inspector(MainActivity activity, int page, String query, ArrayList<Tag> tags) {
         this(activity,page,query,ApiRequestType.BYSEARCH,false,tags==null?null:tags.toArray(new Tag[0]));
     }
-
-    public static int getActualPage() {
-        return actualPage;
-    }
-
-    public static String getActualQuery() {
-        return actualQuery;
-    }
-
-    public static ApiRequestType getActualRequestType() {
-        return actualRequestType;
-    }
-
     private boolean byPopular;
     private int page;
     private int pageCount;
@@ -112,11 +96,6 @@ public class Inspector {
         this.page=page;
         this.query=query;
         this.requestType=requestType;
-        if(requestType!=ApiRequestType.BYSINGLE){
-            actualPage=page;
-            actualQuery=query;
-            actualRequestType=requestType;
-        }
         url=getUsableURL();
         Log.d(Global.LOGTAG,"Requesting "+url);
         client.newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {

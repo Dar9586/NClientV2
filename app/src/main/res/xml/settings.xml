@@ -112,6 +112,7 @@
     <Preference android:title="@string/clear_cache"
         android:key="@string/key_cache"
         />
+        <Preference android:title="@string/send_bug_on_github" android:key="bug"/>
     <Preference
         android:key="version"
         android:enabled="false"/>

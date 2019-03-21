@@ -1,6 +1,7 @@
 package com.dar.nclientv2;
 
 import android.content.ContentUris;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import java.nio.channels.FileChannel;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreference;
 
@@ -98,6 +100,11 @@ public class SettingsActivity extends AppCompatActivity {
                                     @Override public void negative() {}
                                 })
                 );
+                return true;
+            });
+            findPreference("bug").setOnPreferenceClickListener(preference -> {
+                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Dar9586/NClientV2/issues/new"));
+                startActivity(i);
                 return true;
             });
             findPreference(getString(R.string.key_favorite_limit)).setOnPreferenceClickListener(preference -> {
