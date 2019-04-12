@@ -12,14 +12,22 @@ import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.Inspector;
 import com.dar.nclientv2.api.components.Gallery;
+import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.ApiRequestType;
+import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TitleType;
+import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.BaseActivity;
+import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.settings.TagV2;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -37,7 +45,9 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         this.mDataset = myDataset;
         storagePermission=Global.hasStoragePermission(context);
         black=Global.getTheme()== Global.ThemeScheme.BLACK;
-        queryString=query==null?null:query+"+"+TagV2.getQueryString(query);
+        Set<Tag>t=new HashSet<>(Arrays.asList(Queries.TagTable.getAllStatus(Database.getDatabase(), TagStatus.AVOIDED)));
+        if(Login.useAccountTag())t.addAll(Arrays.asList(Queries.TagTable.getAllOnlineFavorite(Database.getDatabase())));
+        queryString=query==null?null:query+"+"+TagV2.getQueryString(query, t);
     }
 
     @NonNull

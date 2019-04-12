@@ -11,9 +11,13 @@ import com.dar.nclientv2.api.components.Comment;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.ApiRequestType;
+import com.dar.nclientv2.api.enums.TagStatus;
+import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.CustomInterceptor;
+import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.settings.TagV2;
 
 import org.jsoup.Jsoup;
@@ -24,7 +28,11 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import androidx.annotation.NonNull;
 import okhttp3.Call;
@@ -34,16 +42,16 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class Inspector {
-    public Inspector(MainActivity activity, int page, String query, ArrayList<Tag> tags) {
-        this(activity,page,query,ApiRequestType.BYSEARCH,false,tags==null?null:tags.toArray(new Tag[0]));
+    public Inspector(MainActivity activity, int page, String query, Set<Tag> tags) {
+        this(activity,page,query,ApiRequestType.BYSEARCH,false,tags);
     }
-    private boolean byPopular;
+    private boolean byPopular,custom;
     private int page;
     private int pageCount;
     private String query;
     private String url;
     private ApiRequestType requestType;
-    private Tag[] tags=null;
+    private Set<Tag> tags=null;
     private List<Gallery> galleries;
     private static final OkHttpClient client;
     static{
@@ -52,13 +60,17 @@ public class Inspector {
         client=builder.build();
     }
 
+    public boolean isCustom() {
+        return custom;
+    }
+
     public String getUrl() {
         return url;
     }
     public String getUsableURL(){
         ApiRequestType requestType=this.requestType;
         StringBuilder builder = new StringBuilder("https://nhentai.net/");
-        String tagQuery=(Global.getRemoveIgnoredGalleries()||tags!=null)?TagV2.getQueryString(query,tags):"";
+        String tagQuery=TagV2.getQueryString(query,tags);
         Log.d(Global.LOGTAG,"TAGQUR: "+tagQuery);
         Log.d(Global.LOGTAG,Global.getRemoveIgnoredGalleries()+","+Global.isOnlyTag()+","+requestType);
         if(requestType==ApiRequestType.BYALL&&(tagQuery.length()>0||Global.getOnlyLanguage()!=null))requestType=ApiRequestType.BYSEARCH;
@@ -86,18 +98,26 @@ public class Inspector {
     public Inspector(final BaseActivity activity, final int page, String query, final ApiRequestType requestType) {
         this(activity,page,query,requestType,false,null);
     }
-    public Inspector(final BaseActivity activity, final int page, final String query, final ApiRequestType requestType, final boolean update,Tag[]tags) {
+    public Inspector(final BaseActivity activity, final int page, final String query, final ApiRequestType requestType, final boolean update,Set<Tag>tags) {
         Log.d(Global.LOGTAG,"COUNT: "+client.dispatcher().runningCallsCount());
         if(!update)client.dispatcher().cancelAll();
         else if(client.dispatcher().runningCallsCount()>0)return;
         activity.getRefresher().setRefreshing(true);
+        custom=tags!=null;
+        if(!custom){
+            tags=new HashSet<>(Arrays.asList(Queries.TagTable.getAllStatus(Database.getDatabase(), TagStatus.ACCEPTED)));
+            if(Global.getRemoveIgnoredGalleries()){
+                tags.addAll(Arrays.asList(Queries.TagTable.getAllStatus(Database.getDatabase(), TagStatus.AVOIDED)));
+                if(Login.useAccountTag())tags.addAll(Arrays.asList(Queries.TagTable.getAllOnlineFavorite(Database.getDatabase())));
+            }
+        }
         this.tags=tags;
         this.byPopular = Global.isByPopular();
         this.page=page;
         this.query=query;
         this.requestType=requestType;
         url=getUsableURL();
-        Log.d(Global.LOGTAG,"Requesting "+url);
+        Log.d(Global.LOGTAG,"Requesting "+url+" whti tags: "+ tags);
         client.newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -157,7 +177,7 @@ public class Inspector {
         pageCount=Integer.parseInt(temp.substring(temp.lastIndexOf('=')+1));
     }
 
-    public Tag[] getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 

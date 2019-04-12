@@ -308,7 +308,9 @@ public class Queries{
         }
         public static Tag[]getAllOnlineFavorite(SQLiteDatabase db){
             String query="SELECT * FROM "+ TABLE_NAME +" WHERE "+ ONLINE +" = 1";
-            return retrieveAll(db.rawQuery(query,null));
+            Tag[]t=retrieveAll(db.rawQuery(query,null));
+            for(Tag t1:t)t1.setStatus(TagStatus.AVOIDED);
+            return t;
         }
         public static boolean isOnlineFavorite(SQLiteDatabase db,Tag tag){
             String query="SELECT "+ IDTAG +" FROM "+ TABLE_NAME +" WHERE "+ IDTAG +"=? AND "+ ONLINE +"=1";

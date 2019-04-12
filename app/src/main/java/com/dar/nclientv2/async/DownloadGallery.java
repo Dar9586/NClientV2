@@ -90,7 +90,7 @@ public class DownloadGallery extends IntentService {
                 ostream.flush();
                 ostream.close();
             }catch (IOException e){
-                Log.e("IOException", e.getLocalizedMessage()); }
+                Log.e(Global.LOGTAG, e.getLocalizedMessage(),e); }
         }
         System.gc();
         for(a=0;a<gallery.getPageCount();a++){

@@ -37,6 +37,7 @@ import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.ChipTag;
 import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.settings.Login;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -106,15 +107,17 @@ public class SearchActivity extends AppCompatActivity {
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("query",query);
                 returnIntent.putExtra("advanced",advanced);
-                ArrayList<Tag>tt=new ArrayList<>();
-                for(ChipTag tag:tags){
-                    if((tag.getTag().getType()==TagType.LANGUAGE||tag.getTag().getType()==TagType.CATEGORY)){
-                        if(tag.getTag().getStatus()==TagStatus.ACCEPTED)tt.add(tag.getTag());
-                        continue;
+                if(advanced){
+                    ArrayList<Tag>tt=new ArrayList<>();
+                    for(ChipTag tag:tags){
+                        if((tag.getTag().getType()==TagType.LANGUAGE||tag.getTag().getType()==TagType.CATEGORY)){
+                            if(tag.getTag().getStatus()==TagStatus.ACCEPTED)tt.add(tag.getTag());
+                            continue;
+                        }
+                        if(tag.getTag().getStatus()!=TagStatus.DEFAULT)tt.add(tag.getTag());
                     }
-                    if(tag.getTag().getStatus()!=TagStatus.DEFAULT)tt.add(tag.getTag());
+                    returnIntent.putParcelableArrayListExtra("tags",tt);
                 }
-                if(advanced)returnIntent.putParcelableArrayListExtra("tags",tt);
                 setResult(Activity.RESULT_OK,returnIntent);
                 finish();
                 return true;
@@ -143,6 +146,7 @@ public class SearchActivity extends AppCompatActivity {
             if(t.getId()==-1&&Global.getOnlyLanguage()==Language.UNKNOWN)t.setStatus(TagStatus.ACCEPTED);
             addSpecialTag(t);
         }
+        if(Login.useAccountTag())for(Tag t:Queries.TagTable.getAllOnlineFavorite(Database.getDatabase()))if(!tagAlreadyExist(t.getName()))addTag(t);
         Tag fake=new Tag("-language:japanese+-language:chinese+-language:english",0,-1,TagType.LANGUAGE,Global.getOnlyLanguage()==Language.UNKNOWN?TagStatus.ACCEPTED:TagStatus.DEFAULT);
         addSpecialTag(fake);
         fake=new Tag("-language:japanese+-language:chinese+-language:english",0,-1,TagType.UNKNOWN,Global.getOnlyLanguage()==Language.UNKNOWN?TagStatus.ACCEPTED:TagStatus.DEFAULT);
@@ -254,9 +258,9 @@ public class SearchActivity extends AppCompatActivity {
         }
 
     }
-
+    private int id=1000000;
     private void createChip() {
-        Tag t=new Tag(autoComplete.getText().toString().toLowerCase(Locale.US),0,0,editTag,TagStatus.ACCEPTED);
+        Tag t=new Tag(autoComplete.getText().toString().toLowerCase(Locale.US),0,id++,editTag,TagStatus.ACCEPTED);
         if(tagAlreadyExist(t.getName()))return;
         getGroup(editTag).removeView(addChip[editTag.ordinal()]);
         addTag(t);

@@ -33,8 +33,10 @@ import org.acra.ACRA;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -126,19 +128,19 @@ public class MainActivity extends BaseActivity
                 if(Global.isInfiniteScroll()&&!refresher.isRefreshing()){
                     GridLayoutManager manager = (GridLayoutManager)recycler.getLayoutManager();
                     if(actualPage < totalPage && manager.findLastVisibleItemPosition() >= (recycler.getAdapter().getItemCount()-1-manager.getSpanCount()))
-                        new Inspector(MainActivity.this, actualPage + 1, inspector.getQuery(), inspector.getRequestType(),true,inspector==null?null:inspector.getTags());
+                        new Inspector(MainActivity.this, actualPage + 1, inspector.getQuery(), inspector.getRequestType(),true,inspector==null||!inspector.isCustom()?null:inspector.getTags());
                 }
 
             }
         });
-        refresher.setOnRefreshListener(() -> new Inspector(MainActivity.this,inspector.getPage(),inspector.getQuery(),inspector.getRequestType(),false,inspector==null?null:inspector.getTags()));
+        refresher.setOnRefreshListener(() -> new Inspector(MainActivity.this,inspector.getPage(),inspector.getQuery(),inspector.getRequestType(),false,inspector==null||!inspector.isCustom()?null:inspector.getTags()));
         findViewById(R.id.prev).setOnClickListener(v -> {
             if (actualPage > 1)
-                new Inspector(MainActivity.this, actualPage - 1,inspector.getQuery(),inspector.getRequestType(),false,inspector==null?null:inspector.getTags());
+                new Inspector(MainActivity.this, actualPage - 1,inspector.getQuery(),inspector.getRequestType(),false,inspector==null||!inspector.isCustom()?null:inspector.getTags());
         });
         findViewById(R.id.next).setOnClickListener(v -> {
             if (actualPage < totalPage)
-                new Inspector(MainActivity.this, actualPage + 1, inspector.getQuery(),inspector.getRequestType(),false,inspector==null?null:inspector.getTags());
+                new Inspector(MainActivity.this, actualPage + 1, inspector.getQuery(),inspector.getRequestType(),false,inspector==null||!inspector.isCustom()?null:inspector.getTags());
 
         });
         findViewById(R.id.page_index).setOnClickListener(v -> loadDialog());
@@ -239,7 +241,7 @@ public class MainActivity extends BaseActivity
                 new DefaultDialogs.Builder(this).setActual(actualPage).setMax(totalPage).setDialogs(new DefaultDialogs.DialogResults() {
                     @Override
                     public void positive(int actual) {
-                        new Inspector(MainActivity.this,actual,inspector.getQuery(),inspector.getRequestType(),false,inspector==null?null:inspector.getTags());
+                        new Inspector(MainActivity.this,actual,inspector.getQuery(),inspector.getRequestType(),false,inspector==null||!inspector.isCustom()?null:inspector.getTags());
                     }
                     @Override
                     public void negative() {}
@@ -290,12 +292,12 @@ public class MainActivity extends BaseActivity
         if(setting!=null){
             Global.initHighRes(this);Global.initOnlyTag(this);Global.initInfiniteScroll(this);Global.initRemoveIgnoredGalleries(this);
             if(setting.remove!=Global.getRemoveIgnoredGalleries()){
-                new Inspector(this,1,inspector.getQuery(),inspector.getRequestType(),false,inspector==null?null:inspector.getTags());
+                new Inspector(this,1,inspector.getQuery(),inspector.getRequestType(),false,inspector==null||!inspector.isCustom()?null:inspector.getTags());
             }else if(setting.infinite!=Global.isInfiniteScroll()){
                 if(Global.isInfiniteScroll()){
                     hidePageSwitcher();
-                    if(actualPage != 1) new Inspector(this, 1, inspector.getQuery(), inspector.getRequestType(),false,inspector==null?null:inspector.getTags());
-                }else new Inspector(this, actualPage, inspector.getQuery(), inspector.getRequestType(),false,inspector==null?null:inspector.getTags());
+                    if(actualPage != 1) new Inspector(this, 1, inspector.getQuery(), inspector.getRequestType(),false,inspector==null||!inspector.isCustom()?null:inspector.getTags());
+                }else new Inspector(this, actualPage, inspector.getQuery(), inspector.getRequestType(),false,inspector==null||!inspector.isCustom()?null:inspector.getTags());
             }
             if(Global.initLoadImages(this)!=setting.loadImages) recycler.getAdapter().notifyItemRangeChanged(0,recycler.getAdapter().getItemCount());
             if(Global.getTheme()!=setting.theme)recreate();
@@ -361,7 +363,7 @@ public class MainActivity extends BaseActivity
                 item.setIcon(Global.updateByPopular(this,!Global.isByPopular())?R.drawable.ic_star_border:R.drawable.ic_access_time);
                 item.setTitle(Global.isByPopular()?R.string.sort_by_latest:R.string.sort_by_popular);
                 Global.setTint(item.getIcon());
-                new Inspector(this,1,inspector.getQuery(),inspector.getRequestType(),false,inspector==null?null:inspector.getTags());break;
+                new Inspector(this,1,inspector.getQuery(),inspector.getRequestType(),false,inspector==null||!inspector.isCustom()?null:inspector.getTags());break;
             case R.id.only_language:updateLanguageIcon(item);showLanguageIcon(item); break;
             case R.id.search:
                 i=new Intent(this,SearchActivity.class);
@@ -391,11 +393,11 @@ public class MainActivity extends BaseActivity
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode==1&&resultCode== Activity.RESULT_OK){
             ArrayList<Tag>tags=data.getParcelableArrayListExtra("tags");
-            manageQuery(data.getStringExtra("query"),tags);
+            manageQuery(data.getStringExtra("query"),new HashSet<>(tags));
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-    private void manageQuery(String query, ArrayList<Tag> tags){
+    private void manageQuery(String query, Set<Tag> tags){
         query=query.trim();
         if(query.length()==0&&tags==null)return;
         try {
@@ -413,7 +415,7 @@ public class MainActivity extends BaseActivity
         supportInvalidateOptionsMenu();
 
         Log.d(Global.LOGTAG,"TAGS: "+tags);
-        new Inspector(MainActivity.this,1,query+(tag!=null?(' '+tag.toQueryTag(TagStatus.DEFAULT)):""),tags);
+        new Inspector(MainActivity.this,1,query+(tag!=null?' '+tag.toQueryTag(TagStatus.DEFAULT):""),tags);
     }
 
     private void showLogoutForm() {

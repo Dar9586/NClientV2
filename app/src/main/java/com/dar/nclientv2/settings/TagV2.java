@@ -7,6 +7,10 @@ import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.database.Queries;
 
+import java.util.Set;
+
+import androidx.annotation.NonNull;
+
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public class TagV2{
     public static final int MAXTAGS=100;
@@ -19,21 +23,14 @@ public class TagV2{
     public static Tag[] getTagStatus(TagStatus status){
         return Queries.TagTable.getAllStatus(Database.getDatabase(),status);
     }
-    public static String getQueryString(String query){
-        return getQueryString(query,getListPrefer());
-    }
-    public static String getQueryString(String query,Tag[] all){
-        if(all==null)all=getListPrefer();
+    public static String getQueryString(String query,@NonNull Set<Tag> all){
         StringBuilder builder=new StringBuilder();
-        for(Tag t:all)if(!query.contains(t.getName()))builder.append('+').append(t.toQueryTag());
-        if(Login.useAccountTag())
-            for(Tag x:Login.getOnlineTags())
-                if(!containTag(all,x)&&!query.contains(x.getName()))
-                    builder.append('+').append(x.toQueryTag());
+        for(Tag t:all) if(!query.contains(t.getName()))builder.append('+').append(t.toQueryTag());
         return builder.toString();
     }
-    public static Tag[]getListPrefer(){
-        return Queries.TagTable.getAllFiltered(Database.getDatabase());
+    public static Tag[]getListPrefer(boolean removeIgnoredGalleries){
+        return removeIgnoredGalleries?Queries.TagTable.getAllFiltered(Database.getDatabase()):
+                Queries.TagTable.getAllStatus(Database.getDatabase(),TagStatus.ACCEPTED);
     }
 
     public static TagStatus updateStatus(Tag t){
@@ -63,7 +60,7 @@ public class TagV2{
 
 
     public static boolean maxTagReached(){
-        return getListPrefer().length>=MAXTAGS;
+        return getListPrefer(Global.getRemoveIgnoredGalleries()).length>=MAXTAGS;
     }
     public static void updateMinCount(Context context,int min){
         context.getSharedPreferences("ScrapedTags",0).edit().putInt("min_count",minCount=min).apply();

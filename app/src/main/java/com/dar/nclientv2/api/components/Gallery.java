@@ -30,8 +30,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import androidx.annotation.NonNull;
 import okhttp3.Call;
@@ -514,12 +516,15 @@ public class Gallery extends GenericGallery{
     }
     public boolean hasIgnoredTags(String s){
         for(Tag[]t:tags)if(t!=null)for(Tag t1:t)if(s.contains(t1.toQueryTag(TagStatus.AVOIDED))){
-            Log.d(Global.LOGTAG,"FINDED BRUTTO: "+s+",,"+t1.toQueryTag());
+            Log.d(Global.LOGTAG,"Found: "+s+",,"+t1.toQueryTag());
             return true;
         }
         return false;
     }
     public boolean hasIgnoredTags(){
-        return hasIgnoredTags(TagV2.getQueryString(""));
+        Set<Tag>tags=new HashSet<>(Arrays.asList(Queries.TagTable.getAllStatus(Database.getDatabase(),TagStatus.AVOIDED)));
+        if(Global.getRemoveIgnoredGalleries())
+            tags.addAll(Arrays.asList(Queries.TagTable.getAllOnlineFavorite(Database.getDatabase())));
+        return hasIgnoredTags(TagV2.getQueryString("",tags));
     }
 }
