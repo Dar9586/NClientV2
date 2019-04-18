@@ -4,7 +4,6 @@
 /local.properties
 /gradle
 gradlew*
-gradle.properties
 /.idea
 output.json
 .DS_Store
