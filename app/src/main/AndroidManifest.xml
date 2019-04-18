@@ -166,7 +166,7 @@
         <activity
             android:name=".CopyToClipboardActivity"
             android:icon="@drawable/ic_copy"
-            android:label="@android:string/copyUrl" />
+            android:label="@string/copyURL" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
