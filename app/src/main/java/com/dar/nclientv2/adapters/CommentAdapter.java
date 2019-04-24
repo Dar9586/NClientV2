@@ -10,6 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Comment;
 import com.dar.nclientv2.settings.Global;
@@ -18,12 +22,10 @@ import com.dar.nclientv2.settings.Login;
 import java.io.IOException;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.RecyclerView;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Cookie;
@@ -40,7 +42,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     public CommentAdapter(Activity context, List<Comment> comments,int galleryId) {
         this.context=context;
         this.galleryId=galleryId;
-        this.comments = comments;
+        this.comments =comments==null?new ArrayList<>():comments;
         if(Login.isLogged()&&Login.getUser()!=null){
             userId=Login.getUser().getId();
         }else userId=-1;

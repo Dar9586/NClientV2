@@ -13,7 +13,7 @@ public class Comment implements Parcelable {
     private String userImageURL,username,body;
     private int id,posterId;
     private Date date;
-    private boolean specialUser;
+    //private boolean specialUser;
     public Comment(JsonReader jr,boolean close) throws IOException{
         jr.beginObject();
         while(jr.peek()!= JsonToken.END_OBJECT){
@@ -30,10 +30,22 @@ public class Comment implements Parcelable {
         if(close)jr.close();
     }
     public Comment(String tag) throws IOException {
-        this(new JsonReader(new StringReader(tag.replace("&#34;","\""))),true);
-
+        this(new JsonReader(new StringReader(removeCode(tag))), true);
     }
-
+    private static String removeCode(String x){
+        StringBuilder builder=new StringBuilder();
+        char[]y=x.toCharArray();
+        for(int i=0;i<y.length;i++){
+            if(y[i]=='&'&&y[i+1]=='#'&&y[i+2]=='3'&&y[i+3]=='4'&&y[i+4]==';'){
+                builder.append('"');
+                i+=4;
+            } else if(y[i]==3&&y[i+1]=='4'&&y[i+2]==';'){
+                builder.append('"');
+                i+=2;
+            } else builder.append(y[i]);
+        }
+        return builder.toString();
+    }
     protected Comment(Parcel in) {
         userImageURL = in.readString();
         username = in.readString();
@@ -41,7 +53,6 @@ public class Comment implements Parcelable {
         id = in.readInt();
         posterId = in.readInt();
         date =new Date(in.readLong());
-        specialUser = in.readByte() != 0;
     }
     @Override
     public void writeToParcel(Parcel dest, int flags) {
@@ -51,7 +62,6 @@ public class Comment implements Parcelable {
         dest.writeInt(id);
         dest.writeInt(posterId);
         dest.writeLong(date.getTime());
-        dest.writeByte((byte)(specialUser?1:0));
     }
     public static final Creator<Comment> CREATOR = new Creator<Comment>() {
         @Override
@@ -71,8 +81,7 @@ public class Comment implements Parcelable {
             switch (jr.nextName()){
                 case "id":posterId=jr.nextInt();break;
                 case "username":username=jr.nextString();break;
-                case "avatar_url":userImageURL=jr.nextString();break;
-                case "is_superuser": case "is_staff":boolean x=jr.nextBoolean();if(!specialUser)specialUser=x;break;
+                case "avatar_url":userImageURL=jr.nextString().substring(30);break;
                 default:jr.skipValue();break;
             }
         }
@@ -80,7 +89,7 @@ public class Comment implements Parcelable {
     }
 
     public String getUserImageURL() {
-        return userImageURL;
+        return "https://i.nhentai.net/avatars/"+userImageURL;
     }
 
     public String getUsername() {
@@ -101,10 +110,6 @@ public class Comment implements Parcelable {
 
     public Date getDate() {
         return date;
-    }
-
-    public boolean isSpecialUser() {
-        return specialUser;
     }
 
     @Override

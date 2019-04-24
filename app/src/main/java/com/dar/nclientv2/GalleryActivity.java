@@ -10,8 +10,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.dar.nclientv2.adapters.GalleryAdapter;
-import com.dar.nclientv2.api.Inspector;
+import com.dar.nclientv2.api.InspectorV2;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.enums.ApiRequestType;
@@ -25,10 +30,6 @@ import com.google.android.material.snackbar.Snackbar;
 import java.io.IOException;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;
@@ -57,7 +58,6 @@ public class GalleryActivity extends BaseActivity{
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
         gallery= getIntent().getParcelableExtra(getPackageName()+".GALLERY");
-        int id= getIntent().getIntExtra(getPackageName()+".ID",0);
         Log.d(Global.LOGTAG,""+gallery);
         if(getIntent().getBooleanExtra(getPackageName()+".INSTANTDOWNLOAD",false))downloadGallery();
         isLocal=getIntent().getBooleanExtra(getPackageName()+".ISLOCAL",false);
@@ -67,9 +67,7 @@ public class GalleryActivity extends BaseActivity{
 
         Uri data = getIntent().getData();
         int isZoom=0;
-        if(id!=0){//if from main list
-            new Inspector(this,0,""+id,ApiRequestType.BYSINGLE);
-        }else if(data != null && data.getPathSegments().size() >= 2){//if using an URL
+        if(data != null && data.getPathSegments().size() >= 2){//if using an URL
             List<String> params = data.getPathSegments();
             for(String x:params)Log.i(Global.LOGTAG,x);
             if(params.size()>2){
@@ -79,7 +77,7 @@ public class GalleryActivity extends BaseActivity{
                     Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
                 }
             }
-            new Inspector(this,isZoom,params.get(1),ApiRequestType.BYSINGLE);
+            new InspectorV2(this,params.get(1),isZoom,true,ApiRequestType.BYSINGLE,null);
         }else loadGallery(gallery,zoom);//if already has gallery
 
     }
@@ -98,7 +96,6 @@ public class GalleryActivity extends BaseActivity{
         if(getSupportActionBar()!=null)getSupportActionBar().setTitle(gallery.getTitle());
         recycler.setAdapter(new GalleryAdapter(this,gallery));
         lookup();
-        if(!gallery.isLocal())((Gallery)gallery).loadRelated((GalleryAdapter)recycler.getAdapter());
         if(zoom>0){
             Intent intent = new Intent(this, ZoomActivity.class);
             intent.putExtra(getPackageName()+".GALLERY",this.gallery);
@@ -117,7 +114,7 @@ public class GalleryActivity extends BaseActivity{
             menu.findItem(R.id.add_online_gallery).setIcon(x?R.drawable.ic_star:R.drawable.ic_star_border);
         }
         menu.findItem(R.id.share).setVisible(gallery!=null&&gallery.isValid());
-        menu.findItem(R.id.comments).setVisible(gallery!=null&&gallery.getComments()!=null);
+        menu.findItem(R.id.comments).setVisible(gallery!=null&&!gallery.isLocal());
         menu.findItem(R.id.favorite_manager).setIcon((isFavorite=Favorites.isFavorite(gallery))?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
         menu.findItem(R.id.load_internet).setVisible(isLocal&&gallery!=null&&gallery.getId()!=-1);
     }
@@ -180,6 +177,7 @@ public class GalleryActivity extends BaseActivity{
                 i.putExtra(getPackageName()+".GALLERY",gallery);
                 startActivity(i);
                 break;
+
             case R.id.share:
                 Global.shareGallery(this,gallery);
                 break;
@@ -238,7 +236,7 @@ public class GalleryActivity extends BaseActivity{
 
     private void toInternet() {
         refresher.setEnabled(true);
-        new Inspector(this,0,Integer.toString(gallery.getId()), ApiRequestType.BYSINGLE);
+        new InspectorV2(this,gallery.getId());
     }
 
     @TargetApi(23)

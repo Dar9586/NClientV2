@@ -2,14 +2,14 @@ package com.dar.nclientv2.settings;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.database.Queries;
 
 import java.util.Set;
-
-import androidx.annotation.NonNull;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public class TagV2{
@@ -60,7 +60,7 @@ public class TagV2{
 
 
     public static boolean maxTagReached(){
-        return getListPrefer(Global.getRemoveIgnoredGalleries()).length>=MAXTAGS;
+        return getListPrefer(Global.removeAvoidedGalleries()).length>=MAXTAGS;
     }
     public static void updateMinCount(Context context,int min){
         context.getSharedPreferences("ScrapedTags",0).edit().putInt("min_count",minCount=min).apply();

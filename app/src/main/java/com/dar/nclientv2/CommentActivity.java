@@ -10,6 +10,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.dar.nclientv2.adapters.CommentAdapter;
 import com.dar.nclientv2.api.components.Comment;
 import com.dar.nclientv2.api.components.Gallery;
@@ -21,10 +26,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -48,7 +49,7 @@ public class CommentActivity extends BaseActivity {
         Gallery g=getIntent().getParcelableExtra(getPackageName()+".GALLERY");
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
-        findViewById(R.id.linearLayout).setVisibility(Login.isLogged()?View.VISIBLE:View.GONE);
+        findViewById(R.id.card).setVisibility(Login.isLogged()?View.VISIBLE:View.GONE);
         findViewById(R.id.sendButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

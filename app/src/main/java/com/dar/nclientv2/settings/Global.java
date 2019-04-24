@@ -16,6 +16,13 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.ImageView;
 
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+
 import com.dar.nclientv2.CopyToClipboardActivity;
 import com.dar.nclientv2.MainActivity;
 import com.dar.nclientv2.R;
@@ -36,17 +43,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.fragment.app.FragmentActivity;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public final class Global {
     public static long recursiveSize(File path) {
@@ -73,7 +70,7 @@ public final class Global {
     public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf";
     private static Language onlyLanguage=null;
     private static TitleType titleType;
-    private static boolean byPopular,keepHistory,loadImages,hideFromGallery,highRes,onlyTag,infiniteScroll,removeIgnoredGalleries;
+    private static boolean byPopular,keepHistory,loadImages,hideFromGallery,highRes,onlyTag,infiniteScroll, removeAvoidedGalleries;
     private static ThemeScheme theme;
     private static int notificationId,columnCount,maxId,imageQuality,galleryWidth=-1, galleryHeight =-1;
 
@@ -107,7 +104,7 @@ public final class Global {
     public static void     initInfiniteScroll    (@NonNull Context context){infiniteScroll=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_infinite_scroll),false);}
     public static void  initHideFromGallery    (@NonNull Context context){hideFromGallery=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_hide_saved_images),false);}
     public static void     initHighRes    (@NonNull Context context){highRes=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_high_res_gallery),true);}
-    public static void     initRemoveIgnoredGalleries    (@NonNull Context context){removeIgnoredGalleries=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_remove_ignored),true);}
+    public static void initRemoveAvoidedGalleries(@NonNull Context context){removeAvoidedGalleries =context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_remove_ignored),true);}
     public static void     initOnlyTag    (@NonNull Context context){onlyTag=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_ignore_tags),true);}
     public static boolean  initLoadImages   (@NonNull Context context){loadImages=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_load_images),true);return loadImages;}
     public static void     initOnlyLanguage (@NonNull Context context){int x=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_only_language),-1);onlyLanguage=x==-1?null:Language.values()[x];}
@@ -159,7 +156,7 @@ public final class Global {
     public static int getImageQuality() {
         return imageQuality;
     }
-    public static boolean getRemoveIgnoredGalleries(){return removeIgnoredGalleries;}
+    public static boolean removeAvoidedGalleries(){return removeAvoidedGalleries;}
     @Nullable public static Language getOnlyLanguage() {
         return onlyLanguage;
     }
