@@ -37,7 +37,7 @@ dependencies {
     implementation "com.google.android.material:material:$supportVersion"
     implementation "androidx.cardview:cardview:$supportVersion"
     implementation "androidx.preference:preference:$supportVersion"
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1'
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.11.0'
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
     implementation 'com.squareup.picasso:picasso:2.71828'
