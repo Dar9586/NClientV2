@@ -19,6 +19,7 @@ import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TitleType;
+import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Database;
@@ -57,13 +58,10 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
     private void loadGallery(final GenericAdapter.ViewHolder holder,Gallery ent){
         boolean x=true;
         if(storagePermission){
-            File f=Global.findGalleryFolder(ent.getId());
+            File f=LocalGallery.getPage(Global.findGalleryFolder(ent.getId()),1);
             if(f!=null){
-                f=new File(f,"001.jpg");
-                if(f.exists()){
                     x=false;
                     Global.loadImage(f,holder.imgView);
-                }
             }
         }
         if(x)Global.loadImage(ent.getThumbnail(),holder.imgView);

@@ -66,8 +66,8 @@ public class InspectorV2 extends Thread implements Cloneable{
     }
     @NonNull public static Set<Tag>getDefaultTags(){
         Set<Tag> tags = new HashSet<>(Arrays.asList(Queries.TagTable.getAllStatus(Database.getDatabase(), TagStatus.ACCEPTED)));
-        if(Global.removeAvoidedGalleries()) tags.addAll(Arrays.asList(Queries.TagTable.getAllStatus(Database.getDatabase(),TagStatus.AVOIDED)));
         tags.addAll(getLanguageTags(Global.getOnlyLanguage()));
+        if(Global.removeAvoidedGalleries()) tags.addAll(Arrays.asList(Queries.TagTable.getAllStatus(Database.getDatabase(),TagStatus.AVOIDED)));
         if(Login.isLogged())tags.addAll(Arrays.asList(Queries.TagTable.getAllOnlineFavorite(Database.getDatabase())));
         return tags;
     }
@@ -75,7 +75,7 @@ public class InspectorV2 extends Thread implements Cloneable{
      * next must be a PageReff
      * */
     public InspectorV2 loadPage(int page){
-        return new InspectorV2(activity,query,page,byPopular,requestType,tags);
+        return new InspectorV2(activity,query,page,byPopular,requestType,custom?tags:null);
     }
     public InspectorV2 loadNextPage(int next, boolean append){
         InspectorV2 ins=new InspectorV2(activity,query,append&&next==PageRef.CURR_PAGE?1:page+next,byPopular,requestType,tags);
@@ -101,11 +101,12 @@ public class InspectorV2 extends Thread implements Cloneable{
         this.tags = tags;
         this.activity = activity;
         byPopular=popular;
-        if(tags==null){
+        if(this.tags==null){
             custom=false;
             this.tags=getDefaultTags();
         }
         createURL();
+        Log.d(Global.LOGTAG,"Created: "+url+", "+start);
         if(start)start();
     }
 

@@ -100,17 +100,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
             master=v.findViewById(R.id.master_layout);
         }
     }
-    private static final DiffUtil.ItemCallback<Tag> CALLBACK=new DiffUtil.ItemCallback<Tag>(){
-        @Override
-        public boolean areItemsTheSame(@NonNull Tag oldItem, @NonNull Tag newItem){
-            return oldItem.getId()==newItem.getId();
-        }
 
-        @Override
-        public boolean areContentsTheSame(@NonNull Tag oldItem, @NonNull Tag newItem){
-            return oldItem.getStatus()==newItem.getStatus();
-        }
-    };
 
     @NonNull
     @Override

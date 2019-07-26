@@ -94,7 +94,7 @@ public class DownloadGallery extends IntentService {
         }
         System.gc();
         for(a=0;a<gallery.getPageCount();a++){
-            final File x=new File(folder,("000"+(a+1)+".jpg").substring(Integer.toString(a+1).length()));
+            final File x=new File(folder,("000"+(a+1)+"."+gallery.getPageExtension(a)).substring(Integer.toString(a+1).length()));
             if(!x.exists()||Global.isCorrupted(x.getAbsolutePath())){
                 try{
                     downloadPage(Global.client.newCall(new Request.Builder().url(gallery.getPage(a)).build()).execute().body().byteStream(),x);
@@ -111,11 +111,16 @@ public class DownloadGallery extends IntentService {
     private void downloadPage(InputStream stream,File file)throws IOException,NullPointerException{
         if(!file.getParentFile().exists()&&!file.getParentFile().mkdirs())return;
         if(!file.createNewFile())return;
-        Bitmap bitmap= BitmapFactory.decodeStream(stream);
         FileOutputStream ostream = new FileOutputStream(file);
-        bitmap.compress(Bitmap.CompressFormat.JPEG, Global.getImageQuality(), ostream);
+        byte[] buffer = new byte[4 * 1024]; // or other buffer size
+        int read;
+
+        while ((read = stream.read(buffer)) != -1) {
+            ostream.write(buffer, 0, read);
+        }
         ostream.flush();
-        bitmap.recycle();
+        ostream.close();
+        stream.close();
     }
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {

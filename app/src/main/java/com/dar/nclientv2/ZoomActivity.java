@@ -22,12 +22,14 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
+import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.components.CustomViewPager;
 import com.dar.nclientv2.settings.Global;
 import com.github.chrisbanes.photoview.PhotoView;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -319,12 +321,13 @@ public class ZoomActivity extends AppCompatActivity {
             return rootView;
         }
         public void loadPage(boolean high){
-            File file= activity.directory==null?null:new File(activity.directory,("000"+(page+1)+".jpg").substring(Integer.toString(page+1).length()));
+
+            File file= LocalGallery.getPage(activity.directory,page+1);
             if(file==null||!file.exists()){
-                if(activity.gallery.isLocal())Picasso.get().load(R.mipmap.ic_launcher).into(photoView);
-                else Picasso.get().load(((Gallery)activity.gallery).getPage(page)).priority(high? Picasso.Priority.HIGH: Picasso.Priority.LOW).into(photoView);
+                if(activity.gallery.isLocal()) Glide.with(activity).load(R.mipmap.ic_launcher).into(photoView);
+                else Glide.with(activity).load(((Gallery)activity.gallery).getPage(page)).priority(high? Priority.HIGH: Priority.LOW).into(photoView);
             }
-            else Picasso.get().load(file).into(photoView);
+            else Glide.with(activity).load(file).into(photoView);
         }
     }
 

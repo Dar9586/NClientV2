@@ -171,7 +171,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void galleryAddPics() {
             Log.i(Global.LOGTAG,"Adding");
-            for(File file:Global.GALLERYFOLDER.listFiles((dir, name) -> name.endsWith(".jpg")))
+            for(File file:Global.GALLERYFOLDER.listFiles((dir, name) -> name.endsWith(".jpg")||name.endsWith(".png")||name.endsWith(".gif")))
                 Global.addToGallery(getActivity(),file);
 
         }

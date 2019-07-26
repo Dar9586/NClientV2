@@ -17,6 +17,7 @@ import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagType;
+import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.settings.Global;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -128,7 +129,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     private void loadPageLayout(ViewHolder holder){
         final ImageView imgView=(ImageView)holder.master;
         final int pos=holder.getAdapterPosition()+(gallery.isLocal()?1:0);
-        final File file = directory == null ? null : new File(directory, (("000" + pos) + ".jpg").substring(Integer.toString(pos).length()));
+        final File file = LocalGallery.getPage(directory,pos);
         if(!gallery.isLocal()){
             final Gallery ent = ((Gallery)gallery);
             if(file == null || !file.exists())

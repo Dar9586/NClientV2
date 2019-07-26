@@ -42,7 +42,7 @@ public class CreatePDF extends IntentService {
         totalPage=intent.getIntExtra(getPackageName()+".PAGES",1);
         preExecute(file);
         PdfDocument document = new PdfDocument();
-        File files[]=file.listFiles((dir, name) -> name.endsWith(".jpg")&&name.length()==7);
+        File files[]=file.listFiles((dir, name) -> (name.endsWith(".jpg")||name.endsWith(".png")||name.endsWith(".gif"))&&name.length()==7);
         int len=files.length;
         for(int a=0;a< len;a++){
             BitmapFactory.Options options=new BitmapFactory.Options();

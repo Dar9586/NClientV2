@@ -23,9 +23,11 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
+import com.bumptech.glide.Glide;
 import com.dar.nclientv2.CopyToClipboardActivity;
 import com.dar.nclientv2.MainActivity;
 import com.dar.nclientv2.R;
+import com.dar.nclientv2.api.RandomLoader;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TitleType;
@@ -35,7 +37,6 @@ import com.dar.nclientv2.loginapi.User;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
-import com.squareup.picasso.Picasso;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -246,6 +247,7 @@ public final class Global {
     }
 
     public static void setTint(Drawable drawable){
+        if(drawable==null)return;
         DrawableCompat.setTint(drawable,theme== ThemeScheme.LIGHT?Color.BLACK:Color.WHITE);
     }
 
@@ -262,24 +264,25 @@ public final class Global {
             }
         }
     }
-    public static void preloadImage(String url){
+    public static void preloadImage(Context context, String url){
         if(!isLoadImages())return;
         //Glide.with(context).load(url).preload();
-        Picasso.get().load(url).fetch();
+        Glide.with(context).load(url).preload();
+
     }
 
     public static void loadImage(String url, final ImageView imageView){loadImage(url,imageView,false);}
     public static void loadImage(String url, final ImageView imageView,boolean force){
-        if(loadImages||force)Picasso.get().load(url).placeholder(getLogo(imageView.getResources())).into(imageView);
-        else Picasso.get().load((String)null).placeholder(getLogo(imageView.getResources())).into(imageView);
+        if(loadImages||force)Glide.with(imageView).load(url).placeholder(getLogo(imageView.getResources())).into(imageView);
+        else Glide.with(imageView).load(getLogo(imageView.getResources())).into(imageView);
     }
     public static void loadImage(File file, ImageView imageView){
-        if(loadImages) Picasso.get().load(file).placeholder(getLogo(imageView.getResources())).into(imageView);
-        else Picasso.get().load((String)null).placeholder(getLogo(imageView.getResources())).into(imageView);
+        if(loadImages)Glide.with(imageView).load(file).placeholder(getLogo(imageView.getResources())).into(imageView);
+        else Glide.with(imageView).load(getLogo(imageView.getResources())).into(imageView);
 
     }
     public static void loadImage(@DrawableRes int drawable, ImageView imageView){
-        Picasso.get().load((String)null).placeholder(ResourcesCompat.getDrawable(imageView.getResources(),drawable,null)).into(imageView);
+        Glide.with(imageView).load(ResourcesCompat.getDrawable(imageView.getResources(),drawable,null)).into(imageView);
         //GlideApp.with(context).load(drawable).into(imageView);
     }
 

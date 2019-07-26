@@ -17,7 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/LightTheme">
-        <activity android:name=".CommentActivity"></activity>
+        <activity android:name=".CommentActivity"/>
         <activity android:name=".SearchActivity" />
         <activity
             android:name=".MainActivity"

@@ -101,11 +101,16 @@ public class Gallery extends GenericGallery{
     }
 
     public String getPage(int page){
-        return String.format(Locale.US,"https://i.nhentai.net/galleries/%d/%d.%s",mediaId,page+1,extToString(pages[page]));
+        return String.format(Locale.US,"https://i.nhentai.net/galleries/%d/%d.%s",mediaId,page+1,getPageExtension(page));
     }
     public String getLowPage(int page){
-        return String.format(Locale.US,"https://t.nhentai.net/galleries/%d/%dt.%s",mediaId,page+1,extToString(pages[page]));
+        return String.format(Locale.US,"https://t.nhentai.net/galleries/%d/%dt.%s",mediaId,page+1,getPageExtension(page));
     }
+
+    public String getPageExtension(int page) {
+        return extToString(pages[page]);
+    }
+
     private static String extToString(ImageExt ext){
         switch(ext){
             case GIF:return "gif";

@@ -23,7 +23,7 @@ public class LocalGallery extends GenericGallery{
         this.id=id;
         int max=0,min=9999;
         //Inizio ricerca pagine
-        File[] files=file.listFiles((dir, name) -> name.endsWith(".jpg")&&name.length()==7);
+        File[] files=file.listFiles((dir, name) -> (name.endsWith(".jpg")||name.endsWith(".png")||name.endsWith(".gif"))&&name.length()==7);
         //trova la pagina col numero piu grande
         if(files!=null) {
             if (files.length < 1) Log.e(Global.LOGTAG, "FILE INESISTENTI");
@@ -100,10 +100,20 @@ public class LocalGallery extends GenericGallery{
     public File getDirectory() {
         return directory;
     }
+    public static File getPage(File dir,int page){
+        if(dir==null)return null;
+        File x;
+        x=new File(dir,("000"+page+".jpg").substring(Integer.toString(page).length()));
+        if(x.exists())return x;
+        x=new File(dir,("000"+page+".png").substring(Integer.toString(page).length()));
+        if(x.exists())return x;
+        x=new File(dir,("000"+page+".gif").substring(Integer.toString(page).length()));
+        if(x.exists())return x;
+        return null;
+    }
     @Nullable
     public File getPage(int index){
-        File x=new File(directory,("000"+index+".jpg").substring(Integer.toString(index).length()));
-        return x.exists()?x:null;
+        return getPage(directory,index);
     }
 
     @Override

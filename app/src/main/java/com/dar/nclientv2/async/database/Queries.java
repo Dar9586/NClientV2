@@ -336,15 +336,18 @@ public class Queries{
             values.put(COUNT,tag.getCount());
             return db.updateWithOnConflict(TABLE_NAME,values, IDTAG +"=?",new String[]{""+tag.getId()},SQLiteDatabase.CONFLICT_IGNORE);
         }
-
-        public static void insert(SQLiteDatabase db,Tag tag){
+        public static void insert(SQLiteDatabase db,Tag tag,boolean replace){
             ContentValues values=new ContentValues(5);
             values.put(IDTAG,tag.getId());
             values.put(NAME,tag.getName());
             values.put(TYPE,tag.getType().ordinal());
             values.put(COUNT,tag.getCount());
             values.put(STATUS,tag.getStatus().ordinal());
-            db.insertWithOnConflict(TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_IGNORE);
+
+            db.insertWithOnConflict(TABLE_NAME,null,values,replace?SQLiteDatabase.CONFLICT_REPLACE:SQLiteDatabase.CONFLICT_IGNORE);
+        }
+        public static void insert(SQLiteDatabase db,Tag tag){
+            insert(db,tag,false);
         }
         public static void updateOnlineFavorite(SQLiteDatabase db,Tag tag,boolean online){
             ContentValues values=new ContentValues(1);

@@ -415,7 +415,7 @@ public class MainActivity extends BaseActivity
         supportInvalidateOptionsMenu();
 
         Log.d(Global.LOGTAG,"TAGS: "+tags);
-        inspector=new InspectorV2(this,query,1,Global.isByPopular(),ApiRequestType.BYSEARCH,loadTagInspector());
+        inspector=new InspectorV2(this,query,1,Global.isByPopular(),ApiRequestType.BYSEARCH,tags);
     }
 
     private void showLogoutForm() {
