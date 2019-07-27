@@ -282,8 +282,7 @@ public final class Global {
 
     }
     public static void loadImage(@DrawableRes int drawable, ImageView imageView){
-        Glide.with(imageView).load(ResourcesCompat.getDrawable(imageView.getResources(),drawable,null)).into(imageView);
-        //GlideApp.with(context).load(drawable).into(imageView);
+        imageView.setImageResource(drawable);
     }
 
 

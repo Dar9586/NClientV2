@@ -1,6 +1,7 @@
 package com.dar.nclientv2.api;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -173,7 +174,10 @@ public class InspectorV2 extends Thread implements Cloneable{
     }
     private int findTotal(Element e){
         String temp=e.attr("href");
-        return Integer.parseInt(temp.substring(temp.lastIndexOf('=')+1));
+
+        try {
+            return Integer.parseInt(Uri.parse(temp).getQueryParameter("page"));
+        }catch (Exception ignore){return 1;}
     }
 
     private void createURL() {
