@@ -73,8 +73,10 @@ public class Tag implements Parcelable{
     }
 
     public String toQueryTag(TagStatus status){
-        if(name.contains(" "))return (status==TagStatus.AVOIDED?"-":"")+findTagString()+"\""+name+'"';
-        return (status==TagStatus.AVOIDED?"-":"")+findTagString()+name;
+        StringBuilder builder=new StringBuilder();
+        if(status==TagStatus.AVOIDED)builder.append('-');
+        builder.append(findTagString()).append('"').append(name).append('"');
+        return builder.toString();
     }
     public String toQueryTag(){
         return toQueryTag(status);

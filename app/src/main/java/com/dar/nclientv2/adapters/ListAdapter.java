@@ -28,6 +28,7 @@ import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.settings.TagV2;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -35,14 +36,14 @@ import java.util.Set;
 
 public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder> {
 
-    private final List<Gallery> mDataset;
+    private List<Gallery> mDataset;
     private final BaseActivity context;
     private final boolean storagePermission,black;
     private final String queryString;
 
     public ListAdapter(BaseActivity cont, List<Gallery> myDataset,String query) {
         this.context=cont;
-        this.mDataset = myDataset;
+        this.mDataset =new ArrayList<>(myDataset);
         storagePermission=Global.hasStoragePermission(context);
         black=Global.getTheme()== Global.ThemeScheme.BLACK;
         Set<Tag>t=new HashSet<>(Arrays.asList(Queries.TagTable.getAllStatus(Database.getDatabase(), TagStatus.AVOIDED)));
@@ -124,7 +125,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
 
     @Override
     public int getItemCount() {
-        return mDataset.size();
+        return mDataset==null?0:mDataset.size();
     }
 
     public List<Gallery> getDataset() {
@@ -134,6 +135,8 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
     public void addGalleries(List<Gallery> galleries){
         int c=mDataset.size();
         mDataset.addAll(galleries);
-        notifyItemRangeInserted(c,galleries.size());
+        Log.d(Global.LOGTAG,String.format("%s,old:%d,new:%d,len%d",this,c,mDataset.size(),galleries.size()));
+        context.runOnUiThread(()->notifyItemRangeInserted(c,galleries.size()));
+        //notifyDataSetChanged();
     }
 }

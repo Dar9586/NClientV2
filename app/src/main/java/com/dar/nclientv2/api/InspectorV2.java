@@ -136,6 +136,8 @@ public class InspectorV2 extends Thread implements Cloneable{
     }
 
     private void showResult() {
+        if(galleries==null)return;
+        Log.d(Global.LOGTAG,"pre: "+galleries.size());
         if(requestType==ApiRequestType.BYSINGLE){
             Intent intent=new Intent(activity, GalleryActivity.class);
             Log.d(Global.LOGTAG,galleries.get(0).toString());
@@ -167,7 +169,7 @@ public class InspectorV2 extends Thread implements Cloneable{
     private void doSearch(Element document) {
         Elements gal=document.getElementsByClass("index-container");
         if(gal.size()>0)gal=gal.first().getElementsByClass("gallery");
-        if(!append)galleries=new ArrayList<>(gal.size());
+        galleries=new ArrayList<>(gal.size());
         for(Element e:gal)galleries.add(new Gallery(e));
         gal=document.getElementsByClass("last");
         pageCount=gal.size()==0?1:findTotal(gal.last());
@@ -253,5 +255,19 @@ public class InspectorV2 extends Thread implements Cloneable{
 
     public InspectorV2 recreate(){
         return new InspectorV2(activity,query,page,byPopular,requestType,tags,false);
+    }
+
+    @Override
+    public String toString() {
+        return "InspectorV2{" +
+                "byPopular=" + byPopular +
+                ", custom=" + custom +
+                ", append=" + append +
+                ", page=" + page +
+                ", pageCount=" + pageCount +
+                ", query='" + query + '\'' +
+                ", url='" + url + '\'' +
+                ", requestType=" + requestType +
+                '}';
     }
 }

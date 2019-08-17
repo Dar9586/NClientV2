@@ -63,23 +63,14 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.loadTheme(this);
-        Global.initHttpClient(this);
-        Global.initRemoveAvoidedGalleries(this);
-        Global.initHighRes(this);
-        Global.initOnlyTag(this);
-        Global.initByPopular(this);
-        Global.initLoadImages(this);
-        Global.initOnlyLanguage(this);
-        Global.initMaxId(this);
-        Global.initInfiniteScroll(this);
-        com.dar.nclientv2.settings.Login.initUseAccountTag(this);
         setContentView(R.layout.activity_main);
+
         if(Global.hasStoragePermission(this)){
             final File f=new File(new File(Global.DOWNLOADFOLDER,"Update"),"NClientV2_"+Global.getVersionName(this)+".apk");
             Log.d(Global.LOGTAG,f.getAbsolutePath());
             if(f.exists())f.delete();
         }
+
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -160,19 +151,24 @@ public class MainActivity extends BaseActivity
         if(dataType!=null&&q!=null){
             tag=new Tag(q,0,-100,dataType,TagStatus.DEFAULT);
             tagFromURL=true;
+            advanced=true;
         }
         if(q!=null&&dataType==null){
             toolbar.setTitle(q);
             inspector=new InspectorV2(this,q,pag,Global.isByPopular(),ApiRequestType.BYSEARCH,new HashSet<>(1));
             if(byPop)inspector.setByPopular(true);
+            advanced=true;
 
         }else if(tag!=null) {
             inspector=new InspectorV2(this,"",1,Global.isByPopular(),ApiRequestType.BYSEARCH,loadTagInspector());
-
             toolbar.setTitle(tag.getName());
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             toggle.setDrawerIndicatorEnabled(false);
-        } else inspector=new InspectorV2(this,"",1,Global.isByPopular(),ApiRequestType.BYSEARCH,null);
+            advanced=true;
+        } else {
+            inspector=new InspectorV2(this,"",1,Global.isByPopular(),ApiRequestType.BYSEARCH,null);
+            advanced=false;
+        }
 
 
         if(firstTime){
@@ -226,10 +222,12 @@ public class MainActivity extends BaseActivity
     }
     @Override
     public void onBackPressed() {
+        if(tag!=null)super.onBackPressed();
+        Log.d(Global.LOGTAG,inspector.getRequestType()+".....");
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }else if(inspector!=null&&inspector.getRequestType()==ApiRequestType.BYSEARCH){
+        }else if(advanced&&inspector!=null&&inspector.getRequestType()==ApiRequestType.BYSEARCH){
             removeQuery();
         } else {
             super.onBackPressed();
@@ -278,14 +276,8 @@ public class MainActivity extends BaseActivity
         }
     }
     private void removeQuery(){
+        inspector=new InspectorV2(this,"",1,Global.isByPopular(),ApiRequestType.BYALL,null);
         getSupportActionBar().setTitle(R.string.app_name);
-        if(tag!=null){
-            inspector=new InspectorV2(this,"",1,Global.isByPopular(),ApiRequestType.BYSEARCH,loadTagInspector());
-            getSupportActionBar().setTitle(tag.getName());
-        } else {
-            inspector=new InspectorV2(this,"",1,Global.isByPopular(),ApiRequestType.BYSEARCH,null);
-            getSupportActionBar().setTitle(R.string.app_name);
-        }
         if(advanced){
             advanced=false;
             supportInvalidateOptionsMenu();
