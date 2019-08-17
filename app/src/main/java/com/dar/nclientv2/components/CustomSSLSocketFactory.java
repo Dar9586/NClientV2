@@ -71,6 +71,7 @@ public class CustomSSLSocketFactory extends SSLSocketFactory {
         }
         return s;
     }
+    @SuppressWarnings("deprecation")
     public static OkHttpClient.Builder enableTls12OnPreLollipop(OkHttpClient.Builder client) {
         if (Build.VERSION.SDK_INT>=16&&Build.VERSION.SDK_INT < 22) {
             try {

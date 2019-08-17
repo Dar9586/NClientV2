@@ -75,21 +75,21 @@ public class Tag implements Parcelable{
     public String toQueryTag(TagStatus status){
         StringBuilder builder=new StringBuilder();
         if(status==TagStatus.AVOIDED)builder.append('-');
-        builder.append(findTagString()).append('"').append(name).append('"');
+        builder.append(findTagString()).append(":\"").append(name).append('"');
         return builder.toString();
     }
     public String toQueryTag(){
         return toQueryTag(status);
     }
-    String findTagString(){
+    public String findTagString(){
         switch (type){
-            case PARODY:return "parody:";
-            case CHARACTER:return "character:";
-            case TAG:return "tag:";
-            case ARTIST:return "artist:";
-            case GROUP:return "group:";
-            case LANGUAGE:return "language:";
-            case CATEGORY:return "category:";
+            case PARODY:return "parody";
+            case CHARACTER:return "character";
+            case TAG:return "tag";
+            case ARTIST:return "artist";
+            case GROUP:return "group";
+            case LANGUAGE:return "language";
+            case CATEGORY:return "category";
         }
         return "";
     }

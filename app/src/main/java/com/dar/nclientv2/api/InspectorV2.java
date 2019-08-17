@@ -172,7 +172,7 @@ public class InspectorV2 extends Thread implements Cloneable{
         galleries=new ArrayList<>(gal.size());
         for(Element e:gal)galleries.add(new Gallery(e));
         gal=document.getElementsByClass("last");
-        pageCount=gal.size()==0?1:findTotal(gal.last());
+        pageCount=gal.size()==0?Math.max(1,page):findTotal(gal.last());
     }
     private int findTotal(Element e){
         String temp=e.attr("href");
@@ -186,8 +186,14 @@ public class InspectorV2 extends Thread implements Cloneable{
         StringBuilder builder=new StringBuilder("https://nhentai.net/");
         switch (requestType){
             case BYSEARCH:
-
-
+                if(query.length()==0&&tags.size()==1){
+                    Tag t=null;
+                    for(Tag tt:tags)t=tt;
+                    builder.append(t.findTagString()).append('/').append(t.getName().replace(' ','-')).append('/');
+                    if(byPopular)builder.append("popular");
+                    if(page>1)builder.append("?page=").append(page);
+                    break;
+                }
                 if(query.length()>0||tags.size()>0){
                     builder.append("search/?q=").append(query);
                     for(Tag t:tags)builder.append('+').append(t.toQueryTag());
