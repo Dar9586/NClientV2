@@ -11,17 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.dar.nclientv2.adapters.TagsAdapter;
-import com.dar.nclientv2.api.enums.TagType;
-import com.dar.nclientv2.async.ScrapeTags;
-import com.dar.nclientv2.settings.DefaultDialogs;
-import com.dar.nclientv2.settings.Global;
-import com.dar.nclientv2.settings.Login;
-import com.dar.nclientv2.settings.TagV2;
-import com.google.android.material.tabs.TabLayout;
-
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,6 +23,17 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
+
+import com.dar.nclientv2.adapters.TagsAdapter;
+import com.dar.nclientv2.api.enums.TagType;
+import com.dar.nclientv2.async.ScrapeTags;
+import com.dar.nclientv2.settings.DefaultDialogs;
+import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.settings.Login;
+import com.dar.nclientv2.settings.TagV2;
+import com.google.android.material.tabs.TabLayout;
+
+import java.util.List;
 
 public class TagFilter extends AppCompatActivity{
     static {
@@ -339,7 +339,7 @@ public class TagFilter extends AppCompatActivity{
     class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
+            super(fm,BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         }
 
         @Override

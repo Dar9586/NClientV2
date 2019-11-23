@@ -1,5 +1,6 @@
 package com.dar.nclientv2.api.components;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -36,7 +37,7 @@ import java.util.Set;
 
 public class Gallery extends GenericGallery{
     private static final int MAX_COMMENT=50;
-    public Gallery(Element e){
+    public Gallery(Context context, Element e){
         String temp;
         String tags=e.attr("data-tags").replace(' ',',');
         this.tags=Queries.TagTable.getTags(Database.getDatabase(),tags);
@@ -50,8 +51,10 @@ public class Gallery extends GenericGallery{
         thumbnail=charToExt(temp.charAt(temp.length()-3));
         cover=ImageExt.JPG;pages=new ImageExt[0];
         titles[TitleType.ENGLISH.ordinal()]=e.getElementsByTag("div").first().text();
+
+        if(id>Global.getMaxId())Global.updateMaxId(context,id);
     }
-    public Gallery(String x, Elements com, Elements rel) throws IOException{
+    public Gallery(Context context,String x, Elements com, Elements rel) throws IOException{
         JsonReader reader=new JsonReader(new StringReader(x));
         comments=com.size()==0?null:new ArrayList<>(com.size());
         related=new ArrayList<>(rel.size());
@@ -59,7 +62,7 @@ public class Gallery extends GenericGallery{
             comments.add(new Comment(e.attr("data-state")));
             if(comments.size()==MAX_COMMENT)break;
         }
-        for(Element e:rel)related.add(new Gallery(e));
+        for(Element e:rel)related.add(new Gallery(context,e));
         parseJSON(reader);
     }
     private enum ImageExt{PNG,JPG,GIF}

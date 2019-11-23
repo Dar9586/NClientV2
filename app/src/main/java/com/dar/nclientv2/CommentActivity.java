@@ -66,7 +66,7 @@ public class CommentActivity extends BaseActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), writer.toString());
+                RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),writer.toString());
 
                 Global.client.newCall(new Request.Builder().url("https://nhentai.net/g/"+g.getId()).build()).enqueue(new Callback() {
                     @Override

@@ -33,12 +33,6 @@
         android:title="@string/high_res_gallery" />
     </PreferenceCategory>
 
-    <SwitchPreference
-        android:defaultValue="false"
-        android:key="@string/key_hide_saved_images"
-        android:summaryOn="@string/setting_on_hide_save"
-        android:summaryOff="@string/setting_off_hide_save"
-        android:title="@string/hide_saved_images" />
     <Preference android:title="@string/image_quality"
         android:key="@string/key_image_quality"
         android:summary="@string/image_quality_summary"

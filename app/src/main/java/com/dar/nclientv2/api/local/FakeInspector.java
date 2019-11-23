@@ -1,7 +1,6 @@
 package com.dar.nclientv2.api.local;
 
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.util.Log;
 
 import com.dar.nclientv2.LocalActivity;
@@ -25,10 +24,9 @@ public class FakeInspector extends AsyncTask<LocalActivity,LocalActivity,LocalAc
     @Override
     protected LocalActivity doInBackground(LocalActivity... voids) {
         publishProgress(voids[0]);
-        File parent=new File(Environment.getExternalStorageDirectory(),"NClientV2");
+        File parent=Global.DOWNLOADFOLDER;
         parent.mkdirs();
-        File[] directories=parent.listFiles((dir, name) -> !name.equals("PDF"));
-        for (File f:directories)createGallery(f);
+        for (File f:parent.listFiles())createGallery(f);
         for (String x:invalidPaths) Log.d(Global.LOGTAG,"Invalid path: "+x);
         return voids[0];
     }

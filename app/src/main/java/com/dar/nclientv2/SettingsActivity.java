@@ -1,30 +1,19 @@
 package com.dar.nclientv2;
 
-import android.content.ContentUris;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceFragmentCompat;
 
 import com.dar.nclientv2.async.VersionChecker;
 import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.channels.FileChannel;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.Preference;
-import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.SwitchPreference;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -32,7 +21,6 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
-        Global.initHideFromGallery(this);
         Global.initHttpClient(this);
         setContentView(R.layout.activity_settings);
         GeneralPreferenceFragment.act=this;
@@ -48,14 +36,6 @@ public class SettingsActivity extends AppCompatActivity {
             getPreferenceManager().setSharedPreferencesName("Settings");
             addPreferencesFromResource(R.xml.settings);
             findPreference(getString(R.string.key_use_account_tag)).setEnabled(Login.isLogged());
-            findPreference(getString(R.string.key_hide_saved_images)).setOnPreferenceClickListener(preference -> {
-                if(Global.hasStoragePermission(getActivity())) {
-                    Global.saveNoMedia(GeneralPreferenceFragment.this.getActivity());
-                    if (!((SwitchPreference) preference).isChecked()) galleryAddPics();
-                    else removePic();
-                }
-                return true;
-            });
             findPreference(getString(R.string.key_theme_select)).setOnPreferenceChangeListener((preference, newValue) -> {
                 act.recreate();
                 return true;
@@ -126,54 +106,6 @@ public class SettingsActivity extends AppCompatActivity {
                 );
                 return true;
             });
-        }
-
-        private void removePic(){
-            Log.i(Global.LOGTAG,"Removing");
-            String[] retCol = {MediaStore.Images.Media._ID, MediaStore.Images.Media.DATA };
-            Cursor cur = getActivity().getContentResolver().query(
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                    retCol,
-                    MediaStore.MediaColumns.DATA+" LIKE  '"+Global.GALLERYFOLDER.getAbsolutePath()+"%'", null, null
-            );
-            Log.i(Global.LOGTAG,"Count: "+cur.getCount());
-            if (cur.getCount() == 0) {
-
-                return;
-            }
-            while(cur.moveToNext()){
-                Log.i(Global.LOGTAG,"DATA: "+cur.getString(1));
-                deleteId(cur.getString(1),cur.getInt(0));
-            }
-            cur.close();
-        }
-        private void deleteId(String file,int id){
-            try{
-                File f = new File(file);
-                File dest=File.createTempFile("temp",".jpg");
-                copyFile(f,dest);
-                Uri uri = ContentUris.withAppendedId(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id
-                );
-                getActivity().getContentResolver().delete(uri, null, null);
-                copyFile(dest,f);
-                dest.delete();
-            } catch (IOException e) {
-                Log.e(Global.LOGTAG, e.getLocalizedMessage(), e);
-            }
-
-        }
-        private void copyFile(File source,File dest) throws IOException{
-            try (FileChannel sourceChannel = new FileInputStream(source).getChannel(); FileChannel destChannel = new FileOutputStream(dest).getChannel()) {
-                destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
-            }
-        }
-
-        private void galleryAddPics() {
-            Log.i(Global.LOGTAG,"Adding");
-            for(File file:Global.GALLERYFOLDER.listFiles((dir, name) -> name.endsWith(".jpg")||name.endsWith(".png")||name.endsWith(".gif")))
-                Global.addToGallery(getActivity(),file);
-
         }
     }
 

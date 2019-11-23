@@ -163,14 +163,14 @@ public class InspectorV2 extends Thread implements Cloneable{
         x=x.substring(s,x.indexOf('\n',s)-2);
         Elements com=document.getElementById("comments").getElementsByClass("comment");
         Elements rel=document.getElementById("related-container").getElementsByClass("gallery");
-        galleries.add(new Gallery(x,com,rel));
+        galleries.add(new Gallery(activity, x,com,rel));
     }
 
     private void doSearch(Element document) {
         Elements gal=document.getElementsByClass("index-container");
         if(gal.size()>0)gal=gal.first().getElementsByClass("gallery");
         galleries=new ArrayList<>(gal.size());
-        for(Element e:gal)galleries.add(new Gallery(e));
+        for(Element e:gal)galleries.add(new Gallery(activity,e));
         gal=document.getElementsByClass("last");
         pageCount=gal.size()==0?Math.max(1,page):findTotal(gal.last());
     }

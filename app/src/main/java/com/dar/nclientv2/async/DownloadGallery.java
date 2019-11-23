@@ -5,15 +5,16 @@ import android.app.IntentService;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Gallery;
-import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.settings.Global;
 
 import java.io.File;
@@ -21,9 +22,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import okhttp3.Request;
 
 public class DownloadGallery extends IntentService {
@@ -34,6 +32,7 @@ public class DownloadGallery extends IntentService {
     private NotificationManagerCompat notificationManager;
     public DownloadGallery(){
         super("Download Gallery");
+        Log.d(Global.LOGTAG,"Starting download");
         notId=Global.getNotificationId();
     }
     private void downloadedPage(){
@@ -95,7 +94,7 @@ public class DownloadGallery extends IntentService {
         System.gc();
         for(a=0;a<gallery.getPageCount();a++){
             final File x=new File(folder,("000"+(a+1)+"."+gallery.getPageExtension(a)).substring(Integer.toString(a+1).length()));
-            if(!x.exists()||Global.isCorrupted(x.getAbsolutePath())){
+            if(!x.exists()){
                 try{
                     downloadPage(Global.client.newCall(new Request.Builder().url(gallery.getPage(a)).build()).execute().body().byteStream(),x);
                     downloadedPage();

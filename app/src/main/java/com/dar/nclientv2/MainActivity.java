@@ -66,7 +66,7 @@ public class MainActivity extends BaseActivity
         setContentView(R.layout.activity_main);
 
         if(Global.hasStoragePermission(this)){
-            final File f=new File(new File(Global.DOWNLOADFOLDER,"Update"),"NClientV2_"+Global.getVersionName(this)+".apk");
+            final File f=new File(Global.UPDATEFOLDER,"NClientV2_"+Global.getVersionName(this)+".apk");
             Log.d(Global.LOGTAG,f.getAbsolutePath());
             if(f.exists())f.delete();
         }
@@ -252,7 +252,7 @@ public class MainActivity extends BaseActivity
     private int actualPage=1,totalPage;
     private void loadDialog(){
         DefaultDialogs.pageChangerDialog(
-                new DefaultDialogs.Builder(this).setActual(actualPage).setMax(totalPage).setDialogs(new DefaultDialogs.DialogResults() {
+                new DefaultDialogs.Builder(this).setActual(actualPage).setMin(1).setMax(totalPage).setDialogs(new DefaultDialogs.DialogResults() {
                     @Override
                     public void positive(int actual) {
                         inspector=inspector.loadPage(actual);
@@ -357,6 +357,7 @@ public class MainActivity extends BaseActivity
                 inspector=inspector.recreate();
                 inspector.setByPopular(Global.isByPopular());
                 inspector.start();
+                break;
             case R.id.only_language:updateLanguageIcon(item);showLanguageIcon(item); break;
             case R.id.search:
                 i=new Intent(this,SearchActivity.class);
@@ -476,6 +477,7 @@ public class MainActivity extends BaseActivity
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Global.initStorage(this);
         if(requestCode==1&&grantResults.length >0&&grantResults[0]== PackageManager.PERMISSION_GRANTED) startLocalActivity();
         if(requestCode==2&&grantResults.length >0&&grantResults[0]== PackageManager.PERMISSION_GRANTED) new VersionChecker(this,true);
     }

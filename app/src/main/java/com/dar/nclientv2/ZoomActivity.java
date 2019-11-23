@@ -22,6 +22,15 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.dar.nclientv2.api.components.Gallery;
@@ -34,15 +43,6 @@ import com.github.chrisbanes.photoview.PhotoView;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
 public class ZoomActivity extends AppCompatActivity {
     private GenericGallery gallery;
@@ -69,7 +69,6 @@ public class ZoomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
         Global.initTitleType(this);
-        Global.initHideFromGallery(this);
         side=getSharedPreferences("Settings",0).getBoolean("volumeSide",true);
         overrideVolume=getSharedPreferences("Settings",0).getBoolean(getString(R.string.key_override_volume),true);
         setContentView(R.layout.activity_zoom);
@@ -226,6 +225,7 @@ public class ZoomActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Global.initStorage(this);
         if(requestCode==1&&grantResults.length >0&&grantResults[0]==PackageManager.PERMISSION_GRANTED)
             downloadPage();
 
@@ -237,8 +237,7 @@ public class ZoomActivity extends AppCompatActivity {
         return (PlaceholderFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + position);
     }
     private void downloadPage() {
-        Global.saveNoMedia(this);
-        final File output=new File(Global.GALLERYFOLDER,gallery.getId()+"-"+(mViewPager.getCurrentItem()+1)+".jpg");
+        final File output=new File(Global.SCREENFOLDER,gallery.getId()+"-"+(mViewPager.getCurrentItem()+1)+".jpg");
         Bitmap bitmap;
         PlaceholderFragment page =getActualFragment();
         //is useless to download the vector used by the app
@@ -250,7 +249,6 @@ public class ZoomActivity extends AppCompatActivity {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 95, ostream);
                 ostream.flush();
                 ostream.close();
-                if(!Global.isHideFromGallery())Global.addToGallery(this,output);
                 Toast.makeText(this, R.string.download_completed, Toast.LENGTH_SHORT).show();
             }catch (IOException e){
                 Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);}
@@ -332,8 +330,8 @@ public class ZoomActivity extends AppCompatActivity {
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
+        public SectionsPagerAdapter(@NonNull FragmentManager fm) {
+            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         }
 
         @Override

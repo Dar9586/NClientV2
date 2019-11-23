@@ -2,15 +2,17 @@ package com.dar.nclientv2.async;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.FileProvider;
 
 import com.dar.nclientv2.BuildConfig;
 import com.dar.nclientv2.R;
@@ -18,15 +20,9 @@ import com.dar.nclientv2.settings.Global;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.FileProvider;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;
@@ -100,7 +96,7 @@ public class VersionChecker{
     }
 
     private void downloadVersion(String latestVersion) {
-        final File f=new File(new File(Global.DOWNLOADFOLDER,"Update"),"NClientV2_"+latestVersion+".apk");
+        final File f=new File(Global.UPDATEFOLDER,"NClientV2_"+latestVersion+".apk");
         if(f.exists()){
             if(context.getSharedPreferences("Settings",0).getBoolean("downloaded",false)) {
                 installApp(f);

@@ -6,6 +6,9 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagStatus;
@@ -20,10 +23,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public class Queries{
     public static int getColumnFromName(Cursor cursor,String name){
@@ -33,7 +32,7 @@ public class Queries{
     public static class DebugDatabase{
         public static void dumpDatabase(SQLiteDatabase db){
             Log.d(Global.LOGTAG,"START DUMPING");
-            File f=new File(Global.GALLERYFOLDER,"DBDATA");
+            File f=new File(Global.SCREENFOLDER,"DBDATA");
             f=new File(f,"7.log");
             Log.d(Global.LOGTAG,f.getAbsolutePath());
             try{

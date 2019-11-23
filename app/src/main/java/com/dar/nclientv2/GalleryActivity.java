@@ -246,6 +246,7 @@ public class GalleryActivity extends BaseActivity{
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            Global.initStorage(this);
             if(requestCode==1&&grantResults.length >0&&grantResults[0]==PackageManager.PERMISSION_GRANTED)
                 downloadGallery();
                 //new DownloadGallery(this,gallery).start();

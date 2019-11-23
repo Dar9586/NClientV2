@@ -27,7 +27,6 @@ import com.bumptech.glide.Glide;
 import com.dar.nclientv2.CopyToClipboardActivity;
 import com.dar.nclientv2.MainActivity;
 import com.dar.nclientv2.R;
-import com.dar.nclientv2.api.RandomLoader;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TitleType;
@@ -46,7 +45,7 @@ import java.io.RandomAccessFile;
 
 import okhttp3.OkHttpClient;
 
-public final class Global {
+public class Global {
     public static long recursiveSize(File path) {
         if(path.isFile())return path.length();
         long size=0;
@@ -62,18 +61,34 @@ public final class Global {
     public static int getFavoriteLimit(Context context) {
         return context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_favorite_limit),10);
     }
+
+    public static String getLastVersion(Context context) {
+        return context.getSharedPreferences("Settings", 0).getString("last_version","0.0.0");
+
+    }
+
+    public static void setLastVersion(Context context) {
+        context.getSharedPreferences("Settings", 0).edit().putString("last_version",getVersionName(context)).apply();
+    }
+
     public enum ThemeScheme{LIGHT,DARK,BLACK}
 
     public static OkHttpClient client=null;
-    public static final File GALLERYFOLDER=new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"NClientV2");
-    public static final File DOWNLOADFOLDER=new File(Environment.getExternalStorageDirectory(),"NClientV2");
+    public static final File OLD_GALLERYFOLDER=new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"NClientV2");
+    public static final File MAINFOLDER=new File(Environment.getExternalStorageDirectory(),"NClientV2");
+    public static final File DOWNLOADFOLDER=new File(MAINFOLDER,"Download");
+    public static final File SCREENFOLDER =new File(MAINFOLDER,"Screen");
+    public static final File PDFFOLDER =new File(MAINFOLDER,"PDF");
+    public static final File UPDATEFOLDER =new File(MAINFOLDER,"Update");
+
     public static final String LOGTAG="NCLIENTLOG";
     public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf";
     private static Language onlyLanguage=null;
     private static TitleType titleType;
-    private static boolean byPopular,keepHistory,loadImages,hideFromGallery,highRes,onlyTag,infiniteScroll, removeAvoidedGalleries;
+    private static boolean byPopular,keepHistory,loadImages,highRes,onlyTag,infiniteScroll, removeAvoidedGalleries;
     private static ThemeScheme theme;
     private static int notificationId,columnCount,maxId,imageQuality,galleryWidth=-1, galleryHeight =-1;
+
 
     public static int getGalleryWidth(){
         return galleryWidth;
@@ -103,7 +118,6 @@ public final class Global {
     public static void     initByPopular    (@NonNull Context context){byPopular=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_by_popular),false);}
     public static void     initKeepHistory    (@NonNull Context context){keepHistory=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_keep_history),true);}
     public static void     initInfiniteScroll    (@NonNull Context context){infiniteScroll=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_infinite_scroll),false);}
-    public static void  initHideFromGallery    (@NonNull Context context){hideFromGallery=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_hide_saved_images),false);}
     public static void     initHighRes    (@NonNull Context context){highRes=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_high_res_gallery),true);}
     public static void initRemoveAvoidedGalleries(@NonNull Context context){removeAvoidedGalleries =context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_remove_ignored),true);}
     public static void     initOnlyTag    (@NonNull Context context){onlyTag=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_ignore_tags),true);}
@@ -111,7 +125,7 @@ public final class Global {
     public static void     initOnlyLanguage (@NonNull Context context){int x=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_only_language),-1);onlyLanguage=x==-1?null:Language.values()[x];}
     public static void     initColumnCount  (@NonNull Context context){columnCount=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_column_count),2);}
     public static int      initImageQuality (@NonNull Context context){imageQuality=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_image_quality),90);return imageQuality;}
-    public static void     initMaxId        (@NonNull Context context){maxId=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_max_id),236000);}
+    public static void     initMaxId        (@NonNull Context context){maxId=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_max_id),291738);}
 
     public static void initHttpClient(@NonNull Context context){
         if(client!=null)return;
@@ -161,9 +175,6 @@ public final class Global {
     @Nullable public static Language getOnlyLanguage() {
         return onlyLanguage;
     }
-    public static boolean isHideFromGallery() {
-        return hideFromGallery;
-    }
     public static boolean isHighRes() {
         return highRes;
     }
@@ -191,25 +202,18 @@ public final class Global {
         return loadImages;
     }
 
-    public static void addToGallery(Context context, File file) {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        Uri contentUri = Uri.fromFile(file);
-        mediaScanIntent.setData(contentUri);
-        context.sendBroadcast(mediaScanIntent);
+    public static void initStorage(Context context){
+        if(!Global.hasStoragePermission(context))return;
+        Global.MAINFOLDER.mkdirs();
+        Global.DOWNLOADFOLDER.mkdir();
+        Global.PDFFOLDER.mkdir();
+        Global.UPDATEFOLDER.mkdir();
+        Global.SCREENFOLDER.mkdir();
+        try {
+            new File(Global.DOWNLOADFOLDER,".nomedia").createNewFile();
+        } catch (IOException e) {e.printStackTrace();}
     }
 
-    public static void saveNoMedia(Context context) {
-        if(!hasStoragePermission(context))return;
-        Global.initHideFromGallery(context);
-        GALLERYFOLDER.mkdirs();
-        try {
-            File x=new File(GALLERYFOLDER, ".nomedia");
-            if(hideFromGallery) x.createNewFile();
-            else if(x.exists())x.delete();
-        }catch (IOException e){
-            Log.e(LOGTAG,e.getLocalizedMessage(),e);
-        }
-    }
 
     public static void updateOnlyLanguage(@NonNull Context context, @Nullable Language type){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_only_language)),type==null?-1:type.ordinal()).apply();onlyLanguage=type; }
     public static boolean  updateByPopular(@NonNull Context context,boolean popular){context.getSharedPreferences("Settings", 0).edit().putBoolean(context.getString((R.string.key_by_popular)),popular).apply();byPopular=popular; return byPopular;}
