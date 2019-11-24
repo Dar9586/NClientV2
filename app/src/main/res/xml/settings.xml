@@ -33,10 +33,6 @@
         android:title="@string/high_res_gallery" />
     </PreferenceCategory>
 
-    <Preference android:title="@string/image_quality"
-        android:key="@string/key_image_quality"
-        android:summary="@string/image_quality_summary"
-        />
     <PreferenceCategory
         android:title="@string/search_settings">
         <SwitchPreference

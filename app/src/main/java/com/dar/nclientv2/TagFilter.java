@@ -52,9 +52,6 @@ public class TagFilter extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
-        TagV2.initMinCount(this);
-        TagV2.initSortByName(this);
-        Global.initHttpClient(this);
         setContentView(R.layout.activity_tag_filter);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

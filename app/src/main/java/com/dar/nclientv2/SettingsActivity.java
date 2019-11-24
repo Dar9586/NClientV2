@@ -3,7 +3,6 @@ package com.dar.nclientv2;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -21,7 +20,6 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
-        Global.initHttpClient(this);
         setContentView(R.layout.activity_settings);
         GeneralPreferenceFragment.act=this;
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content,
@@ -61,25 +59,6 @@ public class SettingsActivity extends AppCompatActivity {
             });
             findPreference(getString(R.string.key_update)).setOnPreferenceClickListener(preference -> {
                 new VersionChecker(GeneralPreferenceFragment.this.getActivity(),false);
-                return true;
-            });
-            findPreference(getString(R.string.key_image_quality)).setOnPreferenceClickListener(preference -> {
-                DefaultDialogs.pageChangerDialog(
-                        new DefaultDialogs.Builder(getActivity())
-                                .setDrawable(R.drawable.ic_image)
-                                .setTitle(R.string.image_quality)
-                                .setMax(100)
-                                .setActual(Global.initImageQuality(getActivity()))
-                                .setDialogs(new DefaultDialogs.DialogResults() {
-                                    @Override
-                                    public void positive(int actual) {
-                                        Log.d(Global.LOGTAG,"progress: "+actual);
-                                        Global.updateImageQuality(getActivity(),actual);
-                                    }
-
-                                    @Override public void negative() {}
-                                })
-                );
                 return true;
             });
             findPreference("bug").setOnPreferenceClickListener(preference -> {

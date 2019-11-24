@@ -2,6 +2,7 @@ package com.dar.nclientv2.components;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
@@ -9,7 +10,9 @@ import com.dar.nclientv2.BuildConfig;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.async.database.DatabaseHelper;
 import com.dar.nclientv2.settings.Database;
+import com.dar.nclientv2.settings.Favorites;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.settings.TagV2;
 
 import org.acra.ACRA;
 import org.acra.ReportField;
@@ -42,18 +45,44 @@ public class CrashApplication extends Application{
         Global.initLoadImages(this);
         Global.initOnlyLanguage(this);
         Global.initMaxId(this);
+        Global.initKeepHistory(this);
         Global.initInfiniteScroll(this);
+        Global.initTitleType(this);
+        Favorites.countFavorite();
+        TagV2.initMinCount(this);
+        TagV2.initSortByName(this);
+        Global.loadNotificationChannel(this);
+        Global.initColumnCount(this);
+        Global.initLoadImages(this);
+
         com.dar.nclientv2.settings.Login.initUseAccountTag(this);
         String version=Global.getLastVersion(this),actualVersion=Global.getVersionName(this);
-
-        if(!version.equals(actualVersion)){
-            updateFolderStructure();
-
-
-            Global.setLastVersion(this);
+        fixUpdateFolder();
+        switch (version){//must execute all in order, no break required, for now
+            case "0.0.0":updateFolderStructure();
+            case "1.9.2":fixUpdateFolder();
         }
+        Global.setLastVersion(this);
     }
-
+    private void fixUpdateFolder(){
+        if(!Global.hasStoragePermission(this))return;
+        boolean executed=true;
+        File[]files=Global.DOWNLOADFOLDER.listFiles();
+        if(files!=null)
+            while(executed) {
+                executed=false;
+                for (File f : files) {
+                    if(f.isDirectory())
+                        for (File ff : f.listFiles()) {
+                        if (ff.isDirectory()){
+                            for(File fff:ff.listFiles())transferFolder(fff, f);
+                            executed=true;
+                            ff.delete();
+                        }
+                    }
+                }
+            }
+    }
     private void updateFolderStructure() {
         if(!Global.hasStoragePermission(this))return;
         File[]files=Global.MAINFOLDER.listFiles();
@@ -75,6 +104,7 @@ public class CrashApplication extends Application{
     }
 
     private void transferFolder(File from, File dest) {
+        Log.d(Global.LOGTAG,"Transfer from "+from+" to "+dest);
         if(!from.exists())return;
         String name=from.getName();
         File newDest=new File(dest,name);

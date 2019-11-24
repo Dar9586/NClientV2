@@ -83,4 +83,10 @@ public class TagV2{
         return minCount;
     }
 
+    public static String getAvoidedTags() {
+        StringBuilder builder=new StringBuilder();
+        Tag[]tags= Queries.TagTable.getAllStatus(Database.getDatabase(),TagStatus.AVOIDED);
+        for(Tag t:tags)builder.append('+').append(t.toQueryTag(TagStatus.AVOIDED));
+        return builder.toString();
+    }
 }

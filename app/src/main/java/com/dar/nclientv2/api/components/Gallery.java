@@ -10,7 +10,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.dar.nclientv2.api.InspectorV2;
+import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
@@ -52,7 +52,7 @@ public class Gallery extends GenericGallery{
         cover=ImageExt.JPG;pages=new ImageExt[0];
         titles[TitleType.ENGLISH.ordinal()]=e.getElementsByTag("div").first().text();
 
-        if(id>Global.getMaxId())Global.updateMaxId(context,id);
+        if(context!=null&&id>Global.getMaxId())Global.updateMaxId(context,id);
     }
     public Gallery(Context context,String x, Elements com, Elements rel) throws IOException{
         JsonReader reader=new JsonReader(new StringReader(x));
@@ -507,8 +507,8 @@ public class Gallery extends GenericGallery{
         return getTag(type.ordinal(),index);
     }
     public static Gallery galleryFromId(int id) throws IOException{
-        InspectorV2 i=new InspectorV2(null,id,false);
-        i.run();
+        InspectorV3 i=InspectorV3.galleryInspector(null,id,null);
+        i.execute();
         return i.getGalleries().get(0);
     }
     public boolean hasIgnoredTags(String s){

@@ -1,5 +1,6 @@
 package com.dar.nclientv2.adapters;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.text.Layout;
@@ -14,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.R;
-import com.dar.nclientv2.api.InspectorV2;
+import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagStatus;
@@ -41,14 +42,14 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
     private final boolean storagePermission,black;
     private final String queryString;
 
-    public ListAdapter(BaseActivity cont, List<Gallery> myDataset,String query) {
+    public ListAdapter(BaseActivity cont) {
         this.context=cont;
-        this.mDataset =new ArrayList<>(myDataset);
+        this.mDataset =new ArrayList<>();
         storagePermission=Global.hasStoragePermission(context);
         black=Global.getTheme()== Global.ThemeScheme.BLACK;
         Set<Tag>t=new HashSet<>(Arrays.asList(Queries.TagTable.getAllStatus(Database.getDatabase(), TagStatus.AVOIDED)));
         if(Login.useAccountTag())t.addAll(Arrays.asList(Queries.TagTable.getAllOnlineFavorite(Database.getDatabase())));
-        queryString=query==null?null:query+"+"+TagV2.getQueryString(query, t);
+        queryString=TagV2.getAvoidedTags();
     }
 
     @NonNull
@@ -110,7 +111,15 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
               /*Intent intent = new Intent(context, GalleryActivity.class);
               intent.putExtra(context.getPackageName() + ".ID", ent.getId());
               context.startActivity(intent);*/
-                new InspectorV2(context,ent.getId());
+                InspectorV3.galleryInspector(context, ent.getId(), new InspectorV3.DefaultInspectorResponse() {
+                    @Override
+                    public void onSuccess(List<Gallery> galleries) {
+                        Intent intent=new Intent(context, GalleryActivity.class);
+                        Log.d(Global.LOGTAG,galleries.get(0).toString());
+                        intent.putExtra(context.getPackageName()+".GALLERY",galleries.get(0));
+                        context.runOnUiThread(()->context.startActivity(intent));
+                    }
+                }).start();
               holder.overlay.setVisibility((queryString!=null&&ent.hasIgnoredTags(queryString))?View.VISIBLE:View.GONE);
             });
             holder.overlay.setOnClickListener(v -> holder.overlay.setVisibility(View.GONE));
@@ -138,5 +147,18 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         Log.d(Global.LOGTAG,String.format("%s,old:%d,new:%d,len%d",this,c,mDataset.size(),galleries.size()));
         context.runOnUiThread(()->notifyItemRangeInserted(c,galleries.size()));
         //notifyDataSetChanged();
+    }
+
+    public void restartDataset(List<Gallery> galleries) {
+        /*int c=mDataset.size();
+        if(c>0) {
+            mDataset.clear();
+            context.runOnUiThread(() -> notifyItemRangeRemoved(0, c));
+        }
+        mDataset.addAll(galleries);
+        context.runOnUiThread(()->notifyItemRangeInserted(0,galleries.size()));*/
+        mDataset.clear();
+        mDataset.addAll(galleries);
+        context.runOnUiThread(this::notifyDataSetChanged);
     }
 }

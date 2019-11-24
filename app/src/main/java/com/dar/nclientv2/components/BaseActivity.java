@@ -10,11 +10,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 public abstract class BaseActivity extends AppCompatActivity {
     protected RecyclerView recycler;
     protected SwipeRefreshLayout refresher;
-
     public SwipeRefreshLayout getRefresher() {
         return refresher;
     }
-
     public RecyclerView getRecycler() {
         return recycler;
     }

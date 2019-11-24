@@ -16,10 +16,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dar.nclientv2.adapters.GalleryAdapter;
-import com.dar.nclientv2.api.InspectorV2;
+import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
-import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.async.DownloadGallery;
 import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Favorites;
@@ -43,13 +42,6 @@ public class GalleryActivity extends BaseActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
-        Global.initTitleType(this);
-        Global.initHttpClient(this);
-        Global.loadNotificationChannel(this);
-        Global.initColumnCount(this);
-        Global.initImageQuality(this);
-        Global.initLoadImages(this);
-        Favorites.countFavorite();
         setContentView(R.layout.activity_gallery);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -77,7 +69,16 @@ public class GalleryActivity extends BaseActivity{
                     Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
                 }
             }
-            new InspectorV2(this,params.get(1),isZoom,true,ApiRequestType.BYSINGLE,null);
+            InspectorV3.galleryInspector(this,Integer.parseInt(params.get(1)),new InspectorV3.DefaultInspectorResponse(){
+
+                @Override
+                public void onSuccess(List<Gallery> galleries) {
+                    Intent intent = new Intent(GalleryActivity.this, ZoomActivity.class);
+                    intent.putExtra(getPackageName()+".GALLERY",galleries.get(0));
+                    intent.putExtra(getPackageName()+".PAGE",zoom);
+                    startActivity(intent);
+                }
+            }).start();
         }else loadGallery(gallery,zoom);//if already has gallery
 
     }
@@ -236,7 +237,15 @@ public class GalleryActivity extends BaseActivity{
 
     private void toInternet() {
         refresher.setEnabled(true);
-        new InspectorV2(this,gallery.getId());
+        InspectorV3.galleryInspector(this, gallery.getId(), new InspectorV3.DefaultInspectorResponse() {
+            @Override
+            public void onSuccess(List<Gallery> galleries) {
+                Intent intent=new Intent(GalleryActivity.this, GalleryActivity.class);
+                Log.d(Global.LOGTAG,galleries.get(0).toString());
+                intent.putExtra(getPackageName()+".GALLERY",galleries.get(0));
+                runOnUiThread(()->startActivity(intent));
+            }
+        }).start();
     }
 
     @TargetApi(23)

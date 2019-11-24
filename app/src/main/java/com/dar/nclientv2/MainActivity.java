@@ -24,9 +24,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.dar.nclientv2.api.InspectorV2;
+import com.dar.nclientv2.adapters.ListAdapter;
+import com.dar.nclientv2.api.InspectorV3;
+import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.Tag;
-import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
@@ -43,6 +44,7 @@ import org.acra.ACRA;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -50,27 +52,76 @@ import java.util.Set;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private InspectorV2 inspector=null;
+    private InspectorV3 inspector=null;
     private NavigationView navigationView;
     private Tag tag;
     private boolean tagFromURL=false,advanced=false;
     private static boolean firstTime=true;
     public MenuItem loginItem;
-    public void setInspector(InspectorV2 inspector) {
+    private int actualPage=1,totalPage;
+    public void setInspector(InspectorV3 inspector) {
         this.inspector = inspector;
     }
+    public ListAdapter adapter;
+    InspectorV3.InspectorResponse resetDataset=new InspectorV3.DefaultInspectorResponse() {
+        @Override
+        public void onSuccess(List<Gallery> galleries) {
+            adapter.restartDataset(galleries);
+            showPageSwitcher(inspector.getPage(),inspector.getPageCount());
+            runOnUiThread(()->recycler.smoothScrollToPosition(0));
+        }
 
+        @Override
+        public void onStart() {
+            runOnUiThread(()->refresher.setRefreshing(true));
+        }
+
+        @Override
+        public void onEnd() {
+            runOnUiThread(()->refresher.setRefreshing(false));
+        }
+    },addDataset=new InspectorV3.DefaultInspectorResponse() {
+        @Override
+        public void onSuccess(List<Gallery> galleries) {
+            adapter.addGalleries(galleries);
+        }
+        @Override
+        public void onStart() {
+            runOnUiThread(()->refresher.setRefreshing(true));
+        }
+
+        @Override
+        public void onEnd() {
+            runOnUiThread(()->refresher.setRefreshing(false));
+        }
+    },startGallery=new InspectorV3.DefaultInspectorResponse() {
+        @Override
+        public void onSuccess(List<Gallery> galleries) {
+            Intent intent=new Intent(MainActivity.this, GalleryActivity.class);
+            Log.d(Global.LOGTAG,galleries.get(0).toString());
+            intent.putExtra(getPackageName()+".GALLERY",galleries.get(0));
+            runOnUiThread(()->startActivity(intent));
+        }
+        @Override
+        public void onStart() {
+            runOnUiThread(()->refresher.setRefreshing(true));
+        }
+
+        @Override
+        public void onEnd() {
+            runOnUiThread(()->refresher.setRefreshing(false));
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Global.loadTheme(this);
         if(Global.hasStoragePermission(this)){
             final File f=new File(Global.UPDATEFOLDER,"NClientV2_"+Global.getVersionName(this)+".apk");
             Log.d(Global.LOGTAG,f.getAbsolutePath());
             if(f.exists())f.delete();
         }
-
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -99,7 +150,10 @@ public class MainActivity extends BaseActivity
                     case "language":dataType=TagType.LANGUAGE; break;
                     case "category":dataType=TagType.CATEGORY; break;
                 }
-                if(dataType!=null)q=datas.get(1);
+                if(dataType!=null){
+                    q=datas.get(1);
+                    byPop=datas.size()==3;
+                }
                 else{
                     q=data.getQueryParameter("page");
                     if(q!=null)pag=Integer.parseInt(q);
@@ -118,6 +172,8 @@ public class MainActivity extends BaseActivity
         loadStringLogin();
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
+        adapter=new ListAdapter(this);
+        recycler.setAdapter(adapter);
         recycler.setHasFixedSize(true);
         recycler.setItemViewCacheSize(24);
         recycler.addOnScrollListener(new RecyclerView.OnScrollListener(){
@@ -125,21 +181,34 @@ public class MainActivity extends BaseActivity
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy){
                 if(Global.isInfiniteScroll()&&!refresher.isRefreshing()){
                     GridLayoutManager manager = (GridLayoutManager)recycler.getLayoutManager();
-                    if(actualPage < totalPage && manager.findLastVisibleItemPosition() >= (recycler.getAdapter().getItemCount()-1-manager.getSpanCount()))
-                        inspector=inspector.loadNextPage(InspectorV2.PageRef.NEXT_PAGE,true);
+                    if(actualPage < totalPage && manager.findLastVisibleItemPosition() >= (recycler.getAdapter().getItemCount()-1-manager.getSpanCount())) {
+                        inspector = inspector.cloneInspector(MainActivity.this,addDataset);
+                        inspector.setPage(actualPage+1);
+                        inspector.start();
+                    }
 
                 }
 
             }
         });
-        refresher.setOnRefreshListener(() -> inspector=inspector.loadNextPage(InspectorV2.PageRef.CURR_PAGE,Global.isInfiniteScroll()));
+        refresher.setOnRefreshListener(() -> {
+            inspector = inspector.cloneInspector(MainActivity.this,resetDataset);
+            inspector.start();
+        });
         findViewById(R.id.prev).setOnClickListener(v -> {
-            if (actualPage > 1)inspector=inspector.loadNextPage(InspectorV2.PageRef.PREV_PAGE,false);
+            if (actualPage > 1){
+                    inspector=inspector.cloneInspector(MainActivity.this,resetDataset);
+                    inspector.setPage(actualPage-1);
+                    inspector.start();
+            }
 
         });
         findViewById(R.id.next).setOnClickListener(v -> {
-            if (actualPage < totalPage)
-                inspector=inspector.loadNextPage(InspectorV2.PageRef.NEXT_PAGE,false);
+            if (actualPage < totalPage){
+                inspector=inspector.cloneInspector(MainActivity.this,resetDataset);
+                inspector.setPage(actualPage+1);
+                inspector.start();
+            }
 
         });
         findViewById(R.id.page_index).setOnClickListener(v -> loadDialog());
@@ -148,25 +217,27 @@ public class MainActivity extends BaseActivity
         if(bundle!=null){
             tag = getIntent().getExtras().getParcelable(getPackageName()+".TAG");
         }
-        if(dataType!=null&&q!=null){
+        if(dataType!=null&&q!=null){//create Custom tag from url
             tag=new Tag(q,0,-100,dataType,TagStatus.DEFAULT);
             tagFromURL=true;
             advanced=true;
         }
-        if(q!=null&&dataType==null){
+        if(q!=null&&dataType==null){//custom search by url
             toolbar.setTitle(q);
-            inspector=new InspectorV2(this,q,pag,Global.isByPopular(),ApiRequestType.BYSEARCH,new HashSet<>(1));
-            if(byPop)inspector.setByPopular(true);
+            inspector=InspectorV3.searchInspector(this,q,null,pag,byPop,resetDataset);
+            inspector.start();
             advanced=true;
 
-        }else if(tag!=null) {
-            inspector=new InspectorV2(this,"",1,Global.isByPopular(),ApiRequestType.BYSEARCH,loadTagInspector());
+        }else if(tag!=null) {//tag from other activity or URL
+            inspector=InspectorV3.searchInspector(this,"",new HashSet<>(Collections.singleton(tag)),1,tagFromURL?byPop:Global.isByPopular(),resetDataset);
+            inspector.start();
             toolbar.setTitle(tag.getName());
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             toggle.setDrawerIndicatorEnabled(false);
             advanced=true;
-        } else {
-            inspector=new InspectorV2(this,"",1,Global.isByPopular(),ApiRequestType.BYSEARCH,null);
+        } else {//normal search
+            inspector=InspectorV3.searchInspector(this,"",null,1,Global.isByPopular(),resetDataset);
+            inspector.start();
             advanced=false;
         }
 
@@ -182,8 +253,8 @@ public class MainActivity extends BaseActivity
     private Set<Tag> loadTagInspector() {
         Set<Tag>tags=new HashSet<>();
         if(tag!=null)tags.add(tag);
-        if(Global.isOnlyTag())tags.addAll(InspectorV2.getLanguageTags(Global.getOnlyLanguage()));
-        else tags.addAll(InspectorV2.getDefaultTags());
+        if(Global.isOnlyTag())tags.addAll(InspectorV3.getLanguageTags(Global.getOnlyLanguage()));
+        else tags.addAll(InspectorV3.getDefaultTags());
         return tags;
 
     }
@@ -217,7 +288,9 @@ public class MainActivity extends BaseActivity
                 case CHINESE:Global.updateOnlyLanguage(this, Language.UNKNOWN);break;
                 case UNKNOWN:Global.updateOnlyLanguage(this, null);break;
             }
-        inspector=inspector.loadPage(1);
+        inspector=inspector.cloneInspector(this,resetDataset);
+        inspector.setPage(1);
+        inspector.start();
         Global.setTint(item.getIcon());
     }
     @Override
@@ -227,7 +300,7 @@ public class MainActivity extends BaseActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }else if(advanced&&inspector!=null&&inspector.getRequestType()==ApiRequestType.BYSEARCH){
+        }else if(advanced){
             removeQuery();
         } else {
             super.onBackPressed();
@@ -240,22 +313,27 @@ public class MainActivity extends BaseActivity
         this.actualPage=actualPage;
         this.totalPage=totalPage;
         if(Global.isInfiniteScroll())return;
-        findViewById(R.id.page_switcher).setVisibility(totalPage<=1?View.GONE:View.VISIBLE);
-        findViewById(R.id.prev).setAlpha(actualPage>1?1f:.5f);
-        findViewById(R.id.prev).setEnabled(actualPage>1);
-        findViewById(R.id.next).setAlpha(actualPage<totalPage?1f:.5f);
-        findViewById(R.id.next).setEnabled(actualPage<totalPage);
-        EditText text=findViewById(R.id.page_index);
-        text.setText(String.format(Locale.US, "%d/%d", actualPage, totalPage));
+        runOnUiThread(() -> {
+            findViewById(R.id.page_switcher).setVisibility(totalPage<=1?View.GONE:View.VISIBLE);
+            findViewById(R.id.prev).setAlpha(actualPage>1?1f:.5f);
+            findViewById(R.id.prev).setEnabled(actualPage>1);
+            findViewById(R.id.next).setAlpha(actualPage<totalPage?1f:.5f);
+            findViewById(R.id.next).setEnabled(actualPage<totalPage);
+            EditText text=findViewById(R.id.page_index);
+            text.setText(String.format(Locale.US, "%d/%d", actualPage, totalPage));
+        });
+
     }
 
-    private int actualPage=1,totalPage;
+
     private void loadDialog(){
         DefaultDialogs.pageChangerDialog(
                 new DefaultDialogs.Builder(this).setActual(actualPage).setMin(1).setMax(totalPage).setDialogs(new DefaultDialogs.DialogResults() {
                     @Override
                     public void positive(int actual) {
-                        inspector=inspector.loadPage(actual);
+                        inspector=inspector.cloneInspector(MainActivity.this,resetDataset);
+                        inspector.setPage(actual);
+                        inspector.start();
                     }
                     @Override
                     public void negative() {}
@@ -276,7 +354,8 @@ public class MainActivity extends BaseActivity
         }
     }
     private void removeQuery(){
-        inspector=new InspectorV2(this,"",1,Global.isByPopular(),ApiRequestType.BYALL,null);
+        inspector=InspectorV3.searchInspector(this,"",null,1,Global.isByPopular(),resetDataset);
+        inspector.start();
         getSupportActionBar().setTitle(R.string.app_name);
         if(advanced){
             advanced=false;
@@ -294,7 +373,7 @@ public class MainActivity extends BaseActivity
         if(com.dar.nclientv2.settings.Login.isLogged())navigationView.getMenu().findItem(R.id.online_favorite_manager).setVisible(true);
         if(setting!=null){
             Global.initHighRes(this);Global.initOnlyTag(this);Global.initInfiniteScroll(this);Global.initRemoveAvoidedGalleries(this);
-            inspector=inspector.recreate();
+            inspector=inspector.cloneInspector(this,resetDataset);
             inspector.start();
             if(Global.isInfiniteScroll())hidePageSwitcher();
             if(Global.getTheme()!=setting.theme)recreate();
@@ -354,7 +433,7 @@ public class MainActivity extends BaseActivity
                 item.setIcon(Global.updateByPopular(this,!Global.isByPopular())?R.drawable.ic_star_border:R.drawable.ic_access_time);
                 item.setTitle(Global.isByPopular()?R.string.sort_by_latest:R.string.sort_by_popular);
                 Global.setTint(item.getIcon());
-                inspector=inspector.recreate();
+                inspector=inspector.cloneInspector(this,resetDataset);
                 inspector.setByPopular(Global.isByPopular());
                 inspector.start();
                 break;
@@ -398,17 +477,23 @@ public class MainActivity extends BaseActivity
         try {
                 int id=Integer.parseInt(query);
                 if(id>0&&id<=Global.getMaxId()){
-                    new InspectorV2(MainActivity.this,id);
+                    InspectorV3.galleryInspector(this, id, startGallery );
                     return;
                 }
         }catch (NumberFormatException ignore){}
-
-        getSupportActionBar().setTitle(query.length()==0?getString(R.string.app_name):query+(tag!=null?' '+tag.getName():""));
-        advanced=tags!=null;
+        StringBuilder builder=new StringBuilder();
+        builder.append(query);
+        if(tags!=null)for(Tag t:tags){
+            builder.append(' ').append(t.getName());
+            if(builder.length()>50)break;
+        }
+        getSupportActionBar().setTitle(builder.toString());
+        advanced=true;
         supportInvalidateOptionsMenu();
 
         Log.d(Global.LOGTAG,"TAGS: "+tags);
-        inspector=new InspectorV2(this,query,1,Global.isByPopular(),ApiRequestType.BYSEARCH,tags);
+        inspector=InspectorV3.searchInspector(this, query, tags, 1, Global.isByPopular(), resetDataset);
+        inspector.start();
     }
 
     private void showLogoutForm() {

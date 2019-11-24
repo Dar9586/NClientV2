@@ -43,10 +43,14 @@ public class FakeInspector extends AsyncTask<LocalActivity,LocalActivity,LocalAc
     }
 
     private void createGallery(final File file) {
+        File nomedia=new File(file,".nomedia");
+        String h="-1";
         try {//controllo l'id tramite il file nomedia
-            BufferedReader br = new BufferedReader(new FileReader(new File(file,".nomedia")));
-            String h = br.readLine();
-            br.close();
+            if(nomedia.exists()) {
+                BufferedReader br = new BufferedReader(new FileReader(new File(file, ".nomedia")));
+                h = br.readLine();
+                br.close();
+            }
             LocalGallery lg=new LocalGallery(file,Integer.parseInt(h));
             if(lg.isValid()) galleries.add(lg);
             else invalidPaths.add(file.getAbsolutePath());
@@ -54,7 +58,7 @@ public class FakeInspector extends AsyncTask<LocalActivity,LocalActivity,LocalAc
             LocalGallery lg=new LocalGallery(file,-1);
             if(lg.isValid()) galleries.add(lg);
             else if(lg.getPageCount()>0)invalidPaths.add(file.getAbsolutePath());
-            Log.e(Global.LOGTAG,e.getLocalizedMessage());
+            Log.e(Global.LOGTAG,"WTF: "+e.getLocalizedMessage(),e);
         }
     }
 }

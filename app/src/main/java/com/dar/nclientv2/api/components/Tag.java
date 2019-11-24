@@ -105,12 +105,6 @@ public class Tag implements Parcelable{
         }
         return TagType.UNKNOWN;
     }
-    private String getAPIURL(int page,boolean byPopular){
-        return String.format(Locale.US,"https://nhentai.net/api/galleries/tagged?tag_id=%d&page=%d%s",id,page,byPopular?"sort=popular":"");
-    }
-    public String getAPIURL(){
-        return getAPIURL(1,false);
-    }
 
     public String getName() {
         return name;

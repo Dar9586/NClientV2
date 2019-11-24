@@ -68,7 +68,6 @@ public class ZoomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
-        Global.initTitleType(this);
         side=getSharedPreferences("Settings",0).getBoolean("volumeSide",true);
         overrideVolume=getSharedPreferences("Settings",0).getBoolean(getString(R.string.key_override_volume),true);
         setContentView(R.layout.activity_zoom);

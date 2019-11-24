@@ -7,11 +7,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.dar.nclientv2.loginapi.Login;
-import com.dar.nclientv2.settings.Global;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.dar.nclientv2.loginapi.Login;
+import com.dar.nclientv2.settings.Global;
 
 /**
  * A login screen that offers login via email/password.
@@ -22,7 +22,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
-        Global.initHttpClient(this);
         setContentView(R.layout.activity_login);
         final EditText username=findViewById(R.id.username);
         final EditText password=findViewById(R.id.password);

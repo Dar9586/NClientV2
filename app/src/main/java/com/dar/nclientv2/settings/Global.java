@@ -87,7 +87,7 @@ public class Global {
     private static TitleType titleType;
     private static boolean byPopular,keepHistory,loadImages,highRes,onlyTag,infiniteScroll, removeAvoidedGalleries;
     private static ThemeScheme theme;
-    private static int notificationId,columnCount,maxId,imageQuality,galleryWidth=-1, galleryHeight =-1;
+    private static int notificationId,columnCount,maxId,galleryWidth=-1, galleryHeight =-1;
 
 
     public static int getGalleryWidth(){
@@ -115,17 +115,16 @@ public class Global {
             case "japanese":titleType=  TitleType.JAPANESE;break;
         }
     }
-    public static void     initByPopular    (@NonNull Context context){byPopular=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_by_popular),false);}
-    public static void     initKeepHistory    (@NonNull Context context){keepHistory=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_keep_history),true);}
-    public static void     initInfiniteScroll    (@NonNull Context context){infiniteScroll=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_infinite_scroll),false);}
-    public static void     initHighRes    (@NonNull Context context){highRes=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_high_res_gallery),true);}
-    public static void initRemoveAvoidedGalleries(@NonNull Context context){removeAvoidedGalleries =context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_remove_ignored),true);}
-    public static void     initOnlyTag    (@NonNull Context context){onlyTag=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_ignore_tags),true);}
-    public static boolean  initLoadImages   (@NonNull Context context){loadImages=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_load_images),true);return loadImages;}
-    public static void     initOnlyLanguage (@NonNull Context context){int x=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_only_language),-1);onlyLanguage=x==-1?null:Language.values()[x];}
-    public static void     initColumnCount  (@NonNull Context context){columnCount=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_column_count),2);}
-    public static int      initImageQuality (@NonNull Context context){imageQuality=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_image_quality),90);return imageQuality;}
-    public static void     initMaxId        (@NonNull Context context){maxId=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_max_id),291738);}
+    public static void     initByPopular             (@NonNull Context context){byPopular=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_by_popular),false);}
+    public static void     initKeepHistory           (@NonNull Context context){keepHistory=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_keep_history),true);}
+    public static void     initInfiniteScroll        (@NonNull Context context){infiniteScroll=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_infinite_scroll),false);}
+    public static void     initHighRes               (@NonNull Context context){highRes=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_high_res_gallery),true);}
+    public static void     initRemoveAvoidedGalleries(@NonNull Context context){removeAvoidedGalleries =context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_remove_ignored),true);}
+    public static void     initOnlyTag               (@NonNull Context context){onlyTag=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_ignore_tags),true);}
+    public static boolean  initLoadImages            (@NonNull Context context){loadImages=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_load_images),true);return loadImages;}
+    public static void     initOnlyLanguage          (@NonNull Context context){int x=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_only_language),-1);onlyLanguage=x==-1?null:Language.values()[x];}
+    public static void     initColumnCount           (@NonNull Context context){columnCount=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_column_count),2);}
+    public static void     initMaxId                 (@NonNull Context context){maxId=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_max_id),291738);}
 
     public static void initHttpClient(@NonNull Context context){
         if(client!=null)return;
@@ -167,9 +166,6 @@ public class Global {
     }
     public static ThemeScheme getTheme() {
         return theme;
-    }
-    public static int getImageQuality() {
-        return imageQuality;
     }
     public static boolean removeAvoidedGalleries(){return removeAvoidedGalleries;}
     @Nullable public static Language getOnlyLanguage() {
@@ -219,7 +215,6 @@ public class Global {
     public static boolean  updateByPopular(@NonNull Context context,boolean popular){context.getSharedPreferences("Settings", 0).edit().putBoolean(context.getString((R.string.key_by_popular)),popular).apply();byPopular=popular; return byPopular;}
     public static boolean  updateLoadImages(@NonNull Context context,boolean load){context.getSharedPreferences("Settings", 0).edit().putBoolean(context.getString((R.string.key_load_images)),load).apply();loadImages=load; return loadImages;}
     public static void updateColumnCount(@NonNull Context context, int count){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_column_count)),count).apply();columnCount=count; }
-    public static void updateImageQuality(@NonNull Context context, int quality){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_image_quality)),quality).apply();imageQuality=quality; }
     public static void updateMaxId(@NonNull Context context, int id){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_max_id)),id).apply();maxId=id; }
 
     public static int getStatusBarHeight(Context context) {

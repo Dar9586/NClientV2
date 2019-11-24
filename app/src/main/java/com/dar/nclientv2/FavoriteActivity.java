@@ -8,12 +8,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.appcompat.widget.Toolbar;
+
 import com.dar.nclientv2.adapters.FavoriteAdapter;
 import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
-
-import androidx.appcompat.widget.Toolbar;
 
 public class FavoriteActivity extends BaseActivity {
     private boolean online=false;
@@ -21,10 +21,7 @@ public class FavoriteActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
-        Global.initTitleType(this);
-        Global.initHttpClient(this);
-        Global.initLoadImages(this);
-        Global.initHighRes(this);
+
         setContentView(R.layout.app_bar_main);
         if(getIntent().getExtras()!=null)online=getIntent().getExtras().getBoolean(getPackageName()+".ONLINE",false);
         if(online||(getIntent().getData() != null &&Login.isLogged()))online=true;

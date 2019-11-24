@@ -2,12 +2,16 @@ package com.dar.nclientv2.adapters;
 
 import android.content.Intent;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.MainActivity;
@@ -24,11 +28,6 @@ import com.google.android.material.chip.ChipGroup;
 
 import java.io.File;
 import java.util.Locale;
-
-import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
     public enum Type{TAG,PAGE,RELATED}
@@ -92,7 +91,9 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         final Gallery gallery=(Gallery)this.gallery;
         recyclerView.setLayoutManager(new GridLayoutManager(context,1,RecyclerView.HORIZONTAL,false));
         if(gallery.isRelatedLoaded()){
-            recyclerView.setAdapter(new ListAdapter(context,gallery.getRelated(),""));
+            ListAdapter adapter=new ListAdapter(context);
+            adapter.addGalleries(gallery.getRelated());
+            recyclerView.setAdapter(adapter);
         }
     }
 
