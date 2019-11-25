@@ -244,6 +244,7 @@
     <string name="install">Install</string>
     <string name="download_update_failed">Unable to download updated version</string>
     <string name="copyURL">Copy URL</string>
+    <string name="favorite">Favorite</string>
 
 
     <string-array name="theme">

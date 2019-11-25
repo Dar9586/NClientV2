@@ -12,7 +12,6 @@ import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.async.database.Queries;
-import com.dar.nclientv2.settings.CustomInterceptor;
 import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
@@ -30,7 +29,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -40,25 +38,14 @@ public class InspectorV3 extends Thread{
         void onFailure(Exception e);
         void onStart();
         void onEnd();
-
     }
     public static abstract class DefaultInspectorResponse implements InspectorResponse{
         @Override public void onStart() {}
-
         @Override public void onEnd() {}
-
         @Override public void onSuccess(List<Gallery> galleries) {}
-
-        @Override
-        public void onFailure(Exception e) {
+        @Override public void onFailure(Exception e) {
             Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
         }
-    }
-    private static final OkHttpClient client;
-    static{
-        OkHttpClient.Builder builder=new OkHttpClient.Builder();
-        builder.addInterceptor(new CustomInterceptor());
-        client=builder.build();
     }
 
     private boolean byPopular,custom;
@@ -93,8 +80,9 @@ public class InspectorV3 extends Thread{
         InspectorV3 inspector=new InspectorV3(context,response);
         inspector.page=page;
         inspector.pageCount=0;
-        inspector.query=query;
+        inspector.query=query==null?"":query;
         inspector.requestType=ApiRequestType.FAVORITE;
+        inspector.tags=new HashSet<>(1);
         inspector.createUrl();
         return inspector;
     }
@@ -114,7 +102,7 @@ public class InspectorV3 extends Thread{
         inspector.tags.addAll(getLanguageTags(Global.getOnlyLanguage()));
         inspector.page=page;
         inspector.pageCount=0;
-        inspector.query=query;
+        inspector.query=query==null?"":query;
         inspector.byPopular=byPopular;
         if(query==null||query.equals("")) {
             switch (inspector.tags.size()) {
@@ -147,6 +135,7 @@ public class InspectorV3 extends Thread{
                 if(query!=null&&query.length()>0)builder.append("?q=").append(query).append('&');
                 else builder.append('?');
                 if(page>1)builder.append("page=").append(page);
+                break;
             case BYTAG:
                 for(Tag tt:tags)t=tt;
                 builder.append(t.findTagString()).append('/')
@@ -158,7 +147,7 @@ public class InspectorV3 extends Thread{
             case BYSEARCH:
                 builder.append("search/?q=").append(query);
                 for(Tag tt:tags)builder.append('+').append(tt.toQueryTag());
-                if(page>1)builder.append("&page=2");
+                if(page>1)builder.append("&page=").append(page);
                 if(byPopular)builder.append("&sort=popular");
                 break;
 
@@ -193,7 +182,7 @@ public class InspectorV3 extends Thread{
     }
 
     public void execute()throws IOException{
-            Response response=client.newCall(new Request.Builder().url(url).build()).execute();
+            Response response=Global.client.newCall(new Request.Builder().url(url).build()).execute();
             Document document= Jsoup.parse(response.body().byteStream(),"UTF-8","https://nhentai.net/");
             if(requestType==ApiRequestType.BYSINGLE)doSingle(document.body());
             else doSearch(document.body());
@@ -270,5 +259,19 @@ public class InspectorV3 extends Thread{
 
     public int getPageCount() {
         return pageCount;
+    }
+
+    public boolean isCustom() {
+        return custom;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public Tag getTag(){
+        Tag t=null;
+        for(Tag tt:tags)t=tt;
+        return t;
     }
 }

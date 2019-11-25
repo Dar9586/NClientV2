@@ -2,7 +2,6 @@ package com.dar.nclientv2;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -15,9 +14,9 @@ import android.view.View;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -33,8 +32,10 @@ import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.ScrapeTags;
 import com.dar.nclientv2.async.VersionChecker;
+import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.loginapi.Login;
+import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
@@ -43,7 +44,6 @@ import com.google.android.material.navigation.NavigationView;
 import org.acra.ACRA;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -52,12 +52,12 @@ import java.util.Set;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private enum MainStatus{UNKNOWN,NORMAL,TAG,FAVORITE,SEARCH}
     private InspectorV3 inspector=null;
     private NavigationView navigationView;
-    private Tag tag;
-    private boolean tagFromURL=false,advanced=false;
     private static boolean firstTime=true;
     public MenuItem loginItem;
+    private MainStatus status=MainStatus.UNKNOWN;
     private int actualPage=1,totalPage;
     public void setInspector(InspectorV3 inspector) {
         this.inspector = inspector;
@@ -117,7 +117,7 @@ public class MainActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Global.loadTheme(this);
-        if(Global.hasStoragePermission(this)){
+        if(Global.hasStoragePermission(this)){//delete older APK
             final File f=new File(Global.UPDATEFOLDER,"NClientV2_"+Global.getVersionName(this)+".apk");
             Log.d(Global.LOGTAG,f.getAbsolutePath());
             if(f.exists())f.delete();
@@ -132,38 +132,34 @@ public class MainActivity extends BaseActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         Uri data=getIntent().getData();
-        String q=null;
-        int pag=1;
-        boolean byPop=false;
-        TagType dataType=null;
-        if(data!=null) {
-            List<String>datas=data.getPathSegments();
-            Log.d(Global.LOGTAG,datas.size()+"COUNTTTTT");
-            for(String s:datas)Log.d(Global.LOGTAG,"PARAMM: "+s);
-            if(datas.size()>0){
-                switch (datas.get(0)){
-                    case "parody":dataType=TagType.PARODY; break;
-                    case "character":dataType=TagType.CHARACTER; break;
-                    case "tag":dataType=TagType.TAG; break;
-                    case "artist":dataType=TagType.ARTIST; break;
-                    case "group":dataType=TagType.GROUP; break;
-                    case "language":dataType=TagType.LANGUAGE; break;
-                    case "category":dataType=TagType.CATEGORY; break;
-                }
-                if(dataType!=null){
-                    q=datas.get(1);
-                    byPop=datas.size()==3;
-                }
-                else{
-                    q=data.getQueryParameter("page");
-                    if(q!=null)pag=Integer.parseInt(q);
-                    byPop="popular".equals(data.getQueryParameter("sort"));
-                    q=data.getQueryParameter("q");
-                }
-                Log.d(Global.LOGTAG, "Q: " + data.getQueryParameter("q"));
+        if(getIntent().getBooleanExtra(getPackageName()+".ISBYTAG",false)){//TAG FROM OTHER ACTIVITY
+            Tag t=getIntent().getParcelableExtra(getPackageName()+".TAG");
+            inspector=InspectorV3.searchInspector(this,null,new HashSet<>(Collections.singleton(t)),1,Global.isByPopular(),resetDataset);
+            status=MainStatus.TAG;
+        }else if(getIntent().getBooleanExtra(getPackageName()+".SEARCHSTART",false)){//Search
+            String query=getIntent().getStringExtra(getPackageName()+".QUERY");
+            if(query!=null)query=query.trim();
+            boolean advanced=getIntent().getBooleanExtra(getPackageName()+".ADVANCED",false);
+            HashSet<Tag>tags=null;
+            if(advanced){
+                tags=new HashSet<>(getIntent().getParcelableArrayListExtra(getPackageName()+".TAGS"));
             }
+            inspector=InspectorV3.searchInspector(this,query,tags,1,Global.isByPopular(),resetDataset);
+            status=MainStatus.SEARCH;
 
+        } else if(getIntent().getBooleanExtra(getPackageName()+".FAVORITE",false)){//Online favorite
+            inspector=InspectorV3.favoriteInspector(this,null,1,resetDataset);
+            status=MainStatus.FAVORITE;
+        }else if(data!=null){//normal,search or tag by url
+            status=manageDataStart(data);
+        }else{//normal
+            inspector=InspectorV3.searchInspector(this,null,null,1,Global.isByPopular(),resetDataset);
+            status=MainStatus.NORMAL;
         }
+
+
+        Log.d(Global.LOGTAG,"Main started with status "+status);
+
         navigationView = findViewById(R.id.nav_view);
         changeNavigationImage(navigationView);
         navigationView.setNavigationItemSelectedListener(this);
@@ -214,32 +210,21 @@ public class MainActivity extends BaseActivity
         findViewById(R.id.page_index).setOnClickListener(v -> loadDialog());
         changeLayout(getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE);
         Bundle bundle=getIntent().getExtras();
-        if(bundle!=null){
-            tag = getIntent().getExtras().getParcelable(getPackageName()+".TAG");
-        }
-        if(dataType!=null&&q!=null){//create Custom tag from url
-            tag=new Tag(q,0,-100,dataType,TagStatus.DEFAULT);
-            tagFromURL=true;
-            advanced=true;
-        }
-        if(q!=null&&dataType==null){//custom search by url
-            toolbar.setTitle(q);
-            inspector=InspectorV3.searchInspector(this,q,null,pag,byPop,resetDataset);
-            inspector.start();
-            advanced=true;
 
-        }else if(tag!=null) {//tag from other activity or URL
-            inspector=InspectorV3.searchInspector(this,"",new HashSet<>(Collections.singleton(tag)),1,tagFromURL?byPop:Global.isByPopular(),resetDataset);
-            inspector.start();
-            toolbar.setTitle(tag.getName());
+
+        if(status!=MainStatus.NORMAL){
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             toggle.setDrawerIndicatorEnabled(false);
-            advanced=true;
-        } else {//normal search
-            inspector=InspectorV3.searchInspector(this,"",null,1,Global.isByPopular(),resetDataset);
-            inspector.start();
-            advanced=false;
         }
+
+        switch (status){
+            case FAVORITE:  getSupportActionBar().setTitle(R.string.favorite_online_manga);break;
+            case SEARCH:    getSupportActionBar().setTitle(inspector.getQuery());break;
+            case TAG:       getSupportActionBar().setTitle(inspector.getTag().getName());break;
+            case NORMAL:    getSupportActionBar().setTitle(R.string.app_name);break;
+            default:        getSupportActionBar().setTitle("WTF");break;
+        }
+
 
 
         if(firstTime){
@@ -248,15 +233,59 @@ public class MainActivity extends BaseActivity
             startService(i);
             firstTime=false;
         }
+        inspector.start();
+
     }
+    //FIND AND INIT INSPECTOR
+    private MainStatus manageDataStart(Uri data) {
+        List<String>datas=data.getPathSegments();
+        Log.d(Global.LOGTAG,"Datas: "+datas);
+        if(datas.size()==0){
+            inspector=InspectorV3.searchInspector(this,null,null,1,Global.isByPopular(),resetDataset);
+            return MainStatus.NORMAL;
+        }
+        TagType dataType=null;
+        String query;
+        int page=1;
+        boolean byPop=false;
+        switch (datas.get(0)){
+            case "parody":dataType=TagType.PARODY; break;
+            case "character":dataType=TagType.CHARACTER; break;
+            case "tag":dataType=TagType.TAG; break;
+            case "artist":dataType=TagType.ARTIST; break;
+            case "group":dataType=TagType.GROUP; break;
+            case "language":dataType=TagType.LANGUAGE; break;
+            case "category":dataType=TagType.CATEGORY; break;
+        }
+        if(dataType!=null){
+            query=datas.get(1);
+            Tag tag=Queries.TagTable.getTagFromTagName(Database.getDatabase(),query);
+            if(tag==null) tag=new Tag(query,-1,-1 ,dataType,TagStatus.DEFAULT);
+            byPop=datas.size()==3;
+            inspector=InspectorV3.searchInspector(this,null,new HashSet<>(Collections.singleton(tag)),1,byPop,resetDataset);
+            return MainStatus.TAG;
 
-    private Set<Tag> loadTagInspector() {
-        Set<Tag>tags=new HashSet<>();
-        if(tag!=null)tags.add(tag);
-        if(Global.isOnlyTag())tags.addAll(InspectorV3.getLanguageTags(Global.getOnlyLanguage()));
-        else tags.addAll(InspectorV3.getDefaultTags());
-        return tags;
+        } else{
+            query=data.getQueryParameter("page");
+            if(query!=null)page=Integer.parseInt(query);
 
+            if("favorites".equals(datas.get(0))){
+                if(com.dar.nclientv2.settings.Login.isLogged()) {
+                    inspector = InspectorV3.favoriteInspector(this, null, page, resetDataset);
+                    return MainStatus.FAVORITE;
+                }else{
+                    Intent intent=new Intent(this,FavoriteActivity.class);
+                    startActivity(intent);
+                    finish();
+                    return MainStatus.NORMAL;
+                }
+            }
+
+            byPop="popular".equals(data.getQueryParameter("sort"));
+            query=data.getQueryParameter("q");
+            inspector=InspectorV3.searchInspector(this,query,null,page,byPop,resetDataset);
+            return MainStatus.SEARCH;
+        }
     }
 
     private void loadStringLogin() {
@@ -295,13 +324,9 @@ public class MainActivity extends BaseActivity
     }
     @Override
     public void onBackPressed() {
-        if(tag!=null)super.onBackPressed();
-        Log.d(Global.LOGTAG,inspector.getRequestType()+".....");
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }else if(advanced){
-            removeQuery();
         } else {
             super.onBackPressed();
         }
@@ -353,15 +378,6 @@ public class MainActivity extends BaseActivity
             this.remove= Global.removeAvoidedGalleries();
         }
     }
-    private void removeQuery(){
-        inspector=InspectorV3.searchInspector(this,"",null,1,Global.isByPopular(),resetDataset);
-        inspector.start();
-        getSupportActionBar().setTitle(R.string.app_name);
-        if(advanced){
-            advanced=false;
-            supportInvalidateOptionsMenu();
-        }
-    }
 
     @Override
     protected void onResume() {
@@ -387,10 +403,10 @@ public class MainActivity extends BaseActivity
         menu.findItem(R.id.by_popular).setIcon(Global.isByPopular()?R.drawable.ic_star_border:R.drawable.ic_access_time);
         menu.findItem(R.id.by_popular).setTitle(Global.isByPopular()?R.string.sort_by_latest:R.string.sort_by_popular);
         showLanguageIcon(menu.findItem(R.id.only_language));
-        menu.findItem(R.id.only_language).setVisible(!advanced);
-        if(tag!=null){
-                MenuItem item=menu.findItem(R.id.tag_manager).setVisible(!tagFromURL);
-                TagStatus ts=tag.getStatus();
+        menu.findItem(R.id.only_language).setVisible(status==MainStatus.NORMAL);
+        if(status==MainStatus.TAG){
+                MenuItem item=menu.findItem(R.id.tag_manager).setVisible(inspector.getTag().getId()>0);
+                TagStatus ts=inspector.getTag().getStatus();
                 switch (ts){
                     case DEFAULT:item.setIcon(R.drawable.ic_help);break;
                     case AVOIDED:item.setIcon(R.drawable.ic_close);break;
@@ -402,7 +418,23 @@ public class MainActivity extends BaseActivity
         }
         Global.setTint(menu.findItem(R.id.open_browser).getIcon());
         Global.setTint(menu.findItem(R.id.by_popular).getIcon());
-        menu.findItem(R.id.search).setActionView(null);
+        if(status!=MainStatus.FAVORITE)menu.findItem(R.id.search).setActionView(null);
+        else{
+            ((SearchView)menu.findItem(R.id.search).getActionView()).setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    inspector=InspectorV3.favoriteInspector(MainActivity.this,query,1,resetDataset);
+                    inspector.start();
+                    getSupportActionBar().setTitle(query);
+                    return true;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    return false;
+                }
+            });
+        }
         return true;
     }
 
@@ -439,8 +471,10 @@ public class MainActivity extends BaseActivity
                 break;
             case R.id.only_language:updateLanguageIcon(item);showLanguageIcon(item); break;
             case R.id.search:
-                i=new Intent(this,SearchActivity.class);
-                startActivityForResult(i,1);
+                if(status!=MainStatus.FAVORITE) {
+                    i = new Intent(this, SearchActivity.class);
+                    startActivity(i);
+                }
                 break;
             case R.id.open_browser:
                 if(inspector!=null) {
@@ -449,7 +483,7 @@ public class MainActivity extends BaseActivity
                 }
                 break;
             case R.id.tag_manager:
-                TagStatus ts=TagV2.updateStatus(tag);
+                TagStatus ts=TagV2.updateStatus(inspector.getTag());
                 switch (ts){
                     case DEFAULT:item.setIcon(R.drawable.ic_help);break;
                     case AVOIDED:item.setIcon(R.drawable.ic_close);break;
@@ -462,15 +496,6 @@ public class MainActivity extends BaseActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode==1&&resultCode== Activity.RESULT_OK){
-            ArrayList<Tag>tags=data.getParcelableArrayListExtra("tags");
-            Set<Tag>t=tags==null?null:new HashSet<>(tags);
-            manageQuery(data.getStringExtra("query"),t);
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
     private void manageQuery(String query, Set<Tag> tags){
         query=query.trim();
         if(query.length()==0&&tags==null)return;
@@ -488,7 +513,6 @@ public class MainActivity extends BaseActivity
             if(builder.length()>50)break;
         }
         getSupportActionBar().setTitle(builder.toString());
-        advanced=true;
         supportInvalidateOptionsMenu();
 
         Log.d(Global.LOGTAG,"TAGS: "+tags);
@@ -523,10 +547,6 @@ public class MainActivity extends BaseActivity
                     startActivity(intent);
                 }
                 break;
-            case R.id.search:
-                intent=new Intent(this,SearchActivity.class);
-                startActivity(intent);
-                break;
             case R.id.favorite_manager:
                 intent=new Intent(this,FavoriteActivity.class);
                 startActivity(intent);
@@ -537,8 +557,11 @@ public class MainActivity extends BaseActivity
                 startActivity(intent);
                 break;
             case R.id.online_favorite_manager:
-                intent=new Intent(this,FavoriteActivity.class);
+                /*intent=new Intent(this,FavoriteActivity.class);
                 intent.putExtra(getPackageName()+".ONLINE",true);
+                startActivity(intent);*/
+                intent=new Intent(this,MainActivity.class);
+                intent.putExtra(getPackageName()+".FAVORITE",true);
                 startActivity(intent);
                 break;
             case R.id.random:

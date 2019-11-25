@@ -13,34 +13,27 @@ import androidx.appcompat.widget.Toolbar;
 import com.dar.nclientv2.adapters.FavoriteAdapter;
 import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Global;
-import com.dar.nclientv2.settings.Login;
 
 public class FavoriteActivity extends BaseActivity {
-    private boolean online=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.loadTheme(this);
 
         setContentView(R.layout.app_bar_main);
-        if(getIntent().getExtras()!=null)online=getIntent().getExtras().getBoolean(getPackageName()+".ONLINE",false);
-        if(online||(getIntent().getData() != null &&Login.isLogged()))online=true;
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getSupportActionBar().setTitle(online?R.string.favorite_online_manga:R.string.favorite_manga);
+        getSupportActionBar().setTitle(R.string.favorite_manga);
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
         refresher.setRefreshing(true);
-        final FavoriteAdapter adapter=new FavoriteAdapter(this,online);
+        final FavoriteAdapter adapter=new FavoriteAdapter(this,false);
 
         findViewById(R.id.page_switcher).setVisibility(View.GONE);
 
-        refresher.setOnRefreshListener(() -> {
-            if(online)adapter.reloadOnline();
-            else adapter.forceReload();
-        });
+        refresher.setOnRefreshListener(adapter::forceReload);
         changeLayout(getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE);
         recycler.setAdapter(adapter);
 

@@ -3,11 +3,12 @@ package com.dar.nclientv2.settings;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 public class Database{
-    @Nullable private static SQLiteDatabase database;
-
+    @NonNull
+    private static SQLiteDatabase database;
+    @NonNull
     public static SQLiteDatabase getDatabase(){
         return database;
     }

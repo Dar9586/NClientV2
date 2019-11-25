@@ -390,7 +390,13 @@ public class Queries{
             c.close();
             return null;
         }
-
+        public static Tag getTagFromTagName(SQLiteDatabase db,String name){
+            Tag tag=null;
+            Cursor cursor=db.query(TABLE_NAME,null,NAME+"=?",new String[]{name},null,null,null);
+            if(cursor.moveToFirst())tag=cursorToTag(cursor);
+            cursor.close();
+            return tag;
+        }
 
         public static Tag[][] getTags(SQLiteDatabase db, String tagString){
             Tag[][]tags=new Tag[TagType.values().length][];

@@ -43,6 +43,7 @@
                 <data android:pathPrefix="/character/" />
                 <data android:pathPrefix="/tag/" />
                 <data android:pathPrefix="/artist/" />
+                <data android:pathPrefix="/favorites/" />
 
                 <data android:pathPrefix="/group/" />
 
@@ -129,17 +130,7 @@
             android:name=".FavoriteActivity"
             android:configChanges="orientation|screenSize"
             android:parentActivityName=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:pathPrefix="/favorites" />
 
-                <data android:scheme="http" />
-
-                <data android:scheme="https" />
-                <data android:host="nhentai.net" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".CopyToClipboardActivity"

@@ -77,6 +77,7 @@ public class GalleryActivity extends BaseActivity{
                     intent.putExtra(getPackageName()+".GALLERY",galleries.get(0));
                     intent.putExtra(getPackageName()+".PAGE",zoom);
                     startActivity(intent);
+                    finish();
                 }
             }).start();
         }else loadGallery(gallery,zoom);//if already has gallery

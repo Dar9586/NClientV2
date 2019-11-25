@@ -120,6 +120,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                     c.setOnClickListener(v -> {
                         Intent intent = new Intent(context, MainActivity.class);
                         intent.putExtra(context.getPackageName() + ".TAG", tag);
+                        intent.putExtra(context.getPackageName() + ".ISBYTAG", true);
                         context.startActivity(intent);
                     });
                     cg.addView(c);

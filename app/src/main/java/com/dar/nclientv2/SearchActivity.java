@@ -1,6 +1,5 @@
 package com.dar.nclientv2;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -100,21 +99,16 @@ public class SearchActivity extends AppCompatActivity {
                 query=query.trim();
                 if(query.length()==0&&!advanced)return true;
                 if(query.length()!=0)adapter.addHistory(query);
-                Intent returnIntent = new Intent();
-                returnIntent.putExtra("query",query);
-                returnIntent.putExtra("advanced",advanced);
+                Intent i=new Intent(SearchActivity.this,MainActivity.class);
+                i.putExtra(getPackageName()+".SEARCHSTART",true);
+                i.putExtra(getPackageName()+".QUERY",query);
+                i.putExtra(getPackageName()+".ADVANCED",advanced);
                 if(advanced){
-                    ArrayList<Tag>tt=new ArrayList<>();
-                    for(ChipTag tag:tags){
-                        if((tag.getTag().getType()==TagType.LANGUAGE||tag.getTag().getType()==TagType.CATEGORY)){
-                            if(tag.getTag().getStatus()==TagStatus.ACCEPTED)tt.add(tag.getTag());
-                            continue;
-                        }
-                        if(tag.getTag().getStatus()!=TagStatus.DEFAULT)tt.add(tag.getTag());
-                    }
-                    returnIntent.putParcelableArrayListExtra("tags",tt);
+                    ArrayList<Tag>tt=new ArrayList<>(tags.size());
+                    for(ChipTag t:tags)tt.add(t.getTag());
+                    i.putParcelableArrayListExtra(getPackageName()+".TAGS",tt);
                 }
-                setResult(Activity.RESULT_OK,returnIntent);
+                startActivity(i);
                 finish();
                 return true;
             }
