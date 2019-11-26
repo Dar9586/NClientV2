@@ -9,11 +9,14 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.Tag;
+import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.enums.TitleType;
+import com.dar.nclientv2.components.Bookmark;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
 
@@ -42,7 +45,7 @@ public class Queries{
                 dumpTable(db,GalleryTable.TABLE_NAME,fw);
                 //dumpTable(db,TagTable.TABLE_NAME,fw);
                 //dumpTable(db,RelatedTable.TABLE_NAME);
-                dumpTable(db,BridgeTable.TABLE_NAME,fw);
+                dumpTable(db, GalleryBridgeTable.TABLE_NAME,fw);
                 fw.flush();
                 fw.close();
             }catch(IOException e){
@@ -98,7 +101,7 @@ public class Queries{
         @NonNull
         public static Cursor getAllFavoriteCursor(SQLiteDatabase db,CharSequence query,boolean online){
             Log.i(Global.LOGTAG,"FILTER IN: "+query+";;"+online);
-            Cursor cursor;//=db.rawQuery(sql,new String[]{query,query,query,""+(online?2:1)});
+            Cursor cursor;//=db.rawQuery(sql,new String[]{url,url,url,""+(online?2:1)});
             String sql="SELECT * FROM "+ TABLE_NAME +" WHERE ("+
                     FAVORITE +" =? OR "+ FAVORITE +"=3)";
             if(query!=null&&query.length()>0){
@@ -163,7 +166,7 @@ public class Queries{
                 for(int i=0;i<len;i++){
                     tag=gallery.getTag(t,i);
                     TagTable.insert(db,tag);//Inserisci tag
-                    BridgeTable.insert(db,gallery.getId(),tag.getId());//Inserisci collegamento
+                    GalleryBridgeTable.insert(db,gallery.getId(),tag.getId());//Inserisci collegamento
                 }
             }
         }
@@ -230,7 +233,7 @@ public class Queries{
         }
 
         public static Gallery cursorToGallery(SQLiteDatabase db,Cursor cursor) throws IOException{
-            return new Gallery(cursor,BridgeTable.getTagsForGallery(db,cursor.getInt(getColumnFromName(cursor,IDGALLERY))));
+            return new Gallery(cursor, GalleryBridgeTable.getTagsForGallery(db,cursor.getInt(getColumnFromName(cursor,IDGALLERY))));
         }
     }
     public static class TagTable{
@@ -282,7 +285,7 @@ public class Queries{
             list.add(""+TagV2.getMinCount());
             if(query.length()>0)list.add('%'+query+'%');
             if(type!=null)list.add(""+type.ordinal());
-            Log.d(Global.LOGTAG,"FILTER QUERY: "+sql+", ARGS: "+list);
+            Log.d(Global.LOGTAG,"FILTER URL: "+sql+", ARGS: "+list);
             return db.rawQuery(sql.toString(),list.toArray(new String[0]));
         }
         public static Tag[] getAllType(SQLiteDatabase db,TagType type){
@@ -322,9 +325,8 @@ public class Queries{
         public static Tag getTag(SQLiteDatabase db,int id){
             String query="SELECT * FROM "+ TABLE_NAME +" WHERE "+ IDTAG +" = ?";
             Cursor c=db.rawQuery(query,new String[]{""+id});
-
-            c.moveToFirst();
-            Tag t=cursorToTag(c);
+            Tag t=null;
+            if(c.moveToFirst()) t=cursorToTag(c);
             c.close();
             return t;
         }
@@ -434,7 +436,50 @@ public class Queries{
             return tags;
         }
     }
-    static class BridgeTable{
+    public static class BookmarkTable{
+        static final String TABLE_NAME="Bookmark";
+        public static final String DROP_TABLE= "DROP TABLE IF EXISTS "+ TABLE_NAME;
+        static final String URL ="url";
+        static final String PAGE="page";
+        static final String TYPE="type";
+        static final String TAG_ID="tagId";
+        static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `Bookmark`(`url` TEXT NOT NULL UNIQUE,`page` INT NOT NULL,`type` INT NOT NULL,`tagId` INT NOT NULL);";
+
+        public static void deleteBookmark(SQLiteDatabase db,String url){
+            Log.d(Global.LOGTAG,"Deleted: "+ db.delete(TABLE_NAME,URL+"=?",new String[]{url}));
+        }
+        public static void addBookmark(SQLiteDatabase db, InspectorV3 inspector){
+            Tag tag=inspector.getTag();
+            ContentValues values=new ContentValues(4);
+            values.put(URL,inspector.getUrl());
+            values.put(PAGE,inspector.getPage());
+            values.put(TYPE,inspector.getRequestType().ordinal());
+            values.put(TAG_ID,tag==null?0:tag.getId());
+            Log.d(Global.LOGTAG,"ADDED: "+inspector.getUrl());
+            db.insertWithOnConflict(TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_IGNORE);
+        }
+        public static List<Bookmark>getBookmarks(SQLiteDatabase db){
+            String query="SELECT * FROM "+TABLE_NAME;
+            Cursor cursor=db.rawQuery(query,null);
+            List<Bookmark>bookmarks=new ArrayList<>(cursor.getCount());
+            Bookmark b;
+            Log.d(Global.LOGTAG,"This url has "+cursor.getCount());
+            if(cursor.moveToFirst()){
+                do{
+                    b=new Bookmark(
+                            cursor.getString(cursor.getColumnIndex(URL)),
+                            cursor.getInt(cursor.getColumnIndex(PAGE)),
+                            ApiRequestType.values()[cursor.getInt(cursor.getColumnIndex(TYPE))],
+                            cursor.getInt(cursor.getColumnIndex(TAG_ID))
+                            );
+                    bookmarks.add(b);
+                }while (cursor.moveToNext());
+            }
+            cursor.close();
+            return bookmarks;
+        }
+    }
+    static class GalleryBridgeTable {
         static final String TABLE_NAME="GalleryTags";
         public static final String DROP_TABLE= "DROP TABLE IF EXISTS "+ TABLE_NAME;
         static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `GalleryTags` (`id_gallery` INT NOT NULL , `id_tag` INT NOT NULL ,PRIMARY KEY (`id_gallery`, `id_tag`), FOREIGN KEY(`id_gallery`) REFERENCES `Gallery`(`idGallery`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`id_tag`) REFERENCES `Tags`(`idTag`) ON UPDATE CASCADE ON DELETE RESTRICT );";
@@ -467,7 +512,7 @@ public class Queries{
             return array;
         }
         private static Tag[] getTagsForGallery(SQLiteDatabase db,int id,TagType type){
-            /*String query="SELECT "+normalizeName(ID_TAG)+" FROM "+normalizeName(TABLE_NAME)+","+normalizeName(TagTable.TABLE_NAME)+
+            /*String url="SELECT "+normalizeName(ID_TAG)+" FROM "+normalizeName(TABLE_NAME)+","+normalizeName(TagTable.TABLE_NAME)+
                     " WHERE "+normalizeName(TABLE_NAME)+"."+normalizeName(ID_GALLERY)+"="+normalizeName(TagTable.TABLE_NAME)+"."+normalizeName(TagTable.IDTAG)+" AND "+
                     normalizeName(TABLE_NAME)+"."+normalizeName(ID_GALLERY)+"=? AND "+
                     normalizeName(TagTable.TABLE_NAME)+"."+normalizeName(TagTable.TYPE)+"=?";*/

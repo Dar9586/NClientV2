@@ -21,20 +21,20 @@ public class FavoriteActivity extends BaseActivity {
         Global.loadTheme(this);
 
         setContentView(R.layout.app_bar_main);
-        Toolbar toolbar=findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setTitle(R.string.favorite_manga);
-        recycler=findViewById(R.id.recycler);
-        refresher=findViewById(R.id.refresher);
+        recycler = findViewById(R.id.recycler);
+        refresher = findViewById(R.id.refresher);
         refresher.setRefreshing(true);
-        final FavoriteAdapter adapter=new FavoriteAdapter(this,false);
+        final FavoriteAdapter adapter = new FavoriteAdapter(this, false);
 
         findViewById(R.id.page_switcher).setVisibility(View.GONE);
 
         refresher.setOnRefreshListener(adapter::forceReload);
-        changeLayout(getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE);
+        changeLayout(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
         recycler.setAdapter(adapter);
 
 
@@ -53,7 +53,8 @@ public class FavoriteActivity extends BaseActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         menu.findItem(R.id.by_popular).setVisible(false);
         menu.findItem(R.id.only_language).setVisible(false);
-        final androidx.appcompat.widget.SearchView searchView=(androidx.appcompat.widget.SearchView)menu.findItem(R.id.search).getActionView();
+        menu.findItem(R.id.add_bookmark).setVisible(false);
+        final androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -62,20 +63,22 @@ public class FavoriteActivity extends BaseActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(recycler.getAdapter()!=null)((FavoriteAdapter)recycler.getAdapter()).getFilter().filter(newText);
+                if (recycler.getAdapter() != null)
+                    ((FavoriteAdapter) recycler.getAdapter()).getFilter().filter(newText);
                 return true;
             }
         });
         Global.setTint(menu.findItem(R.id.open_browser).getIcon());
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent i;
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.open_browser:
-                i=new Intent(Intent.ACTION_VIEW, Uri.parse("https://nhentai.net/favorites/"));
+                i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://nhentai.net/favorites/"));
                 startActivity(i);
         }
         return super.onOptionsItemSelected(item);

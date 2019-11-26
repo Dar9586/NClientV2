@@ -12,7 +12,7 @@ import com.dar.nclientv2.settings.Global;
 
 @SuppressWarnings("deprecation")
 public class DatabaseHelper extends SQLiteOpenHelper{
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     private static final String DATABASE_NAME = "Entries.db";
     public DatabaseHelper(Context context){
         super(context,DATABASE_NAME,null,DATABASE_VERSION);
@@ -22,7 +22,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db){
         db.execSQL(Queries.GalleryTable.CREATE_TABLE);
         db.execSQL(Queries.TagTable.CREATE_TABLE);
-        db.execSQL(Queries.BridgeTable.CREATE_TABLE);
+        db.execSQL(Queries.GalleryBridgeTable.CREATE_TABLE);
+        db.execSQL(Queries.BookmarkTable.CREATE_TABLE);
         createLanguageTags(db);
         //Queries.DebugDatabase.dumpDatabase(db);
     }
@@ -50,6 +51,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
         if(oldVersion==2)createLanguageTags(db);
         if(oldVersion<=3)createCategoryTags(db);
+        if(oldVersion<=4)db.execSQL(Queries.BookmarkTable.CREATE_TABLE);
     }
 
     @Override
@@ -57,5 +59,4 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         Log.d(Global.LOGTAG,"Downgrading database from "+oldVersion+" to "+newVersion);
         onCreate(db);
     }
-
 }

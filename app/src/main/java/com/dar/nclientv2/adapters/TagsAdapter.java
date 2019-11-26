@@ -178,7 +178,6 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
                     @Override
                     public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                         String s=response.body().string();
-                        Log.d(Global.LOGTAG,"Response: "+s);
                         if(s.equals("{\"status\": \"ok\"}")) {
                             if (add) Login.addOnlineTag(tag);
                             else Login.removeOnlineTag(tag);

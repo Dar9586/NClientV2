@@ -245,6 +245,10 @@
     <string name="download_update_failed">Unable to download updated version</string>
     <string name="copyURL">Copy URL</string>
     <string name="favorite">Favorite</string>
+    <string name="add_bookmark">Add bookmark</string>
+    <string name="manage_bookmarks">Manage bookmarks</string>
+    <string name="bookmark_page_format">Page %d</string>
+    <string name="bookmark_description">Bookmark description</string>
 
 
     <string-array name="theme">

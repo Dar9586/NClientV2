@@ -8,6 +8,8 @@
     <include layout="@layout/content_main" />
     <com.google.android.material.appbar.AppBarLayout
         app:title="@string/app_name"
+        android:id="@+id/toolbar_appbar"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
@@ -15,7 +17,7 @@
             android:id="@+id/toolbar"
             app:title="@string/app_name"
             android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
             />
     </com.google.android.material.appbar.AppBarLayout>
 

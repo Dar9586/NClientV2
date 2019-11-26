@@ -52,7 +52,7 @@ import java.util.Set;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private enum MainStatus{UNKNOWN,NORMAL,TAG,FAVORITE,SEARCH}
+    private enum MainStatus{UNKNOWN,NORMAL,TAG,FAVORITE,SEARCH,BOOKMARK}
     private InspectorV3 inspector=null;
     private NavigationView navigationView;
     private static boolean firstTime=true;
@@ -100,7 +100,10 @@ public class MainActivity extends BaseActivity
             Intent intent=new Intent(MainActivity.this, GalleryActivity.class);
             Log.d(Global.LOGTAG,galleries.get(0).toString());
             intent.putExtra(getPackageName()+".GALLERY",galleries.get(0));
-            runOnUiThread(()->startActivity(intent));
+            runOnUiThread(()->{
+                startActivity(intent);
+                finish();
+            });
         }
         @Override
         public void onStart() {
@@ -126,11 +129,7 @@ public class MainActivity extends BaseActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setTitle(R.string.app_name);
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+
         Uri data=getIntent().getData();
         if(getIntent().getBooleanExtra(getPackageName()+".ISBYTAG",false)){//TAG FROM OTHER ACTIVITY
             Tag t=getIntent().getParcelableExtra(getPackageName()+".TAG");
@@ -138,6 +137,16 @@ public class MainActivity extends BaseActivity
             status=MainStatus.TAG;
         }else if(getIntent().getBooleanExtra(getPackageName()+".SEARCHSTART",false)){//Search
             String query=getIntent().getStringExtra(getPackageName()+".QUERY");
+
+            try {
+                int id=Integer.parseInt(query);
+                if(id>0&&id<=Global.getMaxId()){
+                    InspectorV3.galleryInspector(this, id, startGallery );
+                    finish();
+                    return;
+                }
+            }catch (NumberFormatException ignore){}
+
             if(query!=null)query=query.trim();
             boolean advanced=getIntent().getBooleanExtra(getPackageName()+".ADVANCED",false);
             HashSet<Tag>tags=null;
@@ -150,6 +159,15 @@ public class MainActivity extends BaseActivity
         } else if(getIntent().getBooleanExtra(getPackageName()+".FAVORITE",false)){//Online favorite
             inspector=InspectorV3.favoriteInspector(this,null,1,resetDataset);
             status=MainStatus.FAVORITE;
+        } else if(getIntent().getBooleanExtra(getPackageName()+".BYBOOKMARK",false)){//Bookmark
+            inspector=getIntent().getParcelableExtra(getPackageName()+".INSPECTOR");
+            inspector.initialize(this,resetDataset);
+            status=MainStatus.BOOKMARK;
+            switch (inspector.getRequestType()){
+                case BYTAG:status=MainStatus.TAG;break;
+                case BYALL:status=MainStatus.NORMAL;break;
+                case BYSEARCH:status=MainStatus.SEARCH;break;
+            }
         }else if(data!=null){//normal,search or tag by url
             status=manageDataStart(data);
         }else{//normal
@@ -209,12 +227,18 @@ public class MainActivity extends BaseActivity
         });
         findViewById(R.id.page_index).setOnClickListener(v -> loadDialog());
         changeLayout(getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE);
-        Bundle bundle=getIntent().getExtras();
-
 
         if(status!=MainStatus.NORMAL){
-            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-            toggle.setDrawerIndicatorEnabled(false);
+            //drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            //toggle.setDrawerIndicatorEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
+        }else{
+            DrawerLayout drawer = findViewById(R.id.drawer_layout);
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.addDrawerListener(toggle);
+            toggle.syncState();
         }
 
         switch (status){
@@ -236,6 +260,7 @@ public class MainActivity extends BaseActivity
         inspector.start();
 
     }
+
     //FIND AND INIT INSPECTOR
     private MainStatus manageDataStart(Uri data) {
         List<String>datas=data.getPathSegments();
@@ -317,7 +342,7 @@ public class MainActivity extends BaseActivity
                 case CHINESE:Global.updateOnlyLanguage(this, Language.UNKNOWN);break;
                 case UNKNOWN:Global.updateOnlyLanguage(this, null);break;
             }
-        inspector=inspector.cloneInspector(this,resetDataset);
+        inspector=InspectorV3.searchInspector(this,null,null,1,Global.isByPopular(),resetDataset);
         inspector.setPage(1);
         inspector.start();
         Global.setTint(item.getIcon());
@@ -418,6 +443,7 @@ public class MainActivity extends BaseActivity
         }
         Global.setTint(menu.findItem(R.id.open_browser).getIcon());
         Global.setTint(menu.findItem(R.id.by_popular).getIcon());
+        Global.setTint(menu.findItem(R.id.add_bookmark).getIcon());
         if(status!=MainStatus.FAVORITE)menu.findItem(R.id.search).setActionView(null);
         else{
             ((SearchView)menu.findItem(R.id.search).getActionView()).setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -482,6 +508,9 @@ public class MainActivity extends BaseActivity
                     startActivity(i);
                 }
                 break;
+            case R.id.add_bookmark:
+                Queries.BookmarkTable.addBookmark(Database.getDatabase(),inspector);
+                break;
             case R.id.tag_manager:
                 TagStatus ts=TagV2.updateStatus(inspector.getTag());
                 switch (ts){
@@ -490,6 +519,9 @@ public class MainActivity extends BaseActivity
                     case ACCEPTED:item.setIcon(R.drawable.ic_check);break;
                 }
                 Global.setTint(item.getIcon());
+                break;
+            case android.R.id.home:
+                finish();
                 break;
         }
 
@@ -546,6 +578,10 @@ public class MainActivity extends BaseActivity
                     intent = new Intent(this, LoginActivity.class);
                     startActivity(intent);
                 }
+                break;
+            case R.id.bookmarks:
+                intent=new Intent(this,BookmarkActivity.class);
+                startActivity(intent);
                 break;
             case R.id.favorite_manager:
                 intent=new Intent(this,FavoriteActivity.class);

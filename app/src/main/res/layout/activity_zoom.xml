@@ -7,6 +7,7 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
+        app:elevation="2dp"
         android:id="@+id/appbar"
         android:paddingTop="@dimen/status_bar_height"
         android:background="?attr/colorPrimary"
@@ -15,7 +16,7 @@
         android:layout_width="match_parent">
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
-                android:layout_height="?android:attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
                 android:layout_width="match_parent"/>
     </com.google.android.material.appbar.AppBarLayout>
 

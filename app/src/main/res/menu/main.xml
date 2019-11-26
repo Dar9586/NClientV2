@@ -26,4 +26,9 @@
         android:icon="@drawable/ic_world"
         android:title="@string/open_in_browser"
         app:showAsAction="ifRoom|collapseActionView" />
+    <item
+        android:id="@+id/add_bookmark"
+        android:icon="@drawable/ic_bookmark_border"
+        android:title="@string/add_bookmark"
+        app:showAsAction="ifRoom|collapseActionView" />
 </menu>

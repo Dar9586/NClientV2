@@ -105,7 +105,7 @@ public class SearchActivity extends AppCompatActivity {
                 i.putExtra(getPackageName()+".ADVANCED",advanced);
                 if(advanced){
                     ArrayList<Tag>tt=new ArrayList<>(tags.size());
-                    for(ChipTag t:tags)tt.add(t.getTag());
+                    for(ChipTag t:tags)if(t.getTag().getStatus()==TagStatus.ACCEPTED)tt.add(t.getTag());
                     i.putParcelableArrayListExtra(getPackageName()+".TAGS",tt);
                 }
                 startActivity(i);

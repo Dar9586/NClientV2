@@ -2,6 +2,8 @@ package com.dar.nclientv2.api;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -25,6 +27,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,7 +35,51 @@ import java.util.Set;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class InspectorV3 extends Thread{
+public class InspectorV3 extends Thread implements Parcelable {
+    protected InspectorV3(Parcel in) {
+        byPopular = in.readByte() != 0;
+        custom = in.readByte() != 0;
+        page = in.readInt();
+        pageCount = in.readInt();
+        id = in.readInt();
+        query = in.readString();
+        url = in.readString();
+        requestType=ApiRequestType.values()[in.readByte()];
+        galleries = in.createTypedArrayList(Gallery.CREATOR);
+        tags =new HashSet<>(in.createTypedArrayList(Tag.CREATOR));
+    }
+
+    public static final Creator<InspectorV3> CREATOR = new Creator<InspectorV3>() {
+        @Override
+        public InspectorV3 createFromParcel(Parcel in) {
+            return new InspectorV3(in);
+        }
+
+        @Override
+        public InspectorV3[] newArray(int size) {
+            return new InspectorV3[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte((byte) (byPopular ? 1 : 0));
+        dest.writeByte((byte) (custom ? 1 : 0));
+        dest.writeInt(page);
+        dest.writeInt(pageCount);
+        dest.writeInt(id);
+        dest.writeString(query);
+        dest.writeString(url);
+        dest.writeByte((byte) requestType.ordinal());
+        dest.writeTypedList(galleries);
+        dest.writeTypedList(new ArrayList<>(tags));
+    }
+
     public interface InspectorResponse{
         void onSuccess(List<Gallery>galleries);
         void onFailure(Exception e);
@@ -54,10 +101,13 @@ public class InspectorV3 extends Thread{
     private ApiRequestType requestType;
     private Set<Tag> tags;
     private List<Gallery> galleries=null;
-    private final InspectorResponse response;
-    private final WeakReference<Context> context;
+    private InspectorResponse response;
+    private WeakReference<Context> context;
 
     private InspectorV3(Context context,InspectorResponse response){
+        initialize(context, response);
+    }
+    public void initialize(Context context,InspectorResponse response){
         this.response=response;
         this.context=new WeakReference<>(context);
     }
@@ -95,10 +145,10 @@ public class InspectorV3 extends Thread{
         return inspector;
     }
 
-    public static InspectorV3 searchInspector(Context context,String query,Set<Tag>tags,int page,boolean byPopular,InspectorResponse response){
+    public static InspectorV3 searchInspector(Context context, String query, Collection<Tag> tags, int page, boolean byPopular, InspectorResponse response){
         InspectorV3 inspector=new InspectorV3(context,response);
         inspector.custom=tags!=null;
-        inspector.tags=inspector.custom?tags:getDefaultTags();
+        inspector.tags=inspector.custom?new HashSet<>(tags):getDefaultTags();
         inspector.tags.addAll(getLanguageTags(Global.getOnlyLanguage()));
         inspector.page=page;
         inspector.pageCount=0;
@@ -125,7 +175,7 @@ public class InspectorV3 extends Thread{
         StringBuilder builder=new StringBuilder("https://nhentai.net/");
         switch (requestType){
             case BYALL:
-                if(page>1)builder.append("?page=").append(page);
+                builder.append("?page=").append(page);
                 break;
             case BYSINGLE:
                 builder.append("g/").append(id);
@@ -134,7 +184,7 @@ public class InspectorV3 extends Thread{
                 builder.append("favorites/");
                 if(query!=null&&query.length()>0)builder.append("?q=").append(query).append('&');
                 else builder.append('?');
-                if(page>1)builder.append("page=").append(page);
+                builder.append("page=").append(page);
                 break;
             case BYTAG:
                 for(Tag tt:tags)t=tt;
@@ -142,19 +192,26 @@ public class InspectorV3 extends Thread{
                         .append(t.getName().replace(' ','-'));
                 if(byPopular)builder.append("/popular");
                 else builder.append('/');
-                if(page>1)builder.append("?page=").append(page);
+                builder.append("?page=").append(page);
                 break;
             case BYSEARCH:
                 builder.append("search/?q=").append(query);
-                for(Tag tt:tags)builder.append('+').append(tt.toQueryTag());
-                if(page>1)builder.append("&page=").append(page);
+                for(Tag tt:tags){
+                    if(builder.toString().contains(tt.toQueryTag(TagStatus.ACCEPTED)))continue;
+                    builder.append('+').append(tt.toQueryTag());
+                }
+                builder.append("&page=").append(page);
                 if(byPopular)builder.append("&sort=popular");
                 break;
 
         }
         url=builder.toString().replace(' ','+');
+        Log.d(Global.LOGTAG,"WWW: "+getBookmarkURL());
     }
-
+    private String getBookmarkURL(){
+        if(page<2)return url;
+        else return url.substring(0,url.lastIndexOf('=')+1);
+    }
 
     @NonNull
     public static Set<Tag> getDefaultTags(){
