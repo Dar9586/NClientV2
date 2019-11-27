@@ -95,7 +95,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
                     case CHINESE:  holder.flag.setText("\uD83C\uDDE8\uD83C\uDDF3");break;
                     case ENGLISH:  holder.flag.setText("\uD83C\uDDEC\uD83C\uDDE7");break;
                     case JAPANESE: holder.flag.setText("\uD83C\uDDEF\uD83C\uDDF5");break;
-                    case UNKNOWN:  holder.flag.setText("\uD83C\uDFF3");
+                    case UNKNOWN:  holder.flag.setText("\uD83C\uDFF3");break;
                 }
             }else holder.flag.setVisibility(View.GONE);
             holder.title.setOnClickListener(v -> {

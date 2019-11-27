@@ -2,8 +2,6 @@
 *.apk
 .gradle
 /local.properties
-/gradle
-gradlew*
 /.idea
 output.json
 .DS_Store
@@ -14,3 +12,4 @@ output.json
 /app/debug
 /app/schemas
 .externalNativeBuild
+

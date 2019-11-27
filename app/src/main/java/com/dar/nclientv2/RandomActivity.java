@@ -37,6 +37,7 @@ public class RandomActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setTitle(R.string.random_manga);
         FloatingActionButton shuffle = findViewById(R.id.shuffle);
         censor=findViewById(R.id.censor);
         language=findViewById(R.id.language);
