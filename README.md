@@ -17,10 +17,14 @@ Releases: https://github.com/Dar9586/NClientV2/releases
   - Add / Remove favorite from account
   - Bookmark
 # App Screen
-![Main page](https://raw.githubusercontent.com/Dar9586/NClientV2/master/readme/images/img1.jpg)
-![Lateral menu](https://raw.githubusercontent.com/Dar9586/NClientV2/master/readme/images/img2.jpg)
-![Search](https://raw.githubusercontent.com/Dar9586/NClientV2/master/readme/images/img3.jpg)
-![Random manga](https://raw.githubusercontent.com/Dar9586/NClientV2/master/readme/images/img4.jpg)
+<p>
+  <img src="https://raw.githubusercontent.com/Dar9586/NClientV2/master/readme/images/img1.jpg" alt="Main page" width="360" height="650">
+  <img src="https://raw.githubusercontent.com/Dar9586/NClientV2/master/readme/images/img2.jpg" alt="Lateral menu" width="360" height="650">
+</p>
+<p>
+  <img src="https://raw.githubusercontent.com/Dar9586/NClientV2/master/readme/images/img3.jpg" alt="Search" width="360" height="650">
+  <img src="https://raw.githubusercontent.com/Dar9586/NClientV2/master/readme/images/img4.jpg" alt="Random manga" width="360" height="650">
+</p>
 
 ## License
 ```
