@@ -182,7 +182,9 @@
     <string name="show_related">Show related galleries</string>
     <string name="random_manga">Random manga</string>
     <string name="save_page">Save page</string>
-    <string name="page_count_format" formatted="true">%d Pages</string>
+    <string name="page_count_format" formatted="true">%d pages</string>
+    <string name="upload_date_format" formatted="true">Uploaded on %s</string>
+    <string name="favorite_count_format" formatted="true">%d favorites</string>
     <string name="favorite_manga">Favorite manga</string>
     <string name="key_remove_ignored">remove_ignored</string>
     <string name="setting_on_remove_ignored">The galleries with ignored tags will not be shown</string>

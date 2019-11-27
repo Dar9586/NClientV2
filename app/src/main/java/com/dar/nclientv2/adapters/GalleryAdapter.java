@@ -27,11 +27,12 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
     public enum Type{TAG,PAGE,RELATED}
-
+    private static final SimpleDateFormat DATE_FORMAT=new SimpleDateFormat("DD-MM-YYYY",Locale.US);
     public Type positionToType(int pos){
         if(!gallery.isLocal()){
             if(pos == 0) return Type.TAG;
@@ -125,7 +126,17 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                     });
                     cg.addView(c);
                 }
+                addInfoLayout(holder,gallery);
             }
+    }
+
+    private void addInfoLayout(ViewHolder holder, Gallery gallery) {
+        TextView text=holder.master.findViewById(R.id.page_count);
+        text.setText(context.getString(R.string.page_count_format, gallery.getPageCount()));
+        text=holder.master.findViewById(R.id.upload_date);
+        text.setText(context.getString(R.string.upload_date_format, android.text.format.DateFormat.getDateFormat(context).format(gallery.getUploadDate())));
+        text=holder.master.findViewById(R.id.favorite_count);
+        text.setText(context.getString(R.string.favorite_count_format, gallery.getFavoriteCount()));
     }
 
     private void loadPageLayout(ViewHolder holder){

@@ -12,4 +12,5 @@
     <include layout="@layout/sub_tag_layout"/>
     <include layout="@layout/sub_tag_layout"/>
     <include layout="@layout/sub_tag_layout"/>
+    <include layout="@layout/info_layout"/>
 </LinearLayout>
