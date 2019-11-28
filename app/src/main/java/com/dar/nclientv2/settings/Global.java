@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -85,7 +86,7 @@ public class Global {
     public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf";
     private static Language onlyLanguage=null;
     private static TitleType titleType;
-    private static boolean byPopular,keepHistory,loadImages,highRes,onlyTag,infiniteScroll, removeAvoidedGalleries;
+    private static boolean byPopular,keepHistory,loadImages,highRes,onlyTag,infiniteScroll, removeAvoidedGalleries,useRtl;
     private static ThemeScheme theme;
     private static int notificationId,columnCount,maxId,galleryWidth=-1, galleryHeight =-1;
 
@@ -107,7 +108,7 @@ public class Global {
     }
 
 
-    public static void initTitleType(@NonNull Context context){
+    private static void initTitleType(@NonNull Context context){
         String s=context.getSharedPreferences("Settings", 0).getString(context.getString(R.string.key_title_type),"pretty");
         switch (s){
             case "pretty":titleType= TitleType.PRETTY;break;
@@ -115,18 +116,33 @@ public class Global {
             case "japanese":titleType=  TitleType.JAPANESE;break;
         }
     }
-    public static void     initByPopular             (@NonNull Context context){byPopular=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_by_popular),false);}
-    public static void     initKeepHistory           (@NonNull Context context){keepHistory=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_keep_history),true);}
-    public static void     initInfiniteScroll        (@NonNull Context context){infiniteScroll=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_infinite_scroll),false);}
-    public static void     initHighRes               (@NonNull Context context){highRes=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_high_res_gallery),true);}
-    public static void     initRemoveAvoidedGalleries(@NonNull Context context){removeAvoidedGalleries =context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_remove_ignored),true);}
-    public static void     initOnlyTag               (@NonNull Context context){onlyTag=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_ignore_tags),true);}
-    public static boolean  initLoadImages            (@NonNull Context context){loadImages=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_load_images),true);return loadImages;}
-    public static void     initOnlyLanguage          (@NonNull Context context){int x=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_only_language),-1);onlyLanguage=x==-1?null:Language.values()[x];}
-    public static void     initColumnCount           (@NonNull Context context){columnCount=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_column_count),2);}
-    public static void     initMaxId                 (@NonNull Context context){maxId=context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_max_id),291738);}
 
-    public static void initHttpClient(@NonNull Context context){
+    public static void initFromShared(@NonNull Context context){
+        SharedPreferences shared=context.getSharedPreferences("Settings", 0);
+        initHttpClient(context);
+        initTitleType(context);
+        initTheme(context);
+        loadNotificationChannel(context);
+        Login.initUseAccountTag(context);
+
+        useRtl=     shared.getBoolean(context.getString(R.string.key_use_rtl),false);
+        byPopular=  shared.getBoolean(context.getString(R.string.key_by_popular),false);
+        keepHistory=shared.getBoolean(context.getString(R.string.key_keep_history),true);
+        infiniteScroll=shared.getBoolean(context.getString(R.string.key_infinite_scroll),false);
+        highRes=shared.getBoolean(context.getString(R.string.key_high_res_gallery),true);
+        removeAvoidedGalleries =shared.getBoolean(context.getString(R.string.key_remove_ignored),true);
+        onlyTag=shared.getBoolean(context.getString(R.string.key_ignore_tags),true);
+        loadImages=shared.getBoolean(context.getString(R.string.key_load_images),true);
+        columnCount=shared.getInt(context.getString(R.string.key_column_count),2);
+        maxId=shared.getInt(context.getString(R.string.key_max_id),291738);
+        int x=shared.getInt(context.getString(R.string.key_only_language),-1);
+        onlyLanguage=x==-1?null:Language.values()[x];
+
+    }
+
+
+
+    private static void initHttpClient(@NonNull Context context){
         if(client!=null)return;
         OkHttpClient.Builder builder=new OkHttpClient.Builder()
                 .cookieJar(new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context.getSharedPreferences("Login",0))));
@@ -180,6 +196,10 @@ public class Global {
 
     public static boolean isKeepHistory() {
         return keepHistory;
+    }
+
+    public static boolean useRtl() {
+        return useRtl;
     }
 
     public static boolean isByPopular() {
@@ -250,7 +270,7 @@ public class Global {
         DrawableCompat.setTint(drawable,theme== ThemeScheme.LIGHT?Color.BLACK:Color.WHITE);
     }
 
-    public static void loadNotificationChannel(@NonNull Context context){
+    private static void loadNotificationChannel(@NonNull Context context){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel1 = new NotificationChannel(CHANNEL_ID1, context.getString(R.string.channel1_name), NotificationManager.IMPORTANCE_DEFAULT);
             NotificationChannel channel2 = new NotificationChannel(CHANNEL_ID2, context.getString(R.string.channel2_name), NotificationManager.IMPORTANCE_DEFAULT);

@@ -51,6 +51,7 @@ public class GalleryActivity extends BaseActivity{
         refresher=findViewById(R.id.refresher);
         gallery= getIntent().getParcelableExtra(getPackageName()+".GALLERY");
         Log.d(Global.LOGTAG,""+gallery);
+        if(Global.useRtl())recycler.setRotationY(180);
         if(getIntent().getBooleanExtra(getPackageName()+".INSTANTDOWNLOAD",false))downloadGallery();
         isLocal=getIntent().getBooleanExtra(getPackageName()+".ISLOCAL",false);
         int zoom=getIntent().getIntExtra(getPackageName()+".ZOOM",0);

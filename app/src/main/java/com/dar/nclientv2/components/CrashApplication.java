@@ -37,25 +37,13 @@ public class CrashApplication extends Application{
         Database.setDatabase(new DatabaseHelper(getApplicationContext()).getWritableDatabase());
         Global.loadTheme(this);
         Global.initStorage(this);
-        Global.initHttpClient(this);
-        Global.initRemoveAvoidedGalleries(this);
-        Global.initHighRes(this);
-        Global.initOnlyTag(this);
-        Global.initByPopular(this);
-        Global.initLoadImages(this);
-        Global.initOnlyLanguage(this);
-        Global.initMaxId(this);
-        Global.initKeepHistory(this);
-        Global.initInfiniteScroll(this);
-        Global.initTitleType(this);
+        Global.initFromShared(this);
+
         Favorites.countFavorite();
+
         TagV2.initMinCount(this);
         TagV2.initSortByName(this);
-        Global.loadNotificationChannel(this);
-        Global.initColumnCount(this);
-        Global.initLoadImages(this);
 
-        com.dar.nclientv2.settings.Login.initUseAccountTag(this);
         String version=Global.getLastVersion(this),actualVersion=Global.getVersionName(this);
         fixUpdateFolder();
         switch (version){//must execute all in order, no break required, for now

@@ -413,7 +413,7 @@ public class MainActivity extends BaseActivity
         loadStringLogin();
         if(com.dar.nclientv2.settings.Login.isLogged())navigationView.getMenu().findItem(R.id.online_favorite_manager).setVisible(true);
         if(setting!=null){
-            Global.initHighRes(this);Global.initOnlyTag(this);Global.initInfiniteScroll(this);Global.initRemoveAvoidedGalleries(this);
+            Global.initFromShared(this);
             inspector=inspector.cloneInspector(this,resetDataset);
             inspector.start();
             if(Global.isInfiniteScroll())hidePageSwitcher();

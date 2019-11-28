@@ -31,6 +31,12 @@
         android:summaryOn="@string/setting_on_high_res"
         android:summaryOff="@string/setting_off_high_res"
         android:title="@string/high_res_gallery" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/key_use_rtl"
+            android:summaryOn="@string/setting_on_use_rtl"
+            android:summaryOff="@string/setting_off_use_rtl"
+            android:title="@string/enable_right_to_left" />
     </PreferenceCategory>
 
     <PreferenceCategory

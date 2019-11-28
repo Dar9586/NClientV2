@@ -251,6 +251,10 @@
     <string name="manage_bookmarks">Manage bookmarks</string>
     <string name="bookmark_page_format">Page %d</string>
     <string name="bookmark_description">Bookmark description</string>
+    <string name="enable_right_to_left">Enable right to left</string>
+    <string name="setting_on_use_rtl">Images will be shown right to left</string>
+    <string name="setting_off_use_rtl">Images will be shown left to right</string>
+    <string name="key_use_rtl">use_rtl</string>
 
 
     <string-array name="theme">

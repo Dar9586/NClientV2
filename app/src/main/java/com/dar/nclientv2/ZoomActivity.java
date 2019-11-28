@@ -86,6 +86,7 @@ public class ZoomActivity extends AppCompatActivity {
                         | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager = findViewById(R.id.container);
+        if(Global.useRtl())mViewPager.setRotationY(180);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         pageSwitcher =findViewById(R.id.page_switcher);
         pageManager=findViewById(R.id.pages);
@@ -113,6 +114,7 @@ public class ZoomActivity extends AppCompatActivity {
         final int page=getIntent().getExtras().getInt(getPackageName()+".PAGE",0);
 
         seekBar.setMax(gallery.getPageCount()-1);
+        if(Global.useRtl())seekBar.setRotationY(180);
         changePage(page);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -163,6 +165,7 @@ public class ZoomActivity extends AppCompatActivity {
         Toast.makeText(this, side?R.string.next_page_volume_up:R.string.next_page_volume_down, Toast.LENGTH_SHORT).show();
     }
     private void changeClosePage(boolean next){
+        if(Global.useRtl())next=!next;
         if(next&&mViewPager.getCurrentItem()<(mViewPager.getAdapter().getCount()-1))changePage(mViewPager.getCurrentItem()+1);
         if(!next&&mViewPager.getCurrentItem()>0)changePage(mViewPager.getCurrentItem()-1);
     }
@@ -276,8 +279,8 @@ public class ZoomActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             activity =(ZoomActivity)getActivity();
             View rootView = inflater.inflate(R.layout.fragment_zoom, container, false);
-            photoView =  rootView.findViewById(R.id.image);
-
+            photoView = rootView.findViewById(R.id.image);
+            if(Global.useRtl())photoView.setRotationY(180);
             photoView.setOnMatrixChangeListener(rect -> photoView.setAllowParentInterceptOnEdge(photoView.getScale()<=1f));
             photoView.setOnClickListener(v -> {
 
@@ -331,6 +334,7 @@ public class ZoomActivity extends AppCompatActivity {
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
         public SectionsPagerAdapter(@NonNull FragmentManager fm) {
             super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+
         }
 
         @Override
