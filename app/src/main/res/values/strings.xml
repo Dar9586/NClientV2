@@ -1,30 +1,30 @@
 <resources>
     <!--KEYS-->
-    <string name="key_title_type">title_type_str</string>
-    <string name="key_by_popular">is_by_popular</string>
-    <string name="key_load_images">load_images</string>
-    <string name="key_column_count">column_count</string>
-    <string name="key_only_language">only_language</string>
-    <string name="key_scraped_characters">scraped_characters</string>
-    <string name="key_image_quality">image_quality</string>
-    <string name="key_scraped_artists">scraped_artists</string>
-    <string name="key_scraped_tags">scraped_tags</string>
-    <string name="key_scraped_parodies">scraped_parodies</string>
-    <string name="key_scraped_group">scraped_group</string>
-    <string name="key_accepted_tags">accepted_tags</string>
-    <string name="key_tag_order">tag_order</string>
-    <string name="key_avoided_tags">avoided_tags</string>
-    <string name="key_min_tag_count">min_tag_count</string>
-    <string name="key_theme_select">theme_select</string>
-    <string name="key_max_id">max_id</string>
-    <string name="key_infinite_scroll">infinite_scroll</string>
-    <string name="key_cache">cache</string>
-    <string name="key_hide_saved_images">hide_saved</string>
-    <string name="key_ignore_tags">ignore_tags</string>
-    <string name="key_high_res_gallery">high_res_gallery</string>
-    <string name="key_favorite_list">favorite_list</string>
-    <string name="key_use_account_tag">use_account_tags</string>
-    <string name="key_send_report">send_report</string>
+    <string translatable="false" name="key_title_type">title_type_str</string>
+    <string translatable="false" name="key_by_popular">is_by_popular</string>
+    <string translatable="false" name="key_load_images">load_images</string>
+    <string translatable="false" name="key_column_count">column_count</string>
+    <string translatable="false" name="key_only_language">only_language</string>
+    <string translatable="false" name="key_scraped_characters">scraped_characters</string>
+    <string translatable="false" name="key_image_quality">image_quality</string>
+    <string translatable="false" name="key_scraped_artists">scraped_artists</string>
+    <string translatable="false" name="key_scraped_tags">scraped_tags</string>
+    <string translatable="false" name="key_scraped_parodies">scraped_parodies</string>
+    <string translatable="false" name="key_scraped_group">scraped_group</string>
+    <string translatable="false" name="key_accepted_tags">accepted_tags</string>
+    <string translatable="false" name="key_tag_order">tag_order</string>
+    <string translatable="false" name="key_avoided_tags">avoided_tags</string>
+    <string translatable="false" name="key_min_tag_count">min_tag_count</string>
+    <string translatable="false" name="key_theme_select">theme_select</string>
+    <string translatable="false" name="key_max_id">max_id</string>
+    <string translatable="false" name="key_infinite_scroll">infinite_scroll</string>
+    <string translatable="false" name="key_cache">cache</string>
+    <string translatable="false" name="key_hide_saved_images">hide_saved</string>
+    <string translatable="false" name="key_ignore_tags">ignore_tags</string>
+    <string translatable="false" name="key_high_res_gallery">high_res_gallery</string>
+    <string translatable="false" name="key_favorite_list">favorite_list</string>
+    <string translatable="false" name="key_use_account_tag">use_account_tags</string>
+    <string translatable="false" name="key_send_report">send_report</string>
 
     <!--SUMMARY-->
     <string name="setting_on_hide_save">Saved images won\'t be shown into gallery</string>
@@ -117,9 +117,9 @@
     <string name="add_to_online_blacklist">Add to online blacklist?</string>
     <string name="tag_already_in_blacklist">Tag already in blacklist</string>
 
-    <string name="tag_format" formatted="true">%s (%d)</string>
-    <string name="page_format" formatted="true">%d/%d</string>
-    <string name="percentage_format" formatted="true">%d%%</string>
+    <string translatable="false" name="tag_format" formatted="true">%s (%d)</string>
+    <string translatable="false" name="page_format" formatted="true">%d/%d</string>
+    <string translatable="false" name="percentage_format" formatted="true">%d%%</string>
 
     <string name="are_you_sure">Are you sure?</string>
     <string name="thumbnail">Thumbnail</string>
@@ -163,8 +163,8 @@
     <string name="reset_tags_long">Reset all tags to default value?</string>
     <string name="reload_tags">Reload all tags?</string>
 
-    <string name="page_switcher_placeholder">0/0</string>
-    <string name="page_placeholder">999/999</string>
+    <string translatable="false" name="page_switcher_placeholder">0/0</string>
+    <string translatable="false" name="page_placeholder">999/999</string>
 
 
     <string name="share_with">Share with</string>
