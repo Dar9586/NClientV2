@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.dar.nclientv2.adapters.GalleryAdapter;
 import com.dar.nclientv2.api.InspectorV3;
@@ -37,11 +36,11 @@ import okhttp3.Response;
 public class GalleryActivity extends BaseActivity{
     @NonNull private GenericGallery gallery;
     private boolean isLocal;
-
+    private GalleryAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.loadTheme(this);
+        Global.loadThemeAndLanguage(this);
         setContentView(R.layout.activity_gallery);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -97,7 +96,8 @@ public class GalleryActivity extends BaseActivity{
     private void loadGallery(GenericGallery gall,int zoom) {
         this.gallery=gall;
         if(getSupportActionBar()!=null)getSupportActionBar().setTitle(gallery.getTitle());
-        recycler.setAdapter(new GalleryAdapter(this,gallery));
+        adapter=new GalleryAdapter(this,gallery);
+        recycler.setAdapter(adapter);
         lookup();
         if(zoom>0){
             Intent intent = new Intent(this, ZoomActivity.class);
@@ -216,13 +216,15 @@ public class GalleryActivity extends BaseActivity{
             if(increase)x=x%4+1;
             int pos=((GridLayoutManager)recycler.getLayoutManager()).findFirstVisibleItemPosition();
             Global.updateColumnCount(this,x);
-            RecyclerView.Adapter adapter=recycler.getAdapter();
+
             recycler.setLayoutManager(new GridLayoutManager(this,x));
             Log.d(Global.LOGTAG,"Span count: "+((GridLayoutManager)recycler.getLayoutManager()).getSpanCount());
             if(adapter!=null){
                 recycler.setAdapter(adapter);
                 lookup();
                 recycler.scrollToPosition(pos);
+                adapter.setImageSize(null);
+
             }
         }
 
@@ -234,6 +236,7 @@ public class GalleryActivity extends BaseActivity{
                 case 4: item.setIcon(R.drawable.ic_view_4);break;
             }
             Global.setTint(item.getIcon());
+
         }
     }
 

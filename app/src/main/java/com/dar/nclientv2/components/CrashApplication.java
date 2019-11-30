@@ -35,7 +35,7 @@ public class CrashApplication extends Application{
         super.onCreate();
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         Database.setDatabase(new DatabaseHelper(getApplicationContext()).getWritableDatabase());
-        Global.loadTheme(this);
+        Global.loadThemeAndLanguage(this);
         Global.initStorage(this);
         Global.initFromShared(this);
 
@@ -43,7 +43,7 @@ public class CrashApplication extends Application{
 
         TagV2.initMinCount(this);
         TagV2.initSortByName(this);
-
+        getSharedPreferences("Settings",0).edit().remove(getString(R.string.key_language)).commit();
         String version=Global.getLastVersion(this),actualVersion=Global.getVersionName(this);
         fixUpdateFolder();
         switch (version){//must execute all in order, no break required, for now

@@ -59,6 +59,7 @@ public class MainActivity extends BaseActivity
     public MenuItem loginItem;
     private MainStatus status=MainStatus.UNKNOWN;
     private int actualPage=1,totalPage;
+    private boolean inspecting=false;
     public void setInspector(InspectorV3 inspector) {
         this.inspector = inspector;
     }
@@ -93,6 +94,7 @@ public class MainActivity extends BaseActivity
         @Override
         public void onEnd() {
             runOnUiThread(()->refresher.setRefreshing(false));
+            inspecting=false;
         }
     },startGallery=new InspectorV3.DefaultInspectorResponse() {
         @Override
@@ -119,7 +121,7 @@ public class MainActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Global.loadTheme(this);
+        Global.loadThemeAndLanguage(this);
         if(Global.hasStoragePermission(this)){//delete older APK
             final File f=new File(Global.UPDATEFOLDER,"NClientV2_"+Global.getVersionName(this)+".apk");
             Log.d(Global.LOGTAG,f.getAbsolutePath());
@@ -196,8 +198,10 @@ public class MainActivity extends BaseActivity
                 if(Global.isInfiniteScroll()&&!refresher.isRefreshing()){
                     GridLayoutManager manager = (GridLayoutManager)recycler.getLayoutManager();
                     if(actualPage < totalPage && manager.findLastVisibleItemPosition() >= (recycler.getAdapter().getItemCount()-1-manager.getSpanCount())) {
+                        if(inspecting)return;
+                        inspecting=true;
                         inspector = inspector.cloneInspector(MainActivity.this,addDataset);
-                        inspector.setPage(actualPage+1);
+                        inspector.setPage(inspector.getPage()+1);
                         inspector.start();
                     }
 
@@ -212,7 +216,7 @@ public class MainActivity extends BaseActivity
         findViewById(R.id.prev).setOnClickListener(v -> {
             if (actualPage > 1){
                     inspector=inspector.cloneInspector(MainActivity.this,resetDataset);
-                    inspector.setPage(actualPage-1);
+                    inspector.setPage(inspector.getPage()-1);
                     inspector.start();
             }
 
@@ -220,7 +224,7 @@ public class MainActivity extends BaseActivity
         findViewById(R.id.next).setOnClickListener(v -> {
             if (actualPage < totalPage){
                 inspector=inspector.cloneInspector(MainActivity.this,resetDataset);
-                inspector.setPage(actualPage+1);
+                inspector.setPage(inspector.getPage()+1);
                 inspector.start();
             }
 
@@ -416,8 +420,10 @@ public class MainActivity extends BaseActivity
             Global.initFromShared(this);
             inspector=inspector.cloneInspector(this,resetDataset);
             inspector.start();
+            adapter.notifyDataSetChanged();
             if(Global.isInfiniteScroll())hidePageSwitcher();
             if(Global.getTheme()!=setting.theme)recreate();
+            changeLayout(getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE);
             setting=null;
         }
         invalidateOptionsMenu();

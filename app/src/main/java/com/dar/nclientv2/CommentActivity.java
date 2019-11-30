@@ -38,7 +38,7 @@ public class CommentActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.loadTheme(this);
+        Global.loadThemeAndLanguage(this);
         setContentView(R.layout.activity_comment);
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

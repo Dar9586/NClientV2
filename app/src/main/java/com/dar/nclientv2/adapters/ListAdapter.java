@@ -71,6 +71,13 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
     @Override
     public void onBindViewHolder(@NonNull final GenericAdapter.ViewHolder holder, int position) {
             final Gallery ent = mDataset.get(holder.getAdapterPosition());
+            if(!Global.showTitles()){
+                holder.title.setAlpha(0f);
+                holder.flag.setAlpha(0f);
+            }else{
+                holder.title.setAlpha(1f);
+                holder.flag.setAlpha(1f);
+            }
             if(Global.getGalleryWidth()==-1)
             holder.title.post(() -> {
                     Global.setGalleryWidth(holder.title.getMeasuredWidth());

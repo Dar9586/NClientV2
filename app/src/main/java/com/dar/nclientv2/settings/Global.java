@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -43,6 +44,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Locale;
 
 import okhttp3.OkHttpClient;
 
@@ -86,7 +88,7 @@ public class Global {
     public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf";
     private static Language onlyLanguage=null;
     private static TitleType titleType;
-    private static boolean byPopular,keepHistory,loadImages,highRes,onlyTag,infiniteScroll, removeAvoidedGalleries,useRtl;
+    private static boolean byPopular,keepHistory,fourColumn,loadImages,highRes,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
     private static ThemeScheme theme;
     private static int notificationId,columnCount,maxId,galleryWidth=-1, galleryHeight =-1;
 
@@ -134,6 +136,8 @@ public class Global {
         onlyTag=shared.getBoolean(context.getString(R.string.key_ignore_tags),true);
         loadImages=shared.getBoolean(context.getString(R.string.key_load_images),true);
         columnCount=shared.getInt(context.getString(R.string.key_column_count),2);
+        showTitles=shared.getBoolean(context.getString(R.string.key_show_titles),true);
+        fourColumn=shared.getBoolean(context.getString(R.string.key_four_column),true);
         maxId=shared.getInt(context.getString(R.string.key_max_id),291738);
         int x=shared.getInt(context.getString(R.string.key_only_language),-1);
         onlyLanguage=x==-1?null:Language.values()[x];
@@ -163,7 +167,10 @@ public class Global {
             });
         }
     }
-
+    private static Locale initLanguage(Context context){
+        String x=context.getSharedPreferences("Settings",0).getString(context.getString(R.string.key_language),"en");
+        return new Locale(x);
+    }
     private static ThemeScheme initTheme(Context context){
         String h=context.getSharedPreferences("Settings",0).getString(context.getString(R.string.key_theme_select),"dark");
         return theme=h.equals("light")?ThemeScheme.LIGHT:h.equals("dark")?ThemeScheme.DARK:ThemeScheme.BLACK;
@@ -194,12 +201,20 @@ public class Global {
         return onlyTag;
     }
 
+    public static boolean isFourColumn() {
+        return fourColumn;
+    }
+
     public static boolean isKeepHistory() {
         return keepHistory;
     }
 
     public static boolean useRtl() {
         return useRtl;
+    }
+
+    public static boolean showTitles() {
+        return showTitles;
     }
 
     public static boolean isByPopular() {
@@ -347,7 +362,14 @@ public class Global {
         return null;
     }
 
-    public static void loadTheme(Context context){
+    public static void loadThemeAndLanguage(Context context){
+
+        //Locale locale=new Locale()
+        Resources resources=context.getResources();
+        Locale locale=initLanguage(context);
+        Configuration c=new Configuration(context.getResources().getConfiguration());
+        c.locale=locale;
+        resources.updateConfiguration(c, resources.getDisplayMetrics());
         switch (initTheme(context)){
             case LIGHT:context.setTheme(R.style.LightTheme);break;
             case DARK:context.setTheme(R.style.DarkTheme);break;

@@ -183,10 +183,10 @@
     <string name="random_manga">Random manga</string>
     <string name="save_page">Save page</string>
     <string name="page_count_format" formatted="true">%d pages</string>
-    <string name="upload_date_format" formatted="true">Uploaded on %s</string>
+    <string name="upload_date_format" formatted="true">Uploaded on %s at %s</string>
     <string name="favorite_count_format" formatted="true">%d favorites</string>
     <string name="favorite_manga">Favorite manga</string>
-    <string name="key_remove_ignored">remove_ignored</string>
+    <string translatable="false" name="key_remove_ignored">remove_ignored</string>
     <string name="setting_on_remove_ignored">The galleries with ignored tags will not be shown</string>
     <string name="setting_off_remove_ignored">The galleries with ignored tags will be blurred</string>
     <string name="remove_ignored_galleries">Remove ignored galleries</string>
@@ -194,9 +194,9 @@
     <string name="clear_tag_preferences">Clear tag preferences</string>
     <string name="reload_tags_from_web">Reload tags from web</string>
     <string name="load_next_page">Load next page</string>
-    <string name="key_check_update">check_update</string>
+    <string translatable="false" name="key_check_update">check_update</string>
     <string name="check_for_update_on_startup">Check for update on startup</string>
-    <string name="key_update">update</string>
+    <string translatable="false" name="key_update">update</string>
     <string name="check_for_updates">Check for updates</string>
     <string name="no_updates_found">No updates found</string>
     <string name="error_retrieving">Error in retrieving latest version</string>
@@ -214,7 +214,7 @@
     <string name="change_title_type">Change title type</string>
     <string name="title_type_summary">Select the default title type for the galleries</string>
 
-    <string name="app_version_format" formatted="true">NClientV2 %s</string>
+    <string translatable="false" name="app_version_format" formatted="true">NClientV2 %s</string>
     <string name="search_settings">Search settings</string>
     <string name="global_settings">Global settings</string>
     <string name="images_settings">Images settings</string>
@@ -226,13 +226,13 @@
     <string name="sort_by_latest">Sort by latest</string>
     <string name="edit">Edit</string>
     <string name="options">Options</string>
-    <string name="key_keep_history">keep_history</string>
+    <string translatable="false" name="key_keep_history">keep_history</string>
     <string name="setting_on_keep_history">The searches will be stored</string>
     <string name="setting_off_keep_history">The searched will not be stored</string>
     <string name="keep_history">Keep search history</string>
     <string name="add">Add</string>
     <string name="insert_tag_name">Insert tag name:</string>
-    <string name="other">other</string>
+    <string translatable="false" name="other">other</string>
     <string name="cancelling">Cancelling…</string>
     <string name="key_favorite_limit">favorite_limit</string>
     <string name="favorite_count">Favorite count</string>
@@ -254,9 +254,28 @@
     <string name="enable_right_to_left">Enable right to left</string>
     <string name="setting_on_use_rtl">Images will be shown right to left</string>
     <string name="setting_off_use_rtl">Images will be shown left to right</string>
-    <string name="key_use_rtl">use_rtl</string>
+    <string translatable="false" name="key_use_rtl">use_rtl</string>
+    <string name="volume_change_setting">Change page with volume buttons</string>
+    <string name="popular_tag_count">The number of popular tags shown while in Advanced search</string>
+    <string name="key_show_titles">show_titles</string>
+    <string name="setting_on_show_titles">Gallery titles will be shown</string>
+    <string name="setting_off_show_titles">Gallery titles will be hidden</string>
+    <string name="show_gallery_titles">Show gallery titles</string>
+    <string translatable="false" name="key_four_column">four_column</string>
+    <string name="setting_on_four_column">4 column will be used while in landscape</string>
+    <string name="setting_off_four_column">3 column will be used while in landscape</string>
+    <string name="use_four_column">Use 4 column in landscape</string>
+    <string translatable="false" name="key_language">key_language</string>
+    <string name="change_language">Change language</string>
 
-
+    <string-array name="language">
+        <item>English</item>
+        <item>Chinese</item>
+    </string-array>
+    <string-array name="language_data">
+        <item>en</item>
+        <item>zh</item>
+    </string-array>
     <string-array name="theme">
         <item>Light</item>
         <item>Dark</item>

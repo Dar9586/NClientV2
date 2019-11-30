@@ -51,7 +51,7 @@ public class TagFilter extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.loadTheme(this);
+        Global.loadThemeAndLanguage(this);
         setContentView(R.layout.activity_tag_filter);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

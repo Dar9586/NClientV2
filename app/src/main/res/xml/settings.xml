@@ -3,6 +3,12 @@
 <PreferenceCategory
     android:title="@string/global_settings">
     <ListPreference
+        android:title="@string/change_language"
+        android:key="@string/key_language"
+        android:entryValues="@array/language_data"
+        android:entries="@array/language"
+        android:defaultValue="en"/>
+    <ListPreference
         android:title="@string/change_theme"
         android:key="@string/key_theme_select"
         android:entryValues="@array/theme_data"
@@ -37,6 +43,18 @@
             android:summaryOn="@string/setting_on_use_rtl"
             android:summaryOff="@string/setting_off_use_rtl"
             android:title="@string/enable_right_to_left" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/key_show_titles"
+            android:summaryOn="@string/setting_on_show_titles"
+            android:summaryOff="@string/setting_off_show_titles"
+            android:title="@string/show_gallery_titles" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/key_four_column"
+            android:summaryOn="@string/setting_on_four_column"
+            android:summaryOff="@string/setting_off_four_column"
+            android:title="@string/use_four_column" />
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -74,7 +92,7 @@
             android:title="@string/use_account_tag" />
         <Preference android:title="@string/favorite_count"
             android:key="@string/key_favorite_limit"
-            android:summary="The number of popular tags shown while in Advanced search"
+            android:summary="@string/popular_tag_count"
             />
     </PreferenceCategory>
     <PreferenceCategory
@@ -84,7 +102,7 @@
         android:key="@string/key_override_volume"
         android:summaryOn="@string/setting_on_override_volume"
         android:summaryOff="@string/setting_off_override_volume"
-        android:title="Change page with volume buttons" />
+        android:title="@string/volume_change_setting" />
         <SwitchPreference
             android:defaultValue="true"
             android:key="@string/key_send_report"

@@ -1,30 +1,35 @@
 package com.dar.nclientv2.api.local;
 
+import android.graphics.BitmapFactory;
 import android.os.Parcel;
 import android.util.Log;
+import android.util.SparseArray;
+
+import androidx.annotation.Nullable;
 
 import com.dar.nclientv2.api.components.Comment;
 import com.dar.nclientv2.api.components.GenericGallery;
+import com.dar.nclientv2.components.Size;
 import com.dar.nclientv2.settings.Global;
 
 import java.io.File;
 import java.util.List;
-
-import androidx.annotation.Nullable;
 
 public class LocalGallery extends GenericGallery{
     private final int id,min,max;
     private final String title;
     private final File directory;
     private final boolean valid;
+    private Size maxSize=new Size(0,0),minSize=new Size(Integer.MAX_VALUE,Integer.MAX_VALUE);
     public LocalGallery(File file, int id){
         directory=file;
         title=file.getName();
         this.id=id;
         int max=0,min=9999;
+        SparseArray<Size>sizes=new SparseArray<>();
         //Inizio ricerca pagine
         File[] files=file.listFiles((dir, name) -> (name.endsWith(".jpg")||name.endsWith(".png")||name.endsWith(".gif"))&&name.length()==7);
-        //trova la pagina col numero piu grande
+        //Find page with max number
         if(files!=null) {
             if (files.length < 1) Log.e(Global.LOGTAG, "FILE INESISTENTI");
             for (File f : files) {
@@ -32,6 +37,7 @@ public class LocalGallery extends GenericGallery{
                     int x = Integer.parseInt(f.getName().substring(0, 3));
                     if (x > max) max = x;
                     if (x < min) min = x;
+                    checkSize(x,sizes,f);
                 } catch (NumberFormatException e) {
                     Log.e(Global.LOGTAG, e.getLocalizedMessage(), e);
                 }
@@ -41,13 +47,34 @@ public class LocalGallery extends GenericGallery{
         this.min=min;
         valid=max<1000&&min>0&&id!=-1;
     }
-
+    private void checkSize(int x, SparseArray<Size> sizes, File f){
+        Log.d(Global.LOGTAG,"Decoding: "+f);
+        BitmapFactory.Options options=new BitmapFactory.Options();
+        options.inJustDecodeBounds=true;
+        BitmapFactory.decodeFile(f.getAbsolutePath(),options);
+        if(options.outWidth>maxSize.getWidth())maxSize.setWidth(options.outWidth);
+        if(options.outWidth<minSize.getWidth())minSize.setWidth(options.outWidth);
+        if(options.outHeight>maxSize.getHeight())maxSize.setHeight(options.outHeight);
+        if(options.outHeight<minSize.getHeight())minSize.setHeight(options.outHeight);
+        sizes.append(x,new Size(options.outWidth,options.outHeight));
+    }
     @Override
     public List<Comment> getComments() {
         return null;
     }
+    @Override
+    public Size getMaxSize() {
+        return maxSize;
+    }
+
+    @Override
+    public Size getMinSize() {
+        return minSize;
+    }
 
     private LocalGallery(Parcel in) {
+        maxSize=in.readParcelable(Size.class.getClassLoader());
+        minSize=in.readParcelable(Size.class.getClassLoader());
         id = in.readInt();
         min = in.readInt();
         max = in.readInt();
@@ -123,6 +150,8 @@ public class LocalGallery extends GenericGallery{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(maxSize, flags);
+        dest.writeParcelable(minSize, flags);
         dest.writeInt(id);
         dest.writeInt(min);
         dest.writeInt(max);

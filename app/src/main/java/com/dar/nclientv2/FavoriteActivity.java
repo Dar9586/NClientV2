@@ -18,7 +18,7 @@ public class FavoriteActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.loadTheme(this);
+        Global.loadThemeAndLanguage(this);
 
         setContentView(R.layout.app_bar_main);
         Toolbar toolbar = findViewById(R.id.toolbar);

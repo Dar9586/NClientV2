@@ -3,7 +3,6 @@ package com.dar.nclientv2.api.components;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
@@ -16,6 +15,7 @@ import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.async.database.Queries;
+import com.dar.nclientv2.components.Size;
 import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
@@ -75,8 +75,9 @@ public class Gallery extends GenericGallery{
     private Tag[][] tags;
     //true=jpg, false=png
     private ImageExt cover,thumbnail;
-    private ImageExt pages[];
+    private ImageExt[] pages;
     private Language language= Language.UNKNOWN;
+    private Size maxSize=new Size(0,0),minSize=new Size(Integer.MAX_VALUE,Integer.MAX_VALUE);
 
     public Gallery(Cursor cursor, Tag[][] tags) throws IOException{
         id=cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.IDGALLERY));
@@ -183,6 +184,8 @@ public class Gallery extends GenericGallery{
         }
     }
     private Gallery(Parcel in){
+        maxSize=in.readParcelable(Size.class.getClassLoader());
+        minSize=in.readParcelable(Size.class.getClassLoader());
         uploadDate=new Date(in.readLong());
         if(uploadDate.getTime()==0)uploadDate=null;
         favoriteCount=in.readInt();
@@ -229,9 +232,10 @@ public class Gallery extends GenericGallery{
         return related;
     }
 
-
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(maxSize,flags);
+        dest.writeParcelable(minSize,flags);
         dest.writeLong(uploadDate==null?0:uploadDate.getTime());
         dest.writeInt(favoriteCount);
         dest.writeInt(id);
@@ -249,17 +253,17 @@ public class Gallery extends GenericGallery{
         for(Tag[] x:tags){
             int l=x==null?0:x.length;
             dest.writeInt(l);
-            if(l>0) dest.writeTypedArray(x,Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
+            if(l>0) dest.writeTypedArray(x,flags);
         }
         boolean x=isRelatedLoaded();
         dest.writeByte((byte)(x?related.size():0));
         if(x){
-            for(Gallery g:related)dest.writeParcelable(g,Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
+            for(Gallery g:related)dest.writeParcelable(g,flags);
         }
         dest.writeByte((byte)(comments==null?0:1));
         if(comments==null)return;
         dest.writeInt(comments.size());
-        for(Comment g:comments)dest.writeParcelable(g,Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
+        for(Comment g:comments)dest.writeParcelable(g,flags);
     }
     @Override
     public boolean isValid() {
@@ -373,30 +377,57 @@ public class Gallery extends GenericGallery{
                 return builder.toString();
     }
 
+    @Override
+    public Size getMaxSize() {
+        return maxSize;
+    }
+
+    @Override
+    public Size getMinSize() {
+        return minSize;
+    }
+
     private void readImages(JsonReader jr) throws IOException {
 
         List<ImageExt>p=new ArrayList<>();
         jr.beginObject();
-        int i=0;
         while (jr.peek()!=JsonToken.END_OBJECT){
             switch (jr.nextName()){
-                case "cover":cover= pageToExt(jr);break;
-                case "pages":jr.beginArray();while(jr.hasNext())p.add(pageToExt(jr));jr.endArray();break;
-                case "thumbnail":thumbnail= pageToExt(jr);break;
+                case "cover":cover= pageToExt(jr,false);break;
+                case "pages":jr.beginArray();while(jr.hasNext())p.add(pageToExt(jr,true));jr.endArray();break;
+                case "thumbnail":thumbnail= pageToExt(jr,false);break;
             }
         }
         jr.endObject();
         pages=new ImageExt[p.size()];
+        int i=0;
         for(ImageExt b:p)pages[i++]=b;
         p.clear();
     }
 
-    private ImageExt pageToExt(JsonReader jr)throws IOException{
+    private ImageExt pageToExt(JsonReader jr, boolean checkForMax)throws IOException{
         ImageExt ext=null;
+        int w=0,h=0;
         jr.beginObject();
         while (jr.peek()!= JsonToken.END_OBJECT){
-            if(!jr.nextName().equals("t"))jr.skipValue();
-            else ext=stringToExt(jr.nextString());
+            switch (jr.nextName()){
+                case "t":ext=stringToExt(jr.nextString());break;
+                case "w":
+                    w=jr.nextInt();
+                    if(checkForMax){
+                        if(w>maxSize.getWidth())maxSize.setWidth(w);
+                        if(w<minSize.getWidth())minSize.setWidth(w);
+                    }
+                    break;
+                case "h":
+                    h=jr.nextInt();
+                    if(checkForMax){
+                        if(h>maxSize.getHeight())maxSize.setHeight(h);
+                        if(h<minSize.getHeight())minSize.setHeight(h);
+                    }
+                    break;
+                default:jr.skipValue();break;
+            }
         }
         jr.endObject();
         return ext;

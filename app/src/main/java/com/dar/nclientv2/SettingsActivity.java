@@ -19,7 +19,7 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.loadTheme(this);
+        Global.loadThemeAndLanguage(this);
         setContentView(R.layout.activity_settings);
         GeneralPreferenceFragment.act=this;
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content,
@@ -35,6 +35,10 @@ public class SettingsActivity extends AppCompatActivity {
             addPreferencesFromResource(R.xml.settings);
             findPreference(getString(R.string.key_use_account_tag)).setEnabled(Login.isLogged());
             findPreference(getString(R.string.key_theme_select)).setOnPreferenceChangeListener((preference, newValue) -> {
+                act.recreate();
+                return true;
+            });
+            findPreference(getString(R.string.key_language)).setOnPreferenceChangeListener((preference, newValue) -> {
                 act.recreate();
                 return true;
             });
