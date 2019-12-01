@@ -132,7 +132,7 @@
 
     <string name="reset_tags">重置所有標籤</string>
     <string name="reset_tags_long">重置所有標籤？</string>
-    <string name="reload_tags">重新載入所有標籤？</string>
+    <string name="reload_tags">重載所有標籤？</string>
 
 
     <string name="share_with">分享</string>
@@ -141,7 +141,7 @@
     <string name="go_online">線上查看</string>
     <string name="update_tag_status">更新標籤狀態</string>
     <string name="change_view">變更視圖</string>
-    <string name="tag_preference">標籤喜好</string>
+    <string name="tag_preference">標籤偏好</string>
     <string name="manage_tags">管理標籤</string>
     <string name="change_min_tag">更改最小標籤數</string>
     <string name="applied_filters">已篩選</string>
@@ -159,7 +159,7 @@
     <string name="setting_off_remove_ignored">模糊化帶有已忽略標籤的畫廊</string>
     <string name="remove_ignored_galleries">移除已忽略畫廊</string>
     <string name="copy_to_clipboard">複製到剪貼板</string>
-    <string name="clear_tag_preferences">清除標籤喜好</string>
+    <string name="clear_tag_preferences">清除標籤偏好</string>
     <string name="reload_tags_from_web">從網站重載標籤</string>
     <string name="load_next_page">載入下一頁</string>
     <string name="key_check_update">檢查更新</string>
