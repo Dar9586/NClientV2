@@ -143,13 +143,13 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
     private void showBlacklistDialog(final Tag tag,final ImageView imgView) {
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         builder.setIcon(R.drawable.ic_star_border).setTitle(R.string.add_to_online_blacklist).setMessage(R.string.are_you_sure);
-        builder.setPositiveButton(android.R.string.yes, (dialogInterface, i) -> {
+        builder.setPositiveButton(R.string.yes, (dialogInterface, i) -> {
             try {
                 onlineTagUpdate(tag,true,imgView);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }).setNegativeButton(android.R.string.no,null).show();
+        }).setNegativeButton(R.string.no,null).show();
     }
     private void onlineTagUpdate(final Tag tag, final boolean add,final ImageView imgView) throws IOException{
         StringWriter sw=new StringWriter();

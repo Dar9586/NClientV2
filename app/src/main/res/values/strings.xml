@@ -281,8 +281,8 @@
 
     <string-array name="language">
         <item>English</item>
-        <item>Chinese Traditional</item>
-        <item>Chinese Simplified</item>
+        <item>Chinese(Traditional)</item>
+        <item>Chinese(Simplified)</item>
     </string-array>
     <string-array name="language_data">
         <item>en</item>

@@ -167,7 +167,7 @@ public class Global {
             });
         }
     }
-    private static Locale initLanguage(Context context){
+    public static Locale initLanguage(Context context){
         String x=context.getSharedPreferences("Settings",0).getString(context.getString(R.string.key_language),"en");
         return new Locale(x);
     }

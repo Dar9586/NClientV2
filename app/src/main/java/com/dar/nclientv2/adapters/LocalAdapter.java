@@ -8,6 +8,8 @@ import android.text.Layout;
 import android.view.View;
 import android.widget.ArrayAdapter;
 
+import androidx.annotation.NonNull;
+
 import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.LocalActivity;
 import com.dar.nclientv2.R;
@@ -17,8 +19,6 @@ import com.dar.nclientv2.settings.Global;
 
 import java.util.ArrayList;
 import java.util.Locale;
-
-import androidx.annotation.NonNull;
 
 public class LocalAdapter extends GenericAdapter<LocalGallery>{
     private final LocalActivity context;
@@ -63,24 +63,24 @@ public class LocalAdapter extends GenericAdapter<LocalGallery>{
         final LocalGallery gallery=filter.get(pos);
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         builder.setTitle(R.string.delete_gallery).setMessage(context.getString(R.string.delete_gallery_format,gallery.getTitle()));
-        builder.setPositiveButton(android.R.string.yes, (dialog, which) -> {
+        builder.setPositiveButton(R.string.yes, (dialog, which) -> {
             filter.remove(gallery);
             dataset.remove(gallery);
             Global.recursiveDelete(gallery.getDirectory());
             notifyItemRemoved(pos);
-        }).setNegativeButton(android.R.string.no,null).setCancelable(true);
+        }).setNegativeButton(R.string.no,null).setCancelable(true);
         builder.show();
     }
     private void showDialogPDF(final int pos){
         final LocalGallery gallery=filter.get(pos);
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         builder.setTitle(R.string.create_pdf).setMessage(context.getString(R.string.create_pdf_format,gallery.getTitle()));
-        builder.setPositiveButton(android.R.string.yes, (dialog, which) -> {
+        builder.setPositiveButton(R.string.yes, (dialog, which) -> {
             Intent i=new Intent(context.getApplicationContext(),CreatePDF.class);
             i.putExtra(context.getPackageName()+".PATH",gallery.getDirectory().getAbsolutePath());
             i.putExtra(context.getPackageName()+".PAGES",gallery.getPageCount());
             context.startService(i);
-        }).setNegativeButton(android.R.string.no,null).setCancelable(true);
+        }).setNegativeButton(R.string.no,null).setCancelable(true);
         builder.show();
     }
     private void createPDF(final int pos){

@@ -74,7 +74,22 @@ public class Queries{
     public static class GalleryTable{
         static final String TABLE_NAME="Gallery";
         public static final String DROP_TABLE= "DROP TABLE IF EXISTS "+ TABLE_NAME;
-        static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `Gallery` ( `idGallery` INT NOT NULL PRIMARY KEY , `title_eng` TINYTEXT NOT NULL , `title_jp` TINYTEXT NOT NULL , `title_pretty` TINYTEXT NOT NULL , `favorite_count` INT NOT NULL , `mediaId` INT NOT NULL , `scanlator` TINYTEXT NOT NULL , `pages` TEXT NOT NULL,`upload` UNSIGNED BIG INT,`favorite` TINYINT(1) NOT NULL);";
+        static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `Gallery` ( " +
+                "`idGallery` INT NOT NULL PRIMARY KEY , " +
+                "`title_eng` TINYTEXT NOT NULL , " +
+                "`title_jp` TINYTEXT NOT NULL , " +
+                "`title_pretty` TINYTEXT NOT NULL , " +
+                "`favorite_count` INT NOT NULL , " +
+                "`mediaId` INT NOT NULL , " +
+                "`scanlator` TINYTEXT NOT NULL , " +
+                "`pages` TEXT NOT NULL," +
+                "`upload` UNSIGNED BIG INT," +
+                "`favorite` TINYINT(1) NOT NULL" +
+                "`maxW` INT NOT NULL," +
+                "`maxH` INT NOT NULL," +
+                "`minW` INT NOT NULL," +
+                "`minH` INT NOT NULL" +
+                ");";
 
         public static final String IDGALLERY="idGallery";
         public static final String TITLE_ENG="title_eng";
@@ -86,6 +101,10 @@ public class Queries{
         public static final String PAGES="pages";
         public static final String UPLOAD="upload";
         public static final String FAVORITE="favorite";
+        public static final String MAX_WIDTH="maxW";
+        public static final String MAX_HEIGHT="maxH";
+        public static final String MIN_WIDTH="minW";
+        public static final String MIN_HEIGHT="minH";
         public static Gallery galleryFromId(SQLiteDatabase db,int id) throws IOException{
             String query="SELECT * FROM "+ TABLE_NAME +" WHERE "+ IDGALLERY +"=?";
             Cursor cursor=db.query(true,TABLE_NAME,null, IDGALLERY +"=?",new String[]{""+id},null,null,null,null);
@@ -146,7 +165,7 @@ public class Queries{
         * FAVORITE 0=no,1=local,2=online,3=both;
         * */
         public static void insert(SQLiteDatabase db,Gallery gallery){
-            ContentValues values=new ContentValues(12);
+            ContentValues values=new ContentValues(16);
             values.put(IDGALLERY,gallery.getId());
             values.put(TITLE_ENG,gallery.getTitle(TitleType.ENGLISH));
             values.put(TITLE_JP,gallery.getTitle(TitleType.JAPANESE));
@@ -157,6 +176,10 @@ public class Queries{
             values.put(PAGES,gallery.createPagePath());
             values.put(UPLOAD,gallery.getUploadDate()==null?null:gallery.getUploadDate().getTime());
             values.put(FAVORITE,0);
+            values.put(MAX_WIDTH,gallery.getMaxSize().getWidth());
+            values.put(MAX_HEIGHT,gallery.getMaxSize().getHeight());
+            values.put(MIN_WIDTH,gallery.getMinSize().getWidth());
+            values.put(MIN_HEIGHT,gallery.getMinSize().getHeight());
             //Inserisci gallery
             db.insertWithOnConflict(TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_IGNORE);
 
@@ -234,6 +257,17 @@ public class Queries{
 
         public static Gallery cursorToGallery(SQLiteDatabase db,Cursor cursor) throws IOException{
             return new Gallery(cursor, GalleryBridgeTable.getTagsForGallery(db,cursor.getInt(getColumnFromName(cursor,IDGALLERY))));
+        }
+
+        public static void updateSizes(SQLiteDatabase db, Gallery gallery) {
+            ContentValues values=new ContentValues(4);
+            values.put(MAX_WIDTH,gallery.getMaxSize().getWidth());
+            values.put(MAX_HEIGHT,gallery.getMaxSize().getHeight());
+            values.put(MIN_WIDTH,gallery.getMinSize().getWidth());
+            values.put(MIN_HEIGHT,gallery.getMinSize().getHeight());
+            db.updateWithOnConflict("Gallery",values,IDGALLERY+"=?",new String[]{""+gallery.getId()},SQLiteDatabase.CONFLICT_IGNORE);
+
+
         }
     }
     public static class TagTable{

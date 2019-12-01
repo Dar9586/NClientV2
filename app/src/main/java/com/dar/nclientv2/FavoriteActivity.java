@@ -29,7 +29,7 @@ public class FavoriteActivity extends BaseActivity {
         recycler = findViewById(R.id.recycler);
         refresher = findViewById(R.id.refresher);
         refresher.setRefreshing(true);
-        final FavoriteAdapter adapter = new FavoriteAdapter(this, false);
+        final FavoriteAdapter adapter = new FavoriteAdapter(this);
 
         findViewById(R.id.page_switcher).setVisibility(View.GONE);
 

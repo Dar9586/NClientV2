@@ -211,6 +211,7 @@ public class MainActivity extends BaseActivity
         });
         refresher.setOnRefreshListener(() -> {
             inspector = inspector.cloneInspector(MainActivity.this,resetDataset);
+            if(Global.isInfiniteScroll())inspector.setPage(1);
             inspector.start();
         });
         findViewById(R.id.prev).setOnClickListener(v -> {
@@ -398,13 +399,10 @@ public class MainActivity extends BaseActivity
     private Setting setting=null;
     private class Setting{
         final Global.ThemeScheme theme;
-        final boolean loadImages,logged,infinite,remove;
+        final Locale locale;
         Setting() {
             this.theme = Global.getTheme();
-            this.loadImages = Global.isLoadImages();
-            this.logged= com.dar.nclientv2.settings.Login.isLogged();
-            this.infinite= Global.isInfiniteScroll();
-            this.remove= Global.removeAvoidedGalleries();
+            this.locale=Global.initLanguage(MainActivity.this);
         }
     }
 
@@ -420,9 +418,9 @@ public class MainActivity extends BaseActivity
             Global.initFromShared(this);
             inspector=inspector.cloneInspector(this,resetDataset);
             inspector.start();
+            if(setting.theme!=Global.getTheme()||!setting.locale.equals(Global.initLanguage(this)))recreate();
             adapter.notifyDataSetChanged();
             if(Global.isInfiniteScroll())hidePageSwitcher();
-            if(Global.getTheme()!=setting.theme)recreate();
             changeLayout(getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE);
             setting=null;
         }
@@ -561,12 +559,12 @@ public class MainActivity extends BaseActivity
     private void showLogoutForm() {
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.ic_exit_to_app).setTitle(R.string.logout).setMessage(R.string.are_you_sure);
-        builder.setPositiveButton(android.R.string.yes, (dialogInterface, i) -> {
+        builder.setPositiveButton(R.string.yes, (dialogInterface, i) -> {
             Login.logout(MainActivity.this);
             navigationView.getMenu().findItem(R.id.online_favorite_manager).setVisible(false);
             loginItem.setTitle(R.string.login);
 
-        }).setNegativeButton(android.R.string.no,null).show();
+        }).setNegativeButton(R.string.no,null).show();
     }
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

@@ -235,10 +235,10 @@ public class SearchActivity extends AppCompatActivity {
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
         builder.setView(autoComplete);
         autoComplete.setText("");
-        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
             createChip();
         });
-        builder.setCancelable(true).setNegativeButton(android.R.string.cancel,null);
+        builder.setCancelable(true).setNegativeButton(R.string.cancel,null);
         builder.setTitle(R.string.insert_tag_name);
         try{
             alertDialog=builder.show();

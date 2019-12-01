@@ -146,13 +146,13 @@ public class TagFilter extends AppCompatActivity{
     private void createDialog(){
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
         builder.setTitle(R.string.are_you_sure).setMessage(getString(R.string.clear_this_list)).setIcon(R.drawable.ic_help);
-        builder.setPositiveButton(android.R.string.yes, (dialog, which) -> {
+        builder.setPositiveButton(R.string.yes, (dialog, which) -> {
             Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
             if (page != null) {
                 ((PlaceholderFragment)page).reset();
 
             }
-        }).setNegativeButton(android.R.string.no, null).setCancelable(true);
+        }).setNegativeButton(R.string.no, null).setCancelable(true);
         builder.show();
     }
     public void addItems(TagType type){
@@ -189,7 +189,7 @@ public class TagFilter extends AppCompatActivity{
         int min=TagV2.getMinCount();
         DefaultDialogs.Builder builder=new DefaultDialogs.Builder(this);
         builder.setActual(min).setMax(100).setMin(2);
-        builder.setYesbtn(android.R.string.ok).setNobtn(android.R.string.cancel);
+        builder.setYesbtn(R.string.ok).setNobtn(R.string.cancel);
         builder.setTitle(R.string.set_minimum_count).setDialogs(new DefaultDialogs.DialogResults(){
             @Override
             public void positive(int actual){

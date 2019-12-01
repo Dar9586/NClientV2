@@ -9,12 +9,12 @@ import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.annotation.DrawableRes;
+import androidx.annotation.StringRes;
+
 import com.dar.nclientv2.R;
 
 import java.util.Locale;
-
-import androidx.annotation.DrawableRes;
-import androidx.annotation.StringRes;
 
 public class DefaultDialogs {
     public interface DialogResults{
@@ -32,8 +32,8 @@ public class DefaultDialogs {
         public Builder(Context context) {
             this.context = context;
             title=drawable=0;
-            yesbtn=android.R.string.ok;
-            nobtn=android.R.string.cancel;
+            yesbtn=R.string.ok;
+            nobtn=R.string.cancel;
             max=actual=1;
             min=0;
             dialogs=null;

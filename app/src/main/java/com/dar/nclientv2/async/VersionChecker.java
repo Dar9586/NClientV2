@@ -87,7 +87,7 @@ public class VersionChecker{
                 latest=latestVersion;
                 context.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},2);
             }
-        }).setNegativeButton(android.R.string.cancel,null)
+        }).setNegativeButton(R.string.cancel,null)
                 .setNeutralButton(R.string.github, (dialog, which) -> {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(LATEST_RELEASE_URL));
             context.startActivity(browserIntent);

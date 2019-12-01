@@ -1,236 +1,236 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--Thanks to ZerOri for the Chinese translation-->
 <resources>
-<string name="app_name">NClientV2</string>
-<!--SUMMARY-->
-<string name="setting_on_hide_save">保存的图像不会在画廊中显示</string>
-<string name="setting_off_hide_save">保存的图像会在画廊中显示</string>
-<string name="setting_on_ignore_tags">从画廊菜单中选中一个标签时不再询问其它标签（语言除外）</string>
-<string name="setting_off_ignore_tags">从画廊菜单中选中一个标签时询问其它标签</string>
-<string name="setting_on_high_res">加载最佳分辨率图像（更多数据量）</string>
-<string name="setting_off_high_res">加载预览图（较少数据量）</string>
-<string name="setting_on_load">所有活动均加载图像</string>
-<string name="setting_off_load">仅单页阅读时加载图像</string>
-<string name="setting_on_use_account_tag">将账户标签用于搜索查询（本地标签优先）</string>
-<string name="image_quality_summary">用百分比表示已下载画廊的分辨率质量</string>
-<string name="setting_off_use_account_tag">搜索查询时忽略帐户标签</string>
-<string name="setting_on_infinite_scroll">到达底部时加载另一页</string>
-<string name="setting_off_infinite_scroll">使用底栏菜单跳页</string>
-<string name="theme_summary">选择主题颜色</string>
-<string name="setting_on_send_report">报告将被发送</string>
-<string name="setting_off_send_report">报告不会被发送</string>
+    <string name="app_name">NClientV2</string>
+    <!--SUMMARY-->
+    <string name="setting_on_hide_save">保存的图像不会在画廊中显示</string>
+    <string name="setting_off_hide_save">保存的图像会在画廊中显示</string>
+    <string name="setting_on_ignore_tags">从画廊菜单中选中一个标签时不再询问其它标签（语言除外）</string>
+    <string name="setting_off_ignore_tags">从画廊菜单中选中一个标签时询问其它标签</string>
+    <string name="setting_on_high_res">加载最佳分辨率图像（更多数据量）</string>
+    <string name="setting_off_high_res">加载预览图（较少数据量）</string>
+    <string name="setting_on_load">所有活动均加载图像</string>
+    <string name="setting_off_load">仅单页阅读时加载图像</string>
+    <string name="setting_on_use_account_tag">将账户标签用于搜索查询（本地标签优先）</string>
+    <string name="image_quality_summary">用百分比表示已下载画廊的分辨率质量</string>
+    <string name="setting_off_use_account_tag">搜索查询时忽略帐户标签</string>
+    <string name="setting_on_infinite_scroll">到达底部时加载另一页</string>
+    <string name="setting_off_infinite_scroll">使用底栏菜单跳页</string>
+    <string name="theme_summary">选择主题颜色</string>
+    <string name="setting_on_send_report">报告将被发送</string>
+    <string name="setting_off_send_report">报告不会被发送</string>
 
-<!--SETTINGS NAME-->
-<string name="send_crash_report">发送崩溃报告</string>
-<string name="change_theme">更改主题</string>
-<string name="clear_cache">清除缓存</string>
-<string name="load_images">加载图像</string>
-<string name="infinite_scroll">无限滚动</string>
-<string name="ignore_tags">忽略其它标签</string>
-<string name="high_res_gallery">在画廊中以最佳分辨率加载图像</string>
-<string name="hide_saved_images">在画廊中隐藏保存的图像</string>
-<string name="use_account_tag">使用账户标签</string>
-<string name="image_quality">图像质量</string>
+    <!--SETTINGS NAME-->
+    <string name="send_crash_report">发送崩溃报告</string>
+    <string name="change_theme">更改主题</string>
+    <string name="clear_cache">清除缓存</string>
+    <string name="load_images">加载图像</string>
+    <string name="infinite_scroll">无限滚动</string>
+    <string name="ignore_tags">忽略其它标签</string>
+    <string name="high_res_gallery">在画廊中以最佳分辨率加载图像</string>
+    <string name="hide_saved_images">在画廊中隐藏保存的图像</string>
+    <string name="use_account_tag">使用账户标签</string>
+    <string name="image_quality">图像质量</string>
 
-<string name="title_activity_gallery">画廊</string>
-<string name="title_activity_zoom">启用放大</string>
-<string name="title_activity_tag_filter">标签筛选</string>
-<string name="title_activity_login">登录</string>
+    <string name="title_activity_gallery">画廊</string>
+    <string name="title_activity_zoom">启用放大</string>
+    <string name="title_activity_tag_filter">标签筛选</string>
+    <string name="title_activity_login">登录</string>
 
-<string name="parodies">原作</string>
-<string name="characters">角色</string>
-<string name="tags">标签</string>
-<string name="artists">作家</string>
-<string name="groups">社团</string>
-<string name="languages">语言</string>
-<string name="categories">类别</string>
-<string name="unknown">未知</string>
+    <string name="parodies">原作</string>
+    <string name="characters">角色</string>
+    <string name="tags">标签</string>
+    <string name="artists">作家</string>
+    <string name="groups">社团</string>
+    <string name="languages">语言</string>
+    <string name="categories">类别</string>
+    <string name="unknown">未知</string>
 
-<string name="channel1_name">下载画廊</string>
-<string name="channel2_name">创建PDF</string>
-<string name="channel1_description">用于显示画廊下载进度</string>
-<string name="channel2_description">用于显示PDF创建进度</string>
-<string name="channel1_title" formatted="true">下载中的画廊：</string>
-<string name="channel1_title_format">下载中的画廊：（%d/%d）</string>
-<string name="channel2_title">创建中的PDF：</string>
+    <string name="channel1_name">下载画廊</string>
+    <string name="channel2_name">创建PDF</string>
+    <string name="channel1_description">用于显示画廊下载进度</string>
+    <string name="channel2_description">用于显示PDF创建进度</string>
+    <string name="channel1_title" formatted="true">下载中的画廊：</string>
+    <string name="channel1_title_format">下载中的画廊：（%d/%d）</string>
+    <string name="channel2_title">创建中的PDF：</string>
 
-<string name="favorite_max_reached" formatted="true">你最多能收藏 %d 部漫画。</string>
-<string name="tags_max_reached" formatted="true">你最多能选中 %d 个标签。</string>
-
-
-<string name="filters">筛选</string>
-<string name="only_english">仅英文</string>
-<string name="only_japanese">仅日文</string>
-<string name="only_chinese">仅中文</string>
-<string name="only_other">其它语言</string>
-<string name="all_languages">所有语言</string>
-
-<string name="sort_popular">按热度排列</string>
-<string name="sort_type">按类型排列</string>
-
-<string name="title_type">标题类型</string>
-<string name="pretty_title">美观</string>
-<string name="english_title">英文</string>
-<string name="japanese_title">日文</string>
-
-<string name="username_or_email">用户名或邮件</string>
-<string name="password">密码</string>
-<string name="login">登录</string>
-<string name="login_formatted" formatted="true">以 %s 身份登录</string>
-<string name="logout">登出</string>
-<string name="sign_in">登录</string>
-<string name="forgot_password">忘记密码？<b>重置密码</b></string>
-<string name="register">没有账户？<b>注册账号</b></string>
-<string name="invalid_credentials">无效凭证</string>
-
-<string name="favorite_online_manga">在线收藏漫画</string>
-<string name="online_favorites">在线收藏</string>
-<string name="offline_favorites">离线收藏</string>
-<string name="online_tags">在线标签</string>
-
-<string name="add_to_online_favorite">添加至在线收藏</string>
-<string name="remove_from_online_favorites">从在线收藏移除</string>
-<string name="add_to_online_blacklist">列入在线黑名单？</string>
-<string name="tag_already_in_blacklist">标签已列入黑名单</string>
-
-<string name="are_you_sure">你确定？</string>
-<string name="thumbnail">预览</string>
-<string name="settings">设置</string>
-<string name="related">相关</string>
-<string name="refresh">刷新</string>
-<string name="failed">失败</string>
-<string name="search">搜索</string>
-<string name="prev">上一个</string>
-<string name="share">分享</string>
-<string name="image">图像</string>
-<string name="next">下一个</string>
-<string name="hashtag">#</string>
-
-<string name="create_pdf">创建PDF</string>
-<string name="create_pdf_format" formatted="true">创建的PDF："%s"</string>
-<string name="created_pdf">成功创建PDF</string>
-<string name="error_pdf">创建PDF出错</string>
-<string name="parsing_pages">分析页面中</string>
-<string name="writing_pdf">PDF写入中</string>
-
-<string name="navigation_drawer_open">打开侧边栏</string>
-<string name="navigation_drawer_close">关闭侧边栏</string>
-<string name="nav_header_subtitle">NHentai非官方客户端</string>
-<string name="nav_header_desc">侧边栏页眉</string>
-
-<string name="change_page">跳页：</string>
-<string name="prev_page">上一页</string>
-<string name="next_page">下一页</string>
-
-<string name="downloaded_manga">已下载漫画</string>
-<string name="download_gallery">下载画廊</string>
-<string name="download_completed">下载完成</string>
-<string name="download_canceled">下载取消</string>
-
-<string name="delete_gallery">删除画廊</string>
-<string name="delete_gallery_format" formatted="true">是否删除画廊：\n%s</string>
-
-<string name="reset_tags">重置所有标签</string>
-<string name="reset_tags_long">重置所有标签？</string>
-<string name="reload_tags">重新加载所有标签？</string>
+    <string name="favorite_max_reached" formatted="true">你最多能收藏 %d 部漫画。</string>
+    <string name="tags_max_reached" formatted="true">你最多能选中 %d 个标签。</string>
 
 
-<string name="share_with">分享</string>
-<string name="link_copied_to_clipboard">链接已复制到剪贴板</string>
-<string name="open_in_browser">在浏览器中打开</string>
-<string name="go_online">在线查看</string>
-<string name="update_tag_status">更新标签状态</string>
-<string name="change_view">变更视图</string>
-<string name="tag_preference">标签喜好</string>
-<string name="manage_tags">管理标签</string>
-<string name="change_min_tag">更改最小标签数</string>
-<string name="applied_filters">已筛选</string>
-<string name="min_count">最小</string>
-<string name="minimum_tag_count">最小标签数：</string>
-<string name="show_related">跳转至相关画廊</string>
-<string name="random_manga">随机漫画</string>
-<string name="save_page">保存页数</string>
-<string name="page_count_format" formatted="true">%d 页</string>
-<string name="upload_date_format" formatted="true">上传于 %s 在 %s</string>
-<string name="favorite_count_format" formatted="true">%d 收藏</string>
-<string name="favorite_manga">收藏漫画</string>
-<string name="key_remove_ignored">移除忽略</string>
-<string name="setting_on_remove_ignored">不显示带有已忽略标签的画廊</string>
-<string name="setting_off_remove_ignored">模糊化带有已忽略标签的画廊</string>
-<string name="remove_ignored_galleries">移除已忽略画廊</string>
-<string name="copy_to_clipboard">复制到剪贴板</string>
-<string name="clear_tag_preferences">清除标签喜好</string>
-<string name="reload_tags_from_web">从网站重载标签</string>
-<string name="load_next_page">加载下一页</string>
-<string name="key_check_update">检查更新</string>
-<string name="check_for_update_on_startup">启动时检查更新</string>
-<string name="key_update">更新</string>
-<string name="check_for_updates">检查更新</string>
-<string name="no_updates_found">未发现更新</string>
-<string name="error_retrieving">检索最新版本出错</string>
-<string name="new_version_found">发现新版本</string>
-<string name="update_version_format" formatted="true">从V %s 更新至V %s？</string>
-<string name="clear_this_list">清空此列表？</string>
-<string name="set_minimum_count">设置最小值</string>
-<string name="sort_by_title">按标题排列</string>
-<string name="sort_by_popular">按热度排列</string>
-<string name="key_override_volume">覆盖音量</string>
-<string name="setting_on_override_volume">音量键换页</string>
-<string name="setting_off_override_volume">音量键调音</string>
-<string name="next_page_volume_up">音量+切换下一页</string>
-<string name="next_page_volume_down">音量-切换下一页</string>
-<string name="change_title_type">更改标题类型</string>
-<string name="title_type_summary">为画廊选择默认标题格式</string>
+    <string name="filters">筛选</string>
+    <string name="only_english">仅英文</string>
+    <string name="only_japanese">仅日文</string>
+    <string name="only_chinese">仅中文</string>
+    <string name="only_other">其它语言</string>
+    <string name="all_languages">所有语言</string>
 
-<string name="search_settings">搜索设置</string>
-<string name="global_settings">全局设置</string>
-<string name="images_settings">图像设置</string>
-<string name="miscellaneous">其它设置</string>
-<string name="update_settings">更新设置</string>
-<string name="online_favorite_manga">在线收藏漫画</string>
-<string name="cache_size_formatted">缓存大小：%.2f MB</string>
-<string name="cache_cleared">缓存已清理</string>
-<string name="sort_by_latest">按更新排列</string>
-<string name="edit">编辑</string>
-<string name="options">选项</string>
-<string name="key_keep_history">保留历史</string>
-<string name="setting_on_keep_history">搜索记录将被保留</string>
-<string name="setting_off_keep_history">搜索记录将不被保留</string>
-<string name="keep_history">保留搜索历史</string>
-<string name="add">加入</string>
-<string name="insert_tag_name">插入标签名：</string>
-<string name="other">其它</string>
-<string name="cancelling">取消…</string>
-<string name="key_favorite_limit">收藏限制</string>
-<string name="favorite_count">收藏数</string>
-<string name="comments">评论</string>
-<string name="send">发送</string>
-<string name="send_comment">发送评论…</string>
-<string name="remove_comment">移除评论</string>
-<string name="profile_picture">头像</string>
-<string name="send_bug_on_github">在Github上反馈bug</string>
-<string name="github">Github</string>
-<string name="install">安装</string>
-<string name="download_update_failed">无法下载新版本</string>
-<string name="copyURL">复制URL</string>
-<string name="favorite">收藏</string>
-<string name="add_bookmark">加入书签</string>
-<string name="manage_bookmarks">管理书签</string>
-<string name="bookmark_page_format">页 %d</string>
-<string name="bookmark_description">书签描述</string>
-<string name="enable_right_to_left">从右至左阅读</string>
-<string name="setting_on_use_rtl">图像将从右至左显示</string>
-<string name="setting_off_use_rtl">图像将从左至右显示</string>
+    <string name="sort_popular">按热度排列</string>
+    <string name="sort_type">按类型排列</string>
 
-<string name="volume_change_setting">音量键换页</string>
-<string name="popular_tag_count">高级搜索中显示热门标签数</string>
-<string name="setting_on_show_titles">显示画廊标题</string>
-<string name="setting_off_show_titles">隐藏画廊标题</string>
-<string name="show_gallery_titles">显示画廊标题</string>
-<string name="setting_on_four_column">横屏时显示4列</string>
-<string name="setting_off_four_column">横屏时显示3列</string>
-<string name="use_four_column">横屏显示4列</string>
-<string name="change_language">更改语言</string>
+    <string name="title_type">标题类型</string>
+    <string name="pretty_title">美观</string>
+    <string name="english_title">英文</string>
+    <string name="japanese_title">日文</string>
+
+    <string name="username_or_email">用户名或邮件</string>
+    <string name="password">密码</string>
+    <string name="login">登录</string>
+    <string name="login_formatted" formatted="true">以 %s 身份登录</string>
+    <string name="logout">登出</string>
+    <string name="sign_in">登录</string>
+    <string name="forgot_password">忘记密码？<b>重置密码</b></string>
+    <string name="register">没有账户？<b>注册账号</b></string>
+    <string name="invalid_credentials">无效凭证</string>
+
+    <string name="favorite_online_manga">在线收藏漫画</string>
+    <string name="online_favorites">在线收藏</string>
+    <string name="offline_favorites">离线收藏</string>
+    <string name="online_tags">在线标签</string>
+
+    <string name="add_to_online_favorite">添加至在线收藏</string>
+    <string name="remove_from_online_favorites">从在线收藏移除</string>
+    <string name="add_to_online_blacklist">列入在线黑名单？</string>
+    <string name="tag_already_in_blacklist">标签已列入黑名单</string>
+
+    <string name="are_you_sure">你确定？</string>
+    <string name="thumbnail">预览</string>
+    <string name="settings">设置</string>
+    <string name="related">相关</string>
+    <string name="refresh">刷新</string>
+    <string name="failed">失败</string>
+    <string name="search">搜索</string>
+    <string name="prev">上一个</string>
+    <string name="share">分享</string>
+    <string name="image">图像</string>
+    <string name="next">下一个</string>
+    <string name="hashtag">#</string>
+
+    <string name="create_pdf">创建PDF</string>
+    <string name="create_pdf_format" formatted="true">创建的PDF："%s"</string>
+    <string name="created_pdf">成功创建PDF</string>
+    <string name="error_pdf">创建PDF出错</string>
+    <string name="parsing_pages">分析页面中</string>
+    <string name="writing_pdf">PDF写入中</string>
+
+    <string name="navigation_drawer_open">打开侧边栏</string>
+    <string name="navigation_drawer_close">关闭侧边栏</string>
+    <string name="nav_header_subtitle">NHentai非官方客户端</string>
+    <string name="nav_header_desc">侧边栏页眉</string>
+
+    <string name="change_page">跳页：</string>
+    <string name="prev_page">上一页</string>
+    <string name="next_page">下一页</string>
+
+    <string name="downloaded_manga">已下载漫画</string>
+    <string name="download_gallery">下载画廊</string>
+    <string name="download_completed">下载完成</string>
+    <string name="download_canceled">下载取消</string>
+
+    <string name="delete_gallery">删除画廊</string>
+    <string name="delete_gallery_format" formatted="true">是否删除画廊：\n%s</string>
+
+    <string name="reset_tags">重置所有标签</string>
+    <string name="reset_tags_long">重置所有标签？</string>
+    <string name="reload_tags">重新加载所有标签？</string>
+
+
+    <string name="share_with">分享</string>
+    <string name="link_copied_to_clipboard">链接已复制到剪贴板</string>
+    <string name="open_in_browser">在浏览器中打开</string>
+    <string name="go_online">在线查看</string>
+    <string name="update_tag_status">更新标签状态</string>
+    <string name="change_view">变更视图</string>
+    <string name="tag_preference">标签喜好</string>
+    <string name="manage_tags">管理标签</string>
+    <string name="change_min_tag">更改最小标签数</string>
+    <string name="applied_filters">已筛选</string>
+    <string name="min_count">最小</string>
+    <string name="minimum_tag_count">最小标签数：</string>
+    <string name="show_related">跳转至相关画廊</string>
+    <string name="random_manga">随机漫画</string>
+    <string name="save_page">保存页数</string>
+    <string name="page_count_format" formatted="true">%d 页</string>
+    <string name="upload_date_format" formatted="true">上传于 %s 在 %s</string>
+    <string name="favorite_count_format" formatted="true">%d 收藏</string>
+    <string name="favorite_manga">收藏漫画</string>
+    <string name="key_remove_ignored">移除忽略</string>
+    <string name="setting_on_remove_ignored">不显示带有已忽略标签的画廊</string>
+    <string name="setting_off_remove_ignored">模糊化带有已忽略标签的画廊</string>
+    <string name="remove_ignored_galleries">移除已忽略画廊</string>
+    <string name="copy_to_clipboard">复制到剪贴板</string>
+    <string name="clear_tag_preferences">清除标签喜好</string>
+    <string name="reload_tags_from_web">从网站重载标签</string>
+    <string name="load_next_page">加载下一页</string>
+    <string name="key_check_update">检查更新</string>
+    <string name="check_for_update_on_startup">启动时检查更新</string>
+    <string name="key_update">更新</string>
+    <string name="check_for_updates">检查更新</string>
+    <string name="no_updates_found">未发现更新</string>
+    <string name="error_retrieving">检索最新版本出错</string>
+    <string name="new_version_found">发现新版本</string>
+    <string name="update_version_format" formatted="true">从V %s 更新至V %s？</string>
+    <string name="clear_this_list">清空此列表？</string>
+    <string name="set_minimum_count">设置最小值</string>
+    <string name="sort_by_title">按标题排列</string>
+    <string name="sort_by_popular">按热度排列</string>
+    <string name="key_override_volume">覆盖音量</string>
+    <string name="setting_on_override_volume">音量键换页</string>
+    <string name="setting_off_override_volume">音量键调音</string>
+    <string name="next_page_volume_up">音量+切换下一页</string>
+    <string name="next_page_volume_down">音量-切换下一页</string>
+    <string name="change_title_type">更改标题类型</string>
+    <string name="title_type_summary">为画廊选择默认标题格式</string>
+
+    <string name="search_settings">搜索设置</string>
+    <string name="global_settings">全局设置</string>
+    <string name="images_settings">图像设置</string>
+    <string name="miscellaneous">其它设置</string>
+    <string name="update_settings">更新设置</string>
+    <string name="online_favorite_manga">在线收藏漫画</string>
+    <string name="cache_size_formatted">缓存大小：%.2f MB</string>
+    <string name="cache_cleared">缓存已清理</string>
+    <string name="sort_by_latest">按更新排列</string>
+    <string name="edit">编辑</string>
+    <string name="options">选项</string>
+    <string name="key_keep_history">保留历史</string>
+    <string name="setting_on_keep_history">搜索记录将被保留</string>
+    <string name="setting_off_keep_history">搜索记录将不被保留</string>
+    <string name="keep_history">保留搜索历史</string>
+    <string name="add">加入</string>
+    <string name="insert_tag_name">插入标签名：</string>
+    <string name="other">其它</string>
+    <string name="cancelling">取消…</string>
+    <string name="key_favorite_limit">收藏限制</string>
+    <string name="favorite_count">收藏数</string>
+    <string name="comments">评论</string>
+    <string name="send">发送</string>
+    <string name="send_comment">发送评论…</string>
+    <string name="remove_comment">移除评论</string>
+    <string name="profile_picture">头像</string>
+    <string name="send_bug_on_github">在Github上反馈bug</string>
+    <string name="github">Github</string>
+    <string name="install">安装</string>
+    <string name="download_update_failed">无法下载新版本</string>
+    <string name="copyURL">复制URL</string>
+    <string name="favorite">收藏</string>
+    <string name="add_bookmark">加入书签</string>
+    <string name="manage_bookmarks">管理书签</string>
+    <string name="bookmark_page_format">页 %d</string>
+    <string name="bookmark_description">书签描述</string>
+    <string name="enable_right_to_left">从右至左阅读</string>
+    <string name="setting_on_use_rtl">图像将从右至左显示</string>
+    <string name="setting_off_use_rtl">图像将从左至右显示</string>
+
+    <string name="volume_change_setting">音量键换页</string>
+    <string name="popular_tag_count">高级搜索中显示热门标签数</string>
+    <string name="setting_on_show_titles">显示画廊标题</string>
+    <string name="setting_off_show_titles">隐藏画廊标题</string>
+    <string name="show_gallery_titles">显示画廊标题</string>
+    <string name="setting_on_four_column">横屏时显示4列</string>
+    <string name="setting_off_four_column">横屏时显示3列</string>
+    <string name="use_four_column">横屏显示4列</string>
+    <string name="change_language">更改语言</string>
 
 
     <string name="tag_artist_gallery">作家：</string>

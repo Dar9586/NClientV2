@@ -49,14 +49,14 @@ public class SettingsActivity extends AppCompatActivity {
             findPreference(getString(R.string.key_cache)).setOnPreferenceClickListener(preference -> {
                 AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
                 builder.setTitle(R.string.clear_cache);
-                builder.setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                builder.setPositiveButton(R.string.yes, (dialog, which) -> {
                     Global.recursiveDelete(getActivity().getCacheDir());
                     act.runOnUiThread(() -> {
                         Toast.makeText(act, act.getString(R.string.cache_cleared), Toast.LENGTH_SHORT).show();
                         double cSize=Global.recursiveSize(getActivity().getCacheDir())/((double)(2<<20));
                         findPreference(getString(R.string.key_cache)).setSummary(getString(R.string.cache_size_formatted,cSize));
                     });
-                }).setNegativeButton(android.R.string.no,null).setCancelable(true);
+                }).setNegativeButton(R.string.no,null).setCancelable(true);
                 builder.show();
 
                 return true;

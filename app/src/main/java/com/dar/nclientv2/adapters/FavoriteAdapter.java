@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.dar.nclientv2.FavoriteActivity;
 import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.R;
@@ -22,17 +25,14 @@ import com.dar.nclientv2.settings.Global;
 import java.io.IOException;
 import java.util.Locale;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder> implements Filterable{
     private final FavoriteActivity activity;
     private final boolean online;
     private CharSequence lastQuery;
     private Cursor cursor;
     private boolean force=false;
-    public FavoriteAdapter(FavoriteActivity activity,boolean online) {
-        this.online=online;
+    public FavoriteAdapter(FavoriteActivity activity) {
+        this.online=false;
         this.activity=activity;
         this.lastQuery="";
         setHasStableIds(true);

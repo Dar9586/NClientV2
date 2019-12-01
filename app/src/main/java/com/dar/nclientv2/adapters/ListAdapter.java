@@ -97,6 +97,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
             loadGallery(holder,ent);
             holder.pages.setVisibility(View.GONE);
             holder.title.setText(ent.getTitle(TitleType.ENGLISH));
+            holder.flag.setVisibility(View.VISIBLE);
             if(Global.getOnlyLanguage()==null||context instanceof GalleryActivity) {
                 switch (ent.getLanguage()) {
                     case CHINESE:  holder.flag.setText("\uD83C\uDDE8\uD83C\uDDF3");break;

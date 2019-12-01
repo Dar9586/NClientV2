@@ -78,7 +78,7 @@ public class Gallery extends GenericGallery{
     private ImageExt[] pages;
     private Language language= Language.UNKNOWN;
     private Size maxSize=new Size(0,0),minSize=new Size(Integer.MAX_VALUE,Integer.MAX_VALUE);
-
+    private static volatile boolean updating=false;
     public Gallery(Cursor cursor, Tag[][] tags) throws IOException{
         id=cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.IDGALLERY));
         mediaId=cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.MEDIAID));
@@ -88,10 +88,45 @@ public class Gallery extends GenericGallery{
         titles[2]=cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.TITLE_ENG));
         uploadDate=new Date(cursor.getLong(Queries.getColumnFromName(cursor,Queries.GalleryTable.UPLOAD)));
         scanlator=cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.SCANLATOR));
+        maxSize=new Size(
+                cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.MAX_WIDTH)),
+                cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.MAX_HEIGHT))
+        );
+        minSize=new Size(
+                cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.MIN_WIDTH)),
+                cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.MIN_HEIGHT))
+        );
+        if(maxSize.getWidth()==0){
+            maxSize=new Size(0,0);
+            minSize=new Size(Integer.MAX_VALUE,Integer.MAX_VALUE);
+            updateSize();
+        }
         comments=null;
         readPagePath(cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.PAGES)));
         this.tags=tags;
         loadLanguage();
+    }
+
+    private void updateSize() {
+        new Thread(() -> {
+            while(updating) {
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            updating=true;
+            try {
+                Queries.GalleryTable.updateSizes(Database.getDatabase(), Gallery.galleryFromId(id));
+                Gallery gallery=Queries.GalleryTable.galleryFromId(Database.getDatabase(),id);
+                maxSize=gallery.maxSize;
+                minSize=gallery.minSize;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            updating=false;
+        }).start();
     }
 
 
