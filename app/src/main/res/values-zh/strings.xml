@@ -132,7 +132,7 @@
 
     <string name="reset_tags">重置所有标签</string>
     <string name="reset_tags_long">重置所有标签？</string>
-    <string name="reload_tags">重新加载所有标签？</string>
+    <string name="reload_tags">重载所有标签？</string>
 
 
     <string name="share_with">分享</string>
@@ -141,7 +141,7 @@
     <string name="go_online">在线查看</string>
     <string name="update_tag_status">更新标签状态</string>
     <string name="change_view">变更视图</string>
-    <string name="tag_preference">标签喜好</string>
+    <string name="tag_preference">标签偏好</string>
     <string name="manage_tags">管理标签</string>
     <string name="change_min_tag">更改最小标签数</string>
     <string name="applied_filters">已筛选</string>
@@ -159,7 +159,7 @@
     <string name="setting_off_remove_ignored">模糊化带有已忽略标签的画廊</string>
     <string name="remove_ignored_galleries">移除已忽略画廊</string>
     <string name="copy_to_clipboard">复制到剪贴板</string>
-    <string name="clear_tag_preferences">清除标签喜好</string>
+    <string name="clear_tag_preferences">清除标签偏好</string>
     <string name="reload_tags_from_web">从网站重载标签</string>
     <string name="load_next_page">加载下一页</string>
     <string name="key_check_update">检查更新</string>
