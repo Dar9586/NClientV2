@@ -43,12 +43,14 @@ public class CrashApplication extends Application{
 
         TagV2.initMinCount(this);
         TagV2.initSortByName(this);
-        getSharedPreferences("Settings",0).edit().remove(getString(R.string.key_language)).commit();
         String version=Global.getLastVersion(this),actualVersion=Global.getVersionName(this);
         fixUpdateFolder();
         switch (version){//must execute all in order, no break required, for now
             case "0.0.0":updateFolderStructure();
             case "1.9.2":fixUpdateFolder();
+            case "1.9.7":
+                if(getResources().getConfiguration().locale.getLanguage().equals("zh"))
+                    getSharedPreferences("Settings", 0).edit().putString(getString(R.string.key_language),"zh").commit();
         }
         Global.setLastVersion(this);
     }

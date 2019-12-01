@@ -257,7 +257,7 @@
     <string translatable="false" name="key_use_rtl">use_rtl</string>
     <string name="volume_change_setting">Change page with volume buttons</string>
     <string name="popular_tag_count">The number of popular tags shown while in Advanced search</string>
-    <string name="key_show_titles">show_titles</string>
+    <string translatable="false" name="key_show_titles">show_titles</string>
     <string name="setting_on_show_titles">Gallery titles will be shown</string>
     <string name="setting_off_show_titles">Gallery titles will be hidden</string>
     <string name="show_gallery_titles">Show gallery titles</string>
@@ -268,12 +268,25 @@
     <string translatable="false" name="key_language">key_language</string>
     <string name="change_language">Change language</string>
 
+    <string name="tag_artist_gallery">Artist:</string>
+    <string name="tag_character_gallery">Character:</string>
+    <string name="tag_parody_gallery">Parody:</string>
+    <string name="tag_language_gallery">Language:</string>
+    <string name="tag_category_gallery">Category:</string>
+    <string name="tag_group_gallery">Group:</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="no">No</string>
+    <string name="yes">Tes</string>
+
     <string-array name="language">
         <item>English</item>
-        <item>Chinese</item>
+        <item>Chinese Traditional</item>
+        <item>Chinese Simplified</item>
     </string-array>
     <string-array name="language_data">
         <item>en</item>
+        <item>ch</item>
         <item>zh</item>
     </string-array>
     <string-array name="theme">
