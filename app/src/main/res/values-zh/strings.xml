@@ -80,7 +80,7 @@
 <string name="logout">登出</string>
 <string name="sign_in">登录</string>
 <string name="forgot_password">忘记密码？<b>重置密码</b></string>
-<string name="register">没有账户？<b>注册</b></string>
+<string name="register">没有账户？<b>注册账号</b></string>
 <string name="invalid_credentials">无效凭证</string>
 
 <string name="favorite_online_manga">在线收藏漫画</string>
@@ -233,31 +233,31 @@
 <string name="change_language">更改语言</string>
 
 
-    <string name="tag_artist_gallery">Artist:</string>
-    <string name="tag_character_gallery">Character:</string>
-    <string name="tag_parody_gallery">Parody:</string>
-    <string name="tag_language_gallery">Language:</string>
-    <string name="tag_category_gallery">Category:</string>
-    <string name="tag_group_gallery">Group:</string>
-    <string name="ok">OK</string>
-    <string name="cancel">Cancel</string>
-    <string name="no">No</string>
-    <string name="yes">Tes</string>
+    <string name="tag_artist_gallery">作家：</string>
+    <string name="tag_character_gallery">角色：</string>
+    <string name="tag_parody_gallery">原作：</string>
+    <string name="tag_language_gallery">语言：</string>
+    <string name="tag_category_gallery">类别：</string>
+    <string name="tag_group_gallery">社团：</string>
+    <string name="ok">好的</string>
+    <string name="cancel">取消</string>
+    <string name="no">不</string>
+    <string name="yes">是</string>
 
     <string-array name="language">
-        <item>English</item>
-        <item>Chinese Traditional</item>
-        <item>Chinese Simplified</item>
+        <item>英文</item>
+        <item>繁体中文</item>
+        <item>简体中文</item>
     </string-array>
     <string-array name="theme">
-        <item>Light</item>
-        <item>Dark</item>
-        <item>Black</item>
+        <item>亮色</item>
+        <item>暗色</item>
+        <item>黑色</item>
     </string-array>
     <string-array name="title_type_array">
-        <item>English</item>
-        <item>Japanese</item>
-        <item>Pretty</item>
+        <item>英文</item>
+        <item>日文</item>
+        <item>美观</item>
     </string-array>
 
 </resources>
