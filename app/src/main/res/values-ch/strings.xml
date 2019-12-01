@@ -80,7 +80,7 @@
     <string name="logout">登出</string>
     <string name="sign_in">登錄</string>
     <string name="forgot_password">忘記密碼？<b>重置密碼</b></string>
-    <string name="register">沒有帳戶？<b>註冊</b></string>
+    <string name="register">沒有帳戶？<b>註冊帳號</b></string>
     <string name="invalid_credentials">無效憑證</string>
 
     <string name="favorite_online_manga">線上收藏漫畫</string>
@@ -234,31 +234,32 @@
     <string name="use_four_column">橫屏顯示4列</string>
     <string name="change_language">更改語言</string>
 
-    <string name="tag_artist_gallery">Artist:</string>
-    <string name="tag_character_gallery">Character:</string>
-    <string name="tag_parody_gallery">Parody:</string>
-    <string name="tag_language_gallery">Language:</string>
-    <string name="tag_category_gallery">Category:</string>
-    <string name="tag_group_gallery">Group:</string>
-    <string name="ok">OK</string>
-    <string name="cancel">Cancel</string>
-    <string name="no">No</string>
-    <string name="yes">Tes</string>
+    <string name="tag_artist_gallery">作家：</string>
+    <string name="tag_character_gallery">角色：</string>
+    <string name="tag_parody_gallery">原作：</string>
+    <string name="tag_language_gallery">語言：</string>
+    <string name="tag_category_gallery">類別：</string>
+    <string name="tag_group_gallery">社團：</string>
+    <string name="ok">好的</string>
+    <string name="cancel">取消</string>
+    <string name="no">不</string>
+    <string name="yes">是</string>
 
     <string-array name="language">
-        <item>English</item>
-        <item>Chinese Traditional</item>
-        <item>Chinese Simplified</item>
+        <item>英文</item>
+        <item>繁體中文</item>
+        <item>簡體中文</item>
     </string-array>
     <string-array name="theme">
-        <item>Light</item>
-        <item>Dark</item>
-        <item>Black</item>
+        <item>亮色</item>
+        <item>暗色</item>
+        <item>黑色</item>
     </string-array>
     <string-array name="title_type_array">
-        <item>English</item>
-        <item>Japanese</item>
-        <item>Pretty</item>
+        <item>英文</item>
+        <item>日文</item>
+        <item>美觀</item>
     </string-array>
+
 
 </resources>
