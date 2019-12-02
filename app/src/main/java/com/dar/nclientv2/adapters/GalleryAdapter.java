@@ -116,20 +116,29 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     }
 
     private void loadTagLayout(ViewHolder holder){
+            int x[]={
+                    R.string.unknown,
+                    R.string.tag_parody_gallery,
+                    R.string.tag_character_gallery,
+                    R.string.tag_tag_gallery,
+                    R.string.tag_artist_gallery,
+                    R.string.tag_group_gallery,
+                    R.string.tag_language_gallery,
+                    R.string.tag_category_gallery,
+            };
             final ViewGroup vg=(ViewGroup)holder.master;
-            int i=0,len;
+            int i=0,len,j=0,y;
             ConstraintLayout lay;
             ChipGroup cg;
             Gallery gallery=(Gallery)this.gallery;
             for(TagType type:TagType.values()){
+                y=x[j++];
                 len=gallery.getTagCount(type);
                 lay=(ConstraintLayout)vg.getChildAt(i++);
                 cg=lay.findViewById(R.id.chip_group);
                 if(cg.getChildCount()!=0)continue;
                 lay.setVisibility(len==0?View.GONE:View.VISIBLE);
-                String s=type.name();
-                s=s.charAt(0)+s.substring(1).toLowerCase(Locale.US)+":";
-                ((TextView)lay.findViewById(R.id.title)).setText(s);
+                ((TextView)lay.findViewById(R.id.title)).setText(y);
                 for(int a=0;a<len;a++){
                     final Tag tag=gallery.getTag(type,a);
                     Chip c=(Chip)context.getLayoutInflater().inflate(R.layout.chip_layout,cg,false);

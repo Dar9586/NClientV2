@@ -261,10 +261,14 @@
     <string name="setting_on_show_titles">Gallery titles will be shown</string>
     <string name="setting_off_show_titles">Gallery titles will be hidden</string>
     <string name="show_gallery_titles">Show gallery titles</string>
-    <string translatable="false" name="key_four_column">four_column</string>
-    <string name="setting_on_four_column">4 column will be used while in landscape</string>
-    <string name="setting_off_four_column">3 column will be used while in landscape</string>
-    <string name="use_four_column">Use 4 column in landscape</string>
+    <string translatable="false" name="key_four_column_port">four_column_port</string>
+    <string translatable="false" name="key_four_column_land">four_column</string>
+    <string name="setting_on_four_column_port">2 column will be used while in portrait</string>
+    <string name="setting_off_four_column_port">3 column will be used while in portrait</string>
+    <string name="setting_on_four_column_land">4 column will be used while in landscape</string>
+    <string name="setting_off_four_column_land">3 column will be used while in landscape</string>
+    <string name="use_four_column_port">Use 2 column in portrait</string>
+    <string name="use_four_column_land">Use 4 column in landscape</string>
     <string translatable="false" name="key_language">key_language</string>
     <string name="change_language">Change language</string>
 
@@ -274,6 +278,7 @@
     <string name="tag_language_gallery">Language:</string>
     <string name="tag_category_gallery">Category:</string>
     <string name="tag_group_gallery">Group:</string>
+    <string name="tag_tag_gallery">Tag:</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="no">No</string>

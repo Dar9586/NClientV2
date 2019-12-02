@@ -28,7 +28,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
     protected void changeLayout(boolean landscape){
-        final int count=landscape? Global.isFourColumn()?4:3:2;
+        final int count=landscape? Global.isFourColumnLand()?4:3:Global.isFourColumnPort()?2:3;
         int first=recycler.getLayoutManager()==null?0:((GridLayoutManager)recycler.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
         RecyclerView.Adapter adapter=recycler.getAdapter();
         GridLayoutManager gridLayoutManager=new GridLayoutManager(this,count);

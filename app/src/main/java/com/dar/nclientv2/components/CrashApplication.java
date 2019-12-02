@@ -53,6 +53,7 @@ public class CrashApplication extends Application{
                     getSharedPreferences("Settings", 0).edit().putString(getString(R.string.key_language),"zh").commit();
         }
         Global.setLastVersion(this);
+
     }
     private void fixUpdateFolder(){
         if(!Global.hasStoragePermission(this))return;

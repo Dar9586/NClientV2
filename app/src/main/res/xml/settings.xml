@@ -51,10 +51,16 @@
             android:title="@string/show_gallery_titles" />
         <SwitchPreference
             android:defaultValue="true"
-            android:key="@string/key_four_column"
-            android:summaryOn="@string/setting_on_four_column"
-            android:summaryOff="@string/setting_off_four_column"
-            android:title="@string/use_four_column" />
+            android:key="@string/key_four_column_port"
+            android:summaryOn="@string/setting_on_four_column_port"
+            android:summaryOff="@string/setting_off_four_column_port"
+            android:title="@string/use_four_column_port" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/key_four_column_land"
+            android:summaryOn="@string/setting_on_four_column_land"
+            android:summaryOff="@string/setting_off_four_column_land"
+            android:title="@string/use_four_column_land" />
     </PreferenceCategory>
 
     <PreferenceCategory

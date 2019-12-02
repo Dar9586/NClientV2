@@ -77,18 +77,32 @@ public class Global {
     public enum ThemeScheme{LIGHT,DARK,BLACK}
 
     public static OkHttpClient client=null;
-    public static final File OLD_GALLERYFOLDER=new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"NClientV2");
-    public static final File MAINFOLDER=new File(Environment.getExternalStorageDirectory(),"NClientV2");
-    public static final File DOWNLOADFOLDER=new File(MAINFOLDER,"Download");
-    public static final File SCREENFOLDER =new File(MAINFOLDER,"Screen");
-    public static final File PDFFOLDER =new File(MAINFOLDER,"PDF");
-    public static final File UPDATEFOLDER =new File(MAINFOLDER,"Update");
+    public static  File OLD_GALLERYFOLDER;
+    public static  File MAINFOLDER;
+    public static  File DOWNLOADFOLDER;
+    public static  File SCREENFOLDER;
+    public static  File PDFFOLDER;
+    public static  File UPDATEFOLDER;
+
+    private static void initFilesTree(Context context){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+            MAINFOLDER=new File(context.getExternalFilesDir(null),"NClientV2");
+        }else{
+            MAINFOLDER=new File(Environment.getExternalStorageDirectory(),"NClientV2");
+        }
+        OLD_GALLERYFOLDER=new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),"NClientV2");
+        DOWNLOADFOLDER=new File(MAINFOLDER,"Download");
+        SCREENFOLDER =new File(MAINFOLDER,"Screen");
+        PDFFOLDER =new File(MAINFOLDER,"PDF");
+        UPDATEFOLDER =new File(MAINFOLDER,"Update");
+    }
+
 
     public static final String LOGTAG="NCLIENTLOG";
     public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf";
     private static Language onlyLanguage=null;
     private static TitleType titleType;
-    private static boolean byPopular,keepHistory,fourColumn,loadImages,highRes,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
+    private static boolean byPopular,keepHistory,fourColumnPort,fourColumnLand,loadImages,highRes,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
     private static ThemeScheme theme;
     private static int notificationId,columnCount,maxId,galleryWidth=-1, galleryHeight =-1;
 
@@ -137,7 +151,8 @@ public class Global {
         loadImages=shared.getBoolean(context.getString(R.string.key_load_images),true);
         columnCount=shared.getInt(context.getString(R.string.key_column_count),2);
         showTitles=shared.getBoolean(context.getString(R.string.key_show_titles),true);
-        fourColumn=shared.getBoolean(context.getString(R.string.key_four_column),true);
+        fourColumnLand=shared.getBoolean(context.getString(R.string.key_four_column_land),true);
+        fourColumnPort=shared.getBoolean(context.getString(R.string.key_four_column_port),true);
         maxId=shared.getInt(context.getString(R.string.key_max_id),291738);
         int x=shared.getInt(context.getString(R.string.key_only_language),-1);
         onlyLanguage=x==-1?null:Language.values()[x];
@@ -201,8 +216,12 @@ public class Global {
         return onlyTag;
     }
 
-    public static boolean isFourColumn() {
-        return fourColumn;
+    public static boolean isFourColumnLand() {
+        return fourColumnLand;
+    }
+
+    public static boolean isFourColumnPort() {
+        return fourColumnPort;
     }
 
     public static boolean isKeepHistory() {
@@ -235,11 +254,16 @@ public class Global {
 
     public static void initStorage(Context context){
         if(!Global.hasStoragePermission(context))return;
-        Global.MAINFOLDER.mkdirs();
-        Global.DOWNLOADFOLDER.mkdir();
-        Global.PDFFOLDER.mkdir();
-        Global.UPDATEFOLDER.mkdir();
-        Global.SCREENFOLDER.mkdir();
+        Global.initFilesTree(context);
+        Log.d(Global.LOGTAG,
+                "0:"+context.getFilesDir()+'\n'+
+                "1:"+Global.MAINFOLDER+Global.MAINFOLDER.mkdirs()+'\n'+
+                "2:"+Global.DOWNLOADFOLDER+Global.DOWNLOADFOLDER.mkdir()+'\n'+
+                "3:"+Global.PDFFOLDER+Global.PDFFOLDER.mkdir()+'\n'+
+                "4:"+Global.UPDATEFOLDER+Global.UPDATEFOLDER.mkdir()+'\n'+
+                "5:"+Global.SCREENFOLDER+Global.SCREENFOLDER.mkdir()+'\n'
+        );
+
         try {
             new File(Global.DOWNLOADFOLDER,".nomedia").createNewFile();
         } catch (IOException e) {e.printStackTrace();}

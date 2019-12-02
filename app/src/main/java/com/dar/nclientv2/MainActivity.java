@@ -106,6 +106,7 @@ public class MainActivity extends BaseActivity
                 startActivity(intent);
                 finish();
             });
+            Log.d(Global.LOGTAG,"STARTED");
         }
         @Override
         public void onStart() {
@@ -139,25 +140,24 @@ public class MainActivity extends BaseActivity
             status=MainStatus.TAG;
         }else if(getIntent().getBooleanExtra(getPackageName()+".SEARCHSTART",false)){//Search
             String query=getIntent().getStringExtra(getPackageName()+".QUERY");
-
+            boolean ok=false;
+            status = MainStatus.SEARCH;
             try {
                 int id=Integer.parseInt(query);
                 if(id>0&&id<=Global.getMaxId()){
-                    InspectorV3.galleryInspector(this, id, startGallery );
-                    finish();
-                    return;
+                    inspector= InspectorV3.galleryInspector(this, id, startGallery );
+                    ok=true;
                 }
             }catch (NumberFormatException ignore){}
-
-            if(query!=null)query=query.trim();
-            boolean advanced=getIntent().getBooleanExtra(getPackageName()+".ADVANCED",false);
-            HashSet<Tag>tags=null;
-            if(advanced){
-                tags=new HashSet<>(getIntent().getParcelableArrayListExtra(getPackageName()+".TAGS"));
+            if(!ok) {
+                if (query != null) query = query.trim();
+                boolean advanced = getIntent().getBooleanExtra(getPackageName() + ".ADVANCED", false);
+                HashSet<Tag> tags = null;
+                if (advanced) {
+                    tags = new HashSet<>(getIntent().getParcelableArrayListExtra(getPackageName() + ".TAGS"));
+                }
+                inspector = InspectorV3.searchInspector(this, query, tags, 1, Global.isByPopular(), resetDataset);
             }
-            inspector=InspectorV3.searchInspector(this,query,tags,1,Global.isByPopular(),resetDataset);
-            status=MainStatus.SEARCH;
-
         } else if(getIntent().getBooleanExtra(getPackageName()+".FAVORITE",false)){//Online favorite
             inspector=InspectorV3.favoriteInspector(this,null,1,resetDataset);
             status=MainStatus.FAVORITE;
@@ -319,6 +319,7 @@ public class MainActivity extends BaseActivity
     }
 
     private void loadStringLogin() {
+        if(loginItem==null)return;
         if(com.dar.nclientv2.settings.Login.getUser()!=null)loginItem.setTitle(getString(R.string.login_formatted, com.dar.nclientv2.settings.Login.getUser().getUsername()));
         else loginItem.setTitle(com.dar.nclientv2.settings.Login.isLogged()?R.string.logout :R.string.login);
 

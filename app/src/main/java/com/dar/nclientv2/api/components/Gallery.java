@@ -71,7 +71,6 @@ public class Gallery extends GenericGallery{
     private final String[] titles=new String[]{"","",""};
     private List<Gallery>related;
     private List<Comment>comments;
-    private String scanlator;
     private Tag[][] tags;
     //true=jpg, false=png
     private ImageExt cover,thumbnail;
@@ -87,7 +86,6 @@ public class Gallery extends GenericGallery{
         titles[1]=cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.TITLE_PRETTY));
         titles[2]=cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.TITLE_ENG));
         uploadDate=new Date(cursor.getLong(Queries.getColumnFromName(cursor,Queries.GalleryTable.UPLOAD)));
-        scanlator=cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.SCANLATOR));
         maxSize=new Size(
                 cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.MAX_WIDTH)),
                 cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.MAX_HEIGHT))
@@ -228,7 +226,6 @@ public class Gallery extends GenericGallery{
         pageCount=in.readInt();
         mediaId=in.readInt();
         in.readStringArray(titles);
-        scanlator=in.readString();
         cover=ImageExt.values()[in.readByte()];
         thumbnail=ImageExt.values()[in.readByte()];
         byte array[]=new byte[pageCount];
@@ -277,7 +274,6 @@ public class Gallery extends GenericGallery{
         dest.writeInt(pageCount);
         dest.writeInt(mediaId);
         dest.writeStringArray(titles);
-        dest.writeString(scanlator);
         dest.writeByte((byte)(cover.ordinal()));
         dest.writeByte((byte)(thumbnail.ordinal()));
         byte[] array=new byte[pages.length];
@@ -320,7 +316,7 @@ public class Gallery extends GenericGallery{
                 case "media_id":mediaId=jr.nextInt();break;
                 case "title":readTitles(jr);break;
                 case "images":readImages(jr); break;
-                case "scanlator":scanlator=jr.nextString();break;
+                case "scanlator":jr.skipValue();break;
                 case "tags":readTags(jr);break;
                 case "id":id=jr.nextInt();break;
                 case "num_pages":pageCount=jr.nextInt();break;
@@ -401,7 +397,6 @@ public class Gallery extends GenericGallery{
                 append(", pageCount=").append(pageCount)
                 .append(", mediaId=").append(mediaId)
                 .append(", titles=").append(Arrays.toString(titles))
-                .append(", scanlator='").append(scanlator).append('\'')
                 .append(", tags={");
         int len=tags.length;
                 for(int a=0;a<len;a++){
@@ -546,10 +541,6 @@ public class Gallery extends GenericGallery{
 
     public int getMediaId() {
         return mediaId;
-    }
-
-    public String getScanlator() {
-        return scanlator;
     }
 
     public String[] getTitles() {

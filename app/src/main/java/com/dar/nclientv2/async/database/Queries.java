@@ -84,7 +84,7 @@ public class Queries{
                 "`scanlator` TINYTEXT NOT NULL , " +
                 "`pages` TEXT NOT NULL," +
                 "`upload` UNSIGNED BIG INT," +
-                "`favorite` TINYINT(1) NOT NULL" +
+                "`favorite` TINYINT(1) NOT NULL," +
                 "`maxW` INT NOT NULL," +
                 "`maxH` INT NOT NULL," +
                 "`minW` INT NOT NULL," +
@@ -172,7 +172,7 @@ public class Queries{
             values.put(TITLE_PRETTY,gallery.getTitle(TitleType.PRETTY));
             values.put(FAVORITE_COUNT,gallery.getFavoriteCount());
             values.put(MEDIAID,gallery.getMediaId());
-            values.put(SCANLATOR,gallery.getScanlator());
+            values.put(SCANLATOR,"");
             values.put(PAGES,gallery.createPagePath());
             values.put(UPLOAD,gallery.getUploadDate()==null?null:gallery.getUploadDate().getTime());
             values.put(FAVORITE,0);
