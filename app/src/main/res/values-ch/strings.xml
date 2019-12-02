@@ -7,11 +7,11 @@
     <string name="setting_off_hide_save">保存的圖像會在畫廊中顯示</string>
     <string name="setting_on_ignore_tags">從畫廊功能表中選中一個標籤時不再詢問其它標籤（語言除外）</string>
     <string name="setting_off_ignore_tags">從畫廊功能表中選中一個標籤時詢問其它標籤</string>
-    <string name="setting_on_high_res">載入最佳解析度圖像（更多資料量）</string>
-    <string name="setting_off_high_res">載入預覽圖（較少數據量）</string>
+    <string name="setting_on_high_res">載入原圖（更多資料量）</string>
+    <string name="setting_off_high_res">載入預覽圖（較少資料量）</string>
     <string name="setting_on_load">所有活動均載入圖像</string>
     <string name="setting_off_load">僅單頁閱讀時載入圖像</string>
-    <string name="setting_on_use_account_tag">將帳戶標籤用於搜索查詢（本地標籤優先）</string>
+    <string name="setting_on_use_account_tag">帳戶標籤用於搜索查詢（本地標籤優先）</string>
     <string name="image_quality_summary">用百分比表示已下載畫廊的解析度品質</string>
     <string name="setting_off_use_account_tag">搜索查詢時忽略帳戶標籤</string>
     <string name="setting_on_infinite_scroll">到達底部時載入另一頁</string>
@@ -27,7 +27,7 @@
     <string name="load_images">載入圖像</string>
     <string name="infinite_scroll">無限滾動</string>
     <string name="ignore_tags">忽略其它標籤</string>
-    <string name="high_res_gallery">在畫廊中以最佳解析度載入圖像</string>
+    <string name="high_res_gallery">以最佳解析度載入畫廊圖像</string>
     <string name="hide_saved_images">在畫廊中隱藏保存的圖像</string>
     <string name="use_account_tag">使用帳戶標籤</string>
     <string name="image_quality">圖像品質</string>
@@ -242,8 +242,8 @@
     <string name="tag_group_gallery">社團：</string>
     <string name="ok">好的</string>
     <string name="cancel">取消</string>
-    <string name="no">不</string>
-    <string name="yes">是</string>
+    <string name="no">不要</string>
+    <string name="yes">是的</string>
 
     <string-array name="language">
         <item>英文</item>
