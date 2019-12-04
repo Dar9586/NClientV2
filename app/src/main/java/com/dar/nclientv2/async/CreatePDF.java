@@ -18,6 +18,7 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.FileProvider;
 
 import com.dar.nclientv2.R;
+import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.settings.Global;
 
 import java.io.File;
@@ -38,16 +39,16 @@ public class CreatePDF extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         notId=Global.getNotificationId();
         System.gc();
-        File file=new File(intent.getStringExtra(getPackageName()+".PATH"));
-        totalPage=intent.getIntExtra(getPackageName()+".PAGES",1);
-        preExecute(file);
+        LocalGallery gallery=intent.getParcelableExtra(getPackageName()+".GALLERY");
+        preExecute(gallery.getDirectory());
         PdfDocument document = new PdfDocument();
-        File files[]=file.listFiles((dir, name) -> (name.endsWith(".jpg")||name.endsWith(".png")||name.endsWith(".gif"))&&name.length()==7);
-        int len=files.length;
-        for(int a=0;a< len;a++){
+        File page;
+        for(int a=0;a< gallery.getPageCount();a++){
+            page=gallery.getPage(a);
+            if(page==null)continue;
             BitmapFactory.Options options=new BitmapFactory.Options();
             options.inSampleSize=2;
-            Bitmap bitmap=BitmapFactory.decodeFile(files[a].getAbsolutePath(),options);
+            Bitmap bitmap=BitmapFactory.decodeFile(page.getAbsolutePath(),options);
             if(bitmap!=null) {
                 PdfDocument.PageInfo info = new PdfDocument.PageInfo.Builder(bitmap.getWidth(), bitmap.getHeight(), a).create();
                 PdfDocument.Page p = document.startPage(info);
@@ -66,7 +67,7 @@ public class CreatePDF extends IntentService {
 
             File finalPath=Global.PDFFOLDER;
             finalPath.mkdirs();
-            finalPath=new File(finalPath,file.getName()+".pdf");
+            finalPath=new File(finalPath,gallery.getTitle()+".pdf");
             finalPath.createNewFile();
             Log.d(Global.LOGTAG,"Generating PDF at: "+finalPath);
             FileOutputStream out = new FileOutputStream(finalPath);
@@ -75,7 +76,7 @@ public class CreatePDF extends IntentService {
             document.close();
             notification.setProgress(0,0,false);
             notification.setContentTitle(getString(R.string.created_pdf));
-            notification.setContentText(file.getName());
+            notification.setContentText(gallery.getTitle());
             Intent i = new Intent(Intent.ACTION_VIEW);
             Uri apkURI = FileProvider.getUriForFile(
                     getApplicationContext(),getApplicationContext().getPackageName() + ".provider", finalPath);

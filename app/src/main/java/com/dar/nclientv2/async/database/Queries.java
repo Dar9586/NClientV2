@@ -211,7 +211,7 @@ public class Queries{
             int val=isFavorite(db,gallery.getId());
             if(!isFavorite(val,online))return;
             val-=online?2:1;
-            if(val==0)delete(db,gallery);
+            if(val==0)delete(db,gallery.getId());
             else{
                 values.put(FAVORITE, val);
                 db.update(TABLE_NAME, values, IDGALLERY + "=?", new String[]{"" + gallery.getId()});
@@ -236,8 +236,8 @@ public class Queries{
             cursor.close();
             return b;
         }
-        public static void delete(SQLiteDatabase db,Gallery gallery){
-            db.delete(TABLE_NAME, IDGALLERY +"=?",new String[]{""+gallery.getId()});
+        public static void delete(SQLiteDatabase db,int id){
+            db.delete(TABLE_NAME, IDGALLERY +"=?",new String[]{""+id});
         }
 
         public static int countFavorite(SQLiteDatabase db){
@@ -273,7 +273,13 @@ public class Queries{
     public static class TagTable{
         static final String TABLE_NAME="Tags";
         public static final String DROP_TABLE= "DROP TABLE IF EXISTS "+ TABLE_NAME;
-        static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `Tags` ( `idTag` INT  NOT NULL PRIMARY KEY, `name` TEXT NOT NULL , `type` TINYINT(1) NOT NULL , `count` INT NOT NULL,`status` TINYINT(1) NOT NULL,`online` TINYINT(1) NOT NULL DEFAULT 0);";
+        static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `Tags` (" +
+                " `idTag` INT  NOT NULL PRIMARY KEY," +
+                " `name` TEXT NOT NULL , " +
+                "`type` TINYINT(1) NOT NULL , " +
+                "`count` INT NOT NULL," +
+                "`status` TINYINT(1) NOT NULL," +
+                "`online` TINYINT(1) NOT NULL DEFAULT 0);";
 
         static final String IDTAG="idTag";
         static final String NAME="name";
@@ -470,6 +476,40 @@ public class Queries{
             return tags;
         }
     }
+    public static class DownloadTable{
+        static final String TABLE_NAME="Downloads";
+
+        public static final String DROP_TABLE= "DROP TABLE IF EXISTS "+ TABLE_NAME;
+        public static final String ID_GALLERY= "id_gallery";
+
+        static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `Downloads` (" +
+                "`id_gallery` INT NOT NULL PRIMARY KEY , " +
+                "FOREIGN KEY(`id_gallery`) REFERENCES `Gallery`(`idGallery`) ON UPDATE CASCADE ON DELETE CASCADE" +
+                "); ";
+        public static void addGallery(SQLiteDatabase db,Gallery gallery){
+            if(!gallery.isComplete())return;
+            Queries.GalleryTable.insert(db,gallery);
+            ContentValues values=new ContentValues(1);
+            values.put(ID_GALLERY,gallery.getId());
+            db.insertWithOnConflict(TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_IGNORE);
+        }
+        public static void removeGallery(SQLiteDatabase db,int id){
+            int f=Queries.GalleryTable.isFavorite(db,id);
+            if(f==0) Queries.GalleryTable.delete(db,id);
+            db.delete(TABLE_NAME,ID_GALLERY+"=?",new String[]{""+id});
+        }
+        public static List<Gallery>getAllDownloads(SQLiteDatabase db) throws IOException {
+            String query="SELECT * FROM "+GalleryTable.TABLE_NAME+" WHERE "+GalleryTable.IDGALLERY+" IN (SELECT * FROM "+TABLE_NAME+")";
+            Cursor c=db.rawQuery(query,null);
+            List<Gallery>galleries=new ArrayList<>(c.getCount());
+            if(c.moveToFirst()){
+               do{
+                   galleries.add(Queries.GalleryTable.cursorToGallery(db,c));
+               }while (c.moveToNext());
+            }
+            return galleries;
+        }
+    }
     public static class BookmarkTable{
         static final String TABLE_NAME="Bookmark";
         public static final String DROP_TABLE= "DROP TABLE IF EXISTS "+ TABLE_NAME;
@@ -477,7 +517,12 @@ public class Queries{
         static final String PAGE="page";
         static final String TYPE="type";
         static final String TAG_ID="tagId";
-        static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `Bookmark`(`url` TEXT NOT NULL UNIQUE,`page` INT NOT NULL,`type` INT NOT NULL,`tagId` INT NOT NULL);";
+        static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `Bookmark`(" +
+                "`url` TEXT NOT NULL UNIQUE," +
+                "`page` INT NOT NULL," +
+                "`type` INT NOT NULL," +
+                "`tagId` INT NOT NULL" +
+                ");";
 
         public static void deleteBookmark(SQLiteDatabase db,String url){
             Log.d(Global.LOGTAG,"Deleted: "+ db.delete(TABLE_NAME,URL+"=?",new String[]{url}));
@@ -516,7 +561,12 @@ public class Queries{
     static class GalleryBridgeTable {
         static final String TABLE_NAME="GalleryTags";
         public static final String DROP_TABLE= "DROP TABLE IF EXISTS "+ TABLE_NAME;
-        static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `GalleryTags` (`id_gallery` INT NOT NULL , `id_tag` INT NOT NULL ,PRIMARY KEY (`id_gallery`, `id_tag`), FOREIGN KEY(`id_gallery`) REFERENCES `Gallery`(`idGallery`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`id_tag`) REFERENCES `Tags`(`idTag`) ON UPDATE CASCADE ON DELETE RESTRICT );";
+        static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `GalleryTags` (" +
+                "`id_gallery` INT NOT NULL , " +
+                "`id_tag` INT NOT NULL ," +
+                "PRIMARY KEY (`id_gallery`, `id_tag`), " +
+                "FOREIGN KEY(`id_gallery`) REFERENCES `Gallery`(`idGallery`) ON UPDATE CASCADE ON DELETE CASCADE , " +
+                "FOREIGN KEY(`id_tag`) REFERENCES `Tags`(`idTag`) ON UPDATE CASCADE ON DELETE RESTRICT );";
 
         static final String ID_GALLERY="id_gallery";
         static final String ID_TAG="id_tag";

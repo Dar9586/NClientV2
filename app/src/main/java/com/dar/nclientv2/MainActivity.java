@@ -30,6 +30,7 @@ import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
+import com.dar.nclientv2.async.DownloadGallery;
 import com.dar.nclientv2.async.ScrapeTags;
 import com.dar.nclientv2.async.VersionChecker;
 import com.dar.nclientv2.async.database.Queries;
@@ -446,6 +447,7 @@ public class MainActivity extends BaseActivity
         }else {
             Global.setTint(menu.findItem(R.id.search).getIcon());
         }
+        Global.setTint(menu.findItem(R.id.download_page).getIcon());
         Global.setTint(menu.findItem(R.id.open_browser).getIcon());
         Global.setTint(menu.findItem(R.id.by_popular).getIcon());
         Global.setTint(menu.findItem(R.id.add_bookmark).getIcon());
@@ -512,6 +514,10 @@ public class MainActivity extends BaseActivity
                     i = new Intent(Intent.ACTION_VIEW,Uri.parse(inspector.getUrl()));
                     startActivity(i);
                 }
+                break;
+            case R.id.download_page:
+                for(Gallery g:inspector.getGalleries())
+                    DownloadGallery.download(this,g,true);
                 break;
             case R.id.add_bookmark:
                 Queries.BookmarkTable.addBookmark(Database.getDatabase(),inspector);
@@ -586,6 +592,10 @@ public class MainActivity extends BaseActivity
                 break;
             case R.id.bookmarks:
                 intent=new Intent(this,BookmarkActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.downloads:
+                intent=new Intent(this,DownloadManagerActivity.class);
                 startActivity(intent);
                 break;
             case R.id.favorite_manager:

@@ -36,6 +36,8 @@ public class LocalActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        menu.findItem(R.id.download_page).setVisible(false);
+        menu.findItem(R.id.add_bookmark).setVisible(false);
         menu.findItem(R.id.by_popular).setVisible(false);
         menu.findItem(R.id.only_language).setVisible(false);
         menu.findItem(R.id.open_browser).setVisible(false);

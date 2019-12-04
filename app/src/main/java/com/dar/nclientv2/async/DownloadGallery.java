@@ -3,6 +3,7 @@ package com.dar.nclientv2.async;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +19,8 @@ import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.local.LocalGallery;
+import com.dar.nclientv2.async.database.Queries;
+import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
 
 import java.io.File;
@@ -32,25 +35,102 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class DownloadGallery extends IntentService {
+    public static void givePriority(GalleryDownloader downloader) {
+        galleries.remove(downloader);
+        galleries.add(0,downloader);
+        priority=true;
+    }
+
+    public static void clear() {
+        while(galleries.size()>0)removeGallery(galleries.get(0));
+    }
+
+    public interface DownloadObserver{
+        void triggerStartDownload(GalleryDownloader downloader);
+        void triggerUpdateProgress(GalleryDownloader downloader);
+        void triggerEndDownload(GalleryDownloader downloader);
+    }
+    private static DownloadObserver observer;
+    private static List<GalleryDownloader>galleries=new ArrayList<>();
+    private static boolean running=false,priority=false;
+    GalleryDownloader galleryDownloader;
     Gallery gallery;
     NotificationManagerCompat notificationManager;
     NotificationCompat.Builder notification;
-    private int notificationId;
     private File folder;
     private List<String> urls=new ArrayList<>();
     private boolean stopSignal=false;
 
+    public static void setObserver(DownloadObserver observer) {
+        DownloadGallery.observer = observer;
+    }
+    public static void removeObserver(){
+        DownloadGallery.observer=null;
+    }
+
     public DownloadGallery() {
         super("Download Gallery");
     }
+    public static void download(Context context, Gallery gallery,boolean start){
+        galleries.add(new GalleryDownloader(gallery,start? GalleryDownloader.Status.NOT_STARTED: GalleryDownloader.Status.PAUSED));
+        if(!running) {
+            Intent i = new Intent(context, DownloadGallery.class);
+            context.startService(i);
+        }
+    }
+    public static void download(Context context, int id,boolean start){
+        galleries.add(new GalleryDownloader(id,start? GalleryDownloader.Status.NOT_STARTED: GalleryDownloader.Status.PAUSED));
+        if(!running) {
+            Intent i = new Intent(context, DownloadGallery.class);
+            context.startService(i);
+        }
+    }
+    public static void loadDownloads(Context context){
+        try {
+            List<Gallery>g=Queries.DownloadTable.getAllDownloads(Database.getDatabase());
+            for(Gallery gg:g)download(context,gg,false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+    }
+    private GalleryDownloader takeNext(){
+        for(GalleryDownloader d:galleries){
+            if(d.getStatus()== GalleryDownloader.Status.PAUSED)continue;
+            try {
+                d.completeGallery();
+                return d;
+            }catch (IOException ignore){}
+        }
+        return null;
+    }
+    private void sleep(int time){
+        try { Thread.sleep(time); } catch (InterruptedException ignore) {}
+    }
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        gallery=intent.getParcelableExtra(getPackageName()+".GALLERY");
-        folder=new File(Global.DOWNLOADFOLDER,gallery.getSafeTitle().replace('/','_').replaceAll("[|\\\\?*<\":>+\\[\\]/']","_"));
-        prepareNotification();
-        downloadPages();
-        endDownload();
+        running=true;
+        while(galleries.size()>0) {
+            stopSignal=false;
+            sleep(100);
+            galleryDownloader = takeNext();
+            if(galleryDownloader==null){
+                sleep(2500);
+                continue;
+            }
+            galleryDownloader.setStatus(GalleryDownloader.Status.DOWNLOADING);
+            gallery=galleryDownloader.getGallery();
+            if(observer!=null)observer.triggerStartDownload(galleryDownloader);
+            folder = new File(Global.DOWNLOADFOLDER, gallery.getSafeTitle().replace('/', '_').replaceAll("[|\\\\?*<\":>+\\[\\]/']", "_"));
+            prepareNotification();
+            downloadPages();
+            if(galleryDownloader.getStatus()!= GalleryDownloader.Status.PAUSED)endDownload();
+            if(priority){
+                galleryDownloader.setStatus(GalleryDownloader.Status.NOT_STARTED);
+                priority=false;
+            }
+        }
+        running=false;
     }
     private void createNoMedia(){
         File nomedia=new File(folder,".nomedia");
@@ -73,7 +153,6 @@ public class DownloadGallery extends IntentService {
     private void prepareNotification() {
         notificationManager = NotificationManagerCompat.from(getApplicationContext());
         notification=new NotificationCompat.Builder(getApplicationContext(), Global.CHANNEL_ID1);
-        notificationId=Global.getNotificationId();
         addStopButton();
         notification.setOnlyAlertOnce(true)
                 .setContentTitle(String.format(Locale.US,"Downloading: %s",gallery.getTitle()))
@@ -85,22 +164,25 @@ public class DownloadGallery extends IntentService {
     }
 
     private void notificationUpdate() {
-        notificationManager.notify(getString(R.string.channel1_name),notificationId,notification.build());
+        notificationManager.notify(getString(R.string.channel1_name),galleryDownloader.notificationId,notification.build());
     }
     private void downloadPages() {
         folder.mkdirs();
         createNoMedia();
-
+        galleryDownloader.setProgress(0);
         for(int i=0;i<gallery.getPageCount();i++)urls.add(gallery.getPage(i));
 
-        int i=0;
         while(!stopSignal&&!urls.isEmpty()){
-            File actualPage=getFilename(i+1);
-
+            File actualPage=getFilename(galleryDownloader.getProgress()+1);
             try {
-                if((actualPage.exists()&&!isCorrupted(actualPage)) ||saveImage(i,actualPage)){
+                if((actualPage.exists()&&!isCorrupted(actualPage)) ||saveImage(galleryDownloader.getProgress(),actualPage)){
                     urls.remove(0);
-                    setPercentage(++i);
+                    if(priority||galleryDownloader.getStatus()== GalleryDownloader.Status.PAUSED){
+                        galleryDownloader.setStatus(GalleryDownloader.Status.PAUSED);
+                        break;
+                    }
+                    setPercentage(galleryDownloader.incrementProgress());
+                    if(observer!=null)observer.triggerUpdateProgress(galleryDownloader);
                     notificationUpdate();
                 }
             } catch (IOException e) {
@@ -148,7 +230,20 @@ public class DownloadGallery extends IntentService {
         return true;
     }
 
+    public static List<GalleryDownloader> getGalleries() {
+        return galleries;
+    }
+    public static void removeGallery(GalleryDownloader downloader){
+        downloader.setStatus(GalleryDownloader.Status.FINISHED);
+        galleries.remove(downloader);
+
+    }
+
     private void endDownload() {
+
+        galleryDownloader.setStatus(GalleryDownloader.Status.FINISHED);
+        galleries.remove(galleryDownloader);
+        if(observer!=null)observer.triggerEndDownload(galleryDownloader);
         if(stopSignal)notification.setContentTitle(String.format(Locale.US,"Cancelled: %s",gallery.getTitle()));
         else notification.setContentTitle(String.format(Locale.US,"Completed: %s",gallery.getTitle()));
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.JELLY_BEAN)notification.setContentIntent(createIntent());

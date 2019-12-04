@@ -12,7 +12,7 @@ import com.dar.nclientv2.settings.Global;
 
 @SuppressWarnings("deprecation")
 public class DatabaseHelper extends SQLiteOpenHelper{
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
     private static final String DATABASE_NAME = "Entries.db";
     public DatabaseHelper(Context context){
         super(context,DATABASE_NAME,null,DATABASE_VERSION);
@@ -24,6 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         db.execSQL(Queries.TagTable.CREATE_TABLE);
         db.execSQL(Queries.GalleryBridgeTable.CREATE_TABLE);
         db.execSQL(Queries.BookmarkTable.CREATE_TABLE);
+        db.execSQL(Queries.DownloadTable.CREATE_TABLE);
         createLanguageTags(db);
         createCategoryTags(db);
         //Queries.DebugDatabase.dumpDatabase(db);
@@ -54,6 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         if(oldVersion<=3)createCategoryTags(db);
         if(oldVersion<=4)db.execSQL(Queries.BookmarkTable.CREATE_TABLE);
         if(oldVersion<=5)updateGalleryWithSizes(db);
+        if(oldVersion<=6)db.execSQL(Queries.DownloadTable.CREATE_TABLE);
     }
 
     private void updateGalleryWithSizes(SQLiteDatabase db) {

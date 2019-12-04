@@ -116,44 +116,43 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     }
 
     private void loadTagLayout(ViewHolder holder){
-            int x[]={
-                    R.string.unknown,
-                    R.string.tag_parody_gallery,
-                    R.string.tag_character_gallery,
-                    R.string.tag_tag_gallery,
-                    R.string.tag_artist_gallery,
-                    R.string.tag_group_gallery,
-                    R.string.tag_language_gallery,
-                    R.string.tag_category_gallery,
-            };
-            final ViewGroup vg=(ViewGroup)holder.master;
-            int i=0,len,j=0,y;
-            ConstraintLayout lay;
-            ChipGroup cg;
-            Gallery gallery=(Gallery)this.gallery;
-            for(TagType type:TagType.values()){
-                y=x[j++];
-                len=gallery.getTagCount(type);
-                lay=(ConstraintLayout)vg.getChildAt(i++);
-                cg=lay.findViewById(R.id.chip_group);
-                if(cg.getChildCount()!=0)continue;
-                lay.setVisibility(len==0?View.GONE:View.VISIBLE);
-                ((TextView)lay.findViewById(R.id.title)).setText(y);
-                for(int a=0;a<len;a++){
-                    final Tag tag=gallery.getTag(type,a);
-                    Chip c=(Chip)context.getLayoutInflater().inflate(R.layout.chip_layout,cg,false);
-                    //c.setText(context.getString(R.string.tag_format, tag.getName(), tag.getCount()));
-                    c.setText(tag.getName());
-                    c.setOnClickListener(v -> {
-                        Intent intent = new Intent(context, MainActivity.class);
-                        intent.putExtra(context.getPackageName() + ".TAG", tag);
-                        intent.putExtra(context.getPackageName() + ".ISBYTAG", true);
-                        context.startActivity(intent);
-                    });
-                    cg.addView(c);
-                }
-                addInfoLayout(holder,gallery);
+        int[] x = {
+                R.string.unknown,
+                R.string.tag_parody_gallery,
+                R.string.tag_character_gallery,
+                R.string.tag_tag_gallery,
+                R.string.tag_artist_gallery,
+                R.string.tag_group_gallery,
+                R.string.tag_language_gallery,
+                R.string.tag_category_gallery,
+        };
+        final ViewGroup vg=(ViewGroup)holder.master;
+        int i=0,len,j=0,y;
+        ConstraintLayout lay;
+        ChipGroup cg;
+        Gallery gallery=(Gallery)this.gallery;
+        for(TagType type:TagType.values()){
+            y=x[j++];
+            len=gallery.getTagCount(type);
+            lay=(ConstraintLayout)vg.getChildAt(i++);
+            cg=lay.findViewById(R.id.chip_group);
+            if(cg.getChildCount()!=0)continue;
+            lay.setVisibility(len==0?View.GONE:View.VISIBLE);
+            ((TextView)lay.findViewById(R.id.title)).setText(y);
+            for(int a=0;a<len;a++){
+                final Tag tag=gallery.getTag(type,a);
+                Chip c=(Chip)context.getLayoutInflater().inflate(R.layout.chip_layout,cg,false);
+                c.setText(tag.getName());
+                c.setOnClickListener(v -> {
+                    Intent intent = new Intent(context, MainActivity.class);
+                    intent.putExtra(context.getPackageName() + ".TAG", tag);
+                    intent.putExtra(context.getPackageName() + ".ISBYTAG", true);
+                    context.startActivity(intent);
+                });
+                cg.addView(c);
             }
+            addInfoLayout(holder,gallery);
+        }
     }
 
     private void addInfoLayout(ViewHolder holder, Gallery gallery) {
@@ -220,10 +219,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     @Override
     public int getItemCount() {
         return gallery.getPageCount()+(gallery.isLocal()?0:2);
-    }
-
-    private GenericGallery getDataset() {
-        return gallery;
     }
 
 }

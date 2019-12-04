@@ -1,30 +1,31 @@
 <resources>
     <!--KEYS-->
-    <string translatable="false" name="key_title_type">title_type_str</string>
-    <string translatable="false" name="key_by_popular">is_by_popular</string>
-    <string translatable="false" name="key_load_images">load_images</string>
-    <string translatable="false" name="key_column_count">column_count</string>
-    <string translatable="false" name="key_only_language">only_language</string>
-    <string translatable="false" name="key_scraped_characters">scraped_characters</string>
-    <string translatable="false" name="key_image_quality">image_quality</string>
-    <string translatable="false" name="key_scraped_artists">scraped_artists</string>
-    <string translatable="false" name="key_scraped_tags">scraped_tags</string>
-    <string translatable="false" name="key_scraped_parodies">scraped_parodies</string>
-    <string translatable="false" name="key_scraped_group">scraped_group</string>
-    <string translatable="false" name="key_accepted_tags">accepted_tags</string>
-    <string translatable="false" name="key_tag_order">tag_order</string>
-    <string translatable="false" name="key_avoided_tags">avoided_tags</string>
-    <string translatable="false" name="key_min_tag_count">min_tag_count</string>
-    <string translatable="false" name="key_theme_select">theme_select</string>
-    <string translatable="false" name="key_max_id">max_id</string>
-    <string translatable="false" name="key_infinite_scroll">infinite_scroll</string>
-    <string translatable="false" name="key_cache">cache</string>
-    <string translatable="false" name="key_hide_saved_images">hide_saved</string>
-    <string translatable="false" name="key_ignore_tags">ignore_tags</string>
-    <string translatable="false" name="key_high_res_gallery">high_res_gallery</string>
-    <string translatable="false" name="key_favorite_list">favorite_list</string>
-    <string translatable="false" name="key_use_account_tag">use_account_tags</string>
-    <string translatable="false" name="key_send_report">send_report</string>
+    <string name="key_title_type" translatable="false">title_type_str</string>
+    <string name="key_by_popular" translatable="false">is_by_popular</string>
+    <string name="key_load_images" translatable="false">load_images</string>
+    <string name="key_column_count" translatable="false">column_count</string>
+    <string name="key_column_count_general" translatable="false">main_column_count</string>
+    <string name="key_only_language" translatable="false">only_language</string>
+    <string name="key_scraped_characters" translatable="false">scraped_characters</string>
+    <string name="key_image_quality" translatable="false">image_quality</string>
+    <string name="key_scraped_artists" translatable="false">scraped_artists</string>
+    <string name="key_scraped_tags" translatable="false">scraped_tags</string>
+    <string name="key_scraped_parodies" translatable="false">scraped_parodies</string>
+    <string name="key_scraped_group" translatable="false">scraped_group</string>
+    <string name="key_accepted_tags" translatable="false">accepted_tags</string>
+    <string name="key_tag_order" translatable="false">tag_order</string>
+    <string name="key_avoided_tags" translatable="false">avoided_tags</string>
+    <string name="key_min_tag_count" translatable="false">min_tag_count</string>
+    <string name="key_theme_select" translatable="false">theme_select</string>
+    <string name="key_max_id" translatable="false">max_id</string>
+    <string name="key_infinite_scroll" translatable="false">infinite_scroll</string>
+    <string name="key_cache" translatable="false">cache</string>
+    <string name="key_hide_saved_images" translatable="false">hide_saved</string>
+    <string name="key_ignore_tags" translatable="false">ignore_tags</string>
+    <string name="key_high_res_gallery" translatable="false">high_res_gallery</string>
+    <string name="key_favorite_list" translatable="false">favorite_list</string>
+    <string name="key_use_account_tag" translatable="false">use_account_tags</string>
+    <string name="key_send_report" translatable="false">send_report</string>
 
     <!--SUMMARY-->
     <string name="setting_on_hide_save">Saved images won\'t be shown into gallery</string>
@@ -117,9 +118,9 @@
     <string name="add_to_online_blacklist">Add to online blacklist?</string>
     <string name="tag_already_in_blacklist">Tag already in blacklist</string>
 
-    <string translatable="false" name="tag_format" formatted="true">%s (%d)</string>
-    <string translatable="false" name="page_format" formatted="true">%d/%d</string>
-    <string translatable="false" name="percentage_format" formatted="true">%d%%</string>
+    <string name="tag_format" formatted="true" translatable="false">%s (%d)</string>
+    <string name="page_format" formatted="true" translatable="false">%d/%d</string>
+    <string name="percentage_format" formatted="true" translatable="false">%d%%</string>
 
     <string name="are_you_sure">Are you sure?</string>
     <string name="thumbnail">Thumbnail</string>
@@ -163,8 +164,8 @@
     <string name="reset_tags_long">Reset all tags to default value?</string>
     <string name="reload_tags">Reload all tags?</string>
 
-    <string translatable="false" name="page_switcher_placeholder">0/0</string>
-    <string translatable="false" name="page_placeholder">999/999</string>
+    <string name="page_switcher_placeholder" translatable="false">0/0</string>
+    <string name="page_placeholder" translatable="false">999/999</string>
 
 
     <string name="share_with">Share with</string>
@@ -186,7 +187,7 @@
     <string name="upload_date_format" formatted="true">Uploaded on %s at %s</string>
     <string name="favorite_count_format" formatted="true">%d favorites</string>
     <string name="favorite_manga">Favorite manga</string>
-    <string translatable="false" name="key_remove_ignored">remove_ignored</string>
+    <string name="key_remove_ignored" translatable="false">remove_ignored</string>
     <string name="setting_on_remove_ignored">The galleries with ignored tags will not be shown</string>
     <string name="setting_off_remove_ignored">The galleries with ignored tags will be blurred</string>
     <string name="remove_ignored_galleries">Remove ignored galleries</string>
@@ -194,9 +195,9 @@
     <string name="clear_tag_preferences">Clear tag preferences</string>
     <string name="reload_tags_from_web">Reload tags from web</string>
     <string name="load_next_page">Load next page</string>
-    <string translatable="false" name="key_check_update">check_update</string>
+    <string name="key_check_update" translatable="false">check_update</string>
     <string name="check_for_update_on_startup">Check for update on startup</string>
-    <string translatable="false" name="key_update">update</string>
+    <string name="key_update" translatable="false">update</string>
     <string name="check_for_updates">Check for updates</string>
     <string name="no_updates_found">No updates found</string>
     <string name="error_retrieving">Error in retrieving latest version</string>
@@ -214,7 +215,7 @@
     <string name="change_title_type">Change title type</string>
     <string name="title_type_summary">Select the default title type for the galleries</string>
 
-    <string translatable="false" name="app_version_format" formatted="true">NClientV2 %s</string>
+    <string name="app_version_format" formatted="true" translatable="false">NClientV2 %s</string>
     <string name="search_settings">Search settings</string>
     <string name="global_settings">Global settings</string>
     <string name="images_settings">Images settings</string>
@@ -226,13 +227,13 @@
     <string name="sort_by_latest">Sort by latest</string>
     <string name="edit">Edit</string>
     <string name="options">Options</string>
-    <string translatable="false" name="key_keep_history">keep_history</string>
+    <string name="key_keep_history" translatable="false">keep_history</string>
     <string name="setting_on_keep_history">The searches will be stored</string>
     <string name="setting_off_keep_history">The searched will not be stored</string>
     <string name="keep_history">Keep search history</string>
     <string name="add">Add</string>
     <string name="insert_tag_name">Insert tag name:</string>
-    <string translatable="false" name="other">other</string>
+    <string name="other" translatable="false">other</string>
     <string name="cancelling">Cancelling…</string>
     <string name="key_favorite_limit">favorite_limit</string>
     <string name="favorite_count">Favorite count</string>
@@ -254,22 +255,18 @@
     <string name="enable_right_to_left">Enable right to left</string>
     <string name="setting_on_use_rtl">Images will be shown right to left</string>
     <string name="setting_off_use_rtl">Images will be shown left to right</string>
-    <string translatable="false" name="key_use_rtl">use_rtl</string>
+    <string name="key_use_rtl" translatable="false">use_rtl</string>
     <string name="volume_change_setting">Change page with volume buttons</string>
     <string name="popular_tag_count">The number of popular tags shown while in Advanced search</string>
-    <string translatable="false" name="key_show_titles">show_titles</string>
+    <string name="key_show_titles" translatable="false">show_titles</string>
     <string name="setting_on_show_titles">Gallery titles will be shown</string>
     <string name="setting_off_show_titles">Gallery titles will be hidden</string>
     <string name="show_gallery_titles">Show gallery titles</string>
-    <string translatable="false" name="key_four_column_port">four_column_port</string>
-    <string translatable="false" name="key_four_column_land">four_column</string>
-    <string name="setting_on_four_column_port">2 column will be used while in portrait</string>
-    <string name="setting_off_four_column_port">3 column will be used while in portrait</string>
-    <string name="setting_on_four_column_land">4 column will be used while in landscape</string>
-    <string name="setting_off_four_column_land">3 column will be used while in landscape</string>
-    <string name="use_four_column_port">Use 2 column in portrait</string>
-    <string name="use_four_column_land">Use 4 column in landscape</string>
-    <string translatable="false" name="key_language">key_language</string>
+    <string name="key_column_port" translatable="false">column_port</string>
+    <string name="key_column_land" translatable="false">column_land</string>
+    <string name="use_column_port">Select item count per row while in portrait</string>
+    <string name="use_column_land">Select item count per row while in landscape</string>
+    <string name="key_language" translatable="false">key_language</string>
     <string name="change_language">Change language</string>
 
     <string name="tag_artist_gallery">Artist:</string>
@@ -282,7 +279,17 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="no">No</string>
-    <string name="yes">Tes</string>
+    <string name="yes">Yes</string>
+    <string name="manage_downloads">Manage downloads</string>
+    <string name="download_manager">Download manager</string>
+    <string name="select_column_count">Select column count</string>
+    <string name="start_all_downloads">Start all downloads</string>
+    <string name="pause_all_downloads">Pause all downloads</string>
+    <string name="cancel_all_downloads">Cancel all downloads</string>
+    <string translatable="false" name="key_disable_lock">disable_lock</string>
+    <string name="disable_lock_title">Disable screen off while reading</string>
+    <string name="download_all_galleries_in_this_page">Download all galleries in this page</string>
+    <string name="download_all_galleries">Download all galleries</string>
 
     <string-array name="language">
         <item>English</item>

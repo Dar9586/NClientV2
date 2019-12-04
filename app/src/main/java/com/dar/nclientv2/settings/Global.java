@@ -74,6 +74,16 @@ public class Global {
         context.getSharedPreferences("Settings", 0).edit().putString("last_version",getVersionName(context)).apply();
     }
 
+    public static void updateMainColumnCount(Context context, int port, int land) {
+        context.getSharedPreferences("Settings", 0).edit()
+                .putInt(context.getString(R.string.key_column_port),port)
+                .putInt(context.getString(R.string.key_column_land),land)
+                .apply();
+        colLand=land;
+        colPort=port;
+
+    }
+
     public enum ThemeScheme{LIGHT,DARK,BLACK}
 
     public static OkHttpClient client=null;
@@ -102,9 +112,9 @@ public class Global {
     public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf";
     private static Language onlyLanguage=null;
     private static TitleType titleType;
-    private static boolean byPopular,keepHistory,fourColumnPort,fourColumnLand,loadImages,highRes,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
+    private static boolean byPopular,keepHistory,loadImages,highRes,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
     private static ThemeScheme theme;
-    private static int notificationId,columnCount,maxId,galleryWidth=-1, galleryHeight =-1;
+    private static int notificationId,columnCount,maxId,galleryWidth=-1, galleryHeight =-1,colPort,colLand;
 
 
     public static int getGalleryWidth(){
@@ -151,9 +161,10 @@ public class Global {
         loadImages=shared.getBoolean(context.getString(R.string.key_load_images),true);
         columnCount=shared.getInt(context.getString(R.string.key_column_count),2);
         showTitles=shared.getBoolean(context.getString(R.string.key_show_titles),true);
-        fourColumnLand=shared.getBoolean(context.getString(R.string.key_four_column_land),true);
-        fourColumnPort=shared.getBoolean(context.getString(R.string.key_four_column_port),true);
+        lockScreen=shared.getBoolean(context.getString(R.string.key_disable_lock),false);
         maxId=shared.getInt(context.getString(R.string.key_max_id),291738);
+        colPort=shared.getInt(context.getString(R.string.key_column_port),2);
+        colLand=shared.getInt(context.getString(R.string.key_column_land),4);
         int x=shared.getInt(context.getString(R.string.key_only_language),-1);
         onlyLanguage=x==-1?null:Language.values()[x];
 
@@ -216,12 +227,16 @@ public class Global {
         return onlyTag;
     }
 
-    public static boolean isFourColumnLand() {
-        return fourColumnLand;
+    public static boolean isLockScreen() {
+        return lockScreen;
     }
 
-    public static boolean isFourColumnPort() {
-        return fourColumnPort;
+    public static int portColumnCount() {
+        return colPort;
+    }
+
+    public static int landColumnCount() {
+        return colLand;
     }
 
     public static boolean isKeepHistory() {

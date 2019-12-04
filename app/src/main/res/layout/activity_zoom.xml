@@ -6,37 +6,41 @@
     android:theme="@style/DarkTheme"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-        app:elevation="2dp"
-        android:id="@+id/appbar"
-        android:paddingTop="@dimen/status_bar_height"
-        android:background="?attr/colorPrimary"
-        android:alpha="0.75"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent">
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_width="match_parent"/>
-    </com.google.android.material.appbar.AppBarLayout>
+
+
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+
             <com.dar.nclientv2.components.CustomViewPager
 
                 android:id="@+id/container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:fitsSystemWindows="true"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:context=".ZoomActivity" />
+                tools:context=".ZoomActivity">
 
+
+            </com.dar.nclientv2.components.CustomViewPager>
+            <androidx.appcompat.widget.Toolbar
+                android:alpha="0.75"
+                android:layout_marginTop="@dimen/status_bar_height"
+                android:id="@+id/toolbar"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary"
+                android:minHeight="?attr/actionBarSize"
+                android:theme="?attr/actionBarTheme" />
             <include
                 layout="@layout/zoom_manager"
                 android:layout_width="match_parent"

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
@@ -42,6 +43,7 @@ public class GalleryActivity extends BaseActivity{
         super.onCreate(savedInstanceState);
         Global.loadThemeAndLanguage(this);
         setContentView(R.layout.activity_gallery);
+        if(Global.isLockScreen())getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -266,8 +268,6 @@ public class GalleryActivity extends BaseActivity{
                 //new DownloadGallery(this,gallery).start();
     }
     private void downloadGallery(){
-        Intent intent=new Intent(getApplicationContext(), DownloadGallery.class);
-        intent.putExtra(getPackageName()+".GALLERY",gallery);
-        startService(intent);
+        DownloadGallery.download(this, (Gallery) gallery,true);
     }
 }

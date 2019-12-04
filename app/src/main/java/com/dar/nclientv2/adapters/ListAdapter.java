@@ -19,7 +19,6 @@ import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagStatus;
-import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.BaseActivity;
@@ -96,7 +95,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
             holder.overlay.setVisibility((queryString!=null&&ent.hasIgnoredTags(queryString))?View.VISIBLE:View.GONE);
             loadGallery(holder,ent);
             holder.pages.setVisibility(View.GONE);
-            holder.title.setText(ent.getTitle(TitleType.ENGLISH));
+            holder.title.setText(ent.getSafeTitle());
             holder.flag.setVisibility(View.VISIBLE);
             if(Global.getOnlyLanguage()==null||context instanceof GalleryActivity) {
                 switch (ent.getLanguage()) {
@@ -154,7 +153,6 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         mDataset.addAll(galleries);
         Log.d(Global.LOGTAG,String.format("%s,old:%d,new:%d,len%d",this,c,mDataset.size(),galleries.size()));
         context.runOnUiThread(()->notifyItemRangeInserted(c,galleries.size()));
-        //notifyDataSetChanged();
     }
 
     public void restartDataset(List<Gallery> galleries) {

@@ -77,8 +77,7 @@ public class LocalAdapter extends GenericAdapter<LocalGallery>{
         builder.setTitle(R.string.create_pdf).setMessage(context.getString(R.string.create_pdf_format,gallery.getTitle()));
         builder.setPositiveButton(R.string.yes, (dialog, which) -> {
             Intent i=new Intent(context.getApplicationContext(),CreatePDF.class);
-            i.putExtra(context.getPackageName()+".PATH",gallery.getDirectory().getAbsolutePath());
-            i.putExtra(context.getPackageName()+".PAGES",gallery.getPageCount());
+            i.putExtra(context.getPackageName()+".GALLERY",gallery);
             context.startService(i);
         }).setNegativeButton(R.string.no,null).setCancelable(true);
         builder.show();

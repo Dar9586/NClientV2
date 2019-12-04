@@ -51,7 +51,7 @@ public class Gallery extends GenericGallery{
         thumbnail=charToExt(temp.charAt(temp.length()-3));
         cover=ImageExt.JPG;pages=new ImageExt[0];
         titles[TitleType.ENGLISH.ordinal()]=e.getElementsByTag("div").first().text();
-
+        complete=false;
         if(context!=null&&id>Global.getMaxId())Global.updateMaxId(context,id);
     }
     public Gallery(Context context,String x, Elements com, Elements rel) throws IOException{
@@ -64,6 +64,7 @@ public class Gallery extends GenericGallery{
         }
         for(Element e:rel)related.add(new Gallery(context,e));
         parseJSON(reader);
+        complete=true;
     }
     private enum ImageExt{PNG,JPG,GIF}
     private Date uploadDate;
@@ -77,6 +78,7 @@ public class Gallery extends GenericGallery{
     private ImageExt[] pages;
     private Language language= Language.UNKNOWN;
     private Size maxSize=new Size(0,0),minSize=new Size(Integer.MAX_VALUE,Integer.MAX_VALUE);
+    private final boolean complete;
     private static volatile boolean updating=false;
     public Gallery(Cursor cursor, Tag[][] tags) throws IOException{
         id=cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.IDGALLERY));
@@ -103,6 +105,7 @@ public class Gallery extends GenericGallery{
         readPagePath(cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.PAGES)));
         this.tags=tags;
         loadLanguage();
+        complete=true;
     }
 
     private void updateSize() {
@@ -217,6 +220,7 @@ public class Gallery extends GenericGallery{
         }
     }
     private Gallery(Parcel in){
+        complete=in.readByte()==1;
         maxSize=in.readParcelable(Size.class.getClassLoader());
         minSize=in.readParcelable(Size.class.getClassLoader());
         uploadDate=new Date(in.readLong());
@@ -266,6 +270,7 @@ public class Gallery extends GenericGallery{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte((byte) (complete?1:0));
         dest.writeParcelable(maxSize,flags);
         dest.writeParcelable(minSize,flags);
         dest.writeLong(uploadDate==null?0:uploadDate.getTime());
@@ -305,6 +310,7 @@ public class Gallery extends GenericGallery{
         this.comments=comments;
         this.related=related;
         parseJSON(jr);
+        complete = true;
     }
 
     private void parseJSON(JsonReader jr) throws IOException {
@@ -580,5 +586,9 @@ public class Gallery extends GenericGallery{
         if(Global.removeAvoidedGalleries())
             tags.addAll(Arrays.asList(Queries.TagTable.getAllOnlineFavorite(Database.getDatabase())));
         return hasIgnoredTags(TagV2.getQueryString("",tags));
+    }
+
+    public boolean isComplete() {
+        return complete;
     }
 }

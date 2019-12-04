@@ -31,4 +31,10 @@
         android:icon="@drawable/ic_bookmark_border"
         android:title="@string/add_bookmark"
         app:showAsAction="ifRoom|collapseActionView" />
+    <item
+        android:id="@+id/download_page"
+        android:icon="@drawable/ic_file"
+        android:title="@string/download_all_galleries_in_this_page"
+        android:titleCondensed="@string/download_all_galleries"
+        app:showAsAction="never" />
 </menu>

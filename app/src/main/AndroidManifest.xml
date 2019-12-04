@@ -17,7 +17,8 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/LightTheme">
-        <activity android:name=".BookmarkActivity"/>
+        <activity android:name=".DownloadManagerActivity"></activity>
+        <activity android:name=".BookmarkActivity" />
         <activity android:name=".CommentActivity" />
         <activity android:name=".SearchActivity" />
         <activity
@@ -128,7 +129,7 @@
         <activity
             android:name=".FavoriteActivity"
             android:configChanges="orientation|screenSize"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".CopyToClipboardActivity"
             android:icon="@drawable/ic_copy"

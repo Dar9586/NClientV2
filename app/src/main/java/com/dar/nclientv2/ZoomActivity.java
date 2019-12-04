@@ -84,6 +84,7 @@ public class ZoomActivity extends AppCompatActivity {
                         | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                         | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        if(Global.isLockScreen())getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager = findViewById(R.id.container);
         if(Global.useRtl())mViewPager.setRotationY(180);
@@ -289,7 +290,7 @@ public class ZoomActivity extends AppCompatActivity {
                 activity.findViewById(R.id.appbar).setVisibility(activity.isHidden?View.VISIBLE:View.GONE);
                 activity.isHidden=!activity.isHidden;*/
                 final View y = activity.findViewById(R.id.page_switcher);
-                final View z = activity.findViewById(R.id.appbar);
+                final View z = activity.findViewById(R.id.toolbar);
                 activity.isHidden = !activity.isHidden;
                 if(Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1){
                     activity.getWindow().getDecorView().setSystemUiVisibility(activity.isHidden ? hideFlags : showFlags);
@@ -297,6 +298,7 @@ public class ZoomActivity extends AppCompatActivity {
                     activity.getWindow().addFlags(activity.isHidden ? WindowManager.LayoutParams.FLAG_FULLSCREEN : WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
                     activity.getWindow().clearFlags(activity.isHidden ? WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN : WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 }
+                if(Global.isLockScreen())activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 y.setVisibility(View.VISIBLE);
                 z.setVisibility(View.VISIBLE);
                 y.animate().alpha(activity.isHidden?0f:0.75f).setDuration(150).setListener(new AnimatorListenerAdapter() {

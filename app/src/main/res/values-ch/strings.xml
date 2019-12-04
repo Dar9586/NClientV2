@@ -5,17 +5,17 @@
     <!--SUMMARY-->
     <string name="setting_on_hide_save">保存的圖像不會在畫廊中顯示</string>
     <string name="setting_off_hide_save">保存的圖像會在畫廊中顯示</string>
-    <string name="setting_on_ignore_tags">從畫廊功能表中選中一個標籤時不再查詢其它標籤（語言項除外）</string>
-    <string name="setting_off_ignore_tags">從畫廊功能表中選中一個標籤時查詢其它標籤</string>
+    <string name="setting_on_ignore_tags">從畫廊功能表中選中一個標籤時不再詢問其它標籤（語言除外）</string>
+    <string name="setting_off_ignore_tags">從畫廊功能表中選中一個標籤時詢問其它標籤</string>
     <string name="setting_on_high_res">載入原圖（更多資料量）</string>
-    <string name="setting_off_high_res">載入縮略圖（較少資料量）</string>
+    <string name="setting_off_high_res">載入預覽圖（較少資料量）</string>
     <string name="setting_on_load">所有活動均載入圖像</string>
     <string name="setting_off_load">僅單頁閱讀時載入圖像</string>
-    <string name="setting_on_use_account_tag">帳戶標籤用於搜查（本地標籤優先）</string>
+    <string name="setting_on_use_account_tag">帳戶標籤用於搜索查詢（本地標籤優先）</string>
     <string name="image_quality_summary">用百分比表示已下載畫廊的解析度品質</string>
-    <string name="setting_off_use_account_tag">搜查時忽略帳戶標籤</string>
-    <string name="setting_on_infinite_scroll">到達底部時載入下一頁</string>
-    <string name="setting_off_infinite_scroll">使用底部功能表跳頁</string>
+    <string name="setting_off_use_account_tag">搜索查詢時忽略帳戶標籤</string>
+    <string name="setting_on_infinite_scroll">到達底部時載入另一頁</string>
+    <string name="setting_off_infinite_scroll">使用提供的功能表跳頁</string>
     <string name="theme_summary">選擇主題顏色</string>
     <string name="setting_on_send_report">報告將被發送</string>
     <string name="setting_off_send_report">報告不會被發送</string>
@@ -180,7 +180,7 @@
     <string name="next_page_volume_up">音量+切換下一頁</string>
     <string name="next_page_volume_down">音量-切換下一頁</string>
     <string name="change_title_type">更改標題類型</string>
-    <string name="title_type_summary">為畫廊選擇默認標題類型</string>
+    <string name="title_type_summary">為畫廊選擇默認標題格式</string>
 
     <string name="search_settings">搜索設置</string>
     <string name="global_settings">全域設置</string>
@@ -229,9 +229,6 @@
     <string name="setting_on_show_titles">顯示畫廊標題</string>
     <string name="setting_off_show_titles">隱藏畫廊標題</string>
     <string name="show_gallery_titles">顯示畫廊標題</string>
-    <string name="setting_on_four_column_land">橫屏時顯示4列</string>
-    <string name="setting_off_four_column_land">橫屏時顯示3列</string>
-    <string name="use_four_column_land">橫屏顯示4列</string>
     <string name="change_language">更改語言</string>
 
     <string name="tag_artist_gallery">作家：</string>
@@ -241,14 +238,22 @@
     <string name="tag_category_gallery">類別：</string>
     <string name="tag_group_gallery">社團：</string>
     <string name="tag_tag_gallery">標籤：</string>
-    <string name="ok">確定</string>
+    <string name="ok">好的</string>
     <string name="cancel">取消</string>
     <string name="no">不要</string>
     <string name="yes">是的</string>
 
-    <string name="setting_on_four_column_port">豎屏時顯示2列</string>
-    <string name="setting_off_four_column_port">豎屏時顯示3列</string>
-    <string name="use_four_column_port">豎屏顯示2列</string>
+    <string name="download_manager">Download manager</string>
+    <string name="manage_downloads">Manage downloads</string>
+    <string name="use_column_port">Select item count per row while in portrait</string>
+    <string name="use_column_land">Select item count per row while in landscape</string>
+    <string name="select_column_count">Select column count</string>
+    <string name="start_all_downloads">Start all downloads</string>
+    <string name="pause_all_downloads">Pause all downloads</string>
+    <string name="cancel_all_downloads">Cancel all downloads</string>
+    <string name="disable_lock_title">Disable screen off while reading</string>
+    <string name="download_all_galleries_in_this_page">Download all galleries in this page</string>
+    <string name="download_all_galleries">Download all galleries</string>
 
 
     <string-array name="language">

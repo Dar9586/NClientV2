@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import com.dar.nclientv2.BuildConfig;
 import com.dar.nclientv2.R;
+import com.dar.nclientv2.async.DownloadGallery;
 import com.dar.nclientv2.async.database.DatabaseHelper;
 import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Favorites;
@@ -50,9 +51,10 @@ public class CrashApplication extends Application{
             case "1.9.2":fixUpdateFolder();
             case "1.9.7":
                 if(getResources().getConfiguration().locale.getLanguage().equals("zh"))
-                    getSharedPreferences("Settings", 0).edit().putString(getString(R.string.key_language),"zh").commit();
+                    getSharedPreferences("Settings", 0).edit().putString(getString(R.string.key_language),"zh").apply();
         }
         Global.setLastVersion(this);
+        DownloadGallery.loadDownloads(this);
 
     }
     private void fixUpdateFolder(){
