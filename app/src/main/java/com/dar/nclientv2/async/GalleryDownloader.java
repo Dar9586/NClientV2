@@ -13,7 +13,7 @@ public class GalleryDownloader {
     private Status status;
     private int progress;
     private boolean downloaded;
-    private int id;
+    private final int id;
     public final int notificationId=Global.getNotificationId();
     public GalleryDownloader(Gallery gallery,Status status) {
         this.gallery = gallery;
@@ -29,6 +29,11 @@ public class GalleryDownloader {
         progress=0;
         setDownloaded(false);
     }
+
+    public int getId() {
+        return id;
+    }
+
     public int getProgress() {
         return progress;
     }
@@ -73,12 +78,27 @@ public class GalleryDownloader {
         this.status = status;
         if(status==Status.FINISHED)Queries.DownloadTable.removeGallery(Database.getDatabase(),id);
     }
-    public String getTitle(){
-        if(gallery!=null)return gallery.getSafeTitle();
+    public String getPathTitle(){
+        if(gallery!=null)return gallery.getPathTitle();
         return "";
     }
     public int getPercentage(){
         if(!downloaded)return 0;
         return (progress*100)/gallery.getPageCount();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GalleryDownloader that = (GalleryDownloader) o;
+
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 }

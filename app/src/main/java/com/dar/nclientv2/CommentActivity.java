@@ -12,8 +12,6 @@ import android.widget.EditText;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.dar.nclientv2.adapters.CommentAdapter;
 import com.dar.nclientv2.api.components.Comment;
@@ -38,7 +36,7 @@ public class CommentActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.loadThemeAndLanguage(this);
+        Global.initActivity(this);
         setContentView(R.layout.activity_comment);
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -128,15 +126,15 @@ public class CommentActivity extends BaseActivity {
         refresher.setRefreshing(false);
         refresher.setEnabled(false);
     }
+
     @Override
-    protected void changeLayout(boolean landscape){
-        final int count=landscape?2:1;
-        int first=recycler.getLayoutManager()==null?0:((GridLayoutManager)recycler.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
-        RecyclerView.Adapter adapter=recycler.getAdapter();
-        GridLayoutManager gridLayoutManager=new GridLayoutManager(this,count);
-        recycler.setLayoutManager(gridLayoutManager);
-        recycler.setAdapter(adapter);
-        recycler.scrollToPosition(first);
+    protected int getPortCount() {
+        return 1;
+    }
+
+    @Override
+    protected int getLandCount() {
+        return 2;
     }
 
     @Override

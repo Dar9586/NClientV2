@@ -77,18 +77,18 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
                 holder.title.setAlpha(1f);
                 holder.flag.setAlpha(1f);
             }
-            if(Global.getGalleryWidth()==-1)
-            holder.title.post(() -> {
+            /*holder.title.post(() -> {
                     Global.setGalleryWidth(holder.title.getMeasuredWidth());
                     Global.setGalleryHeigth(holder.imgView.getMeasuredHeight());
+                    if(Global.getCol)
                     Log.d(Global.LOGTAG,"MEASURED: "+holder.title.getMeasuredWidth()+";"+holder.imgView.getMeasuredHeight());
                 });
-
+            */
             if(context instanceof GalleryActivity){
                 CardView card=(CardView)holder.layout.getParent();
                 ViewGroup.LayoutParams params=card.getLayoutParams();
-                params.height=Global.getGalleryHeight();
                 params.width=Global.getGalleryWidth();
+                params.height=Global.getGalleryHeight();
                 card.setLayoutParams(params);
             }
             if(black)holder.layout.setBackgroundColor(Color.BLACK);

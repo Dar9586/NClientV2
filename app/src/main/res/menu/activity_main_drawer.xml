@@ -28,10 +28,6 @@
             android:id="@+id/bookmarks"
             android:title="@string/manage_bookmarks"
             android:icon="@drawable/ic_bookmark" />
-        <item
-            android:id="@+id/downloads"
-            android:title="@string/manage_downloads"
-            android:icon="@drawable/ic_file" />
     </group>
     <item android:title="@string/settings">
         <menu>

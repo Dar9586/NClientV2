@@ -33,10 +33,22 @@ import java.util.Locale;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
     public enum Type{TAG,PAGE,RELATED}
+    public enum Policy{PROPORTION,MAX/*,FREE*/}
+    private static final int[] TAG_NAMES = {
+            R.string.unknown,
+            R.string.tag_parody_gallery,
+            R.string.tag_character_gallery,
+            R.string.tag_tag_gallery,
+            R.string.tag_artist_gallery,
+            R.string.tag_group_gallery,
+            R.string.tag_language_gallery,
+            R.string.tag_category_gallery,
+    };
     private Size maxSize,minSize;
-    private Size imageSize=null;
-    private boolean useProportion;
+    private Size maxImageSize =null;
+    private Policy policy;
     private static final int TOLERANCE=1000;
+    private int colCount;
     private SparseArray<Size>sizeArray=new SparseArray<>();
 
     public Type positionToType(int pos){
@@ -45,6 +57,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             if(pos > gallery.getPageCount()) return Type.RELATED;
         }
         return Type.PAGE;
+    }
+
+    public void setColCount(int colCount) {
+        this.colCount = colCount;
+        applyProportionPolicy();
     }
 
     private final GalleryActivity context;
@@ -60,31 +77,42 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     }
     private final GenericGallery gallery;
     private final File directory;
-    public GalleryAdapter(GalleryActivity cont, GenericGallery gallery) {
+    public GalleryAdapter(GalleryActivity cont, GenericGallery gallery,int colCount) {
         this.context=cont;
         this.gallery=gallery;
+        maxSize =gallery.getMaxSize();
+        minSize =gallery.getMinSize();
+        setColCount(colCount);
         if(Global.hasStoragePermission(cont)){
             if(gallery.getId()!=-1)directory=Global.findGalleryFolder(gallery.getId());
             else directory=new File(Global.DOWNLOADFOLDER,gallery.getTitle());
         }else directory=null;
-        maxSize =gallery.getMaxSize();
-        minSize =gallery.getMinSize();
         Log.d(Global.LOGTAG,"Max maxSize: "+maxSize+", min maxSize: "+gallery.getMinSize());
-        useProportion=applyProportionPolicy();
     }
 
-    private boolean applyProportionPolicy() {
-        return maxSize.getHeight()-minSize.getHeight()>TOLERANCE;
+    private void applyProportionPolicy() {
+        if(maxSize.getHeight()-minSize.getHeight()<TOLERANCE)policy=Policy.MAX;
+        else policy=Policy.PROPORTION;
+        Log.d(Global.LOGTAG,"NEW POLICY: "+policy);
     }
 
     @NonNull
     @Override
     public GalleryAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         int id=0;
-        switch(viewType){
-            case 0:id=R.layout.tags_layout;break;
-            case 1:id=useProportion?R.layout.image_void_static:R.layout.image_void;break;
-            case 2:id=R.layout.related_recycler;break;
+        switch(Type.values()[viewType]){
+            case TAG:id=R.layout.tags_layout;break;
+            case PAGE:
+                switch (policy){
+                    case MAX:
+                        id=R.layout.image_void;
+                        break;
+                    case PROPORTION:
+                        id=R.layout.image_void_static;
+                        break;
+                }
+                break;
+            case RELATED:id=R.layout.related_recycler;break;
         }
         return new GalleryAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(id, parent, false),Type.values()[viewType]);
     }
@@ -116,23 +144,14 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     }
 
     private void loadTagLayout(ViewHolder holder){
-        int[] x = {
-                R.string.unknown,
-                R.string.tag_parody_gallery,
-                R.string.tag_character_gallery,
-                R.string.tag_tag_gallery,
-                R.string.tag_artist_gallery,
-                R.string.tag_group_gallery,
-                R.string.tag_language_gallery,
-                R.string.tag_category_gallery,
-        };
+
         final ViewGroup vg=(ViewGroup)holder.master;
         int i=0,len,j=0,y;
         ConstraintLayout lay;
         ChipGroup cg;
         Gallery gallery=(Gallery)this.gallery;
         for(TagType type:TagType.values()){
-            y=x[j++];
+            y=TAG_NAMES[j++];
             len=gallery.getTagCount(type);
             lay=(ConstraintLayout)vg.getChildAt(i++);
             cg=lay.findViewById(R.id.chip_group);
@@ -168,36 +187,37 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         text.setText(context.getString(R.string.favorite_count_format, gallery.getFavoriteCount()));
     }
 
-    public void setImageSize(Size imageSize) {
-        this.imageSize = imageSize;
+    public void setMaxImageSize(Size maxImageSize) {
+        this.maxImageSize = maxImageSize;
         context.runOnUiThread(()->notifyItemRangeChanged(0,getItemCount()));
     }
 
     private void loadPageLayout(ViewHolder holder){
 
-        if(!useProportion)holder.itemView.post(() -> {
-            if(imageSize!=null)return;
+        if(policy==Policy.MAX)holder.itemView.post(() -> {//find the max size and apply proportion
+            if(maxImageSize !=null)return;
             int cellWidth = holder.itemView.getWidth();// this will give you cell width dynamically
             Log.d(Global.LOGTAG,String.format("Setting: %d,%s",cellWidth, maxSize.toString()));
             int hei=(maxSize.getHeight()*cellWidth)/ maxSize.getWidth();
-            setImageSize(new Size(cellWidth,hei));
+            setMaxImageSize(new Size(cellWidth,hei));
         });
 
         final int pos=holder.getAdapterPosition()+(gallery.isLocal()?1:0);
         final ImageView imgView=holder.master.findViewById(R.id.image);
-        if(imageSize!=null) {
+        if(policy==Policy.MAX&&maxImageSize !=null) {
             ViewGroup.LayoutParams params = imgView.getLayoutParams();
-            params.height = imageSize.getHeight();
-            params.width = imageSize.getWidth();
+            params.height = maxImageSize.getHeight();
+            params.width = maxImageSize.getWidth();
             imgView.setLayoutParams(params);
         }
+
 
         final File file = LocalGallery.getPage(directory,pos);
         if(!gallery.isLocal()){
             final Gallery ent = ((Gallery)gallery);
-            if(file == null || !file.exists())
-                Global.loadImage(Global.isHighRes() ? ent.getPage(pos-1) : ent.getLowPage(pos-1), imgView);
-            else Global.loadImage(file, imgView);
+            if(file == null || !file.exists()){
+                Global.loadImage(Global.isHighRes()? ent.getPage(pos-1) : ent.getLowPage(pos-1), imgView);
+            } else Global.loadImage(file, imgView);
         }else{
             if(file != null && file.exists()) Global.loadImage(file, imgView);
             else Global.loadImage(R.mipmap.ic_launcher, imgView);

@@ -41,7 +41,7 @@ public class GalleryActivity extends BaseActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.loadThemeAndLanguage(this);
+        Global.initActivity(this);
         setContentView(R.layout.activity_gallery);
         if(Global.isLockScreen())getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -98,7 +98,7 @@ public class GalleryActivity extends BaseActivity{
     private void loadGallery(GenericGallery gall,int zoom) {
         this.gallery=gall;
         if(getSupportActionBar()!=null)getSupportActionBar().setTitle(gallery.getTitle());
-        adapter=new GalleryAdapter(this,gallery);
+        adapter=new GalleryAdapter(this,gallery,Global.getColumnCount());
         recycler.setAdapter(adapter);
         lookup();
         if(zoom>0){
@@ -109,6 +109,15 @@ public class GalleryActivity extends BaseActivity{
         }
     }
 
+    @Override
+    protected int getPortCount() {
+        return 0;
+    }
+
+    @Override
+    protected int getLandCount() {
+        return 0;
+    }
 
     private boolean isFavorite;
     private Menu menu;
@@ -222,10 +231,11 @@ public class GalleryActivity extends BaseActivity{
             recycler.setLayoutManager(new GridLayoutManager(this,x));
             Log.d(Global.LOGTAG,"Span count: "+((GridLayoutManager)recycler.getLayoutManager()).getSpanCount());
             if(adapter!=null){
+                adapter.setColCount(Global.getColumnCount());
                 recycler.setAdapter(adapter);
                 lookup();
                 recycler.scrollToPosition(pos);
-                adapter.setImageSize(null);
+                adapter.setMaxImageSize(null);
 
             }
         }

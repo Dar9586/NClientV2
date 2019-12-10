@@ -123,7 +123,7 @@ public class MainActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Global.loadThemeAndLanguage(this);
+        Global.initActivity(this);
         if(Global.hasStoragePermission(this)){//delete older APK
             final File f=new File(Global.UPDATEFOLDER,"NClientV2_"+Global.getVersionName(this)+".apk");
             Log.d(Global.LOGTAG,f.getAbsolutePath());
@@ -487,6 +487,16 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
+    protected int getPortCount() {
+        return Global.getColPortMain();
+    }
+
+    @Override
+    protected int getLandCount() {
+        return Global.getColLandMain();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -592,10 +602,6 @@ public class MainActivity extends BaseActivity
                 break;
             case R.id.bookmarks:
                 intent=new Intent(this,BookmarkActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.downloads:
-                intent=new Intent(this,DownloadManagerActivity.class);
                 startActivity(intent);
                 break;
             case R.id.favorite_manager:

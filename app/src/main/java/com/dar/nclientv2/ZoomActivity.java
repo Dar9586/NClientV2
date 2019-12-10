@@ -59,19 +59,21 @@ public class ZoomActivity extends AppCompatActivity {
     private final static int showFlags=View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
     private boolean isHidden=false;
 
-    private CustomViewPager mViewPager;
-    private TextView pageManager;
-    private File directory;
-    private View pageSwitcher;
-    private SeekBar seekBar;
+    CustomViewPager mViewPager;
+    TextView pageManager,pageManager2;
+    File directory;
+    View pageSwitcher;
+    SeekBar seekBar;
+    Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.loadThemeAndLanguage(this);
+        Global.initActivity(this);
         side=getSharedPreferences("Settings",0).getBoolean("volumeSide",true);
         overrideVolume=getSharedPreferences("Settings",0).getBoolean(getString(R.string.key_override_volume),true);
         setContentView(R.layout.activity_zoom);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+
+        toolbar = findViewById(R.id.toolbar);
         //toolbar.setPadding(toolbar.getPaddingLeft(),Global.getStatusBarHeight(this),toolbar.getPaddingRight(),toolbar.getTitleMarginBottom());
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -91,6 +93,7 @@ public class ZoomActivity extends AppCompatActivity {
         mViewPager.setAdapter(mSectionsPagerAdapter);
         pageSwitcher =findViewById(R.id.page_switcher);
         pageManager=findViewById(R.id.pages);
+        pageManager2=findViewById(R.id.page_text);
         seekBar=findViewById(R.id.seekBar);
         //mViewPager.setOffscreenPageLimit(1);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -100,7 +103,7 @@ public class ZoomActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 actualPage=position;
-                pageManager.setText(getString(R.string.page_format,position+1,gallery.getPageCount()));
+                setPageText(position+1);
                 seekBar.setProgress(position);
                 PlaceholderFragment.current=position;
             }
@@ -120,7 +123,9 @@ public class ZoomActivity extends AppCompatActivity {
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(fromUser)pageManager.setText(getString(R.string.page_format,progress+1,gallery.getPageCount()));
+                if(fromUser){
+                    setPageText(progress+1);
+                }
             }
 
             @Override
@@ -132,8 +137,11 @@ public class ZoomActivity extends AppCompatActivity {
                 changePage(seekBar.getProgress());
             }
         });
-        pageManager.setText(getString(R.string.page_format,page+1,gallery.getPageCount()));
-
+        setPageText(page+1);
+    }
+    private void setPageText(int page){
+        pageManager.setText(getString(R.string.page_format,page,gallery.getPageCount()));
+        pageManager2.setText(getString(R.string.page_format,page,gallery.getPageCount()));
     }
     private boolean up=false,down=false,side;
     @Override
@@ -289,8 +297,9 @@ public class ZoomActivity extends AppCompatActivity {
                 activity.findViewById(R.id.page_switcher).setVisibility(activity.isHidden?View.VISIBLE:View.GONE);
                 activity.findViewById(R.id.appbar).setVisibility(activity.isHidden?View.VISIBLE:View.GONE);
                 activity.isHidden=!activity.isHidden;*/
-                final View y = activity.findViewById(R.id.page_switcher);
-                final View z = activity.findViewById(R.id.toolbar);
+                final View pageView = activity.pageManager2;
+                final View pageSwitcher = activity.pageSwitcher;
+                final View toolbar = activity.toolbar;
                 activity.isHidden = !activity.isHidden;
                 if(Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1){
                     activity.getWindow().getDecorView().setSystemUiVisibility(activity.isHidden ? hideFlags : showFlags);
@@ -299,19 +308,23 @@ public class ZoomActivity extends AppCompatActivity {
                     activity.getWindow().clearFlags(activity.isHidden ? WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN : WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 }
                 if(Global.isLockScreen())activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                y.setVisibility(View.VISIBLE);
-                z.setVisibility(View.VISIBLE);
-                y.animate().alpha(activity.isHidden?0f:0.75f).setDuration(150).setListener(new AnimatorListenerAdapter() {
+                pageSwitcher.setVisibility(View.VISIBLE);
+                toolbar.setVisibility(View.VISIBLE);
+                pageView.setVisibility(View.GONE);
+                pageSwitcher.animate().alpha(activity.isHidden?0f:0.75f).setDuration(150).setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        if(activity.isHidden)y.setVisibility(View.GONE);
+                        if(activity.isHidden)pageSwitcher.setVisibility(View.GONE);
                     }
                 }).start();
 
-                z.animate().alpha(activity.isHidden?0f:0.75f).setDuration(150).setListener(new AnimatorListenerAdapter() {
+                toolbar.animate().alpha(activity.isHidden?0f:0.75f).setDuration(150).setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        if(activity.isHidden)z.setVisibility(View.GONE);
+                        if(activity.isHidden){
+                            toolbar.setVisibility(View.GONE);
+                            pageView.setVisibility(View.VISIBLE);
+                        }
                     }
                 }).start();
 
@@ -327,9 +340,9 @@ public class ZoomActivity extends AppCompatActivity {
             File file= LocalGallery.getPage(activity.directory,page+1);
             if(file==null||!file.exists()){
                 if(activity.gallery.isLocal()) Glide.with(activity).load(R.mipmap.ic_launcher).into(photoView);
-                else Glide.with(activity).load(((Gallery)activity.gallery).getPage(page)).priority(high? Priority.HIGH: Priority.LOW).into(photoView);
+                else Glide.with(activity).load(((Gallery)activity.gallery).getPage(page)).placeholder(R.drawable.ic_launcher_foreground).error(R.drawable.ic_close).priority(high? Priority.HIGH: Priority.LOW).into(photoView);
             }
-            else Glide.with(activity).load(file).into(photoView);
+            else Glide.with(activity).load(file).placeholder(R.drawable.ic_launcher_foreground).error(R.drawable.ic_close).into(photoView);
         }
     }
 

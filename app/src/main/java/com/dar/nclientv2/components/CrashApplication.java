@@ -36,10 +36,8 @@ public class CrashApplication extends Application{
         super.onCreate();
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         Database.setDatabase(new DatabaseHelper(getApplicationContext()).getWritableDatabase());
-        Global.loadThemeAndLanguage(this);
         Global.initStorage(this);
         Global.initFromShared(this);
-
         Favorites.countFavorite();
 
         TagV2.initMinCount(this);

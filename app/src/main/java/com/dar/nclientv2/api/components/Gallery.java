@@ -66,6 +66,11 @@ public class Gallery extends GenericGallery{
         parseJSON(reader);
         complete=true;
     }
+
+    public String getPathTitle() {
+        return getSafeTitle().replace('/', '_').replaceAll("[|\\\\?*<\":>+\\[\\]/']", "_");
+    }
+
     private enum ImageExt{PNG,JPG,GIF}
     private Date uploadDate;
     private int favoriteCount,id,pageCount,mediaId;

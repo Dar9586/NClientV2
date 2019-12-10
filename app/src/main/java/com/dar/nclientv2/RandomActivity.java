@@ -31,7 +31,7 @@ public class RandomActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.loadThemeAndLanguage(this);
+        Global.initActivity(this);
         setContentView(R.layout.activity_random);
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

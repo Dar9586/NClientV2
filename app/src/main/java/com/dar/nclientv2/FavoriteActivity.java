@@ -18,7 +18,7 @@ public class FavoriteActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.loadThemeAndLanguage(this);
+        Global.initActivity(this);
 
         setContentView(R.layout.app_bar_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -38,6 +38,16 @@ public class FavoriteActivity extends BaseActivity {
         recycler.setAdapter(adapter);
 
 
+    }
+
+    @Override
+    protected int getLandCount() {
+        return Global.getColLandFavorite();
+    }
+
+    @Override
+    protected int getPortCount() {
+        return Global.getColPortFavorite();
     }
 
     @Override

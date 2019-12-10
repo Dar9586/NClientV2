@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:title="@string/main_column_count"
+        android:key="col_main"
+        />
+    <Preference
+        android:title="@string/download_column_count"
+        android:key="col_download"
+        />
+    <Preference
+        android:title="@string/favorite_column_count"
+        android:key="col_favorite"
+        />
+</PreferenceScreen>

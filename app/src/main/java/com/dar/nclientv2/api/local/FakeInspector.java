@@ -39,7 +39,7 @@ public class FakeInspector extends AsyncTask<LocalActivity,LocalActivity,LocalAc
     @Override
     protected void onPostExecute(LocalActivity aVoid) {
         aVoid.getRefresher().setRefreshing(false);
-        aVoid.getRecycler().setAdapter(new LocalAdapter(aVoid,galleries));
+        aVoid.setAdapter(new LocalAdapter(aVoid,galleries));
     }
 
     private void createGallery(final File file) {

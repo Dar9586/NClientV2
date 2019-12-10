@@ -1,6 +1,7 @@
 package com.dar.nclientv2.settings;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -11,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -76,12 +78,31 @@ public class Global {
 
     public static void updateMainColumnCount(Context context, int port, int land) {
         context.getSharedPreferences("Settings", 0).edit()
-                .putInt(context.getString(R.string.key_column_port),port)
-                .putInt(context.getString(R.string.key_column_land),land)
+                .putInt(context.getString(R.string.key_column_port_main),port)
+                .putInt(context.getString(R.string.key_column_land_main),land)
                 .apply();
-        colLand=land;
-        colPort=port;
+        colLandMain=land;
+        colPortMain=port;
 
+    }
+
+    public static void updateDownloadColumnCount(Context context, int port, int land) {
+        context.getSharedPreferences("Settings", 0).edit()
+                .putInt(context.getString(R.string.key_column_port_down),port)
+                .putInt(context.getString(R.string.key_column_land_down),land)
+                .apply();
+        colLandDownload=land;
+        colPortDownload=port;
+    }
+
+
+    public static void updateFavoriteColumnCount(Context context, int port, int land) {
+        context.getSharedPreferences("Settings", 0).edit()
+                .putInt(context.getString(R.string.key_column_port_favo),port)
+                .putInt(context.getString(R.string.key_column_land_favo),land)
+                .apply();
+        colLandFavorite=land;
+        colPortFavorite=port;
     }
 
     public enum ThemeScheme{LIGHT,DARK,BLACK}
@@ -114,11 +135,28 @@ public class Global {
     private static TitleType titleType;
     private static boolean byPopular,keepHistory,loadImages,highRes,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
     private static ThemeScheme theme;
-    private static int notificationId,columnCount,maxId,galleryWidth=-1, galleryHeight =-1,colPort,colLand;
-
+    private static int notificationId,columnCount,maxId,galleryWidth=-1, galleryHeight =-1;
+    private static int colPortMain,colLandMain,colPortDownload,colLandDownload,colLandFavorite,colPortFavorite;
+    private static Point screenSize;
 
     public static int getGalleryWidth(){
         return galleryWidth;
+    }
+    public static void initScreenSize(Activity activity){
+        if(screenSize==null) {
+            screenSize = new Point();
+            activity.getWindowManager().getDefaultDisplay().getSize(screenSize);
+        }
+    }
+    private static void initGallerySize() {
+        galleryHeight=screenSize.y/2;
+        galleryWidth=(galleryHeight*3)/4;//the ratio is 3:4
+    }
+    public static int getScreenHeight(){
+        return screenSize.y;
+    }
+    public static int getScreenWidth(){
+        return screenSize.x;
     }
 
     public static void setGalleryWidth(int galleryWidth){
@@ -163,8 +201,12 @@ public class Global {
         showTitles=shared.getBoolean(context.getString(R.string.key_show_titles),true);
         lockScreen=shared.getBoolean(context.getString(R.string.key_disable_lock),false);
         maxId=shared.getInt(context.getString(R.string.key_max_id),291738);
-        colPort=shared.getInt(context.getString(R.string.key_column_port),2);
-        colLand=shared.getInt(context.getString(R.string.key_column_land),4);
+        colPortMain=shared.getInt(context.getString(R.string.key_column_port_main),2);
+        colLandMain=shared.getInt(context.getString(R.string.key_column_land_main),4);
+        colPortDownload=shared.getInt(context.getString(R.string.key_column_port_down),2);
+        colLandDownload=shared.getInt(context.getString(R.string.key_column_land_down),4);
+        colPortFavorite=shared.getInt(context.getString(R.string.key_column_port_favo),2);
+        colLandFavorite=shared.getInt(context.getString(R.string.key_column_land_favo),4);
         int x=shared.getInt(context.getString(R.string.key_only_language),-1);
         onlyLanguage=x==-1?null:Language.values()[x];
 
@@ -206,7 +248,7 @@ public class Global {
         return context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_check_update),true);
     }
     private static int getLogo(){ return theme==ThemeScheme.LIGHT?R.drawable.ic_logo_dark:R.drawable.ic_logo; }
-    private static Drawable getLogo(Resources resources){ return ResourcesCompat.getDrawable(resources,theme==ThemeScheme.LIGHT?R.drawable.ic_logo_dark:R.drawable.ic_logo,null); }
+    public static Drawable getLogo(Resources resources){ return ResourcesCompat.getDrawable(resources,theme==ThemeScheme.LIGHT?R.drawable.ic_logo_dark:R.drawable.ic_logo,null); }
     public static TitleType getTitleType() {
         return titleType;
     }
@@ -231,12 +273,29 @@ public class Global {
         return lockScreen;
     }
 
-    public static int portColumnCount() {
-        return colPort;
+    public static int getColLandDownload() {
+        return colLandDownload;
     }
 
-    public static int landColumnCount() {
-        return colLand;
+    public static int getColPortMain() {
+        return colPortMain;
+    }
+
+    public static int getColLandMain() {
+        return colLandMain;
+    }
+
+    public static int getColPortDownload() {
+        return colPortDownload;
+    }
+
+
+    public static int getColLandFavorite() {
+        return colLandFavorite;
+    }
+
+    public static int getColPortFavorite() {
+        return colPortFavorite;
     }
 
     public static boolean isKeepHistory() {
@@ -401,8 +460,9 @@ public class Global {
         return null;
     }
 
-    public static void loadThemeAndLanguage(Context context){
-
+    public static void initActivity(Activity context){
+        initScreenSize(context);
+        initGallerySize();
         //Locale locale=new Locale()
         Resources resources=context.getResources();
         Locale locale=initLanguage(context);

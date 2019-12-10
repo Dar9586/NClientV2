@@ -4,6 +4,7 @@ import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.appcompat.widget.Toolbar;
@@ -14,11 +15,12 @@ import com.dar.nclientv2.components.BaseActivity;
 import com.dar.nclientv2.settings.Global;
 
 public class LocalActivity extends BaseActivity {
-
+    private LocalAdapter adapter;
+    private int colCount;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.loadThemeAndLanguage(this);
+        Global.initActivity(this);
         setContentView(R.layout.app_bar_main);
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -32,15 +34,19 @@ public class LocalActivity extends BaseActivity {
         changeLayout(getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE);
         new FakeInspector().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,this);
     }
+
+    public void setAdapter(LocalAdapter adapter) {
+        this.adapter = adapter;
+        recycler.setAdapter(adapter);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        menu.findItem(R.id.download_page).setVisible(false);
-        menu.findItem(R.id.add_bookmark).setVisible(false);
-        menu.findItem(R.id.by_popular).setVisible(false);
-        menu.findItem(R.id.only_language).setVisible(false);
-        menu.findItem(R.id.open_browser).setVisible(false);
+        getMenuInflater().inflate(R.menu.download, menu);
+        Global.setTint(menu.findItem(R.id.pauseAll).getIcon());
+        Global.setTint(menu.findItem(R.id.cancelAll).getIcon());
+        Global.setTint(menu.findItem(R.id.startAll).getIcon());
         Global.setTint(menu.findItem(R.id.search).getIcon());
         final androidx.appcompat.widget.SearchView searchView=(androidx.appcompat.widget.SearchView)menu.findItem(R.id.search).getActionView();
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
@@ -56,5 +62,44 @@ public class LocalActivity extends BaseActivity {
             }
         });
         return true;
+    }
+
+    @Override
+    protected void changeLayout(boolean landscape) {
+        colCount=(landscape?getLandCount():getPortCount());
+        if(adapter!=null)adapter.setColCount(colCount);
+        super.changeLayout(landscape);
+    }
+
+    public int getColCount() {
+        return colCount;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.pauseAll:
+                adapter.pauseAll();
+                break;
+            case R.id.startAll:
+                adapter.startAll();
+                break;
+            case R.id.cancelAll:
+                adapter.cancellAll();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected int getPortCount() {
+        return Global.getColPortDownload();
+    }
+
+    @Override
+    protected int getLandCount() {
+        return Global.getColLandDownload();
     }
 }
