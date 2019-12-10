@@ -193,6 +193,7 @@
     <string name="sort_by_latest">按更新排列</string>
     <string name="edit">编辑</string>
     <string name="options">选项</string>
+    <string name="key_keep_history">保留历史</string>
     <string name="setting_on_keep_history">搜索记录将被保留</string>
     <string name="setting_off_keep_history">搜索记录将不被保留</string>
     <string name="keep_history">保留搜索历史</string>
@@ -249,15 +250,9 @@
     <string name="start_all_downloads">Start all downloads</string>
     <string name="pause_all_downloads">Pause all downloads</string>
     <string name="cancel_all_downloads">Cancel all downloads</string>
-    <string name="disable_lock_title">阅读时屏幕常亮</string>
+    <string name="disable_lock_title">Disable screen off while reading</string>
     <string name="download_all_galleries_in_this_page">Download all galleries in this page</string>
     <string name="download_all_galleries">Download all galleries</string>
-    <string name="favorite_column_count">Select favorite column count</string>
-    <string name="download_column_count">Select download column count</string>
-    <string name="main_column_count">Select main column count</string>
-    <string name="navigation_settings">Navigation settings</string>
-    <string name="stop_download">Stop download</string>
-    <string name="start_download">Start download</string>
 
     <string-array name="language">
         <item>英文</item>
