@@ -273,6 +273,7 @@
     <string name="start_page">Start page</string>
     <string name="end_page">End page</string>
     <string name="invalid_range_selected">Invalid range selected</string>
+    <string name="select_page_end">Select page end</string>
 
     <string-array name="language">
         <item>英文</item>
