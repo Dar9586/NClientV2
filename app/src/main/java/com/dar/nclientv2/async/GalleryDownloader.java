@@ -15,11 +15,13 @@ public class GalleryDownloader {
     private boolean downloaded;
     private final int id;
     public final int notificationId=Global.getNotificationId();
+    private int start=0,count=-1;
     public GalleryDownloader(Gallery gallery,Status status) {
         this.gallery = gallery;
         id=gallery.getId();
         this.status=status;
         progress=0;
+        count=gallery.getPageCount();
         setDownloaded(gallery.isComplete());
     }
     public GalleryDownloader(int id,Status status) {
@@ -35,6 +37,9 @@ public class GalleryDownloader {
     }
 
     public int getProgress() {
+        return progress+start-1;
+    }
+    public int getPureProgress() {
         return progress;
     }
 
@@ -42,12 +47,16 @@ public class GalleryDownloader {
         this.progress = progress;
     }
     public int incrementProgress(){
-        return ++progress;
+        return ++progress+start-1;
     }
 
     public String getCover(){
         if(gallery!=null)return gallery.getThumbnail();
         return null;
+    }
+
+    public int getCount() {
+        return count;
     }
 
     public Gallery getGallery() {
@@ -71,7 +80,10 @@ public class GalleryDownloader {
 
     public void setDownloaded(boolean downloaded) {
         this.downloaded = downloaded;
-        if(downloaded)Queries.DownloadTable.addGallery(Database.getDatabase(),gallery);
+        if(downloaded){
+            Queries.DownloadTable.addGallery(Database.getDatabase(),gallery);
+            if(count==-1)count=gallery.getPageCount();
+        }
     }
 
     public void setStatus(Status status) {
@@ -84,7 +96,7 @@ public class GalleryDownloader {
     }
     public int getPercentage(){
         if(!downloaded)return 0;
-        return (progress*100)/gallery.getPageCount();
+        return Math.min(100,(progress*100)/count);
     }
 
     @Override
@@ -95,6 +107,14 @@ public class GalleryDownloader {
         GalleryDownloader that = (GalleryDownloader) o;
 
         return id == that.id;
+    }
+
+    public void setStart(int start) {
+        this.start = start;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 
     @Override

@@ -130,10 +130,10 @@ public class SettingsActivity extends AppCompatActivity {
             builder.setView(v);
             TextView progL, progP;
             AppCompatSeekBar seekBarL, seekBarP;
-            progL = v.findViewById(R.id.textViewLandscape);
-            progP = v.findViewById(R.id.textViewPortait);
-            seekBarL = v.findViewById(R.id.seekBarLandscape);
-            seekBarP = v.findViewById(R.id.seekBarPortait);
+            progL = v.findViewById(R.id.prog2);
+            progP = v.findViewById(R.id.prog1);
+            seekBarL = v.findViewById(R.id.seekBar2);
+            seekBarP = v.findViewById(R.id.seekBar1);
 
             seekBarL.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override

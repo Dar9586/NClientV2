@@ -5,16 +5,16 @@
     <!--SUMMARY-->
     <string name="setting_on_hide_save">保存的图像不会在画廊中显示</string>
     <string name="setting_off_hide_save">保存的图像会在画廊中显示</string>
-    <string name="setting_on_ignore_tags">从画廊菜单中选中一个标签时不再询问其它标签（语言除外）</string>
-    <string name="setting_off_ignore_tags">从画廊菜单中选中一个标签时询问其它标签</string>
+    <string name="setting_on_ignore_tags">从画廊菜单中选中一个标签时不再查询其它标签（语言项除外）</string>
+    <string name="setting_off_ignore_tags">从画廊菜单中选中一个标签时查询其它标签</string>
     <string name="setting_on_high_res">加载原图（更多流量）</string>
-    <string name="setting_off_high_res">加载预览图（较少流量）</string>
+    <string name="setting_off_high_res">加载缩略图（较少流量）</string>
     <string name="setting_on_load">所有活动均加载图像</string>
     <string name="setting_off_load">仅单页阅读时加载图像</string>
-    <string name="setting_on_use_account_tag">账户标签用于搜索查询（本地标签优先）</string>
+    <string name="setting_on_use_account_tag">账户标签用于搜查（本地标签优先）</string>
     <string name="image_quality_summary">用百分比表示已下载画廊的分辨率质量</string>
-    <string name="setting_off_use_account_tag">搜索查询时忽略帐户标签</string>
-    <string name="setting_on_infinite_scroll">到达底部时加载另一页</string>
+    <string name="setting_off_use_account_tag">搜查时忽略帐户标签</string>
+    <string name="setting_on_infinite_scroll">到达底部时加载下一页</string>
     <string name="setting_off_infinite_scroll">使用底栏菜单跳页</string>
     <string name="theme_summary">选择主题颜色</string>
     <string name="setting_on_send_report">报告将被发送</string>
@@ -25,7 +25,7 @@
     <string name="change_theme">更改主题</string>
     <string name="clear_cache">清除缓存</string>
     <string name="load_images">加载图像</string>
-    <string name="infinite_scroll">无限滚动</string>
+    <string name="infinite_scroll">无限卷动</string>
     <string name="ignore_tags">忽略其它标签</string>
     <string name="high_res_gallery">以最佳分辨率加载画廊图像</string>
     <string name="hide_saved_images">在画廊中隐藏保存的图像</string>
@@ -107,7 +107,7 @@
     <string name="hashtag">#</string>
 
     <string name="create_pdf">创建PDF</string>
-    <string name="create_pdf_format" formatted="true">创建的PDF："%s"</string>
+    <string name="create_pdf_format" formatted="true">创建PDF："%s"</string>
     <string name="created_pdf">成功创建PDF</string>
     <string name="error_pdf">创建PDF出错</string>
     <string name="parsing_pages">分析页面中</string>
@@ -180,7 +180,7 @@
     <string name="next_page_volume_up">音量+切换下一页</string>
     <string name="next_page_volume_down">音量-切换下一页</string>
     <string name="change_title_type">更改标题类型</string>
-    <string name="title_type_summary">为画廊选择默认标题格式</string>
+    <string name="title_type_summary">为画廊选择默认标题类型</string>
 
     <string name="search_settings">搜索设置</string>
     <string name="global_settings">全局设置</string>
@@ -237,22 +237,41 @@
     <string name="tag_category_gallery">类别：</string>
     <string name="tag_group_gallery">社团：</string>
     <string name="tag_tag_gallery">标签：</string>
-    <string name="ok">好的</string>
+    <string name="ok">确定</string>
     <string name="cancel">取消</string>
     <string name="no">不要</string>
     <string name="yes">是的</string>
 
-    <string name="download_manager">Download manager</string>
-    <string name="manage_downloads">Manage downloads</string>
-    <string name="use_column_port">Select item count per row while in portrait</string>
-    <string name="use_column_land">Select item count per row while in landscape</string>
-    <string name="select_column_count">Select column count</string>
-    <string name="start_all_downloads">Start all downloads</string>
-    <string name="pause_all_downloads">Pause all downloads</string>
-    <string name="cancel_all_downloads">Cancel all downloads</string>
-    <string name="disable_lock_title">Disable screen off while reading</string>
-    <string name="download_all_galleries_in_this_page">Download all galleries in this page</string>
-    <string name="download_all_galleries">Download all galleries</string>
+    <string name="download_manager">下载管理器</string>
+    <string name="manage_downloads">下载管理</string>
+    <string name="use_column_port">选择竖屏每行列数</string>
+    <string name="use_column_land">选择横屏每行列数</string>
+    <string name="select_column_count">选择列数</string>
+    <string name="start_all_downloads">开始所有下载</string>
+    <string name="pause_all_downloads">停止所有下载</string>
+    <string name="cancel_all_downloads">取消所有下载</string>
+    <string name="disable_lock_title">阅读时常亮</string>
+    <string name="download_all_galleries_in_this_page">下载此页所有画廊</string>
+    <string name="download_all_galleries">下载所有画廊</string>
+
+    <string name="favorite_column_count">Select favorite column count</string>
+    <string name="download_column_count">Select download column count</string>
+    <string name="main_column_count">Select main column count</string>
+    <string name="navigation_settings">Navigation settings</string>
+    <string name="stop_download">Stop download</string>
+    <string name="start_download">Start download</string>
+    <string name="create_zip">Create ZIP</string>
+    <string name="channel3_name">Create ZIP</string>
+    <string name="channel3_description">Used to show progress of the creation of the zip</string>
+    <string name="channel3_title">Creating ZIP:</string>
+    <string name="created_zip">Successfully created ZIP</string>
+    <string name="failed_zip">Failed to create ZIP: </string>
+    <string name="create_zip_format" formatted="true">Create ZIP of: "%s"</string>
+    <string name="download_page_range">Download page range</string>
+    <string name="select_page_start">Select page start</string>
+    <string name="start_page">Start page</string>
+    <string name="end_page">End page</string>
+    <string name="invalid_range_selected">Invalid range selected</string>
 
     <string-array name="language">
         <item>英文</item>

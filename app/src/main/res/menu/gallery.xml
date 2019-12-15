@@ -33,6 +33,12 @@
         android:title="@string/download_gallery"
         app:showAsAction="ifRoom|collapseActionView" />
     <item
+        android:id="@+id/download_range"
+        android:orderInCategory="450"
+        android:icon="@drawable/ic_file_download"
+        android:title="@string/download_page_range"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/add_online_gallery"
         android:orderInCategory="500"
         android:icon="@drawable/ic_star"
@@ -47,7 +53,7 @@
     <item
         android:id="@+id/comments"
         android:orderInCategory="700"
-        android:icon="@drawable/ic_share"
+        android:icon="@drawable/ic_chat_bubble"
         android:title="@string/comments"
         app:showAsAction="ifRoom|collapseActionView"/>
 </menu>

@@ -114,6 +114,7 @@ public class Global {
     public static  File SCREENFOLDER;
     public static  File PDFFOLDER;
     public static  File UPDATEFOLDER;
+    public static  File ZIPFOLDER;
 
     private static void initFilesTree(Context context){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
@@ -126,11 +127,12 @@ public class Global {
         SCREENFOLDER =new File(MAINFOLDER,"Screen");
         PDFFOLDER =new File(MAINFOLDER,"PDF");
         UPDATEFOLDER =new File(MAINFOLDER,"Update");
+        ZIPFOLDER =new File(MAINFOLDER,"ZIP");
     }
 
 
     public static final String LOGTAG="NCLIENTLOG";
-    public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf";
+    public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf",CHANNEL_ID3="create_pdf";
     private static Language onlyLanguage=null;
     private static TitleType titleType;
     private static boolean byPopular,keepHistory,loadImages,highRes,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
@@ -335,7 +337,8 @@ public class Global {
                 "2:"+Global.DOWNLOADFOLDER+Global.DOWNLOADFOLDER.mkdir()+'\n'+
                 "3:"+Global.PDFFOLDER+Global.PDFFOLDER.mkdir()+'\n'+
                 "4:"+Global.UPDATEFOLDER+Global.UPDATEFOLDER.mkdir()+'\n'+
-                "5:"+Global.SCREENFOLDER+Global.SCREENFOLDER.mkdir()+'\n'
+                "5:"+Global.SCREENFOLDER+Global.SCREENFOLDER.mkdir()+'\n'+
+                "5:"+Global.ZIPFOLDER+Global.ZIPFOLDER.mkdir()+'\n'
         );
 
         try {
@@ -387,12 +390,15 @@ public class Global {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel1 = new NotificationChannel(CHANNEL_ID1, context.getString(R.string.channel1_name), NotificationManager.IMPORTANCE_DEFAULT);
             NotificationChannel channel2 = new NotificationChannel(CHANNEL_ID2, context.getString(R.string.channel2_name), NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel channel3 = new NotificationChannel(CHANNEL_ID3, context.getString(R.string.channel3_name), NotificationManager.IMPORTANCE_DEFAULT);
             channel1.setDescription(context.getString(R.string.channel1_description));
             channel2.setDescription(context.getString(R.string.channel2_description));
+            channel3.setDescription(context.getString(R.string.channel3_description));
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
             if (notificationManager != null){
                 notificationManager.createNotificationChannel(channel1);
                 notificationManager.createNotificationChannel(channel2);
+                notificationManager.createNotificationChannel(channel3);
             }
         }
     }

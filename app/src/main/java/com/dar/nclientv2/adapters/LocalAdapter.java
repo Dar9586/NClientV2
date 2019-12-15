@@ -24,6 +24,7 @@ import com.dar.nclientv2.LocalActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.CreatePDF;
+import com.dar.nclientv2.async.CreateZIP;
 import com.dar.nclientv2.async.DownloadGallery;
 import com.dar.nclientv2.async.GalleryDownloader;
 import com.dar.nclientv2.settings.Global;
@@ -158,7 +159,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         });
     }
     private void bindDownlaod(@NonNull final ViewHolder holder, int position,GalleryDownloader downloader){
-        int per=downloader.getPercentage();
+        int percentage=downloader.getPercentage();
         Global.loadImage(downloader.getCover(),holder.imgView);
         holder.title.setText(downloader.getPathTitle());
         holder.cancelButton.setOnClickListener(v -> {
@@ -187,8 +188,8 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
                 holder.playButton.setOnClickListener(v -> DownloadGallery.givePriority(downloader));
                 break;
         }
-        holder.progress.setText(context.getString(R.string.percentage_format, per));
-        holder.progressBar.setProgress(per);
+        holder.progress.setText(context.getString(R.string.percentage_format, percentage));
+        holder.progressBar.setProgress(percentage);
         Global.setTint(holder.playButton.getDrawable());
         Global.setTint(holder.cancelButton.getDrawable());
     }
@@ -224,15 +225,29 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
     private void createPDF(final int pos){
         ArrayAdapter<String>adapter=new ArrayAdapter<>(context,android.R.layout.select_dialog_item);
         adapter.add(context.getString(R.string.delete_gallery));
+        adapter.add(context.getString(R.string.create_zip));
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT)adapter.add(context.getString(R.string.create_pdf));//api 19
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         builder.setTitle(R.string.settings).setIcon(R.drawable.ic_settings);
         builder.setAdapter(adapter, (dialog, which) -> {
             switch (which){
                 case 0:showDialogDelete(pos);break;
-                case 1:showDialogPDF(pos);break;
+                case 1:createZIP(pos);break;
+                case 2:showDialogPDF(pos);break;
             }
         }).show();
+    }
+    private void createZIP(final int pos){
+        final LocalGallery gallery=(LocalGallery)filter.get(pos);
+        AlertDialog.Builder builder=new AlertDialog.Builder(context);
+        builder.setTitle(R.string.create_zip).setMessage(context.getString(R.string.create_zip_format,gallery.getTitle()));
+        builder.setPositiveButton(R.string.yes, (dialog, which) -> {
+            Intent i=new Intent(context.getApplicationContext(), CreateZIP.class);
+            i.putExtra(context.getPackageName()+".GALLERY",gallery);
+            context.startService(i);
+        }).setNegativeButton(R.string.no,null).setCancelable(true);
+        builder.show();
+
     }
     @Override
     public int getItemCount() {

@@ -21,6 +21,7 @@ import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.async.DownloadGallery;
 import com.dar.nclientv2.components.BaseActivity;
+import com.dar.nclientv2.components.RangeSelector;
 import com.dar.nclientv2.settings.Favorites;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
@@ -141,6 +142,7 @@ public class GalleryActivity extends BaseActivity{
         menu.findItem(R.id.add_online_gallery).setVisible(!isLocal&&Login.isLogged());
         menu.findItem(R.id.favorite_manager).setVisible(!isLocal||isFavorite);
         menu.findItem(R.id.download_gallery).setVisible(!isLocal);
+        menu.findItem(R.id.download_range).setVisible(!isLocal);
         menu.findItem(R.id.related).setVisible(!isLocal);
         if(gallery!=null)loadMenu();
         Global.setTint(menu.findItem(R.id.download_gallery).getIcon());
@@ -159,12 +161,14 @@ public class GalleryActivity extends BaseActivity{
         updateColumnCount(false);
         if(isLocal)supportInvalidateOptionsMenu();
     }
-
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         int id = item.getItemId();
 
         switch (id){
+            case R.id.download_range:
+                new RangeSelector(this, (Gallery) gallery).show();
+                break;
             case R.id.add_online_gallery:
                 if(gallery!=null)Global.client.newCall(new Request.Builder().url("https://nhentai.net/g/"+gallery.getId()+"/favorite").build()).enqueue(new Callback() {
                     @Override

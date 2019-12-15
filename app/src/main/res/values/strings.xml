@@ -73,11 +73,14 @@
 
     <string name="channel1_name">Download Gallery</string>
     <string name="channel2_name">Create PDF</string>
+    <string name="channel3_name">Create ZIP</string>
     <string name="channel1_description">Used to show progress of the download of a gallery</string>
     <string name="channel2_description">Used to show progress of the creation of the pdf</string>
+    <string name="channel3_description">Used to show progress of the creation of the zip</string>
     <string name="channel1_title" formatted="true">Downloading gallery:</string>
     <string name="channel1_title_format">Downloading gallery: (%d/%d)</string>
     <string name="channel2_title">Creating PDF:</string>
+    <string name="channel3_title">Creating ZIP:</string>
 
     <string name="favorite_max_reached" formatted="true">You can have a maximum of %d favorite manga.</string>
     <string name="tags_max_reached" formatted="true">You can have a maximum of %d selected tags.</string>
@@ -137,6 +140,7 @@
 
     <string name="create_pdf">Create PDF</string>
     <string name="create_pdf_format" formatted="true">Create PDF of: "%s"</string>
+    <string name="create_zip_format" formatted="true">Create ZIP of: "%s"</string>
     <string name="created_pdf">Successful created PDF</string>
     <string name="error_pdf">Error while creating PDF</string>
     <string name="parsing_pages">Parsing pages</string>
@@ -300,6 +304,15 @@
     <string name="navigation_settings">Navigation settings</string>
     <string name="stop_download">Stop download</string>
     <string name="start_download">Start download</string>
+    <string name="create_zip">Create ZIP</string>
+    <string name="created_zip">Successfully created ZIP</string>
+    <string name="failed_zip">Failed to create ZIP: </string>
+    <string name="download_page_range">Download page range</string>
+    <string name="select_page_start">Select page start</string>
+    <string name="select_page_end">Select page end</string>
+    <string name="start_page">Start page</string>
+    <string name="end_page">End page</string>
+    <string name="invalid_range_selected">Invalid range selected</string>
 
     <string-array name="language">
         <item>English</item>

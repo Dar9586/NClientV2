@@ -8,6 +8,7 @@
 
     >
     <TextView
+        android:id="@+id/text1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/TextAppearance.MaterialComponents.Subtitle1"
@@ -23,14 +24,14 @@
 
         android:orientation="horizontal">
         <androidx.appcompat.widget.AppCompatSeekBar
-            android:id="@+id/seekBarPortait"
+            android:id="@+id/seekBar1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:max="3"
             android:layout_weight="8" />
 
         <TextView
-            android:id="@+id/textViewPortait"
+            android:id="@+id/prog1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -39,6 +40,7 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/text2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/use_column_land"
@@ -53,7 +55,7 @@
         android:layout_marginBottom="8dp"
         android:orientation="horizontal">
         <androidx.appcompat.widget.AppCompatSeekBar
-            android:id="@+id/seekBarLandscape"
+            android:id="@+id/seekBar2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:max="3"
@@ -61,7 +63,7 @@
             android:layout_weight="8" />
 
         <TextView
-            android:id="@+id/textViewLandscape"
+            android:id="@+id/prog2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"

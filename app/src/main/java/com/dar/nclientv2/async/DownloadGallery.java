@@ -79,6 +79,16 @@ public class DownloadGallery extends IntentService {
             context.startService(i);
         }
     }
+    public static void downloadRange(Context context, Gallery gallery,boolean start,int s,int end){
+        GalleryDownloader d=new GalleryDownloader(gallery,start? GalleryDownloader.Status.NOT_STARTED: GalleryDownloader.Status.PAUSED);
+        d.setStart(s);
+        d.setCount(end-s);
+        if(!galleries.contains(d))galleries.add(d);
+        if(!running) {
+            Intent i = new Intent(context, DownloadGallery.class);
+            context.startService(i);
+        }
+    }
     public static void download(Context context, int id,boolean start){
         GalleryDownloader d=new GalleryDownloader(id,start? GalleryDownloader.Status.NOT_STARTED: GalleryDownloader.Status.PAUSED);
         if(!galleries.contains(d))galleries.add(d);
@@ -172,14 +182,19 @@ public class DownloadGallery extends IntentService {
         folder.mkdirs();
         createNoMedia();
         galleryDownloader.setProgress(0);
-        for(int i=0;i<gallery.getPageCount();i++)urls.add(gallery.getPage(i));
+        for(int i=0;i<galleryDownloader.getCount();i++){
+            String u=gallery.getPage(galleryDownloader.incrementProgress());
+            urls.add(u);
+            Log.d(Global.LOGTAG,"Adding: "+u);
+        }
+        galleryDownloader.setProgress(0);
 
         while(!stopSignal&&!urls.isEmpty()){
-            File actualPage=getFilename(galleryDownloader.getProgress()+1);
+            File actualPage=getFilename(galleryDownloader.incrementProgress()+1);
             try {
                 if((actualPage.exists()&&!isCorrupted(actualPage)) ||saveImage(galleryDownloader.getProgress(),actualPage)){
                     urls.remove(0);
-                    setPercentage(galleryDownloader.incrementProgress());
+                    setPercentage(galleryDownloader.getPureProgress());
                     if(observer!=null)observer.triggerUpdateProgress(galleryDownloader);
                     notificationUpdate();
                 }
@@ -213,7 +228,7 @@ public class DownloadGallery extends IntentService {
         return new File(folder,name.toString());
     }
     private boolean saveImage(int index,File file)throws IOException {
-        Log.d(Global.LOGTAG,"Saving: "+file.getAbsolutePath());
+        Log.d(Global.LOGTAG,"Saving: "+file.getAbsolutePath()+" from rl: "+urls.get(0));
         Response response=Global.client.newCall(new Request.Builder().url(urls.get(0)).build()).execute();
         InputStream str=response.body().byteStream();
         if(!file.createNewFile())return false;
@@ -281,7 +296,7 @@ public class DownloadGallery extends IntentService {
             notification.setProgress(0,0,false).setContentText("");
         }
         else {
-            notification.setProgress(gallery.getPageCount(), val, false)
+            notification.setProgress(galleryDownloader.getCount(), val, false)
                     .setContentText(getString(R.string.percentage_format, (val * 100) / gallery.getPageCount()));
         }
     }

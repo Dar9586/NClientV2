@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/start_page"
+        style="@style/TextAppearance.MaterialComponents.Subtitle1"
+        />
+    <include
+        android:id="@+id/layout1"
+        layout="@layout/zoom_manager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/end_page"
+        style="@style/TextAppearance.MaterialComponents.Subtitle1"
+        />
+    <include
+        android:id="@+id/layout2"
+        layout="@layout/zoom_manager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

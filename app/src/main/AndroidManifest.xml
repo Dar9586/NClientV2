@@ -173,6 +173,10 @@
             android:enabled="true"
             android:exported="false" />
         <service
+            android:name=".async.CreateZIP"
+            android:enabled="true"
+            android:exported="false" />
+        <service
             android:name=".async.ScrapeTags"
             android:enabled="true"
             android:exported="false" />
