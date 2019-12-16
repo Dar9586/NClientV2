@@ -255,25 +255,25 @@
     <string name="download_all_galleries_in_this_page">下載此頁所有畫廊</string>
     <string name="download_all_galleries">下載所有畫廊</string>
 
-    <string name="favorite_column_count">Select favorite column count</string>
-    <string name="download_column_count">Select download column count</string>
-    <string name="main_column_count">Select main column count</string>
-    <string name="navigation_settings">Navigation settings</string>
-    <string name="stop_download">Stop download</string>
-    <string name="start_download">Start download</string>
-    <string name="create_zip">Create ZIP</string>
-    <string name="channel3_name">Create ZIP</string>
-    <string name="channel3_description">Used to show progress of the creation of the zip</string>
-    <string name="channel3_title">Creating ZIP:</string>
-    <string name="created_zip">Successfully created ZIP</string>
-    <string name="failed_zip">Failed to create ZIP: </string>
-    <string name="create_zip_format" formatted="true">Create ZIP of: "%s"</string>
-    <string name="download_page_range">Download page range</string>
-    <string name="select_page_start">Select page start</string>
-    <string name="start_page">Start page</string>
-    <string name="end_page">End page</string>
-    <string name="invalid_range_selected">Invalid range selected</string>
-    <string name="select_page_end">Select page end</string>
+    <string name="favorite_column_count">選擇收藏介面列數</string>
+    <string name="download_column_count">選擇下載介面列數</string>
+    <string name="main_column_count">選擇主介面列數</string>
+    <string name="navigation_settings">巡覽列設置</string>
+    <string name="stop_download">停止下載</string>
+    <string name="start_download">開始下載</string>
+    <string name="create_zip">創建ZIP</string>
+    <string name="channel3_name">創建ZIP</string>
+    <string name="channel3_description">用於顯示zip的創建進度</string>
+    <string name="channel3_title">創建ZIP：</string>
+    <string name="created_zip">成功創建ZIP</string>
+    <string name="failed_zip">創建ZIP失敗: </string>
+    <string name="create_zip_format" formatted="true">正在創建ZIP： "%s"</string>
+    <string name="download_page_range">下載頁面範圍</string>
+    <string name="select_page_start">選擇開始頁</string>
+    <string name="start_page">起始頁</string>
+    <string name="end_page">結束頁</string>
+    <string name="invalid_range_selected">選擇的範圍無效</string>
+    <string name="select_page_end">選擇結束頁</string>
 
     <string-array name="language">
         <item>英文</item>
