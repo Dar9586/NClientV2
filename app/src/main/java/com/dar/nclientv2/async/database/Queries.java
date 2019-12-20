@@ -124,11 +124,11 @@ public class Queries{
             String sql="SELECT * FROM "+ TABLE_NAME +" WHERE ("+
                     FAVORITE +" =? OR "+ FAVORITE +"=3)";
             if(query!=null&&query.length()>0){
-                sql+=" AND ("+ TITLE_ENG + " LIKE ? OR" +
-                        TITLE_JP + " LIKE ? OR" +
+                sql+=" AND ("+ TITLE_ENG + " LIKE ? OR " +
+                        TITLE_JP + " LIKE ? OR " +
                         TITLE_PRETTY + " LIKE ? )";
                 String q='%'+query.toString()+'%';
-                cursor=db.rawQuery(sql,new String[]{q,q,q,""+(online?2:1)});
+                cursor=db.rawQuery(sql,new String[]{""+(online?2:1),q,q,q});
             }else cursor=db.rawQuery(sql,new String[]{""+(online?2:1)});
             Log.d(Global.LOGTAG,sql);
             Log.d(Global.LOGTAG,"AFTER FILTERING: "+cursor.getCount());

@@ -109,8 +109,9 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
                 setRefresh(true);
                 FilterResults results=new FilterResults();
                 lastQuery=constraint.toString();
+                Log.d(Global.LOGTAG,lastQuery+"LASTQERY");
                 force=false;
-                Cursor c=Queries.GalleryTable.getAllFavoriteCursor(Database.getDatabase(),lastQuery,online);
+                Cursor c=Queries.GalleryTable.getAllFavoriteCursor(Database.getDatabase(),lastQuery,false);
                 results.count=c.getCount();
                 results.values=c;
                 Log.d(Global.LOGTAG,"FILTERING3");
