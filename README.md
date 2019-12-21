@@ -1,6 +1,6 @@
 # NClientV2
 An unofficial NHentai Android Client.
-This app uses the NHentai API and works for devices from API 14 (Android 4.0) and above.
+This app  works for devices from API 14 (Android 4.0) and above.
 Releases: https://github.com/Dar9586/NClientV2/releases
 # API Features:
   - Browse main page
@@ -18,12 +18,12 @@ Releases: https://github.com/Dar9586/NClientV2/releases
   - Bookmark
 # App Screen
 <p>
-  <img src="https://raw.githubusercontent.com/Dar9586/NClientV2/master/readme/images/img1.jpg" alt="Main page" width="360" height="650">
-  <img src="https://raw.githubusercontent.com/Dar9586/NClientV2/master/readme/images/img2.jpg" alt="Lateral menu" width="360" height="650">
+  <img src="https://raw.githubusercontent.com/Dar9586/NClientV2/master/fastlane\metadata\android\en-US\images\phoneScreenshots/img1.jpg" alt="Main page" width="360" height="650">
+  <img src="https://raw.githubusercontent.com/Dar9586/NClientV2/master/fastlane\metadata\android\en-US\images\phoneScreenshots/img2.jpg" alt="Lateral menu" width="360" height="650">
 </p>
 <p>
-  <img src="https://raw.githubusercontent.com/Dar9586/NClientV2/master/readme/images/img3.jpg" alt="Search" width="360" height="650">
-  <img src="https://raw.githubusercontent.com/Dar9586/NClientV2/master/readme/images/img4.jpg" alt="Random manga" width="360" height="650">
+  <img src="https://raw.githubusercontent.com/Dar9586/NClientV2/master/fastlane\metadata\android\en-US\images\phoneScreenshots/img3.jpg" alt="Search" width="360" height="650">
+  <img src="https://raw.githubusercontent.com/Dar9586/NClientV2/master/fastlane\metadata\android\en-US\images\phoneScreenshots/img4.jpg" alt="Random manga" width="360" height="650">
 </p>
 
 ## License
