@@ -2,14 +2,14 @@
 <!--Thanks to ZerOri for the Chinese translation-->
 <resources>
     <!--SUMMARY-->
-    <string name="setting_on_hide_save">已保存图片不会在画廊中显示</string>
-    <string name="setting_off_hide_save">已保存图片会在画廊中显示</string>
+    <string name="setting_on_hide_save">已保存图像不会在画廊中显示</string>
+    <string name="setting_off_hide_save">已保存图像会在画廊中显示</string>
     <string name="setting_on_ignore_tags">从画廊菜单中选中一个标签时不再查询其它标签（语言项除外）</string>
     <string name="setting_off_ignore_tags">从画廊菜单中选中一个标签时查询其它标签</string>
     <string name="setting_on_high_res">加载原图（较多流量）</string>
     <string name="setting_off_high_res">加载缩略图（较少流量）</string>
-    <string name="setting_on_load">所有活动均加载图片</string>
-    <string name="setting_off_load">仅单页阅读时加载图片</string>
+    <string name="setting_on_load">所有活动均加载图像</string>
+    <string name="setting_off_load">仅单页阅读时加载图像</string>
     <string name="setting_on_use_account_tag">在搜索请求中使用账户标签（本地标签优先）</string>
     <string name="image_quality_summary">用百分比表示已下载画廊的分辨率质量</string>
     <string name="setting_off_use_account_tag">在搜索请求中忽略账户标签</string>
@@ -23,13 +23,13 @@
     <string name="send_crash_report">发送崩溃报告</string>
     <string name="change_theme">更改主题</string>
     <string name="clear_cache">清除缓存</string>
-    <string name="load_images">加载图片</string>
+    <string name="load_images">加载图像</string>
     <string name="infinite_scroll">无限滚动</string>
     <string name="ignore_tags">忽略其它标签</string>
-    <string name="high_res_gallery">以最佳分辨率加载画廊图片</string>
-    <string name="hide_saved_images">在画廊中隐藏已保存图片</string>
+    <string name="high_res_gallery">以最佳分辨率加载画廊图像</string>
+    <string name="hide_saved_images">在画廊中隐藏已保存图像</string>
     <string name="use_account_tag">使用账户标签</string>
-    <string name="image_quality">图片质量</string>
+    <string name="image_quality">图像质量</string>
 
     <string name="title_activity_gallery">画廊</string>
     <string name="title_activity_zoom">启用放大</string>
@@ -104,7 +104,7 @@
     <string name="search">搜索</string>
     <string name="prev">上一个</string>
     <string name="share">分享</string>
-    <string name="image">图片</string>
+    <string name="image">图像</string>
     <string name="next">下一个</string>
     <string name="hashtag">#</string>
 
@@ -183,7 +183,7 @@
 
     <string name="search_settings">搜索设置</string>
     <string name="global_settings">全局设置</string>
-    <string name="images_settings">图片设置</string>
+    <string name="images_settings">图像设置</string>
     <string name="miscellaneous">其它设置</string>
     <string name="update_settings">更新设置</string>
     <string name="online_favorite_manga">在线收藏漫画</string>
@@ -215,8 +215,8 @@
     <string name="bookmark_page_format">第 %d 页</string>
     <string name="bookmark_description">书签描述</string>
     <string name="enable_right_to_left">从右至左阅读</string>
-    <string name="setting_on_use_rtl">图片将从右至左显示</string>
-    <string name="setting_off_use_rtl">图片将从左至右显示</string>
+    <string name="setting_on_use_rtl">图像将从右至左显示</string>
+    <string name="setting_off_use_rtl">图像将从左至右显示</string>
     <string name="volume_change_setting">音量键换页</string>
     <string name="popular_tag_count">高级搜索中显示热门标签数</string>
     <string name="setting_on_show_titles">显示画廊标题</string>
