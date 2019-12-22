@@ -274,6 +274,7 @@
     <string name="end_page">結束頁</string>
     <string name="invalid_range_selected">選擇的範圍無效</string>
     <string name="select_page_end">選擇結束頁</string>
+    <string name="column_count_select">Column count select</string>
 
     <string-array name="language">
         <item>英文</item>

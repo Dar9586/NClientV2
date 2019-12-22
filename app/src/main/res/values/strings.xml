@@ -313,6 +313,7 @@
     <string name="start_page">Start page</string>
     <string name="end_page">End page</string>
     <string name="invalid_range_selected">Invalid range selected</string>
+    <string name="column_count_select">Column count select</string>
 
     <string-array name="language">
         <item>English</item>
