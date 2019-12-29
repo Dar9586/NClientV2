@@ -1,23 +1,22 @@
 package com.dar.nclientv2.adapters;
 
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.SearchActivity;
-import com.dar.nclientv2.components.History;
+import com.dar.nclientv2.components.classes.History;
 import com.dar.nclientv2.settings.Global;
 
 import java.util.HashSet;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
     private List<History> history;

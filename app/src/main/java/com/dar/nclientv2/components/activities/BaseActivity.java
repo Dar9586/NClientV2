@@ -1,4 +1,4 @@
-package com.dar.nclientv2.components;
+package com.dar.nclientv2.components.activities;
 
 import android.content.res.Configuration;
 

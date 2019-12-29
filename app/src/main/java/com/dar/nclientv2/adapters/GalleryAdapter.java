@@ -14,6 +14,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.MainActivity;
 import com.dar.nclientv2.R;
@@ -23,17 +24,19 @@ import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.local.LocalGallery;
-import com.dar.nclientv2.components.Size;
+import com.dar.nclientv2.components.classes.Size;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.targets.BitmapTarget;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Locale;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
     public enum Type{TAG,PAGE,RELATED}
-    public enum Policy{PROPORTION,MAX/*,FREE*/}
+    public enum Policy{PROPORTION,MAX,FULL}
     private static final int[] TAG_NAMES = {
             R.string.unknown,
             R.string.tag_parody_gallery,
@@ -91,7 +94,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     }
 
     private void applyProportionPolicy() {
-        if(maxSize.getHeight()-minSize.getHeight()<TOLERANCE)policy=Policy.MAX;
+        if(colCount==1)policy=Policy.FULL;
+        else if(maxSize.getHeight()-minSize.getHeight()<TOLERANCE)policy=Policy.MAX;
         else policy=Policy.PROPORTION;
         Log.d(Global.LOGTAG,"NEW POLICY: "+policy);
     }
@@ -104,7 +108,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             case TAG:id=R.layout.tags_layout;break;
             case PAGE:
                 switch (policy){
-                    case MAX:
+                    case MAX:case FULL:
                         id=R.layout.image_void;
                         break;
                     case PROPORTION:
@@ -212,24 +216,41 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             imgView.setLayoutParams(params);
         }
 
+        loadImageOnPolicy(imgView, pos);
 
-        final File file = LocalGallery.getPage(directory,pos);
-        if(!gallery.isLocal()){
-            final Gallery ent = ((Gallery)gallery);
-            if(file == null || !file.exists()){
-                Global.loadImage(Global.isHighRes()? ent.getPage(pos-1) : ent.getLowPage(pos-1), imgView);
-            } else Global.loadImage(file, imgView);
-        }else{
-            if(file != null && file.exists()) Global.loadImage(file, imgView);
-            else Global.loadImage(R.mipmap.ic_launcher, imgView);
-        }
         holder.master.setOnClickListener(v -> {
             Intent intent = new Intent(context, ZoomActivity.class);
             intent.putExtra(context.getPackageName() + ".GALLERY", gallery);
-            intent.putExtra(context.getPackageName() + ".PAGE", holder.getAdapterPosition()-(gallery.isLocal()?0:1));
+            intent.putExtra(context.getPackageName() + ".PAGE", 1+holder.getAdapterPosition()-(gallery.isLocal()?0:1));
             context.startActivity(intent);
         });
         holder.pageNumber.setText(String.format(Locale.US,"%d", pos));
+    }
+
+    private void loadImageOnPolicy(ImageView imgView, int pos) {
+        final File file = LocalGallery.getPage(directory, pos);
+        if(policy==Policy.FULL) {
+            BitmapTarget target=null;
+            if (file != null && file.exists()) target=Global.loadImageOp(context, imgView, file);
+            else if (!gallery.isLocal()){
+                final Gallery ent = ((Gallery) gallery);
+                target=Global.loadImageOp(context, imgView, Global.isHighRes() ? ent.getPage(pos - 1) : ent.getLowPage(pos - 1));
+            }else Global.loadImage(R.mipmap.ic_launcher, imgView);
+            if(target!=null)map.put(imgView,target);
+        }else{
+            if (file != null && file.exists()) Global.loadImage(file, imgView);
+            else if (!gallery.isLocal()){
+                final Gallery ent = ((Gallery) gallery);
+                Global.loadImage(Global.isHighRes() ? ent.getPage(pos - 1) : ent.getLowPage(pos - 1),imgView);
+            }else Global.loadImage(R.mipmap.ic_launcher, imgView);
+        }
+    }
+    private HashMap<ImageView, BitmapTarget>map=new HashMap<>(5);
+    @Override
+    public void onViewRecycled(@NonNull ViewHolder holder) {
+        super.onViewRecycled(holder);
+        final ImageView imgView=holder.master.findViewById(R.id.image);
+        Glide.with(context).clear(map.remove(imgView));
     }
 
     @Override

@@ -11,7 +11,7 @@ import android.view.View;
 import androidx.appcompat.widget.Toolbar;
 
 import com.dar.nclientv2.adapters.FavoriteAdapter;
-import com.dar.nclientv2.components.BaseActivity;
+import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.settings.Global;
 
 public class FavoriteActivity extends BaseActivity {

@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 
 import com.dar.nclientv2.api.components.Comment;
 import com.dar.nclientv2.api.components.GenericGallery;
-import com.dar.nclientv2.components.Size;
+import com.dar.nclientv2.components.classes.Size;
 import com.dar.nclientv2.settings.Global;
 
 import java.io.File;

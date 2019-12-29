@@ -2,7 +2,7 @@ package com.dar.nclientv2.api.components;
 
 import android.os.Parcelable;
 
-import com.dar.nclientv2.components.Size;
+import com.dar.nclientv2.components.classes.Size;
 
 import java.util.List;
 

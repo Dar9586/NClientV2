@@ -19,7 +19,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dar.nclientv2.R;
-import com.dar.nclientv2.TagFilter;
+import com.dar.nclientv2.TagFilterActivity;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
@@ -42,13 +42,13 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> implements Filterable{
-    private final TagFilter context;
+    private final TagFilterActivity context;
     private final boolean logged=Login.isLogged(),black=Global.getTheme()==Global.ThemeScheme.BLACK,online;
     private String lastQuery=null;
     private final TagType type;
     private boolean wasSortedByName;
     private Cursor cursor=null;
-    public TagsAdapter(TagFilter cont, String query, TagType type, boolean online){
+    public TagsAdapter(TagFilterActivity cont, String query, TagType type, boolean online){
         context=cont;
         this.type=type;
         this.online=online;

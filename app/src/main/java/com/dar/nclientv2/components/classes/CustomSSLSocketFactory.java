@@ -1,4 +1,4 @@
-package com.dar.nclientv2.components;
+package com.dar.nclientv2.components.classes;
 
 import android.os.Build;
 import android.util.Log;
@@ -8,14 +8,12 @@ import com.dar.nclientv2.settings.Global;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.X509TrustManager;
 
 import okhttp3.ConnectionSpec;
 import okhttp3.OkHttpClient;

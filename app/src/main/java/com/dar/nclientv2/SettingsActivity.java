@@ -6,7 +6,7 @@ import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.dar.nclientv2.components.GeneralPreferenceFragment;
+import com.dar.nclientv2.components.views.GeneralPreferenceFragment;
 import com.dar.nclientv2.settings.Global;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -23,7 +23,7 @@ public class SettingsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         GeneralPreferenceFragment frag= (GeneralPreferenceFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
         frag.setAct(this);
-        frag.setType(com.dar.nclientv2.SettingsActivity.Type.values()[getIntent().getIntExtra(getPackageName()+".TYPE", com.dar.nclientv2.SettingsActivity.Type.MAIN.ordinal())]);
+        frag.setType(SettingsActivity.Type.values()[getIntent().getIntExtra(getPackageName()+".TYPE", SettingsActivity.Type.MAIN.ordinal())]);
 
     }
     @Override

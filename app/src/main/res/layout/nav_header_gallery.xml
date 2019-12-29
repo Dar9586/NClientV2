@@ -9,7 +9,7 @@
 
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <com.dar.nclientv2.components.CustomImageView
+    <com.dar.nclientv2.components.widgets.CustomImageView
         android:id="@+id/imageView"
         android:layout_width="0dp"
         android:layout_height="0dp"

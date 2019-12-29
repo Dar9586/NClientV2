@@ -1,4 +1,4 @@
-package com.dar.nclientv2.components;
+package com.dar.nclientv2.components.classes;
 
 import android.os.Parcel;
 import android.os.Parcelable;

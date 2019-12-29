@@ -20,8 +20,8 @@ import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.async.DownloadGallery;
-import com.dar.nclientv2.components.BaseActivity;
-import com.dar.nclientv2.components.RangeSelector;
+import com.dar.nclientv2.components.activities.BaseActivity;
+import com.dar.nclientv2.components.views.RangeSelector;
 import com.dar.nclientv2.settings.Favorites;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
@@ -39,6 +39,7 @@ public class GalleryActivity extends BaseActivity{
     @NonNull private GenericGallery gallery;
     private boolean isLocal;
     private GalleryAdapter adapter;
+    private int zoom;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,18 +57,17 @@ public class GalleryActivity extends BaseActivity{
         if(Global.useRtl())recycler.setRotationY(180);
         if(getIntent().getBooleanExtra(getPackageName()+".INSTANTDOWNLOAD",false))downloadGallery();
         isLocal=getIntent().getBooleanExtra(getPackageName()+".ISLOCAL",false);
-        int zoom=getIntent().getIntExtra(getPackageName()+".ZOOM",0);
+        zoom = getIntent().getIntExtra(getPackageName()+".ZOOM",0);
         refresher.setEnabled(false);
         recycler.setLayoutManager(new GridLayoutManager(this,Global.getColumnCount()));
 
         Uri data = getIntent().getData();
-        int isZoom=0;
         if(data != null && data.getPathSegments().size() >= 2){//if using an URL
             List<String> params = data.getPathSegments();
-            for(String x:params)Log.i(Global.LOGTAG,x);
+            Log.d(Global.LOGTAG,params.size()+": "+params);
             if(params.size()>2){
                 try{
-                    isZoom=Integer.parseInt(params.get(2));
+                    zoom=Integer.parseInt(params.get(2));
                 }catch (NumberFormatException e){
                     Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
                 }
@@ -76,9 +76,9 @@ public class GalleryActivity extends BaseActivity{
 
                 @Override
                 public void onSuccess(List<Gallery> galleries) {
-                    Intent intent = new Intent(GalleryActivity.this, ZoomActivity.class);
+                    Intent intent = new Intent(GalleryActivity.this,GalleryActivity.class);
                     intent.putExtra(getPackageName()+".GALLERY",galleries.get(0));
-                    intent.putExtra(getPackageName()+".PAGE",zoom);
+                    intent.putExtra(getPackageName()+".ZOOM",zoom);
                     startActivity(intent);
                     finish();
                 }

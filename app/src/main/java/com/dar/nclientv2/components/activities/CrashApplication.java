@@ -1,4 +1,4 @@
-package com.dar.nclientv2.components;
+package com.dar.nclientv2.components.activities;
 
 import android.app.Application;
 import android.content.Context;
@@ -10,6 +10,7 @@ import com.dar.nclientv2.BuildConfig;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.async.DownloadGallery;
 import com.dar.nclientv2.async.database.DatabaseHelper;
+import com.dar.nclientv2.components.classes.MySenderFactory;
 import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Favorites;
 import com.dar.nclientv2.settings.Global;

@@ -1,4 +1,4 @@
-package com.dar.nclientv2.components;
+package com.dar.nclientv2.components.views;
 
 import android.content.Context;
 import android.view.View;

@@ -1,4 +1,4 @@
-package com.dar.nclientv2.components;
+package com.dar.nclientv2.components.views;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -22,15 +22,13 @@ import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 
 public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
-    Activity act;
-    SettingsActivity.Type type;
+    private Activity act;
 
     public void setAct(Activity act) {
         this.act = act;
     }
 
     public void setType(SettingsActivity.Type type) {
-        this.type = type;
         switch (type){
             case MAIN:mainMenu();break;
             case COLUMN:columnMenu();break;
@@ -105,7 +103,7 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
     }
 
 
-    Preference.OnPreferenceClickListener preferenceClickListener(int what){return preference -> {
+    private Preference.OnPreferenceClickListener preferenceClickListener(int what){return preference -> {
         AlertDialog.Builder builder = new AlertDialog.Builder(act);
         View v = View.inflate(act, R.layout.column_selector, null);
         builder.setView(v);
@@ -119,7 +117,7 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
         seekBarL.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                progL.setText("" + (progress + 1));
+                progL.setText(String.valueOf(progress + 1));
             }
 
             @Override
@@ -133,7 +131,7 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
         seekBarP.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                progP.setText("" + (progress + 1));
+                progP.setText(String.valueOf(progress + 1));
             }
 
             @Override

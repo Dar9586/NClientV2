@@ -11,7 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.dar.nclientv2.adapters.LocalAdapter;
 import com.dar.nclientv2.api.local.FakeInspector;
-import com.dar.nclientv2.components.BaseActivity;
+import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.settings.Global;
 
 public class LocalActivity extends BaseActivity {

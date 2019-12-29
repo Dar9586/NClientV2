@@ -20,10 +20,11 @@
                 android:textColor="#ffffffff"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.dar.nclientv2.components.CustomViewPager
+            <com.dar.nclientv2.components.widgets.CustomViewPager
 
                 android:id="@+id/container"
                 android:layout_width="0dp"
@@ -37,7 +38,7 @@
 
 
 
-            </com.dar.nclientv2.components.CustomViewPager>
+            </com.dar.nclientv2.components.widgets.CustomViewPager>
             <androidx.appcompat.widget.Toolbar
                 android:alpha="0.75"
                 android:layout_marginTop="@dimen/status_bar_height"

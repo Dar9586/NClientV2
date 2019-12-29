@@ -6,7 +6,7 @@ import android.util.JsonReader;
 import android.util.JsonToken;
 
 import com.dar.nclientv2.api.enums.ImageType;
-import com.dar.nclientv2.components.Size;
+import com.dar.nclientv2.components.classes.Size;
 
 import java.io.IOException;
 

@@ -34,7 +34,7 @@ import com.dar.nclientv2.async.DownloadGallery;
 import com.dar.nclientv2.async.ScrapeTags;
 import com.dar.nclientv2.async.VersionChecker;
 import com.dar.nclientv2.async.database.Queries;
-import com.dar.nclientv2.components.BaseActivity;
+import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.loginapi.Login;
 import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.DefaultDialogs;
@@ -626,7 +626,7 @@ public class MainActivity extends BaseActivity
                 startActivity(intent);
                 break;
             case R.id.tag_manager:
-                intent=new Intent(this,TagFilter.class);
+                intent=new Intent(this, TagFilterActivity.class);
                 startActivity(intent);
                 break;
         }

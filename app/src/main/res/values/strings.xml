@@ -211,7 +211,7 @@
     <string name="set_minimum_count">Set minimum count</string>
     <string name="sort_by_title">Sort by title</string>
     <string name="sort_by_popular">Sort by popular</string>
-    <string name="key_override_volume">volume_override</string>
+    <string name="key_override_volume" translatable="false">volume_override</string>
     <string name="setting_on_override_volume">The volume keys will change page</string>
     <string name="setting_off_override_volume">The volume keys will change system volume</string>
     <string name="next_page_volume_up">Go to next page with up volume</string>
@@ -239,7 +239,7 @@
     <string name="insert_tag_name">Insert tag name:</string>
     <string name="other" translatable="false">other</string>
     <string name="cancelling">Cancelling…</string>
-    <string name="key_favorite_limit">favorite_limit</string>
+    <string name="key_favorite_limit" translatable="false">favorite_limit</string>
     <string name="favorite_count">Favorite count</string>
     <string name="comments">Comments</string>
     <string name="send">Send</string>

@@ -1,4 +1,4 @@
-package com.dar.nclientv2.components;
+package com.dar.nclientv2.components.classes;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,12 +6,11 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 public class History{
-    final String value;
-    final Date date;
+    private final String value;
+    private final Date date;
 
     public History(String value,boolean set) {
         if(set){

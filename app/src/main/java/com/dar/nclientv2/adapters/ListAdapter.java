@@ -21,7 +21,7 @@ import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.database.Queries;
-import com.dar.nclientv2.components.BaseActivity;
+import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;

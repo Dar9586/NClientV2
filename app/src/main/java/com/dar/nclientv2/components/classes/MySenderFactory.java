@@ -1,12 +1,12 @@
-package com.dar.nclientv2.components;
+package com.dar.nclientv2.components.classes;
 
 import android.content.Context;
+
+import androidx.annotation.NonNull;
 
 import org.acra.config.CoreConfiguration;
 import org.acra.sender.ReportSender;
 import org.acra.sender.ReportSenderFactory;
-
-import androidx.annotation.NonNull;
 
 public class MySenderFactory implements ReportSenderFactory{
     @NonNull

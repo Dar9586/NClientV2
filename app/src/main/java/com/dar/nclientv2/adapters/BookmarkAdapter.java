@@ -15,7 +15,7 @@ import com.dar.nclientv2.BookmarkActivity;
 import com.dar.nclientv2.MainActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.async.database.Queries;
-import com.dar.nclientv2.components.Bookmark;
+import com.dar.nclientv2.components.classes.Bookmark;
 import com.dar.nclientv2.settings.Database;
 
 import java.util.List;

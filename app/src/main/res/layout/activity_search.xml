@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.dar.nclientv2.components.CustomSearchView
+                <com.dar.nclientv2.components.widgets.CustomSearchView
                     android:id="@+id/search"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"

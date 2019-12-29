@@ -1,17 +1,17 @@
-package com.dar.nclientv2.components;
+package com.dar.nclientv2.components.widgets;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.google.android.material.chip.Chip;
-
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
 
 public class ChipTag extends Chip {
     private Tag tag;

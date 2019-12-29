@@ -30,7 +30,7 @@ import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.database.Queries;
-import com.dar.nclientv2.components.ChipTag;
+import com.dar.nclientv2.components.widgets.ChipTag;
 import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;

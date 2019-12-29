@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import com.dar.nclientv2.adapters.CommentAdapter;
 import com.dar.nclientv2.api.components.Comment;
 import com.dar.nclientv2.api.components.Gallery;
-import com.dar.nclientv2.components.BaseActivity;
+import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 

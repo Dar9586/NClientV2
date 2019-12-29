@@ -35,7 +35,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.List;
 
-public class TagFilter extends AppCompatActivity{
+public class TagFilterActivity extends AppCompatActivity{
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
@@ -194,7 +194,7 @@ public class TagFilter extends AppCompatActivity{
             @Override
             public void positive(int actual){
                 Log.d(Global.LOGTAG,"ACTUAL: "+actual);
-                TagV2.updateMinCount(TagFilter.this,actual);
+                TagV2.updateMinCount(TagFilterActivity.this,actual);
                 PlaceholderFragment page =(PlaceholderFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
                 if(page!=null){
                     page.addItems(page.type);
@@ -241,7 +241,7 @@ public class TagFilter extends AppCompatActivity{
     public static class PlaceholderFragment extends Fragment {
         TagType type;
         public RecyclerView recyclerView;
-        TagFilter activity;
+        TagFilterActivity activity;
 
         public boolean isNormalType(){
             return type!=TagType.UNKNOWN&&type!=TagType.CATEGORY;
@@ -273,7 +273,7 @@ public class TagFilter extends AppCompatActivity{
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            activity=(TagFilter)getActivity();
+            activity=(TagFilterActivity)getActivity();
             type=TagType.values()[ getArguments().getInt("TAGTYPE")];
             View rootView = inflater.inflate(R.layout.fragment_tag_filter, container, false);
             recyclerView=rootView.findViewById(R.id.recycler);

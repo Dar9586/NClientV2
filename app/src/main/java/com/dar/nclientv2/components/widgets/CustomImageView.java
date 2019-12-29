@@ -1,4 +1,4 @@
-package com.dar.nclientv2.components;
+package com.dar.nclientv2.components.widgets;
 
 import android.content.Context;
 import android.graphics.Matrix;

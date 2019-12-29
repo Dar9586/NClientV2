@@ -34,9 +34,10 @@ import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TitleType;
-import com.dar.nclientv2.components.CustomSSLSocketFactory;
+import com.dar.nclientv2.components.classes.CustomSSLSocketFactory;
 import com.dar.nclientv2.loginapi.LoadTags;
 import com.dar.nclientv2.loginapi.User;
+import com.dar.nclientv2.targets.BitmapTarget;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
@@ -135,7 +136,7 @@ public class Global {
     public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf",CHANNEL_ID3="create_pdf";
     private static Language onlyLanguage=null;
     private static TitleType titleType;
-    private static boolean byPopular,keepHistory,loadImages,highRes,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
+    private static boolean volumeOverride,byPopular,keepHistory,loadImages,highRes,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
     private static ThemeScheme theme;
     private static int notificationId,columnCount,maxId,galleryWidth=-1, galleryHeight =-1;
     private static int colPortMain,colLandMain,colPortDownload,colLandDownload,colLandFavorite,colPortFavorite;
@@ -199,6 +200,7 @@ public class Global {
         removeAvoidedGalleries =shared.getBoolean(context.getString(R.string.key_remove_ignored),true);
         onlyTag=shared.getBoolean(context.getString(R.string.key_ignore_tags),true);
         loadImages=shared.getBoolean(context.getString(R.string.key_load_images),true);
+        volumeOverride=shared.getBoolean(context.getString(R.string.key_override_volume),true);
         columnCount=shared.getInt(context.getString(R.string.key_column_count),2);
         showTitles=shared.getBoolean(context.getString(R.string.key_show_titles),true);
         lockScreen=shared.getBoolean(context.getString(R.string.key_disable_lock),false);
@@ -214,7 +216,9 @@ public class Global {
 
     }
 
-
+    public static boolean volumeOverride() {
+        return volumeOverride;
+    }
 
     private static void initHttpClient(@NonNull Context context){
         if(client!=null)return;
@@ -408,7 +412,20 @@ public class Global {
         Glide.with(context).load(url).preload();
 
     }
+    public static BitmapTarget loadImageOp(Context context,ImageView view,File file){
+        Drawable logo=getLogo(context.getResources());
+        BitmapTarget target=new BitmapTarget(view);
+        Glide.with(context).asBitmap().error(logo).placeholder(logo).load(file).into(target);
+        return target;
+    }
 
+
+    public static BitmapTarget loadImageOp(Context context,ImageView view,String url){
+        Drawable logo=getLogo(context.getResources());
+        BitmapTarget target=new BitmapTarget(view);
+        Glide.with(context).asBitmap().error(logo).placeholder(logo).load(url).into(target);
+        return target;
+    }
     public static void loadImage(String url, final ImageView imageView){loadImage(url,imageView,false);}
     public static void loadImage(String url, final ImageView imageView,boolean force){
         if(loadImages||force)Glide.with(imageView).load(url).placeholder(getLogo(imageView.getResources())).into(imageView);

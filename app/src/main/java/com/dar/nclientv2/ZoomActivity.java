@@ -4,6 +4,7 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,8 +38,9 @@ import com.bumptech.glide.Priority;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.local.LocalGallery;
-import com.dar.nclientv2.components.CustomViewPager;
+import com.dar.nclientv2.components.widgets.CustomViewPager;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.targets.BitmapTarget;
 import com.github.chrisbanes.photoview.PhotoView;
 
 import java.io.File;
@@ -46,7 +49,6 @@ import java.io.IOException;
 
 public class ZoomActivity extends AppCompatActivity {
     private GenericGallery gallery;
-    private boolean overrideVolume;
     public int actualPage=0;
     @TargetApi(16)
     private final static int hideFlags= View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -70,7 +72,6 @@ public class ZoomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Global.initActivity(this);
         side=getSharedPreferences("Settings",0).getBoolean("volumeSide",true);
-        overrideVolume=getSharedPreferences("Settings",0).getBoolean(getString(R.string.key_override_volume),true);
         setContentView(R.layout.activity_zoom);
 
         toolbar = findViewById(R.id.toolbar);
@@ -115,7 +116,7 @@ public class ZoomActivity extends AppCompatActivity {
         findViewById(R.id.prev).setOnClickListener(v -> changeClosePage(false));
         findViewById(R.id.next).setOnClickListener(v -> changeClosePage(true));
 
-        final int page=getIntent().getExtras().getInt(getPackageName()+".PAGE",0);
+        final int page=getIntent().getExtras().getInt(getPackageName()+".PAGE",1)-1;
 
         seekBar.setMax(gallery.getPageCount()-1);
         if(Global.useRtl())seekBar.setRotationY(180);
@@ -146,7 +147,7 @@ public class ZoomActivity extends AppCompatActivity {
     private boolean up=false,down=false,side;
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event){
-        if(overrideVolume){
+        if(Global.volumeOverride()){
             switch(keyCode){
                 case KeyEvent.KEYCODE_VOLUME_UP:up = false;break;
                 case KeyEvent.KEYCODE_VOLUME_DOWN:down = false;break;
@@ -157,7 +158,7 @@ public class ZoomActivity extends AppCompatActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event){
-        if(overrideVolume){
+        if(Global.volumeOverride()){
             switch(keyCode){
                 case KeyEvent.KEYCODE_VOLUME_UP:
                     up = true;changeClosePage(side);if(up && down) changeSide();
@@ -340,12 +341,18 @@ public class ZoomActivity extends AppCompatActivity {
             File file= LocalGallery.getPage(activity.directory,page+1);
             if(file==null||!file.exists()){
                 if(activity.gallery.isLocal()) Glide.with(activity).load(R.mipmap.ic_launcher).into(photoView);
-                else Glide.with(activity).load(((Gallery)activity.gallery).getPage(page)).placeholder(R.drawable.ic_launcher_foreground).error(R.drawable.ic_close).priority(high? Priority.HIGH: Priority.LOW).into(photoView);
+                else loadImage(activity,((Gallery)activity.gallery).getPage(page),photoView,high);
+                // Glide.with(activity).load(((Gallery)activity.gallery).getPage(page)).placeholder(R.drawable.ic_launcher_foreground).error(R.drawable.ic_close).priority(high? Priority.HIGH: Priority.LOW).into(photoView);
             }
             else Glide.with(activity).load(file).placeholder(R.drawable.ic_launcher_foreground).error(R.drawable.ic_close).into(photoView);
         }
     }
-
+    public static void loadImage(Activity activity, String url, ImageView target,boolean high){
+        Glide.with(activity).asBitmap().load(url)
+                .placeholder(R.drawable.ic_launcher_foreground).error(R.drawable.ic_close)
+                .priority(high? Priority.HIGH: Priority.LOW)
+                .into(new BitmapTarget(target));
+    }
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
         public SectionsPagerAdapter(@NonNull FragmentManager fm) {
             super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);

@@ -16,7 +16,7 @@ import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.enums.TitleType;
-import com.dar.nclientv2.components.Bookmark;
+import com.dar.nclientv2.components.classes.Bookmark;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
 

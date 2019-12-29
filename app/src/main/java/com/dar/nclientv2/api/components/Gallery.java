@@ -15,7 +15,7 @@ import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.async.database.Queries;
-import com.dar.nclientv2.components.Size;
+import com.dar.nclientv2.components.classes.Size;
 import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
