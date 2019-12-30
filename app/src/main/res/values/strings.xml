@@ -206,7 +206,7 @@
     <string name="no_updates_found">No updates found</string>
     <string name="error_retrieving">Error in retrieving latest version</string>
     <string name="new_version_found">New version found</string>
-    <string name="update_version_format" formatted="true">Update from version %s to version %s?</string>
+    <string name="update_version_format" formatted="true">Update from version %s to version %s?\n\nChangelog:\n%s</string>
     <string name="clear_this_list">Clear this list?</string>
     <string name="set_minimum_count">Set minimum count</string>
     <string name="sort_by_title">Sort by title</string>

@@ -32,6 +32,7 @@ public class VersionChecker{
     private static final String LATEST_API_URL="https://api.github.com/repos/Dar9586/NClientV2/releases/latest";
     private static final String LATEST_RELEASE_URL="https://github.com/Dar9586/NClientV2/releases/latest";
     private final Activity context;
+    private String downloadUrl;
     private static String latest=null;
     public VersionChecker(Activity context,final boolean silent){
         this.context=context;
@@ -55,18 +56,17 @@ public class VersionChecker{
                 @Override
                 public void onResponse(@NonNull Call call,@NonNull  Response response) throws IOException{
                     JsonReader jr=new JsonReader(response.body().charStream());
-                    jr.beginObject();
-                    while(jr.peek()==JsonToken.NAME&&!jr.nextName().equals("tag_name"))jr.skipValue();
-                    String latestVersion=jr.peek()==JsonToken.STRING?jr.nextString():null;
-                    Log.d(Global.LOGTAG,"LATEST VERSION: "+latestVersion);
+                    String[]arr=parseVersionJson(jr);
                     jr.close();
+                    final String verName = arr[0],body=arr[1];
+                    downloadUrl=arr[2];
                     context.runOnUiThread(()->{
-                        if(versionName.equals(latestVersion)){
+                        if(versionName.equals(verName)){
                             if(!silent)
                                 Toast.makeText(context, R.string.no_updates_found, Toast.LENGTH_SHORT).show();
                         }else{
                             Log.d(Global.LOGTAG,"Executing false");
-                            createDialog(versionName,latestVersion);
+                            createDialog(versionName, verName, body);
                         }
                     });
                 }
@@ -74,13 +74,50 @@ public class VersionChecker{
         }
     }
 
-    private void createDialog(String versionName, String latestVersion){
+    private static String[] parseVersionJson(JsonReader jr) throws IOException {
+        String[]vars=new String[3];//ver code,body,changelog
+        jr.beginObject();
+        while(jr.peek()!=JsonToken.END_OBJECT){
+            switch (jr.nextName()){
+                case "tag_name":vars[0]=jr.nextString();break;
+                case "body":vars[1]=jr.nextString();break;
+                case "assets":
+                    jr.beginArray();
+                    while(jr.hasNext()){
+                        if(vars[2]!=null){
+                            jr.skipValue();
+                            continue;
+                        }
+                        jr.beginObject();
+                        while(jr.peek()!=JsonToken.END_OBJECT){
+                            switch (jr.nextName()){
+                                case "browser_download_url":vars[2]=jr.nextString();break;
+                                default:jr.skipValue();break;
+                            }
+                        }
+                        jr.endObject();
+                    }
+                    jr.endArray();
+                    break;
+                default:jr.skipValue();break;
+            }
+        }
+        return vars;
+    }
+
+    private void createDialog(String versionName, String latestVersion, String finalBody){
+        finalBody=finalBody
+                .replace("\r\n","\n")//Remove ugly newline
+                .replace("NClientV2 "+latestVersion,"")//remove version header
+                .replaceAll("(\\s*\n\\s*)+","\n")//remove multiple newline
+                .replaceAll("\\(.*\\)","").trim();//remove things between ()
+        Log.d(Global.LOGTAG,"Evaluated: "+finalBody);
         Log.d(Global.LOGTAG,"Creating dialog");
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         Log.d(Global.LOGTAG,""+context);
         builder.setTitle(R.string.new_version_found);
         builder.setIcon(R.drawable.ic_file_download);
-        builder.setMessage(context.getString(R.string.update_version_format,versionName,latestVersion));
+        builder.setMessage(context.getString(R.string.update_version_format,versionName,latestVersion,finalBody));
         builder.setPositiveButton(R.string.install, (dialog, which) -> {
             if(Global.hasStoragePermission(context)) downloadVersion(latestVersion);
             else{
@@ -103,10 +140,9 @@ public class VersionChecker{
                 return;
             }
             f.delete();
-
         }
         Log.d(Global.LOGTAG,f.getAbsolutePath());
-        Global.client.newCall(new Request.Builder().url("https://github.com/Dar9586/NClientV2/releases/download/"+latestVersion+"/NClientV2."+latestVersion+".Release.apk").build()).enqueue(new Callback() {
+        Global.client.newCall(new Request.Builder().url(downloadUrl).build()).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 context.runOnUiThread(() -> Toast.makeText(context,R.string.download_update_failed,Toast.LENGTH_LONG).show());

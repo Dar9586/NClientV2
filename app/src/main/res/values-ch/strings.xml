@@ -169,7 +169,7 @@
     <string name="no_updates_found">未發現更新</string>
     <string name="error_retrieving">檢索最新版本出錯</string>
     <string name="new_version_found">發現新版本</string>
-    <string name="update_version_format" formatted="true">從V %s 更新至V %s？</string>
+    <string name="update_version_format" formatted="true">從V %s 更新至V %s？\n\nChangelog:\n%s</string>
     <string name="clear_this_list">清空此列表？</string>
     <string name="set_minimum_count">設置最小值</string>
     <string name="sort_by_title">按標題排列</string>
