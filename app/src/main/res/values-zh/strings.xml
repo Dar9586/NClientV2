@@ -262,6 +262,8 @@
     <string name="end_page">结束页</string>
     <string name="invalid_range_selected">选择范围无效</string>
     <string name="column_count_select">列数选择</string>
+    <string name="send_with_title">Send with title?</string>
+    <string name="caption_send_with_title">Append url to the image as caption to the image?</string>
 
     <string-array name="language">
         <item>英文</item>

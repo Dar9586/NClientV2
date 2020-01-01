@@ -314,6 +314,8 @@
     <string name="end_page">End page</string>
     <string name="invalid_range_selected">Invalid range selected</string>
     <string name="column_count_select">Column count select</string>
+    <string name="send_with_title">Send with title?</string>
+    <string name="caption_send_with_title">Append url to the image as caption to the image?</string>
 
     <string-array name="language">
         <item>English</item>

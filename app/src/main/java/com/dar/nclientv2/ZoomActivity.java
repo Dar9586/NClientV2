@@ -5,10 +5,14 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +32,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -46,6 +51,7 @@ import com.github.chrisbanes.photoview.PhotoView;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 public class ZoomActivity extends AppCompatActivity {
     private GenericGallery gallery;
@@ -207,6 +213,7 @@ public class ZoomActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_zoom, menu);
         Global.setTint(menu.findItem(R.id.save_page).getIcon());
+        Global.setTint(menu.findItem(R.id.share).getIcon());
         return true;
     }
 
@@ -222,6 +229,10 @@ public class ZoomActivity extends AppCompatActivity {
                     downloadPage();
                 }else requestStorage();
                 break;
+            case R.id.share:
+                if(gallery.getId()<=0)sendImage(false);
+                else openSendImageDialog();
+                break;
             case android.R.id.home:
                 finish();
                 return true;
@@ -229,6 +240,16 @@ public class ZoomActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    private void openSendImageDialog() {
+        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        builder.setPositiveButton(R.string.yes, (dialog, which) -> sendImage(true))
+                .setNegativeButton(R.string.no, (dialog, which) -> sendImage(false))
+                .setCancelable(true).setTitle(R.string.send_with_title)
+                .setMessage(R.string.caption_send_with_title)
+                .show();
+    }
+
     @TargetApi(23)
     private void requestStorage(){
         requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},1);
@@ -248,6 +269,57 @@ public class ZoomActivity extends AppCompatActivity {
     private PlaceholderFragment getActualFragment(int position){
         return (PlaceholderFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + position);
     }
+
+    private void sendImage(boolean withText){
+        Bitmap bitmap;
+        PlaceholderFragment page =getActualFragment();
+        File file= null;
+        String endName;
+        int pageNum=mViewPager.getCurrentItem();
+        if(gallery.isLocal()){
+            LocalGallery gallery=(LocalGallery)this.gallery;
+            endName=gallery.getPage(pageNum).getName();
+        }else{
+            Gallery gallery=(Gallery) this.gallery;
+            if(pageNum>100)endName="";
+            else if (pageNum>10)endName="0";
+            else endName="00";
+            endName+=pageNum+"."+gallery.getPageExtension(pageNum);
+        }
+        try {
+            file = File.createTempFile(""+gallery.getId(),endName);
+            file.deleteOnExit();
+            Log.d(Global.LOGTAG,"TEMP: "+file.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(file==null)return;
+        //is useless to download the vector used by the app
+        if(page!=null&&page.photoView.getDrawable() instanceof BitmapDrawable) {
+            bitmap = ((BitmapDrawable) page.photoView.getDrawable()).getBitmap();
+            saveImage(bitmap,file,true);
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            if(withText)shareIntent.putExtra(Intent.EXTRA_TEXT, gallery.sharePageUrl(pageNum));
+            Uri x= FileProvider.getUriForFile(
+                    getApplicationContext(),getApplicationContext().getPackageName() + ".provider",file);
+            shareIntent.putExtra(Intent.EXTRA_STREAM, x);
+            switch (endName.substring(endName.length()-3)){
+                case "jpg":shareIntent.setType("image/jpeg");break;
+                case "png":shareIntent.setType("image/png");break;
+                case "gif":shareIntent.setType("image/gif");break;
+                default:shareIntent.setType("image/*");break;
+            }
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            List<ResolveInfo> resInfoList = getApplicationContext().getPackageManager().queryIntentActivities(shareIntent, PackageManager.MATCH_DEFAULT_ONLY);
+            for (ResolveInfo resolveInfo : resInfoList) {
+                String packageName = resolveInfo.activityInfo.packageName;
+                getApplicationContext().grantUriPermission(packageName, x, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            }
+            startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)));
+        }
+    }
+
+
     private void downloadPage() {
         final File output=new File(Global.SCREENFOLDER,gallery.getId()+"-"+(mViewPager.getCurrentItem()+1)+".jpg");
         Bitmap bitmap;
@@ -255,16 +327,20 @@ public class ZoomActivity extends AppCompatActivity {
         //is useless to download the vector used by the app
         if(page!=null&&page.photoView.getDrawable() instanceof BitmapDrawable){
             bitmap=((BitmapDrawable)page.photoView.getDrawable()).getBitmap();
-            try {
-                if(!output.exists())output.createNewFile();
-                FileOutputStream ostream = new FileOutputStream(output);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 95, ostream);
-                ostream.flush();
-                ostream.close();
-                Toast.makeText(this, R.string.download_completed, Toast.LENGTH_SHORT).show();
-            }catch (IOException e){
-                Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);}
+            saveImage(bitmap,output,false);
         }
+    }
+
+    private void saveImage(Bitmap bitmap, File output,boolean silent) {
+        try {
+            if(!output.exists())output.createNewFile();
+            FileOutputStream ostream = new FileOutputStream(output);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 95, ostream);
+            ostream.flush();
+            ostream.close();
+            if(!silent)Toast.makeText(this, R.string.download_completed, Toast.LENGTH_SHORT).show();
+        }catch (IOException e){
+            Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);}
     }
 
     public static class PlaceholderFragment extends Fragment {
@@ -336,6 +412,7 @@ public class ZoomActivity extends AppCompatActivity {
             else if(page==(current-1)||page==(current+1))loadPage(false);
             return rootView;
         }
+
         public void loadPage(boolean high){
 
             File file= LocalGallery.getPage(activity.directory,page+1);

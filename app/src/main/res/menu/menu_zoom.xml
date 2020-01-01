@@ -8,4 +8,10 @@
         android:icon="@drawable/ic_save"
         android:title="@string/save_page"
         app:showAsAction="ifRoom|collapseActionView" />
+    <item
+        android:id="@+id/share"
+        android:orderInCategory="200"
+        android:icon="@drawable/ic_share"
+        android:title="@string/share"
+        app:showAsAction="ifRoom|collapseActionView"/>
 </menu>

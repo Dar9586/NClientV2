@@ -275,6 +275,8 @@
     <string name="invalid_range_selected">選擇的範圍無效</string>
     <string name="select_page_end">選擇結束頁</string>
     <string name="column_count_select">列数选择</string>
+    <string name="send_with_title">Send with title?</string>
+    <string name="caption_send_with_title">Append url to the image as caption to the image?</string>
 
     <string-array name="language">
         <item>英文</item>
