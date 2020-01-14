@@ -589,11 +589,6 @@ public class MainActivity extends BaseActivity
         switch (id){
 
             case R.id.downloaded:if(Global.hasStoragePermission(this))startLocalActivity();else requestStorage();break;
-            case R.id.test:
-                intent=new Intent(this, GalleryActivity.class);
-                intent.putExtra(getPackageName()+".GALLERY",Gallery.fakeGallery());
-                startActivity(intent);
-                break;
             case R.id.action_login:
                 if(com.dar.nclientv2.settings.Login.isLogged()){
                     showLogoutForm();
