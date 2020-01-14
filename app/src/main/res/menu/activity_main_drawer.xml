@@ -38,6 +38,9 @@
                 <item android:title="@string/login"
                     android:icon="@drawable/ic_person"
                     android:id="@+id/action_login"/>
+                <item android:title="TEST"
+                    android:icon="@drawable/ic_person"
+                    android:id="@+id/test"/>
             </group>
         </menu>
     </item>

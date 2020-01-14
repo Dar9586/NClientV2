@@ -129,7 +129,6 @@ public class GalleryActivity extends BaseActivity{
             menu.findItem(R.id.add_online_gallery).setIcon(x?R.drawable.ic_star:R.drawable.ic_star_border);
         }
         menu.findItem(R.id.share).setVisible(gallery!=null&&gallery.isValid());
-        menu.findItem(R.id.comments).setVisible(gallery!=null&&!gallery.isLocal());
         menu.findItem(R.id.favorite_manager).setIcon((isFavorite=Favorites.isFavorite(gallery))?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
         menu.findItem(R.id.load_internet).setVisible(isLocal&&gallery!=null&&gallery.getId()!=-1);
     }
@@ -139,11 +138,12 @@ public class GalleryActivity extends BaseActivity{
         getMenuInflater().inflate(R.menu.gallery, menu);
         this.menu=menu;
 
-        menu.findItem(R.id.add_online_gallery).setVisible(!isLocal&&Login.isLogged());
-        menu.findItem(R.id.favorite_manager).setVisible(!isLocal||isFavorite);
-        menu.findItem(R.id.download_gallery).setVisible(!isLocal);
-        menu.findItem(R.id.download_range).setVisible(!isLocal);
-        menu.findItem(R.id.related).setVisible(!isLocal);
+        menu.findItem(R.id.add_online_gallery).setVisible(gallery.getId()>=0&&!isLocal&&Login.isLogged());
+        menu.findItem(R.id.favorite_manager).setVisible(gallery.getId()>=0&&(!isLocal||isFavorite));
+        menu.findItem(R.id.download_gallery).setVisible(gallery.getId()>=0&&!isLocal);
+        menu.findItem(R.id.download_range).setVisible(gallery.getId()>=0&&!isLocal);
+        menu.findItem(R.id.related).setVisible(gallery.getId()>=0&&!isLocal);
+        menu.findItem(R.id.comments).setVisible(gallery.getId()>=0&&!isLocal);
         if(gallery!=null)loadMenu();
         Global.setTint(menu.findItem(R.id.download_gallery).getIcon());
         Global.setTint(menu.findItem(R.id.load_internet).getIcon());
@@ -151,6 +151,7 @@ public class GalleryActivity extends BaseActivity{
         Global.setTint(menu.findItem(R.id.share).getIcon());
         Global.setTint(menu.findItem(R.id.related).getIcon());
         Global.setTint(menu.findItem(R.id.favorite_manager).getIcon());
+        Global.setTint(menu.findItem(R.id.comments).getIcon());
         updateColumnCount(false);
         return true;
     }

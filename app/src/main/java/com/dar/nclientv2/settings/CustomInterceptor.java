@@ -10,7 +10,7 @@ public class CustomInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request.Builder r=chain.request().newBuilder();
-        r.addHeader("User-Agent","NClientV2 1.9.3");
+        r.addHeader("User-Agent","NClientV2 "+Global.getLastVersion(null));
 
         return chain.proceed(r.build());
     }

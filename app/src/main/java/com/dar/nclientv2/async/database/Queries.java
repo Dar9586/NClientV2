@@ -20,7 +20,6 @@ import com.dar.nclientv2.components.classes.Bookmark;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,26 +32,7 @@ public class Queries{
     }
 
     public static class DebugDatabase{
-        public static void dumpDatabase(SQLiteDatabase db){
-            Log.d(Global.LOGTAG,"START DUMPING");
-            File f=new File(Global.SCREENFOLDER,"DBDATA");
-            f=new File(f,"7.log");
-            Log.d(Global.LOGTAG,f.getAbsolutePath());
-            try{
-                f.getParentFile().mkdirs();
-                f.createNewFile();
-                FileWriter fw=new FileWriter(f);
-                dumpTable(db,GalleryTable.TABLE_NAME,fw);
-                //dumpTable(db,TagTable.TABLE_NAME,fw);
-                //dumpTable(db,RelatedTable.TABLE_NAME);
-                dumpTable(db, GalleryBridgeTable.TABLE_NAME,fw);
-                fw.flush();
-                fw.close();
-            }catch(IOException e){
-                e.printStackTrace();
-            }
-            Log.d(Global.LOGTAG,"END DUMPING");
-        }
+
         private static void dumpTable(SQLiteDatabase db,String name,FileWriter sb) throws IOException{
 
             String query="SELECT * FROM "+ name;
@@ -238,6 +218,7 @@ public class Queries{
         }
         public static void delete(SQLiteDatabase db,int id){
             db.delete(TABLE_NAME, IDGALLERY +"=?",new String[]{""+id});
+            GalleryBridgeTable.deleteGallery(db,id);
         }
 
         public static int countFavorite(SQLiteDatabase db){
@@ -475,6 +456,20 @@ public class Queries{
             }
             return tags;
         }
+
+        public static Tag[][] getRandomTags(SQLiteDatabase database, int n) {
+            return new Tag[][]{
+                    getTopTags(database,TagType.values()[0],0),
+                    getTopTags(database,TagType.values()[1],n),
+                    getTopTags(database,TagType.values()[2],n),
+                    getTopTags(database,TagType.values()[3],n),
+                    getTopTags(database,TagType.values()[4],n),
+                    getTopTags(database,TagType.values()[5],1),
+                    getTopTags(database,TagType.values()[6],1),
+                    getTopTags(database,TagType.values()[7],1),
+            };
+
+        }
     }
     public static class DownloadTable{
         static final String TABLE_NAME="Downloads";
@@ -576,6 +571,11 @@ public class Queries{
             values.put(ID_TAG,tagId);
             db.insertWithOnConflict(TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_IGNORE);
         }
+
+        public static void deleteGallery(SQLiteDatabase db, int id) {
+            db.delete(TABLE_NAME,ID_GALLERY+"=?",new String[]{""+id});
+        }
+
         public static class Temp{
             public final int idTag,idGallery;
 

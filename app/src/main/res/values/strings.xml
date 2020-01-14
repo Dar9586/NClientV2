@@ -316,6 +316,7 @@
     <string name="column_count_select">Column count select</string>
     <string name="send_with_title">Send with title?</string>
     <string name="caption_send_with_title">Append url to the image as caption to the image?</string>
+    <string name="error_404">Error 404: not found</string>
 
     <string-array name="language">
         <item>English</item>

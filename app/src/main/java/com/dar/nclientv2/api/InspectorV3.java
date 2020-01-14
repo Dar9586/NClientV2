@@ -261,7 +261,9 @@ public class InspectorV3 extends Thread implements Parcelable {
     private void doSingle(Element document) throws IOException {
         galleries=new ArrayList<>(1);
         String x=document.getElementsByTag("script").last().html();
-        int s=x.indexOf("new N.gallery(")+14;
+        int s=x.indexOf("new N.gallery(");
+        if(s<0)return;
+        s+=14;
         x=x.substring(s,x.indexOf('\n',s)-2);
         Elements com=document.getElementById("comments").getElementsByClass("comment");
         Elements rel=document.getElementById("related-container").getElementsByClass("gallery");

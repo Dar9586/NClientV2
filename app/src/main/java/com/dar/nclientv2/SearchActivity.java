@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,7 +12,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
@@ -78,16 +76,13 @@ public class SearchActivity extends AppCompatActivity {
         searchView=findViewById(R.id.search);
         adapter=new HistoryAdapter(this);
         autoComplete=(AppCompatAutoCompleteTextView) getLayoutInflater().inflate(R.layout.autocomplete_entry,findViewById(R.id.appbar),false);
-        autoComplete.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId== EditorInfo.IME_ACTION_SEND){
-                    alertDialog.dismiss();
-                    createChip();
-                    return true;
-                }
-                return false;
+        autoComplete.setOnEditorActionListener((v, actionId, event) -> {
+            if(actionId== EditorInfo.IME_ACTION_SEND){
+                alertDialog.dismiss();
+                createChip();
+                return true;
             }
+            return false;
         });
         recyclerView=findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

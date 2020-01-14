@@ -69,12 +69,13 @@ public class Global {
     }
 
     public static String getLastVersion(Context context) {
-        return context.getSharedPreferences("Settings", 0).getString("last_version","0.0.0");
-
+        if(context!=null)lastVersion=context.getSharedPreferences("Settings", 0).getString("last_version","0.0.0");
+        return lastVersion;
     }
 
     public static void setLastVersion(Context context) {
-        context.getSharedPreferences("Settings", 0).edit().putString("last_version",getVersionName(context)).apply();
+        lastVersion=getVersionName(context);
+        context.getSharedPreferences("Settings", 0).edit().putString("last_version",lastVersion).apply();
     }
 
     public static void updateMainColumnCount(Context context, int port, int land) {
@@ -138,6 +139,7 @@ public class Global {
     private static TitleType titleType;
     private static boolean volumeOverride,byPopular,keepHistory,loadImages,highRes,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
     private static ThemeScheme theme;
+    private static String lastVersion;
     private static int notificationId,columnCount,maxId,galleryWidth=-1, galleryHeight =-1;
     private static int colPortMain,colLandMain,colPortDownload,colLandDownload,colLandFavorite,colPortFavorite;
     private static Point screenSize;

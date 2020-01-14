@@ -100,9 +100,10 @@ public class MainActivity extends BaseActivity
     },startGallery=new InspectorV3.DefaultInspectorResponse() {
         @Override
         public void onSuccess(List<Gallery> galleries) {
+            Gallery g=galleries.size()==1?galleries.get(0):Gallery.emptyGallery(MainActivity.this);
             Intent intent=new Intent(MainActivity.this, GalleryActivity.class);
-            Log.d(Global.LOGTAG,galleries.get(0).toString());
-            intent.putExtra(getPackageName()+".GALLERY",galleries.get(0));
+            Log.d(Global.LOGTAG,g.toString());
+            intent.putExtra(getPackageName()+".GALLERY",g);
             runOnUiThread(()->{
                 startActivity(intent);
                 finish();
@@ -133,7 +134,6 @@ public class MainActivity extends BaseActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setTitle(R.string.app_name);
-
         Uri data=getIntent().getData();
         if(getIntent().getBooleanExtra(getPackageName()+".ISBYTAG",false)){//TAG FROM OTHER ACTIVITY
             Tag t=getIntent().getParcelableExtra(getPackageName()+".TAG");
@@ -145,10 +145,8 @@ public class MainActivity extends BaseActivity
             status = MainStatus.SEARCH;
             try {
                 int id=Integer.parseInt(query);
-                if(id>0&&id<=Global.getMaxId()){
-                    inspector= InspectorV3.galleryInspector(this, id, startGallery );
-                    ok=true;
-                }
+                inspector= InspectorV3.galleryInspector(this, id, startGallery );
+                ok=true;
             }catch (NumberFormatException ignore){}
             if(!ok) {
                 if (query != null) query = query.trim();
@@ -591,6 +589,11 @@ public class MainActivity extends BaseActivity
         switch (id){
 
             case R.id.downloaded:if(Global.hasStoragePermission(this))startLocalActivity();else requestStorage();break;
+            case R.id.test:
+                intent=new Intent(this, GalleryActivity.class);
+                intent.putExtra(getPackageName()+".GALLERY",Gallery.fakeGallery());
+                startActivity(intent);
+                break;
             case R.id.action_login:
                 if(com.dar.nclientv2.settings.Login.isLogged()){
                     showLogoutForm();

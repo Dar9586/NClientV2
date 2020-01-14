@@ -79,7 +79,7 @@ public class ZoomActivity extends AppCompatActivity {
         Global.initActivity(this);
         side=getSharedPreferences("Settings",0).getBoolean("volumeSide",true);
         setContentView(R.layout.activity_zoom);
-
+        //getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         toolbar = findViewById(R.id.toolbar);
         //toolbar.setPadding(toolbar.getPaddingLeft(),Global.getStatusBarHeight(this),toolbar.getPaddingRight(),toolbar.getTitleMarginBottom());
         setSupportActionBar(toolbar);
@@ -297,7 +297,7 @@ public class ZoomActivity extends AppCompatActivity {
         //is useless to download the vector used by the app
         if(page!=null&&page.photoView.getDrawable() instanceof BitmapDrawable) {
             bitmap = ((BitmapDrawable) page.photoView.getDrawable()).getBitmap();
-            saveImage(bitmap,file,true);
+            saveImage(bitmap,file,true);//Here we use files because they are temp
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             if(withText)shareIntent.putExtra(Intent.EXTRA_TEXT, gallery.sharePageUrl(pageNum));
             Uri x= FileProvider.getUriForFile(

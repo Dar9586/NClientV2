@@ -9,6 +9,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
@@ -155,6 +156,14 @@ public class Gallery extends GenericGallery{
     public String getPageExtension(int page) {
         return extToString(pages[page]);
     }
+    public String mimeForPage(int page){
+        switch (pages[page]){
+            case GIF:return "image/gif";
+            case PNG:return "image/png";
+            case JPG:return "image/jpeg";
+        }
+        return "text/plain";
+    }
 
     private static String extToString(ImageExt ext){
         switch(ext){
@@ -189,19 +198,21 @@ public class Gallery extends GenericGallery{
         writer.write(Integer.toString(pages.length));
         writer.write(extToChar(cover));
         writer.write(extToChar(thumbnail));
-        ImageExt x=pages[0],act;
-        int len=1;
-        for(int i=1;i<pages.length;i++,len++){
-            act=pages[i];
-            if(act!=x){
-                writer.write(Integer.toString(len));
-                writer.write(extToChar(x));
-                len=0;
+        if(pages.length>0) {
+            ImageExt x = pages[0], act;
+            int len = 1;
+            for (int i = 1; i < pages.length; i++, len++) {
+                act = pages[i];
+                if (act != x) {
+                    writer.write(Integer.toString(len));
+                    writer.write(extToChar(x));
+                    len = 0;
+                }
+                x = act;
             }
-            x=act;
+            writer.write(Integer.toString(len));
+            writer.write(extToChar(x));
         }
-        writer.write(Integer.toString(len));
-        writer.write(extToChar(x));
         return writer.toString();
     }
 
@@ -308,7 +319,7 @@ public class Gallery extends GenericGallery{
     }
     @Override
     public boolean isValid() {
-        return valid;
+        return valid&&id>=0;
     }
 
     public Gallery(JsonReader jr, List<Gallery> related, List<Comment> comments) throws IOException {
@@ -592,7 +603,63 @@ public class Gallery extends GenericGallery{
             tags.addAll(Arrays.asList(Queries.TagTable.getAllOnlineFavorite(Database.getDatabase())));
         return hasIgnoredTags(TagV2.getQueryString("",tags));
     }
-
+    private Gallery(){
+        complete=true;
+    }
+    public static Gallery emptyGallery(Context context){
+        Gallery g=new Gallery();
+        g.id=-1;
+        g.mediaId=999999;
+        g.favoriteCount=0;
+        g.titles[0]=null;
+        g.titles[1]=context.getString(R.string.error_404);
+        g.titles[2]=null;
+        g.uploadDate=new Date();
+        g.maxSize=new Size(
+                900,
+                900
+        );
+        g.minSize=new Size(
+                600,
+                600
+        );
+        g.comments=null;
+        g.pageCount=0;
+        g.pages=new ImageExt[0];
+        g.thumbnail=ImageExt.PNG;
+        g.cover=ImageExt.PNG;
+        g.tags=new Tag[TagType.values().length][];
+        return g;
+    }
+    public static Gallery fakeGallery(){
+        Gallery g=new Gallery();
+        g.id=999999;
+        g.mediaId=999999;
+        g.favoriteCount=0;
+        g.titles[0]="TEST JP";
+        g.titles[1]="TEST PRETTY";
+        g.titles[2]="TEST ENG";
+        g.uploadDate=new Date();
+        g.maxSize=new Size(
+                900,
+                900
+        );
+        g.minSize=new Size(
+                600,
+                600
+        );
+        g.comments=null;
+        g.pageCount=100;
+        g.pages=new ImageExt[100];
+        for(int i=0;i<100;i++){
+            g.pages[i]=ImageExt.values()[i%3];
+        }
+        g.thumbnail=ImageExt.JPG;
+        g.cover=ImageExt.PNG;
+        g.tags=Queries.TagTable.getRandomTags(Database.getDatabase(),50);
+        g.loadLanguage();
+        return g;
+    }
     public boolean isComplete() {
         return complete;
     }
