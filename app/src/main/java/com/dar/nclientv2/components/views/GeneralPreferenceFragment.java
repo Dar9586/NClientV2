@@ -1,12 +1,12 @@
 package com.dar.nclientv2.components.views;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SeekBarPreference;
 
@@ -17,9 +17,9 @@ import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 
 public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
-    private Activity act;
+    private AppCompatActivity act;
 
-    public void setAct(Activity act) {
+    public void setAct(AppCompatActivity act) {
         this.act = act;
     }
 

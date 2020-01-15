@@ -3,8 +3,6 @@
 <resources>
     <string name="app_name">NClientV2</string>
     <!--SUMMARY-->
-    <string name="setting_on_hide_save">保存的圖像不會在畫廊中顯示</string>
-    <string name="setting_off_hide_save">保存的圖像會在畫廊中顯示</string>
     <string name="setting_on_ignore_tags">從畫廊功能表中選中一個標籤時不再查詢其它標籤（語言項除外）</string>
     <string name="setting_off_ignore_tags">從畫廊功能表中選中一個標籤時查詢其它標籤</string>
     <string name="setting_on_high_res">載入原圖（更多資料量）</string>
@@ -12,7 +10,6 @@
     <string name="setting_on_load">所有活動均載入圖像</string>
     <string name="setting_off_load">僅單頁閱讀時載入圖像</string>
     <string name="setting_on_use_account_tag">帳戶標籤用於搜查（本地標籤優先）</string>
-    <string name="image_quality_summary">用百分比表示已下載畫廊的解析度品質</string>
     <string name="setting_off_use_account_tag">搜查時忽略帳戶標籤</string>
     <string name="setting_on_infinite_scroll">到達底部時載入下一頁</string>
     <string name="setting_off_infinite_scroll">使用底部功能表跳頁</string>
@@ -28,9 +25,7 @@
     <string name="infinite_scroll">無限滾動</string>
     <string name="ignore_tags">忽略其它標籤</string>
     <string name="high_res_gallery">以最佳解析度載入畫廊圖像</string>
-    <string name="hide_saved_images">在畫廊中隱藏保存的圖像</string>
     <string name="use_account_tag">使用帳戶標籤</string>
-    <string name="image_quality">圖像品質</string>
 
     <string name="title_activity_gallery">畫廊</string>
     <string name="title_activity_zoom">啟用放大</string>
@@ -50,15 +45,12 @@
     <string name="channel2_name">創建PDF</string>
     <string name="channel1_description">用於顯示畫廊下載進度</string>
     <string name="channel2_description">用於顯示PDF創建進度</string>
-    <string name="channel1_title" formatted="true">下載中的畫廊：</string>
-    <string name="channel1_title_format">下載中的畫廊：（%d/%d）</string>
     <string name="channel2_title">創建中的PDF：</string>
 
     <string name="favorite_max_reached" formatted="true">你最多能收藏 %d 部漫畫。</string>
     <string name="tags_max_reached" formatted="true">你最多能選中 %d 個標籤。</string>
 
 
-    <string name="filters">篩選</string>
     <string name="only_english">僅英文</string>
     <string name="only_japanese">僅日文</string>
     <string name="only_chinese">僅中文</string>
@@ -66,26 +58,17 @@
     <string name="all_languages">所有語言</string>
 
     <string name="sort_popular">按熱度排列</string>
-    <string name="sort_type">按類型排列</string>
-
-    <string name="title_type">標題類型</string>
-    <string name="pretty_title">美觀</string>
-    <string name="english_title">英文</string>
-    <string name="japanese_title">日文</string>
 
     <string name="username_or_email">用戶名或郵件</string>
     <string name="password">密碼</string>
     <string name="login">登錄</string>
     <string name="login_formatted" formatted="true">以 %s 身份登錄</string>
     <string name="logout">登出</string>
-    <string name="sign_in">登錄</string>
     <string name="forgot_password">忘記密碼？<b>重置密碼</b></string>
     <string name="register">沒有帳戶？<b>註冊帳號</b></string>
     <string name="invalid_credentials">無效憑證</string>
 
     <string name="favorite_online_manga">線上收藏漫畫</string>
-    <string name="online_favorites">線上收藏</string>
-    <string name="offline_favorites">離線收藏</string>
     <string name="online_tags">線上標籤</string>
 
     <string name="add_to_online_favorite">添加至線上收藏</string>
@@ -97,7 +80,6 @@
     <string name="thumbnail">預覽</string>
     <string name="settings">設置</string>
     <string name="related">相關</string>
-    <string name="refresh">刷新</string>
     <string name="failed">失敗</string>
     <string name="search">搜索</string>
     <string name="prev">上一個</string>
@@ -125,14 +107,9 @@
     <string name="downloaded_manga">已下載漫畫</string>
     <string name="download_gallery">下載畫廊</string>
     <string name="download_completed">下載完成</string>
-    <string name="download_canceled">下載取消</string>
 
     <string name="delete_gallery">刪除畫廊</string>
     <string name="delete_gallery_format" formatted="true">是否刪除畫廊：\n%s</string>
-
-    <string name="reset_tags">重置所有標籤</string>
-    <string name="reset_tags_long">重置所有標籤？</string>
-    <string name="reload_tags">重載所有標籤？</string>
 
 
     <string name="share_with">分享</string>
@@ -143,10 +120,7 @@
     <string name="change_view">變更視圖</string>
     <string name="tag_preference">標籤偏好</string>
     <string name="manage_tags">管理標籤</string>
-    <string name="change_min_tag">更改最小標籤數</string>
     <string name="applied_filters">已篩選</string>
-    <string name="min_count">最小</string>
-    <string name="minimum_tag_count">最小標籤數：</string>
     <string name="show_related">跳轉至相關畫廊</string>
     <string name="random_manga">隨機漫畫</string>
     <string name="save_page">保存頁數</string>
@@ -157,10 +131,7 @@
     <string name="setting_on_remove_ignored">不顯示帶有已忽略標籤的畫廊</string>
     <string name="setting_off_remove_ignored">模糊化帶有已忽略標籤的畫廊</string>
     <string name="remove_ignored_galleries">移除已忽略畫廊</string>
-    <string name="copy_to_clipboard">複製到剪貼板</string>
     <string name="clear_tag_preferences">清除標籤偏好</string>
-    <string name="reload_tags_from_web">從網站重載標籤</string>
-    <string name="load_next_page">載入下一頁</string>
     <string name="check_for_update_on_startup">啟動時檢查更新</string>
     <string name="check_for_updates">檢查更新</string>
     <string name="no_updates_found">未發現更新</string>
@@ -194,19 +165,16 @@
     <string name="keep_history">保留搜索歷史</string>
     <string name="add">加入</string>
     <string name="insert_tag_name">插入標籤名：</string>
-    <string name="cancelling">取消…</string>
     <string name="favorite_count">收藏數</string>
     <string name="comments">評論</string>
     <string name="send">發送</string>
     <string name="send_comment">發送評論…</string>
-    <string name="remove_comment">移除評論</string>
     <string name="profile_picture">頭像</string>
     <string name="send_bug_on_github">在Github上回饋bug</string>
     <string name="github">Github</string>
     <string name="install">安裝</string>
     <string name="download_update_failed">無法下載新版本</string>
     <string name="copyURL">複製URL</string>
-    <string name="favorite">收藏</string>
     <string name="add_bookmark">加入書簽</string>
     <string name="manage_bookmarks">管理書簽</string>
     <string name="bookmark_page_format">頁 %d</string>
@@ -235,11 +203,8 @@
     <string name="no">不要</string>
     <string name="yes">是的</string>
 
-    <string name="download_manager">下載管理器</string>
-    <string name="manage_downloads">下載管理</string>
     <string name="use_column_port">選擇豎屏每行列數</string>
     <string name="use_column_land">選擇橫屏每行列數</string>
-    <string name="select_column_count">選擇列數</string>
     <string name="start_all_downloads">開始所有下載</string>
     <string name="pause_all_downloads">停止所有下載</string>
     <string name="cancel_all_downloads">取消所有下載</string>
@@ -261,11 +226,9 @@
     <string name="failed_zip">創建ZIP失敗: </string>
     <string name="create_zip_format" formatted="true">正在創建ZIP： "%s"</string>
     <string name="download_page_range">下載頁面範圍</string>
-    <string name="select_page_start">選擇開始頁</string>
     <string name="start_page">起始頁</string>
     <string name="end_page">結束頁</string>
     <string name="invalid_range_selected">選擇的範圍無效</string>
-    <string name="select_page_end">選擇結束頁</string>
     <string name="column_count_select">列数选择</string>
     <string name="send_with_title">Send with title?</string>
     <string name="caption_send_with_title">Append url to the image as caption to the image?</string>

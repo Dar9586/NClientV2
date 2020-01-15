@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:clickable="true"
         android:focusable="true"
-        android:foreground="?android:attr/selectableItemBackground"
+        android:foreground="?attr/selectableItemBackground"
         android:id="@+id/master_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -51,7 +51,6 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/downloadLayout"
                 app:layout_constraintTop_toBottomOf="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

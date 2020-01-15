@@ -1,7 +1,6 @@
 package com.dar.nclientv2.settings;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -23,6 +22,7 @@ import android.widget.ImageView;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
@@ -125,7 +125,7 @@ public class Global {
     public static int getGalleryWidth(){
         return galleryWidth;
     }
-    public static void initScreenSize(Activity activity){
+    public static void initScreenSize(AppCompatActivity activity){
         if(screenSize==null) {
             screenSize = new Point();
             activity.getWindowManager().getDefaultDisplay().getSize(screenSize);
@@ -469,7 +469,7 @@ public class Global {
         return null;
     }
 
-    public static void initActivity(Activity context){
+    public static void initActivity(AppCompatActivity context){
         initScreenSize(context);
         initGallerySize();
         //Locale locale=new Locale()

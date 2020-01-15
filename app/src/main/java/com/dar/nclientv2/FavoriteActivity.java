@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuItemCompat;
 
 import com.dar.nclientv2.adapters.FavoriteAdapter;
 import com.dar.nclientv2.components.activities.BaseActivity;
@@ -65,7 +66,7 @@ public class FavoriteActivity extends BaseActivity {
         menu.findItem(R.id.by_popular).setVisible(false);
         menu.findItem(R.id.only_language).setVisible(false);
         menu.findItem(R.id.add_bookmark).setVisible(false);
-        final androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) menu.findItem(R.id.search).getActionView();
+        final androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search));
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

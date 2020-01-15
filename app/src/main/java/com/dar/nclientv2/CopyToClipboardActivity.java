@@ -1,6 +1,5 @@
 package com.dar.nclientv2;
 
-import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -8,7 +7,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 
-public class CopyToClipboardActivity extends Activity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class CopyToClipboardActivity extends AppCompatActivity {
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);

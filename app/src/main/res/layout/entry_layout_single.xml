@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:clickable="true"
         android:focusable="true"
-        android:foreground="?android:attr/selectableItemBackground"
+        android:foreground="?attr/selectableItemBackground"
         android:id="@+id/master_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

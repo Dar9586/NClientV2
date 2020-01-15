@@ -4,8 +4,6 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -29,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -424,7 +423,7 @@ public class ZoomActivity extends AppCompatActivity {
             else Glide.with(activity).load(file).placeholder(R.drawable.ic_launcher_foreground).error(R.drawable.ic_close).into(photoView);
         }
     }
-    public static void loadImage(Activity activity, String url, ImageView target,boolean high){
+    public static void loadImage(AppCompatActivity activity, String url, ImageView target, boolean high){
         Glide.with(activity).asBitmap().load(url)
                 .placeholder(R.drawable.ic_launcher_foreground).error(R.drawable.ic_close)
                 .priority(high? Priority.HIGH: Priority.LOW)

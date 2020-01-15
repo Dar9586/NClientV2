@@ -84,7 +84,8 @@ public class InspectorV3 extends Thread implements Parcelable {
         dest.writeString(query);
         dest.writeString(url);
         dest.writeByte((byte) requestType.ordinal());
-        dest.writeByte((byte)galleries.get(0).getType().ordinal());
+        if(galleries==null||galleries.size()==0)dest.writeByte((byte)GenericGallery.Type.SIMPLE.ordinal());
+        else dest.writeByte((byte)galleries.get(0).getType().ordinal());
         dest.writeTypedList(galleries);
         dest.writeTypedList(new ArrayList<>(tags));
     }

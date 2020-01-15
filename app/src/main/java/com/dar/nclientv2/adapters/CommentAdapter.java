@@ -1,6 +1,5 @@
 package com.dar.nclientv2.adapters;
 
-import android.app.Activity;
 import android.os.Build;
 import android.util.JsonReader;
 import android.util.JsonToken;
@@ -11,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,8 +38,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     private List<Comment>comments;
     private SimpleDateFormat format=new SimpleDateFormat("dd/MM/yyyy", Locale.US);
     private int userId,galleryId;
-    private final Activity context;
-    public CommentAdapter(Activity context, List<Comment> comments,int galleryId) {
+    private final AppCompatActivity context;
+    public CommentAdapter(AppCompatActivity context, List<Comment> comments, int galleryId) {
         this.context=context;
         this.galleryId=galleryId;
         this.comments =comments==null?new ArrayList<>():comments;

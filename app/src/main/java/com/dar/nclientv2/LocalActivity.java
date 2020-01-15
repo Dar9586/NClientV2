@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuItemCompat;
 
 import com.dar.nclientv2.adapters.LocalAdapter;
 import com.dar.nclientv2.api.local.FakeInspector;
@@ -48,7 +49,7 @@ public class LocalActivity extends BaseActivity {
         Global.setTint(menu.findItem(R.id.cancelAll).getIcon());
         Global.setTint(menu.findItem(R.id.startAll).getIcon());
         Global.setTint(menu.findItem(R.id.search).getIcon());
-        final androidx.appcompat.widget.SearchView searchView=(androidx.appcompat.widget.SearchView)menu.findItem(R.id.search).getActionView();
+        final androidx.appcompat.widget.SearchView searchView=(androidx.appcompat.widget.SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search));
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

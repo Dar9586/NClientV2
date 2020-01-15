@@ -16,7 +16,7 @@
         android:id="@+id/master_layout"
         android:focusable="true"
         android:clickable="true"
-        android:foreground="?android:attr/selectableItemBackground"
+        android:foreground="?attr/selectableItemBackground"
         android:layout_width="match_parent"
         android:minHeight="150dp"
         android:layout_height="wrap_content">

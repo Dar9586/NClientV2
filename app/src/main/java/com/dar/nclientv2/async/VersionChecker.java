@@ -1,7 +1,6 @@
 package com.dar.nclientv2.async;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -12,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import com.dar.nclientv2.BuildConfig;
@@ -31,10 +31,10 @@ import okhttp3.Response;
 public class VersionChecker{
     private static final String LATEST_API_URL="https://api.github.com/repos/Dar9586/NClientV2/releases/latest";
     private static final String LATEST_RELEASE_URL="https://github.com/Dar9586/NClientV2/releases/latest";
-    private final Activity context;
+    private final AppCompatActivity context;
     private String downloadUrl;
     private static String latest=null;
-    public VersionChecker(Activity context,final boolean silent){
+    public VersionChecker(AppCompatActivity context, final boolean silent){
         this.context=context;
         if(latest!=null&&Global.hasStoragePermission(context)){
             downloadVersion(latest);
