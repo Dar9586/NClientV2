@@ -145,7 +145,7 @@ public class GalleryActivity extends BaseActivity{
         this.menu=menu;
 
         menu.findItem(R.id.add_online_gallery).setVisible(gallery.getId()>=0&&!isLocal&&Login.isLogged());
-        menu.findItem(R.id.favorite_manager).setVisible(gallery.getId()>=0&&(!isLocal||isFavorite));
+        menu.findItem(R.id.favorite_manager).setVisible(isFavorite||(gallery.getId()>=0&&!isLocal));
         menu.findItem(R.id.download_gallery).setVisible(gallery.getId()>=0&&!isLocal);
         menu.findItem(R.id.download_range).setVisible(gallery.getId()>=0&&!isLocal);
         menu.findItem(R.id.related).setVisible(gallery.getId()>=0&&!isLocal);
