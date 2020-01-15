@@ -16,7 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.InspectorV3;
-import com.dar.nclientv2.api.components.Gallery;
+import com.dar.nclientv2.api.SimpleGallery;
+import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.local.LocalGallery;
@@ -36,7 +37,7 @@ import java.util.Set;
 
 public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder> {
 
-    private List<Gallery> mDataset;
+    private List<SimpleGallery> mDataset;
     private final BaseActivity context;
     private final boolean storagePermission,black;
     private final String queryString;
@@ -56,7 +57,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
     public GenericAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new GenericAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.entry_layout, parent, false));
     }
-    private void loadGallery(final GenericAdapter.ViewHolder holder,Gallery ent){
+    private void loadGallery(final GenericAdapter.ViewHolder holder, SimpleGallery ent){
         boolean x=true;
         if(storagePermission){
             File f=LocalGallery.getPage(Global.findGalleryFolder(ent.getId()),1);
@@ -69,7 +70,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
     }
     @Override
     public void onBindViewHolder(@NonNull final GenericAdapter.ViewHolder holder, int position) {
-            final Gallery ent = mDataset.get(holder.getAdapterPosition());
+            final SimpleGallery ent = mDataset.get(holder.getAdapterPosition());
             if(!Global.showTitles()){
                 holder.title.setAlpha(0f);
                 holder.flag.setAlpha(0f);
@@ -95,7 +96,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
             holder.overlay.setVisibility((queryString!=null&&ent.hasIgnoredTags(queryString))?View.VISIBLE:View.GONE);
             loadGallery(holder,ent);
             holder.pages.setVisibility(View.GONE);
-            holder.title.setText(ent.getSafeTitle());
+            holder.title.setText(ent.getTitle());
             holder.flag.setVisibility(View.VISIBLE);
             if(Global.getOnlyLanguage()==null||context instanceof GalleryActivity) {
                 switch (ent.getLanguage()) {
@@ -120,8 +121,9 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
               context.startActivity(intent);*/
                 InspectorV3.galleryInspector(context, ent.getId(), new InspectorV3.DefaultInspectorResponse() {
                     @Override
-                    public void onSuccess(List<Gallery> galleries) {
+                    public void onSuccess(List<GenericGallery> galleries) {
                         Intent intent=new Intent(context, GalleryActivity.class);
+                        if(galleries.size()!=1)return;
                         Log.d(Global.LOGTAG,galleries.get(0).toString());
                         intent.putExtra(context.getPackageName()+".GALLERY",galleries.get(0));
                         context.runOnUiThread(()->context.startActivity(intent));
@@ -144,18 +146,21 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         return mDataset==null?0:mDataset.size();
     }
 
-    public List<Gallery> getDataset() {
+    public List<SimpleGallery> getDataset() {
         return mDataset;
     }
-
-    public void addGalleries(List<Gallery> galleries){
+    public void addGalleries(List<GenericGallery> galleries){
         int c=mDataset.size();
-        mDataset.addAll(galleries);
+        for(GenericGallery g:galleries) {
+            mDataset.add((SimpleGallery) g);
+
+            Log.d(Global.LOGTAG,"Simple: "+g);
+        }
         Log.d(Global.LOGTAG,String.format("%s,old:%d,new:%d,len%d",this,c,mDataset.size(),galleries.size()));
         context.runOnUiThread(()->notifyItemRangeInserted(c,galleries.size()));
     }
 
-    public void restartDataset(List<Gallery> galleries) {
+    public void restartDataset(List<GenericGallery> galleries) {
         /*int c=mDataset.size();
         if(c>0) {
             mDataset.clear();
@@ -164,7 +169,10 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         mDataset.addAll(galleries);
         context.runOnUiThread(()->notifyItemRangeInserted(0,galleries.size()));*/
         mDataset.clear();
-        mDataset.addAll(galleries);
+        for(GenericGallery g:galleries)
+            mDataset.add((SimpleGallery)g);
         context.runOnUiThread(this::notifyDataSetChanged);
     }
+
+
 }

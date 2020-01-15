@@ -265,6 +265,12 @@
     <string name="send_with_title">Send with title?</string>
     <string name="caption_send_with_title">Append url to the image as caption to the image?</string>
     <string name="error_404">Error 404: not found</string>
+    <string name="history_size">History size</string>
+    <string name="history_size_summary">Set the max number of entries for the history</string>
+    <string name="view_history">View history</string>
+    <string name="history">History</string>
+    <string name="history_column_count">Select history column count</string>
+    <string name="clear_history">Clear history</string>
 
     <string-array name="language">
         <item>英文</item>

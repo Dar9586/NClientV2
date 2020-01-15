@@ -5,14 +5,13 @@ import android.os.Parcelable;
 import android.util.JsonReader;
 import android.util.JsonToken;
 
+import com.dar.nclientv2.api.enums.ImageExt;
 import com.dar.nclientv2.api.enums.ImageType;
 import com.dar.nclientv2.components.classes.Size;
 
 import java.io.IOException;
 
 public class Page implements Parcelable {
-    public enum ImageExt{PNG,JPG,GIF}
-
     private int page;
     private ImageExt imageExt;
     private ImageType imageType;

@@ -4,20 +4,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.AppCompatSeekBar;
-import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.SeekBarPreference;
 
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.SettingsActivity;
 import com.dar.nclientv2.async.VersionChecker;
-import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 
@@ -81,104 +76,10 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
             startActivity(i);
             return true;
         });
-        findPreference(getString(R.string.key_favorite_limit)).setOnPreferenceClickListener(preference -> {
-            DefaultDialogs.pageChangerDialog(
-                    new DefaultDialogs.Builder(act)
-                            .setDrawable(R.drawable.ic_hashtag)
-                            .setTitle(R.string.favorite_count)
-                            .setMax(20)
-                            .setActual(Global.getFavoriteLimit(act))
-                            .setMin(0)
-                            .setDialogs(new DefaultDialogs.DialogResults() {
-                                @Override
-                                public void positive(int actual) {
-                                    Global.updateFavoriteLimit(act,actual);
-                                }
-
-                                @Override public void negative() {}
-                            })
-            );
-            return true;
-        });
+        ((SeekBarPreference)findPreference(getString(R.string.key_max_history_size))).setShowSeekBarValue(true);
+        ((SeekBarPreference)findPreference(getString(R.string.key_favorite_limit))).setShowSeekBarValue(true);
     }
 
-
-    private Preference.OnPreferenceClickListener preferenceClickListener(int what){return preference -> {
-        AlertDialog.Builder builder = new AlertDialog.Builder(act);
-        View v = View.inflate(act, R.layout.column_selector, null);
-        builder.setView(v);
-        TextView progL, progP;
-        AppCompatSeekBar seekBarL, seekBarP;
-        progL = v.findViewById(R.id.prog2);
-        progP = v.findViewById(R.id.prog1);
-        seekBarL = v.findViewById(R.id.seekBar2);
-        seekBarP = v.findViewById(R.id.seekBar1);
-
-        seekBarL.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                progL.setText(String.valueOf(progress + 1));
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
-        seekBarP.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                progP.setText(String.valueOf(progress + 1));
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
-        switch (what){
-            case 1:
-                seekBarL.setProgress(Global.getColLandMain() - 1);
-                seekBarP.setProgress(Global.getColPortMain() - 1);
-                break;
-            case 2:
-                seekBarL.setProgress(Global.getColPortDownload() - 1);
-                seekBarP.setProgress(Global.getColPortDownload() - 1);
-                break;
-            case 4:
-                seekBarL.setProgress(Global.getColPortFavorite() - 1);
-                seekBarP.setProgress(Global.getColPortFavorite() - 1);
-                break;
-        }
-
-        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
-                    switch (what) {
-                        case 1:
-                            Global.updateMainColumnCount(act, seekBarP.getProgress() + 1, seekBarL.getProgress() + 1);
-                            break;
-                        case  2:
-                            Global.updateDownloadColumnCount(act, seekBarP.getProgress() + 1, seekBarL.getProgress() + 1);
-                            break;
-                        case 4:
-                            Global.updateFavoriteColumnCount(act, seekBarP.getProgress() + 1, seekBarL.getProgress() + 1);
-                            break;
-                    }
-                }
-        );
-
-        builder.setNegativeButton(R.string.cancel, null);
-        builder.setCancelable(true);
-        builder.setTitle(R.string.select_column_count);
-        builder.create().show();
-        return true;
-    };
-    }
 
 
     @Override
@@ -188,8 +89,34 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
 
     private void columnMenu() {
         addPreferencesFromResource(R.xml.settings_column);
-        findPreference("col_main").setOnPreferenceClickListener(preferenceClickListener(1));
+        /*findPreference("col_main").setOnPreferenceClickListener(preferenceClickListener(1));
         findPreference("col_download").setOnPreferenceClickListener(preferenceClickListener(2));
         findPreference("col_favorite").setOnPreferenceClickListener(preferenceClickListener(4));
+        findPreference("col_history").setOnPreferenceClickListener(preferenceClickListener(3));*/
+        ((SeekBarPreference)findPreference(getString(R.string.key_column_port_down))).setShowSeekBarValue(true);
+        ((SeekBarPreference)findPreference(getString(R.string.key_column_port_favo))).setShowSeekBarValue(true);
+        ((SeekBarPreference)findPreference(getString(R.string.key_column_port_main))).setShowSeekBarValue(true);
+        ((SeekBarPreference)findPreference(getString(R.string.key_column_port_hist))).setShowSeekBarValue(true);
+        ((SeekBarPreference)findPreference(getString(R.string.key_column_land_down))).setShowSeekBarValue(true);
+        ((SeekBarPreference)findPreference(getString(R.string.key_column_land_favo))).setShowSeekBarValue(true);
+        ((SeekBarPreference)findPreference(getString(R.string.key_column_land_main))).setShowSeekBarValue(true);
+        ((SeekBarPreference)findPreference(getString(R.string.key_column_land_hist))).setShowSeekBarValue(true);
+        findPreference(getString(R.string.key_column_port_down)).setOnPreferenceChangeListener(changeListener);
+        findPreference(getString(R.string.key_column_port_favo)).setOnPreferenceChangeListener(changeListener);
+        findPreference(getString(R.string.key_column_port_main)).setOnPreferenceChangeListener(changeListener);
+        findPreference(getString(R.string.key_column_port_hist)).setOnPreferenceChangeListener(changeListener);
+        findPreference(getString(R.string.key_column_land_down)).setOnPreferenceChangeListener(changeListener);
+        findPreference(getString(R.string.key_column_land_favo)).setOnPreferenceChangeListener(changeListener);
+        findPreference(getString(R.string.key_column_land_main)).setOnPreferenceChangeListener(changeListener);
+        findPreference(getString(R.string.key_column_land_hist)).setOnPreferenceChangeListener(changeListener);
     }
+    private SeekBarPreference.OnPreferenceChangeListener changeListener= (preference, newValue) -> {
+        int p= Integer.parseInt(String.valueOf(newValue));
+        if(p==0){
+            ((SeekBarPreference)preference).setValue(1);
+            return false;
+        }
+
+        return true;
+    };
 }

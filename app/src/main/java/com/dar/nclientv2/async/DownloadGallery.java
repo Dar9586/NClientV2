@@ -18,6 +18,7 @@ import androidx.core.app.NotificationManagerCompat;
 import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Gallery;
+import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.settings.Database;
@@ -71,7 +72,7 @@ public class DownloadGallery extends IntentService {
     public DownloadGallery() {
         super("Download Gallery");
     }
-    public static void download(Context context, Gallery gallery,boolean start){
+    public static void download(Context context, GenericGallery gallery, boolean start){
         GalleryDownloader d=new GalleryDownloader(gallery,start? GalleryDownloader.Status.NOT_STARTED: GalleryDownloader.Status.PAUSED);
         if(!galleries.contains(d))galleries.add(d);
         if(!running) {

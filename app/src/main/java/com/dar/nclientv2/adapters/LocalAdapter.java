@@ -82,7 +82,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         if(b1)return -1;
         return 1;
     };
-    private void shrinkFilter(List<Object> filter){
+    private synchronized void shrinkFilter(List<Object> filter){
         Collections.sort(filter,comparator);
         for(int i=0;i<filter.size()-1;i++){
             if(filter.get(i) instanceof LocalGallery && filter.get(i+1) instanceof GalleryDownloader){

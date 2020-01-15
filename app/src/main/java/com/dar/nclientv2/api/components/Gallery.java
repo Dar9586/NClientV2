@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.InspectorV3;
+import com.dar.nclientv2.api.SimpleGallery;
+import com.dar.nclientv2.api.enums.ImageExt;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
@@ -38,23 +40,6 @@ import java.util.Set;
 
 public class Gallery extends GenericGallery{
     private static final int MAX_COMMENT=50;
-    public Gallery(Context context, Element e){
-        String temp;
-        String tags=e.attr("data-tags").replace(' ',',');
-        this.tags=Queries.TagTable.getTags(Database.getDatabase(),tags);
-        loadLanguage();
-        Element a=e.getElementsByTag("a").first();
-        temp=a.attr("href");
-        id=Integer.parseInt(temp.substring(3,temp.length()-1));
-        a=e.getElementsByTag("img").first();
-        temp=a.hasAttr("data-src")?a.attr("data-src"):a.attr("src");
-        mediaId=Integer.parseInt(temp.substring(temp.indexOf("galleries")+10,temp.lastIndexOf('/')));
-        thumbnail=charToExt(temp.charAt(temp.length()-3));
-        cover=ImageExt.JPG;pages=new ImageExt[0];
-        titles[TitleType.ENGLISH.ordinal()]=e.getElementsByTag("div").first().text();
-        complete=false;
-        if(context!=null&&id>Global.getMaxId())Global.updateMaxId(context,id);
-    }
     public Gallery(Context context,String x, Elements com, Elements rel) throws IOException{
         JsonReader reader=new JsonReader(new StringReader(x));
         comments=com.size()==0?null:new ArrayList<>(com.size());
@@ -63,7 +48,7 @@ public class Gallery extends GenericGallery{
             comments.add(new Comment(e.attr("data-state")));
             if(comments.size()==MAX_COMMENT)break;
         }
-        for(Element e:rel)related.add(new Gallery(context,e));
+        for(Element e:rel)related.add(new SimpleGallery(context,e));
         parseJSON(reader);
         complete=true;
     }
@@ -72,11 +57,10 @@ public class Gallery extends GenericGallery{
         return getSafeTitle().replace('/', '_').replaceAll("[|\\\\?*<\":>+\\[\\]/']", "_");
     }
 
-    private enum ImageExt{PNG,JPG,GIF}
     private Date uploadDate;
     private int favoriteCount,id,pageCount,mediaId;
     private final String[] titles=new String[]{"","",""};
-    private List<Gallery>related;
+    private List<SimpleGallery>related;
     private List<Comment>comments;
     private Tag[][] tags;
     //true=jpg, false=png
@@ -110,7 +94,7 @@ public class Gallery extends GenericGallery{
         comments=null;
         readPagePath(cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.PAGES)));
         this.tags=tags;
-        loadLanguage();
+        this.language=loadLanguage(tags);
         complete=true;
     }
 
@@ -142,6 +126,9 @@ public class Gallery extends GenericGallery{
     public String getCover(){
         return String.format(Locale.US,"https://t.nhentai.net/galleries/%d/cover.%s",mediaId,extToString(cover));
     }
+    public ImageExt getThumb(){
+        return thumbnail;
+    }
     public String getThumbnail(){
         return String.format(Locale.US,"https://t.nhentai.net/galleries/%d/thumb.%s",mediaId,extToString(thumbnail));
     }
@@ -164,7 +151,9 @@ public class Gallery extends GenericGallery{
         }
         return "text/plain";
     }
-
+    public SimpleGallery toSimpleGallery() {
+        return new SimpleGallery(this);
+    }
     private static String extToString(ImageExt ext){
         switch(ext){
             case GIF:return "gif";
@@ -181,7 +170,7 @@ public class Gallery extends GenericGallery{
         }
         return '\0';
     }
-    private static ImageExt charToExt(int ext){
+    public static ImageExt charToExt(int ext){
         switch(ext){
             case 'g':return ImageExt.GIF;
             case 'p':return ImageExt.PNG;
@@ -264,7 +253,7 @@ public class Gallery extends GenericGallery{
         int x;
         if((x=in.readByte())>0){
             related=new ArrayList<>(x);
-            for(int j=0;j<x;j++)related.add(in.readParcelable(Gallery.class.getClassLoader()));
+            for(int j=0;j<x;j++)related.add(in.readParcelable(SimpleGallery.class.getClassLoader()));
         }
         if(in.readByte()==0)comments=null;
         else{
@@ -280,7 +269,7 @@ public class Gallery extends GenericGallery{
 
     public boolean isRelatedLoaded(){return related!=null;}
 
-    public List<Gallery> getRelated(){
+    public List<SimpleGallery> getRelated(){
         return related;
     }
 
@@ -310,7 +299,7 @@ public class Gallery extends GenericGallery{
         boolean x=isRelatedLoaded();
         dest.writeByte((byte)(x?related.size():0));
         if(x){
-            for(Gallery g:related)dest.writeParcelable(g,flags);
+            for(SimpleGallery g:related)dest.writeParcelable(g,flags);
         }
         dest.writeByte((byte)(comments==null?0:1));
         if(comments==null)return;
@@ -322,7 +311,7 @@ public class Gallery extends GenericGallery{
         return valid&&id>=0;
     }
 
-    public Gallery(JsonReader jr, List<Gallery> related, List<Comment> comments) throws IOException {
+    public Gallery(JsonReader jr, List<SimpleGallery> related, List<Comment> comments) throws IOException {
         this.comments=comments;
         this.related=related;
         parseJSON(jr);
@@ -396,10 +385,11 @@ public class Gallery extends GenericGallery{
         }
         tags[type.ordinal()]=new Tag[t.size()-i];
         tags[type.ordinal()]=t.subList(i,t.size()).toArray(tags[type.ordinal()]);
-        loadLanguage();
+        language=loadLanguage(tags);
         for(Tag[]t1:tags)if(t1!=null)for(Tag t2:t1)Queries.TagTable.insert(Database.getDatabase(),t2);
     }
-    private void loadLanguage(){
+    public static Language loadLanguage(Tag[][]tags){
+        Language language=Language.UNKNOWN;
         //CHINESE 29963 ENGLISH 12227 JAPANESE 6346
         for(Tag tag:tags[TagType.LANGUAGE.ordinal()]){
             switch (tag.getId()){
@@ -409,6 +399,7 @@ public class Gallery extends GenericGallery{
             }
             if(language!=Language.UNKNOWN)break;
         }
+        return language;
     }
     @Override
     public String toString() {
@@ -557,8 +548,8 @@ public class Gallery extends GenericGallery{
     }
 
     @Override
-    public boolean isLocal() {
-        return false;
+    public Type getType() {
+        return Type.COMPLETE;
     }
 
     public int getMediaId() {
@@ -588,7 +579,7 @@ public class Gallery extends GenericGallery{
     public static Gallery galleryFromId(int id) throws IOException{
         InspectorV3 i=InspectorV3.galleryInspector(null,id,null);
         i.execute();
-        return i.getGalleries().get(0);
+        return (Gallery) i.getGalleries().get(0);
     }
     public boolean hasIgnoredTags(String s){
         for(Tag[]t:tags)if(t!=null)for(Tag t1:t)if(s.contains(t1.toQueryTag(TagStatus.AVOIDED))){
@@ -657,7 +648,7 @@ public class Gallery extends GenericGallery{
         g.thumbnail=ImageExt.JPG;
         g.cover=ImageExt.PNG;
         g.tags=Queries.TagTable.getRandomTags(Database.getDatabase(),50);
-        g.loadLanguage();
+        g.language=g.loadLanguage(g.tags);
         return g;
     }
     public boolean isComplete() {

@@ -31,6 +31,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -142,7 +143,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         recyclerView.setLayoutManager(new GridLayoutManager(context,1,RecyclerView.HORIZONTAL,false));
         if(gallery.isRelatedLoaded()){
             ListAdapter adapter=new ListAdapter(context);
-            adapter.addGalleries(gallery.getRelated());
+            adapter.addGalleries(new ArrayList<>(gallery.getRelated()));
             recyclerView.setAdapter(adapter);
         }
     }

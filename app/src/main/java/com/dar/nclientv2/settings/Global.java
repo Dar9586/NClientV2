@@ -61,9 +61,6 @@ public class Global {
         return size;
     }
 
-    public static void updateFavoriteLimit(Context context, int limit) {
-        context.getSharedPreferences("Settings", 0).edit().putInt(context.getString(R.string.key_favorite_limit),limit).apply();
-    }
     public static int getFavoriteLimit(Context context) {
         return context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_favorite_limit),10);
     }
@@ -78,33 +75,14 @@ public class Global {
         context.getSharedPreferences("Settings", 0).edit().putString("last_version",lastVersion).apply();
     }
 
-    public static void updateMainColumnCount(Context context, int port, int land) {
-        context.getSharedPreferences("Settings", 0).edit()
-                .putInt(context.getString(R.string.key_column_port_main),port)
-                .putInt(context.getString(R.string.key_column_land_main),land)
-                .apply();
-        colLandMain=land;
-        colPortMain=port;
 
+
+    public static int getColLandHistory() {
+        return colLandHist;
     }
 
-    public static void updateDownloadColumnCount(Context context, int port, int land) {
-        context.getSharedPreferences("Settings", 0).edit()
-                .putInt(context.getString(R.string.key_column_port_down),port)
-                .putInt(context.getString(R.string.key_column_land_down),land)
-                .apply();
-        colLandDownload=land;
-        colPortDownload=port;
-    }
-
-
-    public static void updateFavoriteColumnCount(Context context, int port, int land) {
-        context.getSharedPreferences("Settings", 0).edit()
-                .putInt(context.getString(R.string.key_column_port_favo),port)
-                .putInt(context.getString(R.string.key_column_land_favo),land)
-                .apply();
-        colLandFavorite=land;
-        colPortFavorite=port;
+    public static int getColPortHistory() {
+        return colPortHist;
     }
 
     public enum ThemeScheme{LIGHT,DARK,BLACK}
@@ -140,8 +118,8 @@ public class Global {
     private static boolean volumeOverride,byPopular,keepHistory,loadImages,highRes,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
     private static ThemeScheme theme;
     private static String lastVersion;
-    private static int notificationId,columnCount,maxId,galleryWidth=-1, galleryHeight =-1;
-    private static int colPortMain,colLandMain,colPortDownload,colLandDownload,colLandFavorite,colPortFavorite;
+    private static int maxHistory,notificationId,columnCount,maxId,galleryWidth=-1, galleryHeight =-1;
+    private static int colPortHist,colLandHist,colPortMain,colLandMain,colPortDownload,colLandDownload,colLandFavorite,colPortFavorite;
     private static Point screenSize;
 
     public static int getGalleryWidth(){
@@ -176,6 +154,9 @@ public class Global {
         Global.galleryHeight = galleryHeight;
     }
 
+    public static int getMaxHistory() {
+        return maxHistory;
+    }
 
     private static void initTitleType(@NonNull Context context){
         String s=context.getSharedPreferences("Settings", 0).getString(context.getString(R.string.key_title_type),"pretty");
@@ -207,12 +188,15 @@ public class Global {
         showTitles=shared.getBoolean(context.getString(R.string.key_show_titles),true);
         lockScreen=shared.getBoolean(context.getString(R.string.key_disable_lock),false);
         maxId=shared.getInt(context.getString(R.string.key_max_id),291738);
+        maxHistory=shared.getInt(context.getString(R.string.key_max_history_size),2);
         colPortMain=shared.getInt(context.getString(R.string.key_column_port_main),2);
         colLandMain=shared.getInt(context.getString(R.string.key_column_land_main),4);
         colPortDownload=shared.getInt(context.getString(R.string.key_column_port_down),2);
         colLandDownload=shared.getInt(context.getString(R.string.key_column_land_down),4);
         colPortFavorite=shared.getInt(context.getString(R.string.key_column_port_favo),2);
         colLandFavorite=shared.getInt(context.getString(R.string.key_column_land_favo),4);
+        colPortHist=shared.getInt(context.getString(R.string.key_column_port_hist),2);
+        colLandHist=shared.getInt(context.getString(R.string.key_column_land_hist),4);
         int x=shared.getInt(context.getString(R.string.key_only_language),-1);
         onlyLanguage=x==-1?null:Language.values()[x];
 

@@ -17,6 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/LightTheme">
+        <activity android:name=".HistoryActivity"></activity>
         <activity android:name=".BookmarkActivity" />
         <activity android:name=".CommentActivity" />
         <activity android:name=".SearchActivity" />

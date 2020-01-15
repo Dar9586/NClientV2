@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dar.nclientv2.adapters.ListAdapter;
 import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.components.Gallery;
+import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
@@ -67,7 +68,7 @@ public class MainActivity extends BaseActivity
     public ListAdapter adapter;
     InspectorV3.InspectorResponse resetDataset=new InspectorV3.DefaultInspectorResponse() {
         @Override
-        public void onSuccess(List<Gallery> galleries) {
+        public void onSuccess(List<GenericGallery> galleries) {
             adapter.restartDataset(galleries);
             showPageSwitcher(inspector.getPage(),inspector.getPageCount());
             runOnUiThread(()->recycler.smoothScrollToPosition(0));
@@ -84,7 +85,7 @@ public class MainActivity extends BaseActivity
         }
     },addDataset=new InspectorV3.DefaultInspectorResponse() {
         @Override
-        public void onSuccess(List<Gallery> galleries) {
+        public void onSuccess(List<GenericGallery> galleries) {
             adapter.addGalleries(galleries);
         }
         @Override
@@ -99,8 +100,8 @@ public class MainActivity extends BaseActivity
         }
     },startGallery=new InspectorV3.DefaultInspectorResponse() {
         @Override
-        public void onSuccess(List<Gallery> galleries) {
-            Gallery g=galleries.size()==1?galleries.get(0):Gallery.emptyGallery(MainActivity.this);
+        public void onSuccess(List<GenericGallery> galleries) {
+            Gallery g=galleries.size()==1?(Gallery) galleries.get(0):Gallery.emptyGallery(MainActivity.this);
             Intent intent=new Intent(MainActivity.this, GalleryActivity.class);
             Log.d(Global.LOGTAG,g.toString());
             intent.putExtra(getPackageName()+".GALLERY",g);
@@ -524,7 +525,8 @@ public class MainActivity extends BaseActivity
                 }
                 break;
             case R.id.download_page:
-                for(Gallery g:inspector.getGalleries())
+                if(inspector.getGalleries()!=null)
+                for(GenericGallery g:inspector.getGalleries())
                     DownloadGallery.download(this,g,true);
                 break;
             case R.id.add_bookmark:
@@ -600,6 +602,10 @@ public class MainActivity extends BaseActivity
                 break;
             case R.id.bookmarks:
                 intent=new Intent(this,BookmarkActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.history:
+                intent=new Intent(this,HistoryActivity.class);
                 startActivity(intent);
                 break;
             case R.id.favorite_manager:

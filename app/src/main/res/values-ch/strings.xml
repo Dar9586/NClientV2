@@ -154,7 +154,6 @@
     <string name="upload_date_format" formatted="true">上傳於 %s 在 %s</string>
     <string name="favorite_count_format" formatted="true">%d 收藏</string>
     <string name="favorite_manga">收藏漫畫</string>
-    <string name="key_remove_ignored">移除忽略</string>
     <string name="setting_on_remove_ignored">不顯示帶有已忽略標籤的畫廊</string>
     <string name="setting_off_remove_ignored">模糊化帶有已忽略標籤的畫廊</string>
     <string name="remove_ignored_galleries">移除已忽略畫廊</string>
@@ -162,9 +161,7 @@
     <string name="clear_tag_preferences">清除標籤偏好</string>
     <string name="reload_tags_from_web">從網站重載標籤</string>
     <string name="load_next_page">載入下一頁</string>
-    <string name="key_check_update">檢查更新</string>
     <string name="check_for_update_on_startup">啟動時檢查更新</string>
-    <string name="key_update">更新</string>
     <string name="check_for_updates">檢查更新</string>
     <string name="no_updates_found">未發現更新</string>
     <string name="error_retrieving">檢索最新版本出錯</string>
@@ -174,7 +171,6 @@
     <string name="set_minimum_count">設置最小值</string>
     <string name="sort_by_title">按標題排列</string>
     <string name="sort_by_popular">按熱度排列</string>
-    <string name="key_override_volume">覆蓋音量</string>
     <string name="setting_on_override_volume">音量鍵換頁</string>
     <string name="setting_off_override_volume">音量鍵調音</string>
     <string name="next_page_volume_up">音量+切換下一頁</string>
@@ -193,15 +189,12 @@
     <string name="sort_by_latest">按更新排列</string>
     <string name="edit">編輯</string>
     <string name="options">選項</string>
-    <string name="key_keep_history">保留歷史</string>
     <string name="setting_on_keep_history">搜索記錄將被保留</string>
     <string name="setting_off_keep_history">搜索記錄將不被保留</string>
     <string name="keep_history">保留搜索歷史</string>
     <string name="add">加入</string>
     <string name="insert_tag_name">插入標籤名：</string>
-    <string name="other">其它</string>
     <string name="cancelling">取消…</string>
-    <string name="key_favorite_limit">收藏限制</string>
     <string name="favorite_count">收藏數</string>
     <string name="comments">評論</string>
     <string name="send">發送</string>
@@ -221,7 +214,6 @@
     <string name="enable_right_to_left">從右至左閱讀</string>
     <string name="setting_on_use_rtl">圖像將從右至左顯示</string>
     <string name="setting_off_use_rtl">圖像將從左至右顯示</string>
-    <string name="key_use_rtl">從右至左閱讀</string>
 
     <string name="volume_change_setting">音量鍵換頁</string>
     <string name="popular_tag_count">高級搜索中顯示熱門標籤數</string>
@@ -278,6 +270,12 @@
     <string name="send_with_title">Send with title?</string>
     <string name="caption_send_with_title">Append url to the image as caption to the image?</string>
     <string name="error_404">Error 404: not found</string>
+    <string name="history_size">History size</string>
+    <string name="history_size_summary">Set the max number of entries for the history</string>
+    <string name="view_history">View history</string>
+    <string name="history">History</string>
+    <string name="history_column_count">Select history column count</string>
+    <string name="clear_history">Clear history</string>
 
     <string-array name="language">
         <item>英文</item>

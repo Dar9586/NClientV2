@@ -25,6 +25,13 @@
 </PreferenceCategory>
     <PreferenceCategory
         android:title="@string/navigation_settings">
+        <SeekBarPreference
+            android:key="@string/key_max_history_size"
+            android:defaultValue="25"
+            android:max="100"
+            android:title="@string/history_size"
+            android:summary="@string/history_size_summary"
+            />
         <Preference
             android:key="col_screen"
             android:title="@string/column_count_select"/>
@@ -92,9 +99,11 @@
             android:summaryOn="@string/setting_on_use_account_tag"
             android:summaryOff="@string/setting_off_use_account_tag"
             android:title="@string/use_account_tag" />
-        <Preference android:title="@string/favorite_count"
+        <SeekBarPreference android:title="@string/favorite_count"
             android:key="@string/key_favorite_limit"
+            android:defaultValue="10"
             android:summary="@string/popular_tag_count"
+            android:max="20"
             />
     </PreferenceCategory>
     <PreferenceCategory

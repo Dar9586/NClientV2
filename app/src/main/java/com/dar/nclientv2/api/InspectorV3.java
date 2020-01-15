@@ -9,10 +9,12 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.dar.nclientv2.api.components.Gallery;
+import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
+import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
@@ -45,7 +47,13 @@ public class InspectorV3 extends Thread implements Parcelable {
         query = in.readString();
         url = in.readString();
         requestType=ApiRequestType.values()[in.readByte()];
-        galleries = in.createTypedArrayList(Gallery.CREATOR);
+        ArrayList x=null;
+        switch (GenericGallery.Type.values()[in.readByte()]){
+            case LOCAL:x = in.createTypedArrayList(LocalGallery.CREATOR); break;
+            case SIMPLE:x = in.createTypedArrayList(SimpleGallery.CREATOR);break;
+            case COMPLETE:x = in.createTypedArrayList(Gallery.CREATOR);break;
+        }
+        galleries=(ArrayList<GenericGallery>)x;
         tags =new HashSet<>(in.createTypedArrayList(Tag.CREATOR));
     }
 
@@ -76,12 +84,13 @@ public class InspectorV3 extends Thread implements Parcelable {
         dest.writeString(query);
         dest.writeString(url);
         dest.writeByte((byte) requestType.ordinal());
+        dest.writeByte((byte)galleries.get(0).getType().ordinal());
         dest.writeTypedList(galleries);
         dest.writeTypedList(new ArrayList<>(tags));
     }
 
     public interface InspectorResponse{
-        void onSuccess(List<Gallery>galleries);
+        void onSuccess(List<GenericGallery>galleries);
         void onFailure(Exception e);
         void onStart();
         void onEnd();
@@ -89,7 +98,7 @@ public class InspectorV3 extends Thread implements Parcelable {
     public static abstract class DefaultInspectorResponse implements InspectorResponse{
         @Override public void onStart() {}
         @Override public void onEnd() {}
-        @Override public void onSuccess(List<Gallery> galleries) {}
+        @Override public void onSuccess(List<GenericGallery> galleries) {}
         @Override public void onFailure(Exception e) {
             Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
         }
@@ -100,7 +109,7 @@ public class InspectorV3 extends Thread implements Parcelable {
     private String query,url;
     private ApiRequestType requestType;
     private Set<Tag> tags;
-    private List<Gallery> galleries=null;
+    private List<GenericGallery> galleries=null;
     private InspectorResponse response;
     private WeakReference<Context> context;
 
@@ -273,7 +282,7 @@ public class InspectorV3 extends Thread implements Parcelable {
     private void doSearch(Element document) {
         Elements gal=document.getElementsByClass("gallery");
         galleries=new ArrayList<>(gal.size());
-        for(Element e:gal)galleries.add(new Gallery(context.get(),e));
+        for(Element e:gal)galleries.add(new SimpleGallery(context.get(),e));
         gal=document.getElementsByClass("last");
         pageCount=gal.size()==0?Math.max(1,page):findTotal(gal.last());
     }
@@ -304,7 +313,7 @@ public class InspectorV3 extends Thread implements Parcelable {
         return byPopular;
     }
 
-    public List<Gallery> getGalleries() {
+    public List<GenericGallery> getGalleries() {
         return galleries;
     }
 

@@ -28,6 +28,10 @@
             android:id="@+id/bookmarks"
             android:title="@string/manage_bookmarks"
             android:icon="@drawable/ic_bookmark" />
+        <item
+            android:id="@+id/history"
+            android:title="@string/view_history"
+            android:icon="@drawable/ic_access_time" />
     </group>
     <item android:title="@string/settings">
         <menu>

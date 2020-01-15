@@ -96,9 +96,15 @@ public class LocalGallery extends GenericGallery{
     };
 
     @Override
-    public boolean isLocal() {
-        return true;
+    public String getThumbnail() {
+        return null;
     }
+
+    @Override
+    public Type getType() {
+        return Type.LOCAL;
+    }
+
     @Override
     public boolean isValid() {
         return valid;

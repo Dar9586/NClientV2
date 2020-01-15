@@ -1,6 +1,7 @@
 package com.dar.nclientv2.async;
 
 import com.dar.nclientv2.api.components.Gallery;
+import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
@@ -9,20 +10,20 @@ import java.io.IOException;
 
 public class GalleryDownloader {
     public enum Status{NOT_STARTED,DOWNLOADING,PAUSED,FINISHED}
-    private Gallery gallery;
+    private GenericGallery gallery;
     private Status status;
     private int progress;
     private boolean downloaded;
     private final int id;
     public final int notificationId=Global.getNotificationId();
     private int start=0,count=-1;
-    public GalleryDownloader(Gallery gallery,Status status) {
+    public GalleryDownloader(GenericGallery gallery, Status status) {
         this.gallery = gallery;
         id=gallery.getId();
         this.status=status;
         progress=0;
         count=gallery.getPageCount();
-        setDownloaded(gallery.isComplete());
+        setDownloaded(gallery.getType()== GenericGallery.Type.COMPLETE);
     }
     public GalleryDownloader(int id,Status status) {
         this.id = id;
@@ -66,13 +67,13 @@ public class GalleryDownloader {
                 setDownloaded(true);
             } catch (IOException ignore) { }
         }
-        return gallery;
+        return (Gallery) gallery;
     }
     public Gallery completeGallery()throws IOException{
-        if(downloaded)return gallery;
+        if(downloaded)return (Gallery) gallery;
         gallery=Gallery.galleryFromId(id);
         setDownloaded(true);
-        return gallery;
+        return (Gallery) gallery;
     }
     public Status getStatus() {
         return status;
@@ -81,7 +82,7 @@ public class GalleryDownloader {
     public void setDownloaded(boolean downloaded) {
         this.downloaded = downloaded;
         if(downloaded){
-            Queries.DownloadTable.addGallery(Database.getDatabase(),gallery);
+            Queries.DownloadTable.addGallery(Database.getDatabase(),(Gallery) gallery);
             if(count==-1)count=gallery.getPageCount();
         }
     }
@@ -91,11 +92,12 @@ public class GalleryDownloader {
         if(status==Status.FINISHED)Queries.DownloadTable.removeGallery(Database.getDatabase(),id);
     }
     public String getPathTitle(){
-        if(gallery!=null)return gallery.getPathTitle();
+        if(gallery!=null)return ((Gallery)gallery).getPathTitle();
         return "";
     }
     public int getPercentage(){
         if(!downloaded)return 0;
+        count=Math.max(1,count);
         return Math.min(100,(progress*100)/count);
     }
 

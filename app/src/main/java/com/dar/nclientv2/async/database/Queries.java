@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.dar.nclientv2.api.InspectorV3;
+import com.dar.nclientv2.api.SimpleGallery;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.ApiRequestType;
@@ -24,6 +25,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class Queries{
@@ -505,6 +507,52 @@ public class Queries{
             return galleries;
         }
     }
+
+    public static class HistoryTable{
+        static final String TABLE_NAME="History";
+        public static final String DROP_TABLE= "DROP TABLE IF EXISTS "+ TABLE_NAME;
+        public static final String ID ="id";
+        public static final String MEDIAID ="mediaId";
+        public static final String TITLE ="title";
+        public static final String THUMB ="thumbType";
+        public static final String TIME ="time";
+        static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `History`(" +
+                "`id` INT NOT NULL PRIMARY KEY," +
+                "`mediaId` INT NOT NULL," +
+                "`title` TEXT NOT NULL," +
+                "`thumbType` TINYINT(1) NOT NULL," +
+                "`time` INT NOT NULL" +
+                ");";
+        public static void addGallery(SQLiteDatabase db, SimpleGallery gallery){
+            if(gallery.getId()<=0)return;
+            ContentValues values=new ContentValues(5);
+            values.put(ID,gallery.getId());
+            values.put(MEDIAID,gallery.getMediaId());
+            values.put(TITLE,gallery.getTitle());
+            values.put(THUMB,gallery.getThumb().ordinal());
+            values.put(TIME,new Date().getTime());
+            db.insertWithOnConflict(TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_REPLACE);
+            cleanHistory(db);
+        }
+        public static List<SimpleGallery>getHistory(SQLiteDatabase db){
+            ArrayList<SimpleGallery>galleries=new ArrayList<>();
+            Cursor c=db.query(TABLE_NAME,null,null,null,null,null,TIME+" DESC",""+Global.getMaxHistory());
+            if(c.moveToFirst()){
+                do{
+                    galleries.add(new SimpleGallery(c));
+                }while (c.moveToNext());
+            }
+            galleries.trimToSize();
+            return galleries;
+        }
+        public static void emptyHistory(SQLiteDatabase db){
+            db.delete(TABLE_NAME,null,null);
+        }
+        private static void cleanHistory(SQLiteDatabase db) {
+            while(db.delete(TABLE_NAME,"(SELECT COUNT(*) FROM "+TABLE_NAME+")>? AND "+TIME+"=(SELECT MIN("+TIME+") FROM "+TABLE_NAME+")",new String[]{""+Global.getMaxHistory()})==1);
+        }
+    }
+
     public static class BookmarkTable{
         static final String TABLE_NAME="Bookmark";
         public static final String DROP_TABLE= "DROP TABLE IF EXISTS "+ TABLE_NAME;

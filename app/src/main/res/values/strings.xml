@@ -266,6 +266,8 @@
     <string name="setting_on_show_titles">Gallery titles will be shown</string>
     <string name="setting_off_show_titles">Gallery titles will be hidden</string>
     <string name="show_gallery_titles">Show gallery titles</string>
+    <string name="key_column_port_hist" translatable="false">column_port_hist</string>
+    <string name="key_column_land_hist" translatable="false">column_land_hist</string>
     <string name="key_column_port_main" translatable="false">column_port_main</string>
     <string name="key_column_land_main" translatable="false">column_land_main</string>
     <string name="key_column_port_down" translatable="false">column_port_down</string>
@@ -294,12 +296,13 @@
     <string name="start_all_downloads">Start all downloads</string>
     <string name="pause_all_downloads">Pause all downloads</string>
     <string name="cancel_all_downloads">Cancel all downloads</string>
-    <string translatable="false" name="key_disable_lock">disable_lock</string>
+    <string name="key_disable_lock" translatable="false">disable_lock</string>
     <string name="disable_lock_title">Disable screen off while reading</string>
     <string name="download_all_galleries_in_this_page">Download all galleries in this page</string>
     <string name="download_all_galleries">Download all galleries</string>
     <string name="favorite_column_count">Select favorite column count</string>
     <string name="download_column_count">Select download column count</string>
+    <string name="history_column_count">Select history column count</string>
     <string name="main_column_count">Select main column count</string>
     <string name="navigation_settings">Navigation settings</string>
     <string name="stop_download">Stop download</string>
@@ -317,6 +320,12 @@
     <string name="send_with_title">Send with title?</string>
     <string name="caption_send_with_title">Append url to the image as caption to the image?</string>
     <string name="error_404">Error 404: not found</string>
+    <string name="history_size">History size</string>
+    <string name="history_size_summary">Set the max number of entries for the history</string>
+    <string name="key_max_history_size" translatable="false">max_history_size</string>
+    <string name="view_history">View history</string>
+    <string name="history">History</string>
+    <string name="clear_history">Clear history</string>
 
     <string-array name="language">
         <item>English</item>

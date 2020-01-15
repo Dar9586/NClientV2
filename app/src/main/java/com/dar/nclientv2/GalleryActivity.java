@@ -20,8 +20,10 @@ import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.async.DownloadGallery;
+import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.components.views.RangeSelector;
+import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Favorites;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
@@ -53,6 +55,10 @@ public class GalleryActivity extends BaseActivity{
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
         gallery= getIntent().getParcelableExtra(getPackageName()+".GALLERY");
+        if(gallery==null)gallery=Gallery.emptyGallery(this);
+        if(gallery.getType()!= GenericGallery.Type.LOCAL){
+            Queries.HistoryTable.addGallery(Database.getDatabase(),((Gallery)gallery).toSimpleGallery());
+        }
         Log.d(Global.LOGTAG,""+gallery);
         if(Global.useRtl())recycler.setRotationY(180);
         if(getIntent().getBooleanExtra(getPackageName()+".INSTANTDOWNLOAD",false))downloadGallery();
@@ -75,7 +81,7 @@ public class GalleryActivity extends BaseActivity{
             InspectorV3.galleryInspector(this,Integer.parseInt(params.get(1)),new InspectorV3.DefaultInspectorResponse(){
 
                 @Override
-                public void onSuccess(List<Gallery> galleries) {
+                public void onSuccess(List<GenericGallery> galleries) {
                     Intent intent = new Intent(GalleryActivity.this,GalleryActivity.class);
                     intent.putExtra(getPackageName()+".GALLERY",galleries.get(0));
                     intent.putExtra(getPackageName()+".ZOOM",zoom);
@@ -261,7 +267,7 @@ public class GalleryActivity extends BaseActivity{
         refresher.setEnabled(true);
         InspectorV3.galleryInspector(this, gallery.getId(), new InspectorV3.DefaultInspectorResponse() {
             @Override
-            public void onSuccess(List<Gallery> galleries) {
+            public void onSuccess(List<GenericGallery> galleries) {
                 Intent intent=new Intent(GalleryActivity.this, GalleryActivity.class);
                 Log.d(Global.LOGTAG,galleries.get(0).toString());
                 intent.putExtra(getPackageName()+".GALLERY",galleries.get(0));
