@@ -1,6 +1,5 @@
 package com.dar.nclientv2.async;
 
-import android.app.IntentService;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
@@ -12,6 +11,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.JobIntentService;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -35,7 +35,7 @@ import java.util.Locale;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class DownloadGallery extends IntentService {
+public class DownloadGallery extends JobIntentService {
     public static void givePriority(GalleryDownloader downloader) {
         galleries.remove(downloader);
         galleries.add(0,downloader);
@@ -69,9 +69,7 @@ public class DownloadGallery extends IntentService {
         DownloadGallery.observer=null;
     }
 
-    public DownloadGallery() {
-        super("Download Gallery");
-    }
+    public DownloadGallery() {}
     public static void download(Context context, GenericGallery gallery, boolean start){
         GalleryDownloader d=new GalleryDownloader(gallery,start? GalleryDownloader.Status.NOT_STARTED: GalleryDownloader.Status.PAUSED);
         if(!galleries.contains(d))galleries.add(d);
@@ -121,7 +119,7 @@ public class DownloadGallery extends IntentService {
         try { Thread.sleep(time); } catch (InterruptedException ignore) {}
     }
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
+    protected void onHandleWork(@Nullable Intent intent) {
         running=true;
         while(galleries.size()>0) {
             stopSignal=false;
@@ -131,8 +129,9 @@ public class DownloadGallery extends IntentService {
                 sleep(2500);
                 continue;
             }
-            galleryDownloader.setStatus(GalleryDownloader.Status.DOWNLOADING);
             gallery=galleryDownloader.getGallery();
+            if(gallery==null)continue;
+            galleryDownloader.setStatus(GalleryDownloader.Status.DOWNLOADING);
             if(observer!=null)observer.triggerStartDownload(galleryDownloader);
             folder = new File(Global.DOWNLOADFOLDER, gallery.getPathTitle());
             prepareNotification();

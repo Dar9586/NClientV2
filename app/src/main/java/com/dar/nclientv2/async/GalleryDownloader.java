@@ -61,9 +61,11 @@ public class GalleryDownloader {
     }
 
     public Gallery getGallery() {
+        GenericGallery gallery=this.gallery;
         if(!downloaded) {
             try {
                 gallery=Gallery.galleryFromId(id);
+                if(gallery==null)return null;
                 setDownloaded(true);
             } catch (IOException ignore) { }
         }
@@ -71,9 +73,11 @@ public class GalleryDownloader {
     }
     public Gallery completeGallery()throws IOException{
         if(downloaded)return (Gallery) gallery;
-        gallery=Gallery.galleryFromId(id);
+        Gallery gallery=Gallery.galleryFromId(id);
+        if(gallery==null)throw new IOException();
+        this.gallery=gallery;
         setDownloaded(true);
-        return (Gallery) gallery;
+        return gallery;
     }
     public Status getStatus() {
         return status;

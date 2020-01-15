@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
 import com.dar.nclientv2.LoginActivity;
 import com.dar.nclientv2.settings.Global;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
@@ -14,7 +16,6 @@ import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 
-import androidx.annotation.NonNull;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -84,7 +85,6 @@ public class Login {
                     activity.finish();
                     User.createUser(user ->{
                         new LoadTags(null).start();
-                        new DownloadFavorite(null).start();
                     } );
                 }else activity.runOnUiThread(() -> activity.invalid.setVisibility(View.VISIBLE));
             }

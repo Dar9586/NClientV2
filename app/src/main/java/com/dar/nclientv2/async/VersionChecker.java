@@ -122,7 +122,7 @@ public class VersionChecker{
             if(Global.hasStoragePermission(context)) downloadVersion(latestVersion);
             else{
                 latest=latestVersion;
-                context.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},2);
+                context.runOnUiThread(()-> context.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},2));
             }
         }).setNegativeButton(R.string.cancel,null)
                 .setNeutralButton(R.string.github, (dialog, which) -> {

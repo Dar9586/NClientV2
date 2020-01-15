@@ -21,7 +21,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.MenuItemCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dar.nclientv2.adapters.ListAdapter;
@@ -37,6 +36,7 @@ import com.dar.nclientv2.async.ScrapeTags;
 import com.dar.nclientv2.async.VersionChecker;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.activities.BaseActivity;
+import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
 import com.dar.nclientv2.loginapi.Login;
 import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.DefaultDialogs;
@@ -197,7 +197,7 @@ public class MainActivity extends BaseActivity
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy){
                 if(Global.isInfiniteScroll()&&!refresher.isRefreshing()){
-                    GridLayoutManager manager = (GridLayoutManager)recycler.getLayoutManager();
+                    CustomGridLayoutManager manager = (CustomGridLayoutManager)recycler.getLayoutManager();
                     if(actualPage < totalPage && manager.findLastVisibleItemPosition() >= (recycler.getAdapter().getItemCount()-1-manager.getSpanCount())) {
                         if(inspecting)return;
                         inspecting=true;
@@ -528,8 +528,8 @@ public class MainActivity extends BaseActivity
                 break;
             case R.id.download_page:
                 if(inspector.getGalleries()!=null)
-                for(GenericGallery g:inspector.getGalleries())
-                    DownloadGallery.download(this,g,true);
+                    for(GenericGallery g:inspector.getGalleries())
+                        DownloadGallery.download(this,g,true);
                 break;
             case R.id.add_bookmark:
                 Queries.BookmarkTable.addBookmark(Database.getDatabase(),inspector);

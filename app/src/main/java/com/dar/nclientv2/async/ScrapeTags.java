@@ -1,9 +1,10 @@
 package com.dar.nclientv2.async;
 
-import android.app.IntentService;
-import android.content.Context;
 import android.content.Intent;
 import android.util.JsonReader;
+
+import androidx.annotation.Nullable;
+import androidx.core.app.JobIntentService;
 
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagStatus;
@@ -15,11 +16,10 @@ import com.dar.nclientv2.settings.Global;
 import java.io.IOException;
 import java.util.Date;
 
-import androidx.annotation.Nullable;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class ScrapeTags extends IntentService {
+public class ScrapeTags extends JobIntentService {
     /*It is updated once a month*/
     private static final String URL="https://violable-hats.000webhostapp.com/tags.json";
     
@@ -27,12 +27,11 @@ public class ScrapeTags extends IntentService {
     //check every 30day
     private static final long DIFFERENCE_TIME=30L*24*60*60;
     public ScrapeTags() {
-        super("Scrape Tag");
     }
 
 
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
+    protected void onHandleWork(@Nullable Intent intent) {
         try {
             if(new Date().getTime()-getApplicationContext().getSharedPreferences("Settings",0).getLong("lastSync",new Date().getTime())<DIFFERENCE_TIME)return;
             Response x=Global.client.newCall(new Request.Builder().url(URL).build()).execute();

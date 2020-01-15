@@ -1,10 +1,10 @@
 package com.dar.nclientv2.async;
 
-import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.JobIntentService;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -19,17 +19,16 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class CreateZIP extends IntentService {
+public class CreateZIP extends JobIntentService {
     private int notId;
     private NotificationManagerCompat notificationManager;
     private NotificationCompat.Builder notification;
     private byte[]buffer=new byte[1024];
     public CreateZIP() {
-        super("CreatePDF");
     }
 
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
+    protected void onHandleWork(@Nullable Intent intent) {
         System.gc();
         LocalGallery gallery = intent.getParcelableExtra(getPackageName() + ".GALLERY");
         preExecute(gallery.getDirectory());

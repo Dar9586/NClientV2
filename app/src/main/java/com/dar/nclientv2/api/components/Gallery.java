@@ -9,7 +9,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.SimpleGallery;
 import com.dar.nclientv2.api.enums.ImageExt;
@@ -556,10 +555,6 @@ public class Gallery extends GenericGallery{
         return mediaId;
     }
 
-    public String[] getTitles() {
-        return titles;
-    }
-
 
     public int getTagCount(@NonNull TagType type){
         return getTagCount(type.ordinal());
@@ -576,9 +571,12 @@ public class Gallery extends GenericGallery{
     public Tag getTag(@NonNull TagType type,int index){
         return getTag(type.ordinal(),index);
     }
+
+
     public static Gallery galleryFromId(int id) throws IOException{
         InspectorV3 i=InspectorV3.galleryInspector(null,id,null);
         i.execute();
+        if(i.getGalleries().size()==0)return null;
         return (Gallery) i.getGalleries().get(0);
     }
     public boolean hasIgnoredTags(String s){
@@ -603,7 +601,7 @@ public class Gallery extends GenericGallery{
         g.mediaId=999999;
         g.favoriteCount=0;
         g.titles[0]=null;
-        g.titles[1]=context.getString(R.string.error_404);
+        g.titles[1]="Error 404: not found";//context.getString(R.string.error_404);
         g.titles[2]=null;
         g.uploadDate=new Date();
         g.maxSize=new Size(

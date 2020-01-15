@@ -18,7 +18,6 @@ import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.async.database.Queries;
-import com.dar.nclientv2.loginapi.DownloadFavorite;
 import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
 
@@ -147,9 +146,6 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
         int s=getItemCount();
         updateCursor(null);
         activity.runOnUiThread(()->notifyItemRangeRemoved(0,s));
-    }
-    public void reloadOnline(){
-        new DownloadFavorite(this).start();
     }
     private void updateCursor(Cursor c){
         if(cursor!=null)cursor.close();

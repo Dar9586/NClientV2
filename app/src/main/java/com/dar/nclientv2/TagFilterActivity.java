@@ -21,13 +21,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.dar.nclientv2.adapters.TagsAdapter;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.ScrapeTags;
+import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
 import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
@@ -227,7 +227,7 @@ public class TagFilterActivity extends AppCompatActivity{
             RecyclerView recycler=((PlaceholderFragment)page).recyclerView;
             if(recycler!=null) {
                 RecyclerView.Adapter adapter = recycler.getAdapter();
-                GridLayoutManager gridLayoutManager = new GridLayoutManager(this, count);
+                CustomGridLayoutManager gridLayoutManager = new CustomGridLayoutManager(this, count);
                 recycler.setLayoutManager(gridLayoutManager);
                 recycler.setAdapter(adapter);
             }
@@ -286,7 +286,7 @@ public class TagFilterActivity extends AppCompatActivity{
              /*recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
                  @Override
                  public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy){
-                     GridLayoutManager manager=(GridLayoutManager)recyclerView.getLayoutManager();
+                     CustomGridLayoutManager manager=(CustomGridLayoutManager)recyclerView.getLayoutManager();
                      if(type!=TagType.UNKNOWN&&type!=TagType.CATEGORY
                              &&manager.findLastVisibleItemPosition() >= (recyclerView.getAdapter().getItemCount()-1-manager.getSpanCount())){
                          if(((TagsAdapter)recyclerView.getAdapter()).getLastQuery().equals(""))
@@ -299,7 +299,7 @@ public class TagFilterActivity extends AppCompatActivity{
         }
         public void loadTags(){
             String query=activity.searchView==null?"":activity.searchView.getQuery().toString();
-            recyclerView.setLayoutManager(new GridLayoutManager(activity, getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE?4:2));
+            recyclerView.setLayoutManager(new CustomGridLayoutManager(activity, getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE?4:2));
             TagsAdapter adapter;
             switch(type){
                 case UNKNOWN:adapter=new TagsAdapter(activity,query,null,false);break;

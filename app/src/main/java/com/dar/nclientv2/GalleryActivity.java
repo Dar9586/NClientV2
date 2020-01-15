@@ -13,7 +13,6 @@ import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.dar.nclientv2.adapters.GalleryAdapter;
 import com.dar.nclientv2.api.InspectorV3;
@@ -23,6 +22,7 @@ import com.dar.nclientv2.async.DownloadGallery;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.components.views.RangeSelector;
+import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
 import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Favorites;
 import com.dar.nclientv2.settings.Global;
@@ -38,7 +38,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class GalleryActivity extends BaseActivity{
-    @NonNull private GenericGallery gallery;
+    @NonNull private GenericGallery gallery=Gallery.emptyGallery(this);
     private boolean isLocal;
     private GalleryAdapter adapter;
     private int zoom;
@@ -54,8 +54,8 @@ public class GalleryActivity extends BaseActivity{
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
-        gallery= getIntent().getParcelableExtra(getPackageName()+".GALLERY");
-        if(gallery==null)gallery=Gallery.emptyGallery(this);
+        GenericGallery gal= getIntent().getParcelableExtra(getPackageName()+".GALLERY");
+        if(gal!=null)this.gallery=gal;
         if(gallery.getType()!= GenericGallery.Type.LOCAL){
             Queries.HistoryTable.addGallery(Database.getDatabase(),((Gallery)gallery).toSimpleGallery());
         }
@@ -65,7 +65,7 @@ public class GalleryActivity extends BaseActivity{
         isLocal=getIntent().getBooleanExtra(getPackageName()+".ISLOCAL",false);
         zoom = getIntent().getIntExtra(getPackageName()+".ZOOM",0);
         refresher.setEnabled(false);
-        recycler.setLayoutManager(new GridLayoutManager(this,Global.getColumnCount()));
+        recycler.setLayoutManager(new CustomGridLayoutManager(this,Global.getColumnCount()));
 
         Uri data = getIntent().getData();
         if(data != null && data.getPathSegments().size() >= 2){//if using an URL
@@ -93,9 +93,9 @@ public class GalleryActivity extends BaseActivity{
 
     }
     private void lookup(){
-        GridLayoutManager manager= (GridLayoutManager)recycler.getLayoutManager();
+        CustomGridLayoutManager manager= (CustomGridLayoutManager)recycler.getLayoutManager();
         GalleryAdapter adapter=(GalleryAdapter)recycler.getAdapter();
-        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup(){
+        manager.setSpanSizeLookup(new CustomGridLayoutManager.SpanSizeLookup(){
             @Override
             public int getSpanSize(int position){
                 return adapter.positionToType(position)==GalleryAdapter.Type.PAGE?1:manager.getSpanCount();
@@ -134,9 +134,9 @@ public class GalleryActivity extends BaseActivity{
             menu.findItem(R.id.add_online_gallery).setTitle(x?R.string.remove_from_online_favorites:R.string.add_to_online_favorite);
             menu.findItem(R.id.add_online_gallery).setIcon(x?R.drawable.ic_star:R.drawable.ic_star_border);
         }
-        menu.findItem(R.id.share).setVisible(gallery!=null&&gallery.isValid());
+        menu.findItem(R.id.share).setVisible(gallery.isValid());
         menu.findItem(R.id.favorite_manager).setIcon((isFavorite=Favorites.isFavorite(gallery))?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
-        menu.findItem(R.id.load_internet).setVisible(isLocal&&gallery!=null&&gallery.getId()!=-1);
+        menu.findItem(R.id.load_internet).setVisible(isLocal&&gallery.getId()!=-1);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -150,7 +150,7 @@ public class GalleryActivity extends BaseActivity{
         menu.findItem(R.id.download_range).setVisible(gallery.getId()>=0&&!isLocal);
         menu.findItem(R.id.related).setVisible(gallery.getId()>=0&&!isLocal);
         menu.findItem(R.id.comments).setVisible(gallery.getId()>=0&&!isLocal);
-        if(gallery!=null)loadMenu();
+        loadMenu();
         Global.setTint(menu.findItem(R.id.download_gallery).getIcon());
         Global.setTint(menu.findItem(R.id.load_internet).getIcon());
         Global.setTint(menu.findItem(R.id.change_view).getIcon());
@@ -177,7 +177,7 @@ public class GalleryActivity extends BaseActivity{
                 new RangeSelector(this, (Gallery) gallery).show();
                 break;
             case R.id.add_online_gallery:
-                if(gallery!=null)Global.client.newCall(new Request.Builder().url("https://nhentai.net/g/"+gallery.getId()+"/favorite").build()).enqueue(new Callback() {
+                Global.client.newCall(new Request.Builder().url("https://nhentai.net/g/"+gallery.getId()+"/favorite").build()).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call,@NonNull IOException e) {}
 
@@ -234,13 +234,13 @@ public class GalleryActivity extends BaseActivity{
     private void updateColumnCount(boolean increase) {
         int x=Global.getColumnCount();
         MenuItem item= ((Toolbar)findViewById(R.id.toolbar)).getMenu().findItem(R.id.change_view);
-        if(increase||((GridLayoutManager)recycler.getLayoutManager()).getSpanCount()!=x){
+        if(increase||((CustomGridLayoutManager)recycler.getLayoutManager()).getSpanCount()!=x){
             if(increase)x=x%4+1;
-            int pos=((GridLayoutManager)recycler.getLayoutManager()).findFirstVisibleItemPosition();
+            int pos=((CustomGridLayoutManager)recycler.getLayoutManager()).findFirstVisibleItemPosition();
             Global.updateColumnCount(this,x);
 
-            recycler.setLayoutManager(new GridLayoutManager(this,x));
-            Log.d(Global.LOGTAG,"Span count: "+((GridLayoutManager)recycler.getLayoutManager()).getSpanCount());
+            recycler.setLayoutManager(new CustomGridLayoutManager(this,x));
+            Log.d(Global.LOGTAG,"Span count: "+((CustomGridLayoutManager)recycler.getLayoutManager()).getSpanCount());
             if(adapter!=null){
                 adapter.setColCount(Global.getColumnCount());
                 recycler.setAdapter(adapter);

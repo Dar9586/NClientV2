@@ -242,7 +242,8 @@ public class Queries{
             return new Gallery(cursor, GalleryBridgeTable.getTagsForGallery(db,cursor.getInt(getColumnFromName(cursor,IDGALLERY))));
         }
 
-        public static void updateSizes(SQLiteDatabase db, Gallery gallery) {
+        public static void updateSizes(SQLiteDatabase db,@Nullable Gallery gallery) {
+            if(gallery==null)return;
             ContentValues values=new ContentValues(4);
             values.put(MAX_WIDTH,gallery.getMaxSize().getWidth());
             values.put(MAX_HEIGHT,gallery.getMaxSize().getHeight());

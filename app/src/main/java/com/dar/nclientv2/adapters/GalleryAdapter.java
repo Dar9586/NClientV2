@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -25,6 +24,7 @@ import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.components.classes.Size;
+import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.targets.BitmapTarget;
 import com.google.android.material.chip.Chip;
@@ -140,7 +140,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         Log.d(Global.LOGTAG,"Called RElated");
         final RecyclerView recyclerView=(RecyclerView)holder.master;
         final Gallery gallery=(Gallery)this.gallery;
-        recyclerView.setLayoutManager(new GridLayoutManager(context,1,RecyclerView.HORIZONTAL,false));
+        recyclerView.setLayoutManager(new CustomGridLayoutManager(context,1,RecyclerView.HORIZONTAL,false));
         if(gallery.isRelatedLoaded()){
             ListAdapter adapter=new ListAdapter(context);
             adapter.addGalleries(new ArrayList<>(gallery.getRelated()));

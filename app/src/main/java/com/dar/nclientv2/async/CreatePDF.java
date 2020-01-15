@@ -1,7 +1,6 @@
 package com.dar.nclientv2.async;
 
 import android.annotation.TargetApi;
-import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,6 +12,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.JobIntentService;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.FileProvider;
@@ -26,17 +26,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 @TargetApi(19)
-public class CreatePDF extends IntentService {
+public class CreatePDF extends JobIntentService {
     private int notId;
     private int totalPage;
     private NotificationManagerCompat notificationManager;
     private NotificationCompat.Builder notification;
     public CreatePDF() {
-        super("CreatePDF");
     }
 
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
+    protected void onHandleWork(@Nullable Intent intent) {
         notId=Global.getNotificationId();
         System.gc();
         LocalGallery gallery=intent.getParcelableExtra(getPackageName()+".GALLERY");
