@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--Thanks to ZerOri and linsui for the Simplified Chinese translation-->
 <resources>
+											  
     <!--SUMMARY-->
     <string name="setting_on_ignore_tags">从画廊菜单中选中一个标签时不再查询其它标签（语言项除外）</string>
     <string name="setting_off_ignore_tags">从画廊菜单中选中一个标签时查询其它标签</string>
@@ -44,10 +45,10 @@
     <string name="channel2_name">创建 PDF</string>
     <string name="channel3_name">创建 ZIP</string>
     <string name="channel1_description">用于显示画廊下载进度</string>
-    <string name="channel2_description">用于显示 pdf 创建进度</string>
-    <string name="channel3_description">用于显示 zip 的创建进度</string>
-    <string name="channel2_title">正在创建 PDF：</string>
-    <string name="channel3_title">正在创建 ZIP：</string>
+    <string name="channel2_description">用于显示pdf的创建进度</string>
+    <string name="channel3_description">用于显示zip的创建进度</string>
+    <string name="channel2_title">正在创建的PDF：</string>
+    <string name="channel3_title">正在创建的ZIP：</string>
 
     <string name="favorite_max_reached" formatted="true">你最多能收藏 %d 部漫画。</string>
     <string name="tags_max_reached" formatted="true">你最多能选中 %d 个标签。</string>
@@ -91,17 +92,17 @@
     <string name="hashtag">#</string>
 
     <string name="create_pdf">创建 PDF</string>
-    <string name="create_pdf_format" formatted="true">创建 PDF："%s"</string>
-    <string name="create_zip_format" formatted="true">创建 ZIP："%s"</string>
-    <string name="created_pdf">成功创建 PDF</string>
-    <string name="error_pdf">创建 PDF 出错</string>
+    <string name="create_pdf_format" formatted="true">创建的PDF："%s"</string>
+    <string name="create_zip_format" formatted="true">创建的ZIP："%s"</string>
+    <string name="created_pdf">成功创建PDF</string>
+    <string name="error_pdf">创建PDF出错</string>
     <string name="parsing_pages">正在解析页面</string>
-    <string name="writing_pdf">正在写入 PDF</string>
+    <string name="writing_pdf">正在写入PDF</string>
 
     <string name="app_name">NClientV2</string>
     <string name="navigation_drawer_open">打开导航菜单</string>
     <string name="navigation_drawer_close">关闭导航菜单</string>
-    <string name="nav_header_subtitle">NHentai 非官方客户端</string>
+    <string name="nav_header_subtitle">NHentai非官方客户端</string>
     <string name="nav_header_desc">导航菜单标题</string>
 
     <string name="change_page">跳转页面：</string>
@@ -114,6 +115,7 @@
 
     <string name="delete_gallery">删除画廊</string>
     <string name="delete_gallery_format" formatted="true">是否删除画廊：\n%s</string>
+
 
     <string name="share_with">分享</string>
     <string name="link_copied_to_clipboard">链接已复制到剪贴板</string>
@@ -173,7 +175,7 @@
     <string name="send">发送</string>
     <string name="send_comment">发送评论…</string>
     <string name="profile_picture">头像</string>
-    <string name="send_bug_on_github">在 Github 上反馈 bug </string>
+    <string name="send_bug_on_github">在Github上反馈bug </string>
     <string name="github">Github</string>
     <string name="install">安装</string>
     <string name="download_update_failed">无法下载新版本</string>
@@ -205,35 +207,37 @@
     <string name="cancel">取消</string>
     <string name="no">否</string>
     <string name="yes">是</string>
+																																
     <string name="start_all_downloads">开始所有下载</string>
     <string name="pause_all_downloads">停止所有下载</string>
     <string name="cancel_all_downloads">取消所有下载</string>
     <string name="disable_lock_title">阅读时常亮</string>
     <string name="download_all_galleries_in_this_page">下载此页所有画廊</string>
     <string name="download_all_galleries">下载所有画廊</string>
+
     <string name="favorite_column_count">选择收藏界面列数</string>
     <string name="download_column_count">选择下载界面列数</string>
     <string name="main_column_count">选择主界面列数</string>
     <string name="navigation_settings">浏览设置</string>
     <string name="stop_download">停止下载</string>
     <string name="start_download">开始下载</string>
-    <string name="create_zip">创建 ZIP</string>
-    <string name="created_zip">成功创建 ZIP</string>
-    <string name="failed_zip">创建 ZIP 失败: </string>
+    <string name="create_zip">创建ZIP</string>												   
+    <string name="created_zip">成功创建ZIP</string>													   													   
+    <string name="failed_zip">创建ZIP失败: </string>																					  
     <string name="download_page_range">下载页面范围</string>
     <string name="start_page">起始页</string>
     <string name="end_page">结束页</string>
     <string name="invalid_range_selected">选择范围无效</string>
     <string name="column_count_select">列数选择</string>
-    <string name="send_with_title">Send with title?</string>
-    <string name="caption_send_with_title">Append url to the image as caption to the image?</string>
-    <string name="error_404">Error 404: not found</string>
-    <string name="history_size">History size</string>
-    <string name="history_size_summary">Set the max number of entries for the history</string>
-    <string name="view_history">View history</string>
-    <string name="history">History</string>
-    <string name="history_column_count">Select history column count</string>
-    <string name="clear_history">Clear history</string>
+    <string name="send_with_title">与标题一起发送？</string>
+    <string name="caption_send_with_title">在图片上添加URL水印？</string>
+    <string name="error_404">错误 404: 未找到</string>
+    <string name="history_size">历史条目数</string>
+    <string name="history_size_summary">设置历史条目最大值</string>
+    <string name="view_history">阅读历史</string>
+    <string name="history">历史</string>
+    <string name="history_column_count">选择历史列数</string>
+    <string name="clear_history">清除历史</string>
 
     <string-array name="language">
         <item>英文</item>
@@ -249,6 +253,8 @@
     <string-array name="title_type_array">
         <item>英文</item>
         <item>日文</item>
-        <item>美观</item>
+        <item>简约</item>
     </string-array>
+
+
 </resources>
