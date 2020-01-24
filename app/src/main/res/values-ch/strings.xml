@@ -43,9 +43,12 @@
 
     <string name="channel1_name">下載畫廊</string>
     <string name="channel2_name">創建PDF</string>
+	<string name="channel3_name">創建ZIP</string>												
     <string name="channel1_description">用於顯示畫廊下載進度</string>
     <string name="channel2_description">用於顯示PDF創建進度</string>
-    <string name="channel2_title">創建中的PDF：</string>
+    <string name="channel3_description">用於顯示zip的創建進度</string>
+    <string name="channel2_title">正在創建的PDF：</string>
+    <string name="channel3_title">正在創建的ZIP：</string>	  
 
     <string name="favorite_max_reached" formatted="true">你最多能收藏 %d 部漫畫。</string>
     <string name="tags_max_reached" formatted="true">你最多能選中 %d 個標籤。</string>
@@ -90,11 +93,13 @@
 
     <string name="create_pdf">創建PDF</string>
     <string name="create_pdf_format" formatted="true">創建的PDF："%s"</string>
+	<string name="create_zip_format" formatted="true">創建的ZIP："%s"</string>																			
     <string name="created_pdf">成功創建PDF</string>
     <string name="error_pdf">創建PDF出錯</string>
-    <string name="parsing_pages">分析頁面中</string>
-    <string name="writing_pdf">PDF寫入中</string>
+    <string name="parsing_pages">正在分析頁面</string>
+    <string name="writing_pdf">正在寫入PDF</string>
 
+											  
     <string name="navigation_drawer_open">打開側邊欄</string>
     <string name="navigation_drawer_close">關閉側邊欄</string>
     <string name="nav_header_subtitle">NHentai非官方用戶端</string>
@@ -177,12 +182,11 @@
     <string name="copyURL">複製URL</string>
     <string name="add_bookmark">加入書簽</string>
     <string name="manage_bookmarks">管理書簽</string>
-    <string name="bookmark_page_format">頁 %d</string>
+    <string name="bookmark_page_format">第 %d 頁</string>
     <string name="bookmark_description">書簽描述</string>
     <string name="enable_right_to_left">從右至左閱讀</string>
     <string name="setting_on_use_rtl">圖像將從右至左顯示</string>
-    <string name="setting_off_use_rtl">圖像將從左至右顯示</string>
-
+    <string name="setting_off_use_rtl">圖像將從左至右顯示</string>														
     <string name="volume_change_setting">音量鍵換頁</string>
     <string name="popular_tag_count">高級搜索中顯示熱門標籤數</string>
     <string name="key_show_titles">顯示標題</string>
@@ -200,8 +204,8 @@
     <string name="tag_tag_gallery">標籤：</string>
     <string name="ok">確定</string>
     <string name="cancel">取消</string>
-    <string name="no">不要</string>
-    <string name="yes">是的</string>
+    <string name="no">否</string>
+    <string name="yes">是</string>
 
     <string name="use_column_port">選擇豎屏每行列數</string>
     <string name="use_column_land">選擇橫屏每行列數</string>
@@ -229,16 +233,16 @@
     <string name="start_page">起始頁</string>
     <string name="end_page">結束頁</string>
     <string name="invalid_range_selected">選擇的範圍無效</string>
-    <string name="column_count_select">列数选择</string>
-    <string name="send_with_title">Send with title?</string>
-    <string name="caption_send_with_title">Append url to the image as caption to the image?</string>
-    <string name="error_404">Error 404: not found</string>
-    <string name="history_size">History size</string>
-    <string name="history_size_summary">Set the max number of entries for the history</string>
-    <string name="view_history">View history</string>
-    <string name="history">History</string>
-    <string name="history_column_count">Select history column count</string>
-    <string name="clear_history">Clear history</string>
+    <string name="column_count_select">列數選擇</string>
+    <string name="send_with_title">與標題一起發送？</string>
+    <string name="caption_send_with_title">在圖片上添加URL浮水印？</string>
+    <string name="error_404">錯誤 404: 未找到</string>
+    <string name="history_size">歷史條目數</string>
+    <string name="history_size_summary">設置歷史條目最大值</string>
+    <string name="view_history">閱讀歷史</string>
+    <string name="history">歷史</string>
+    <string name="history_column_count">選擇歷史列數</string>
+    <string name="clear_history">清除歷史</string>
 
     <string-array name="language">
         <item>英文</item>
@@ -250,10 +254,11 @@
         <item>暗色</item>
         <item>黑色</item>
     </string-array>
+	
     <string-array name="title_type_array">
         <item>英文</item>
         <item>日文</item>
-        <item>美觀</item>
+        <item>簡約</item>
     </string-array>
 
 
