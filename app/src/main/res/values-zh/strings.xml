@@ -238,6 +238,11 @@
     <string name="history">历史</string>
     <string name="history_column_count">选择历史列数</string>
     <string name="clear_history">清除历史</string>
+    <string name="cancelled_format">Cancelled: %s</string>
+    <string name="completed_format">Completed: %s</string>
+    <string name="stop">Stop</string>
+    <string name="downloading_format">Downloading: %s</string>
+    <string name="toggle_favorite">Toggle favorite</string>
 
     <string-array name="language">
         <item>英文</item>

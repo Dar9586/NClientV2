@@ -19,7 +19,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
-import androidx.core.view.MenuItemCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -452,9 +451,10 @@ public class MainActivity extends BaseActivity
         Global.setTint(menu.findItem(R.id.by_popular).getIcon());
         Global.setTint(menu.findItem(R.id.add_bookmark).getIcon());
         if(status!=MainStatus.FAVORITE)
-            MenuItemCompat.setActionView(menu.findItem(R.id.search), null);
+            menu.findItem(R.id.search).setActionView(null);
+            //MenuItemCompat.setActionView(menu.findItem(R.id.search), null);
         else{
-            ((SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search))).setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            ((SearchView) menu.findItem(R.id.search).getActionView()).setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
                     inspector=InspectorV3.favoriteInspector(MainActivity.this,query,1,resetDataset);

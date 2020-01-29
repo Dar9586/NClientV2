@@ -275,6 +275,11 @@
     <string name="view_history">View history</string>
     <string name="history">History</string>
     <string name="clear_history">Clear history</string>
+    <string name="cancelled_format">Cancelled: %s</string>
+    <string name="completed_format">Completed: %s</string>
+    <string name="stop">Stop</string>
+    <string name="downloading_format">Downloading: %s</string>
+    <string name="toggle_favorite">Toggle favorite</string>
 
     <string-array name="language">
         <item>English</item>

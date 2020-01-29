@@ -43,12 +43,9 @@
 
     <string name="channel1_name">下載畫廊</string>
     <string name="channel2_name">創建PDF</string>
-	<string name="channel3_name">創建ZIP</string>												
     <string name="channel1_description">用於顯示畫廊下載進度</string>
     <string name="channel2_description">用於顯示PDF創建進度</string>
-    <string name="channel3_description">用於顯示zip的創建進度</string>
     <string name="channel2_title">正在創建的PDF：</string>
-    <string name="channel3_title">正在創建的ZIP：</string>	  
 
     <string name="favorite_max_reached" formatted="true">你最多能收藏 %d 部漫畫。</string>
     <string name="tags_max_reached" formatted="true">你最多能選中 %d 個標籤。</string>
@@ -228,7 +225,6 @@
     <string name="channel3_title">創建ZIP：</string>
     <string name="created_zip">成功創建ZIP</string>
     <string name="failed_zip">創建ZIP失敗: </string>
-    <string name="create_zip_format" formatted="true">正在創建ZIP： "%s"</string>
     <string name="download_page_range">下載頁面範圍</string>
     <string name="start_page">起始頁</string>
     <string name="end_page">結束頁</string>
@@ -243,6 +239,11 @@
     <string name="history">歷史</string>
     <string name="history_column_count">選擇歷史列數</string>
     <string name="clear_history">清除歷史</string>
+    <string name="cancelled_format">Cancelled: %s</string>
+    <string name="completed_format">Completed: %s</string>
+    <string name="stop">Stop</string>
+    <string name="downloading_format">Downloading: %s</string>
+    <string name="toggle_favorite">Toggle favorite</string>
 
     <string-array name="language">
         <item>英文</item>

@@ -1,5 +1,8 @@
 package com.dar.nclientv2.async;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.async.database.Queries;
@@ -8,7 +11,43 @@ import com.dar.nclientv2.settings.Global;
 
 import java.io.IOException;
 
-public class GalleryDownloader {
+public class GalleryDownloader implements Parcelable {
+    protected GalleryDownloader(Parcel in) {
+        gallery = in.readParcelable(GenericGallery.class.getClassLoader());
+        progress = in.readInt();
+        downloaded = in.readByte() != 0;
+        id = in.readInt();
+        start = in.readInt();
+        count = in.readInt();
+    }
+
+    public static final Creator<GalleryDownloader> CREATOR = new Creator<GalleryDownloader>() {
+        @Override
+        public GalleryDownloader createFromParcel(Parcel in) {
+            return new GalleryDownloader(in);
+        }
+
+        @Override
+        public GalleryDownloader[] newArray(int size) {
+            return new GalleryDownloader[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(gallery, flags);
+        dest.writeInt(progress);
+        dest.writeByte((byte) (downloaded ? 1 : 0));
+        dest.writeInt(id);
+        dest.writeInt(start);
+        dest.writeInt(count);
+    }
+
     public enum Status{NOT_STARTED,DOWNLOADING,PAUSED,FINISHED}
     private GenericGallery gallery;
     private Status status;

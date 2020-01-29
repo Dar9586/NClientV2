@@ -6,7 +6,7 @@
         android:id="@+id/favorite_manager"
         android:orderInCategory="100"
         android:icon="@drawable/ic_favorite_border"
-        android:title="@string/download_gallery"
+        android:title="@string/toggle_favorite"
         app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/change_view"

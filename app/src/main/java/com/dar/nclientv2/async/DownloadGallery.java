@@ -73,20 +73,23 @@ public class DownloadGallery extends JobIntentService {
     public static void download(Context context, GenericGallery gallery, boolean start){
         GalleryDownloader d=new GalleryDownloader(gallery,start? GalleryDownloader.Status.NOT_STARTED: GalleryDownloader.Status.PAUSED);
         if(!galleries.contains(d))galleries.add(d);
-        if(!running) {
+        Intent i=new Intent();
+        i.putExtra("gallery",d);
+        DownloadGallery.enqueueWork(context,DownloadGallery.class,1000,i);
+        /*if(!running) {
             Intent i = new Intent(context, DownloadGallery.class);
-            context.startService(i);
-        }
+            if(context instanceof Activity) ((Activity)context).runOnUiThread(()->context.startService(i));
+            else context.startService(i);
+            Log.d(Global.LOGTAG," download Service started");
+        }*/
     }
     public static void downloadRange(Context context, Gallery gallery,boolean start,int s,int end){
         GalleryDownloader d=new GalleryDownloader(gallery,start? GalleryDownloader.Status.NOT_STARTED: GalleryDownloader.Status.PAUSED);
         d.setStart(s);
         d.setCount(end-s);
         if(!galleries.contains(d))galleries.add(d);
-        if(!running) {
-            Intent i = new Intent(context, DownloadGallery.class);
-            context.startService(i);
-        }
+        DownloadGallery.enqueueWork(context,DownloadGallery.class,1000,new Intent());
+
     }
     public static void download(Context context, int id,boolean start){
         GalleryDownloader d=new GalleryDownloader(id,start? GalleryDownloader.Status.NOT_STARTED: GalleryDownloader.Status.PAUSED);
@@ -118,6 +121,17 @@ public class DownloadGallery extends JobIntentService {
     private void sleep(int time){
         try { Thread.sleep(time); } catch (InterruptedException ignore) {}
     }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
     @Override
     protected void onHandleWork(@Nullable Intent intent) {
         running=true;
@@ -160,14 +174,14 @@ public class DownloadGallery extends JobIntentService {
         Intent intent1=new Intent(this,DownloadGallery.class);
         intent1.setAction("stop");
         PendingIntent pStopSelf = PendingIntent.getService(this, 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT);
-        notification.addAction(R.drawable.ic_close,"Stop",pStopSelf);
+        notification.addAction(R.drawable.ic_close,getString(R.string.stop),pStopSelf);
     }
     private void prepareNotification() {
         notificationManager = NotificationManagerCompat.from(getApplicationContext());
         notification=new NotificationCompat.Builder(getApplicationContext(), Global.CHANNEL_ID1);
         addStopButton();
         notification.setOnlyAlertOnce(true)
-                .setContentTitle(String.format(Locale.US,"Downloading: %s",gallery.getTitle()))
+                .setContentTitle(String.format(Locale.US,getString(R.string.downloading_format),gallery.getTitle()))
                 .setProgress(gallery.getPageCount(),0,false)
                 .setSmallIcon(R.drawable.ic_file);
         setPercentage(0);
@@ -209,7 +223,7 @@ public class DownloadGallery extends JobIntentService {
         }
 
     }
-
+/*
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
         if(intent!=null&&"stop".equals(intent.getAction())){
@@ -219,7 +233,7 @@ public class DownloadGallery extends JobIntentService {
 
         return super.onStartCommand(intent, flags, startId);
     }
-
+*/
     private File getFilename(int page){
         StringBuilder name=new StringBuilder(7);
         if(page<10)name.append("00");
@@ -259,8 +273,8 @@ public class DownloadGallery extends JobIntentService {
     private void endDownload() {
         removeGallery(galleryDownloader);
         if(observer!=null)observer.triggerEndDownload(galleryDownloader);
-        if(stopSignal)notification.setContentTitle(String.format(Locale.US,"Cancelled: %s",gallery.getTitle()));
-        else notification.setContentTitle(String.format(Locale.US,"Completed: %s",gallery.getTitle()));
+        if(stopSignal)notification.setContentTitle(String.format(Locale.US,getString(R.string.cancelled_format),gallery.getTitle()));
+        else notification.setContentTitle(String.format(Locale.US,getString(R.string.completed_format),gallery.getTitle()));
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.JELLY_BEAN)notification.setContentIntent(createIntent());
         setPercentage(-1);
 

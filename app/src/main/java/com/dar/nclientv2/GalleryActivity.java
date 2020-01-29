@@ -135,7 +135,6 @@ public class GalleryActivity extends BaseActivity{
             menu.findItem(R.id.add_online_gallery).setIcon(x?R.drawable.ic_star:R.drawable.ic_star_border);
         }
         menu.findItem(R.id.share).setVisible(gallery.isValid());
-        menu.findItem(R.id.favorite_manager).setIcon((isFavorite=Favorites.isFavorite(gallery))?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
         menu.findItem(R.id.load_internet).setVisible(isLocal&&gallery.getId()!=-1);
     }
     @Override
@@ -143,7 +142,7 @@ public class GalleryActivity extends BaseActivity{
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.gallery, menu);
         this.menu=menu;
-
+        menu.findItem(R.id.favorite_manager).setIcon((isFavorite=Favorites.isFavorite(gallery))?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
         menu.findItem(R.id.add_online_gallery).setVisible(gallery.getId()>=0&&!isLocal&&Login.isLogged());
         menu.findItem(R.id.favorite_manager).setVisible(isFavorite||(gallery.getId()>=0&&!isLocal));
         menu.findItem(R.id.download_gallery).setVisible(gallery.getId()>=0&&!isLocal);
@@ -194,7 +193,8 @@ public class GalleryActivity extends BaseActivity{
                     }
                 });
                 break;
-            case R.id.download_gallery:if(Global.hasStoragePermission(this))downloadGallery();else{requestStorage();}break;
+            case R.id.download_gallery:
+                if(Global.hasStoragePermission(this))downloadGallery();else{requestStorage();}break;
             case R.id.change_view:updateColumnCount(true); break;
             case R.id.load_internet:toInternet();break;
             case R.id.comments:
@@ -289,6 +289,6 @@ public class GalleryActivity extends BaseActivity{
                 //new DownloadGallery(this,gallery).start();
     }
     private void downloadGallery(){
-        DownloadGallery.download(this, (Gallery) gallery,true);
+        DownloadGallery.download(this, gallery,true);
     }
 }
