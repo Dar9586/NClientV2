@@ -1,7 +1,6 @@
 package com.dar.nclientv2.adapters;
 
 import android.content.Intent;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +26,7 @@ import com.dar.nclientv2.components.classes.Size;
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.targets.BitmapTarget;
+import com.dar.nclientv2.utility.LogUtility;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -91,14 +91,14 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             if(gallery.getId()!=-1)directory=Global.findGalleryFolder(gallery.getId());
             else directory=new File(Global.DOWNLOADFOLDER,gallery.getTitle());
         }else directory=null;
-        Log.d(Global.LOGTAG,"Max maxSize: "+maxSize+", min maxSize: "+gallery.getMinSize());
+        LogUtility.d("Max maxSize: "+maxSize+", min maxSize: "+gallery.getMinSize());
     }
 
     private void applyProportionPolicy() {
         if(colCount==1)policy=Policy.FULL;
         else if(maxSize.getHeight()-minSize.getHeight()<TOLERANCE)policy=Policy.MAX;
         else policy=Policy.PROPORTION;
-        Log.d(Global.LOGTAG,"NEW POLICY: "+policy);
+        LogUtility.d("NEW POLICY: "+policy);
     }
 
     @NonNull
@@ -137,7 +137,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     }
 
     private void loadRelatedLayout(ViewHolder holder){
-        Log.d(Global.LOGTAG,"Called RElated");
+        LogUtility.d("Called RElated");
         final RecyclerView recyclerView=(RecyclerView)holder.master;
         final Gallery gallery=(Gallery)this.gallery;
         recyclerView.setLayoutManager(new CustomGridLayoutManager(context,1,RecyclerView.HORIZONTAL,false));
@@ -202,7 +202,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         if(policy==Policy.MAX)holder.itemView.post(() -> {//find the max size and apply proportion
             if(maxImageSize !=null)return;
             int cellWidth = holder.itemView.getWidth();// this will give you cell width dynamically
-            Log.d(Global.LOGTAG,String.format("Setting: %d,%s",cellWidth, maxSize.toString()));
+            LogUtility.d(String.format(Locale.US,"Setting: %d,%s",cellWidth, maxSize.toString()));
             if(maxSize.getWidth()>10&&maxSize.getHeight()>10) {
                 int hei = (maxSize.getHeight() * cellWidth) / maxSize.getWidth();
                 if (hei >= 100)

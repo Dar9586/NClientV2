@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.async.database.Queries;
-import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
 
 import java.io.IOException;
@@ -125,14 +124,14 @@ public class GalleryDownloader implements Parcelable {
     public void setDownloaded(boolean downloaded) {
         this.downloaded = downloaded;
         if(downloaded){
-            Queries.DownloadTable.addGallery(Database.getDatabase(),(Gallery) gallery);
+            Queries.DownloadTable.addGallery((Gallery) gallery);
             if(count==-1)count=gallery.getPageCount();
         }
     }
 
     public void setStatus(Status status) {
         this.status = status;
-        if(status==Status.FINISHED)Queries.DownloadTable.removeGallery(Database.getDatabase(),id);
+        if(status==Status.FINISHED)Queries.DownloadTable.removeGallery(id);
     }
     public String getPathTitle(){
         if(gallery!=null)return ((Gallery)gallery).getPathTitle();

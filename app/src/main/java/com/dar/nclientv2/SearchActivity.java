@@ -29,13 +29,13 @@ import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.widgets.ChipTag;
 import com.dar.nclientv2.components.widgets.CustomLinearLayoutManager;
-import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class SearchActivity extends AppCompatActivity {
@@ -119,11 +119,11 @@ public class SearchActivity extends AppCompatActivity {
     }
     private void populateGroup(){
         for(TagType type:new TagType[]{TagType.TAG,TagType.PARODY,TagType.CHARACTER,TagType.ARTIST,TagType.GROUP}) {
-            for (Tag t : Queries.TagTable.getTopTags(Database.getDatabase(),type,Global.getFavoriteLimit(this)))addTopTag(t);
+            for (Tag t : Queries.TagTable.getTopTags(type,Global.getFavoriteLimit(this)))addTopTag(t);
         }
-        for(Tag t:Queries.TagTable.getAllFiltered(Database.getDatabase()))if(!tagAlreadyExist(t.getName()))addTag(t);
-        for(Tag t:Queries.TagTable.getTrueAllType(Database.getDatabase(),TagType.CATEGORY))addSpecialTag(t);
-        for(Tag t:Queries.TagTable.getTrueAllType(Database.getDatabase(),TagType.LANGUAGE)){
+        for(Tag t:Queries.TagTable.getAllFiltered())if(!tagAlreadyExist(t.getName()))addTag(t);
+        for(Tag t:Queries.TagTable.getTrueAllType(TagType.CATEGORY))addSpecialTag(t);
+        for(Tag t:Queries.TagTable.getTrueAllType(TagType.LANGUAGE)){
             if(Global.getOnlyLanguage()== Language.UNKNOWN)t.setStatus(TagStatus.AVOIDED);
             if(t.getId()==12227&&Global.getOnlyLanguage()==Language.ENGLISH)t.setStatus(TagStatus.ACCEPTED);
             if(t.getId()==6346&&Global.getOnlyLanguage()==Language.JAPANESE)t.setStatus(TagStatus.ACCEPTED);
@@ -131,7 +131,7 @@ public class SearchActivity extends AppCompatActivity {
             if(t.getId()==-1&&Global.getOnlyLanguage()==Language.UNKNOWN)t.setStatus(TagStatus.ACCEPTED);
             addSpecialTag(t);
         }
-        if(Login.useAccountTag())for(Tag t:Queries.TagTable.getAllOnlineFavorite(Database.getDatabase()))if(!tagAlreadyExist(t.getName()))addTag(t);
+        if(Login.useAccountTag())for(Tag t:Queries.TagTable.getAllOnlineBlacklisted())if(!tagAlreadyExist(t.getName()))addTag(t);
         Tag fake=new Tag("-language:japanese+-language:chinese+-language:english",0,-1,TagType.LANGUAGE,Global.getOnlyLanguage()==Language.UNKNOWN?TagStatus.ACCEPTED:TagStatus.DEFAULT);
         addSpecialTag(fake);
         fake=new Tag("-language:japanese+-language:chinese+-language:english",0,-1,TagType.UNKNOWN,Global.getOnlyLanguage()==Language.UNKNOWN?TagStatus.ACCEPTED:TagStatus.DEFAULT);
@@ -194,8 +194,8 @@ public class SearchActivity extends AppCompatActivity {
     private void loadTag(TagType type) {
         editTag=type;
         if(editTag!=loadedTag) {
-            Tag[] x = Queries.TagTable.getAllType(Database.getDatabase(), editTag);
-            String[] y = new String[x.length];
+            List<Tag> x = Queries.TagTable.getAllTagOfType( editTag);
+            String[] y = new String[x.size()];
             int i = 0;
             for (Tag t : x) y[i++] = t.getName();
             autoComplete.setAdapter(new ArrayAdapter<>(SearchActivity.this, android.R.layout.simple_dropdown_item_1line, y));

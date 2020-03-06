@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,6 +30,7 @@ import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.settings.TagV2;
+import com.dar.nclientv2.utility.LogUtility;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.List;
@@ -67,7 +67,7 @@ public class TagFilterActivity extends AppCompatActivity{
         TabLayout tabLayout = findViewById(R.id.tabs);
         if(Login.isLogged())tabLayout.addTab(tabLayout.newTab().setText(R.string.online_tags));
 
-        Log.d(Global.LOGTAG,"ISNULL?"+(tabLayout==null));
+        LogUtility.d("ISNULL?"+(tabLayout==null));
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -101,7 +101,7 @@ public class TagFilterActivity extends AppCompatActivity{
         Uri data = getIntent().getData();
         if(data != null){
             List<String> params = data.getPathSegments();
-            for(String x:params)Log.i(Global.LOGTAG,x);
+            for(String x:params) LogUtility.i(x);
             if(params.size()>0){
                 switch (params.get(0)){
                     case "tags":return 1;
@@ -193,7 +193,7 @@ public class TagFilterActivity extends AppCompatActivity{
         builder.setTitle(R.string.set_minimum_count).setDialogs(new DefaultDialogs.DialogResults(){
             @Override
             public void positive(int actual){
-                Log.d(Global.LOGTAG,"ACTUAL: "+actual);
+                LogUtility.d("ACTUAL: "+actual);
                 TagV2.updateMinCount(TagFilterActivity.this,actual);
                 PlaceholderFragment page =(PlaceholderFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
                 if(page!=null){
@@ -341,7 +341,7 @@ public class TagFilterActivity extends AppCompatActivity{
 
         @Override
         public Fragment getItem(int position) {
-            Log.d(Global.LOGTAG,"creating at: "+position);
+            LogUtility.d("creating at: "+position);
             return PlaceholderFragment.newInstance(position);
         }
 

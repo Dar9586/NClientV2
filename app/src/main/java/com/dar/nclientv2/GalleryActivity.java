@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -23,10 +22,10 @@ import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.components.views.RangeSelector;
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
-import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Favorites;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
+import com.dar.nclientv2.utility.LogUtility;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
@@ -57,9 +56,9 @@ public class GalleryActivity extends BaseActivity{
         GenericGallery gal= getIntent().getParcelableExtra(getPackageName()+".GALLERY");
         if(gal!=null)this.gallery=gal;
         if(gallery.getType()!= GenericGallery.Type.LOCAL){
-            Queries.HistoryTable.addGallery(Database.getDatabase(),((Gallery)gallery).toSimpleGallery());
+            Queries.HistoryTable.addGallery(((Gallery)gallery).toSimpleGallery());
         }
-        Log.d(Global.LOGTAG,""+gallery);
+        LogUtility.d(""+gallery);
         if(Global.useRtl())recycler.setRotationY(180);
         if(getIntent().getBooleanExtra(getPackageName()+".INSTANTDOWNLOAD",false))downloadGallery();
         isLocal=getIntent().getBooleanExtra(getPackageName()+".ISLOCAL",false);
@@ -70,12 +69,12 @@ public class GalleryActivity extends BaseActivity{
         Uri data = getIntent().getData();
         if(data != null && data.getPathSegments().size() >= 2){//if using an URL
             List<String> params = data.getPathSegments();
-            Log.d(Global.LOGTAG,params.size()+": "+params);
+            LogUtility.d(params.size()+": "+params);
             if(params.size()>2){
                 try{
                     zoom=Integer.parseInt(params.get(2));
                 }catch (NumberFormatException e){
-                    Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
+                    LogUtility.e(e.getLocalizedMessage(),e);
                 }
             }
             InspectorV3.galleryInspector(this,Integer.parseInt(params.get(1)),new InspectorV3.DefaultInspectorResponse(){
@@ -130,9 +129,12 @@ public class GalleryActivity extends BaseActivity{
     private Menu menu;
     public void loadMenu(){
         if(menu.findItem(R.id.add_online_gallery).isVisible()){
-            boolean x=Login.isOnlineFavorite(gallery.getId());
+            menu.findItem(R.id.add_online_gallery).setTitle(R.string.add_to_online_favorite);
+            menu.findItem(R.id.add_online_gallery).setIcon(R.drawable.ic_star_border);
+            //TO-FIX
+            /*boolean x=Login.isOnlineFavorite(gallery.getId());
             menu.findItem(R.id.add_online_gallery).setTitle(x?R.string.remove_from_online_favorites:R.string.add_to_online_favorite);
-            menu.findItem(R.id.add_online_gallery).setIcon(x?R.drawable.ic_star:R.drawable.ic_star_border);
+            menu.findItem(R.id.add_online_gallery).setIcon(x?R.drawable.ic_star:R.drawable.ic_star_border);*/
         }
         menu.findItem(R.id.share).setVisible(gallery.isValid());
         menu.findItem(R.id.load_internet).setVisible(isLocal&&gallery.getId()!=-1);
@@ -181,14 +183,12 @@ public class GalleryActivity extends BaseActivity{
                     public void onFailure(@NonNull Call call,@NonNull IOException e) {}
 
                     @Override
-                    public void onResponse(@NonNull Call call,@NonNull Response response){
-                        Log.d(Global.LOGTAG,"Called: ");
-                        final boolean x=Login.isOnlineFavorite(gallery.getId());
-                        if(!x)Login.saveOnlineFavorite((Gallery)gallery);
-                        else Login.removeOnlineFavorite((Gallery)gallery);
+                    public void onResponse(@NonNull Call call,@NonNull Response response) throws IOException {
+                        LogUtility.d("Called: ");
+                        final boolean removedFromFavorite=response.body().string().contains("false");
                         GalleryActivity.this.runOnUiThread(() -> {
-                            item.setIcon(x?R.drawable.ic_star_border:R.drawable.ic_star);
-                            item.setTitle(x?R.string.add_to_online_favorite:R.string.remove_from_online_favorites);
+                            item.setIcon(removedFromFavorite?R.drawable.ic_star_border:R.drawable.ic_star);
+                            item.setTitle(removedFromFavorite?R.string.add_to_online_favorite:R.string.remove_from_online_favorites);
                         });
                     }
                 });
@@ -240,7 +240,7 @@ public class GalleryActivity extends BaseActivity{
             Global.updateColumnCount(this,x);
 
             recycler.setLayoutManager(new CustomGridLayoutManager(this,x));
-            Log.d(Global.LOGTAG,"Span count: "+((CustomGridLayoutManager)recycler.getLayoutManager()).getSpanCount());
+            LogUtility.d("Span count: "+((CustomGridLayoutManager)recycler.getLayoutManager()).getSpanCount());
             if(adapter!=null){
                 adapter.setColCount(Global.getColumnCount());
                 recycler.setAdapter(adapter);
@@ -269,7 +269,7 @@ public class GalleryActivity extends BaseActivity{
             @Override
             public void onSuccess(List<GenericGallery> galleries) {
                 Intent intent=new Intent(GalleryActivity.this, GalleryActivity.class);
-                Log.d(Global.LOGTAG,galleries.get(0).toString());
+                LogUtility.d(galleries.get(0).toString());
                 intent.putExtra(getPackageName()+".GALLERY",galleries.get(0));
                 runOnUiThread(()->startActivity(intent));
             }

@@ -17,44 +17,61 @@ import com.dar.nclientv2.R;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.classes.Bookmark;
 import com.dar.nclientv2.settings.Database;
+import com.dar.nclientv2.utility.IntentUtility;
 
 import java.util.List;
 
 public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHolder> {
+    private static final int LAYOUT=R.layout.bookmark_layout;
+
     private final List<Bookmark>bookmarks;
-    private final BookmarkActivity context;
-    public BookmarkAdapter(BookmarkActivity context) {
-        this.context=context;
-        bookmarks= Queries.BookmarkTable.getBookmarks(Database.getDatabase());
+    private final BookmarkActivity bookmarkActivity;
+
+    public BookmarkAdapter(BookmarkActivity bookmarkActivity) {
+        this.bookmarkActivity = bookmarkActivity;
+        this.bookmarks= Queries.BookmarkTable.getBookmarks(Database.getDatabase());
     }
 
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new BookmarkAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.bookmark_layout, parent, false));
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(LAYOUT, parent, false));
     }
 
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Bookmark bookmark=bookmarks.get(holder.getAdapterPosition());
-        holder.text.setText(bookmark.toString());
-        holder.page.setText(context.getString(R.string.bookmark_page_format,bookmark.page));
-        holder.imgButton.setOnClickListener(v -> {
-            bookmark.deleteBookmark();
-            bookmarks.remove(bookmark);
-            context.runOnUiThread(() -> notifyItemRemoved(holder.getAdapterPosition()));
-        });
-        holder.layout.setOnClickListener(v -> {
-            Intent i=new Intent(context, MainActivity.class);
-            i.putExtra(context.getPackageName()+".BYBOOKMARK",true);
-            i.putExtra(context.getPackageName()+".INSPECTOR",bookmark.createInspector(context,null));
-            context.runOnUiThread(()->{
-                context.startActivity(i);
-                context.finish();
-            });
-        });
+    public void onBindViewHolder(@NonNull ViewHolder holder, int pos) {
+        int position=holder.getAdapterPosition();
+        Bookmark bookmark=bookmarks.get(position);
+
+        holder.queryText.setText(bookmark.toString());
+        holder.pageLabel.setText(bookmarkActivity.getString(R.string.bookmark_page_format,bookmark.page));
+
+        holder.deleteButton.setOnClickListener(v -> removeBookmarkAtPosition(position));
+
+        holder.rootLayout.setOnClickListener(v -> loadBookmark(bookmark));
+    }
+    /**
+     * Start an {@link MainActivity} with <code>bookmark</code> as query and page
+     * @param bookmark bookmark to load
+     * */
+    private void loadBookmark(Bookmark bookmark) {
+        Intent i=new Intent(bookmarkActivity, MainActivity.class);
+        i.putExtra(bookmarkActivity.getPackageName()+".BYBOOKMARK",true);
+        i.putExtra(bookmarkActivity.getPackageName()+".INSPECTOR",bookmark.createInspector(bookmarkActivity,null));
+        IntentUtility.startAnotherActivity(bookmarkActivity,i);
+    }
+
+    /**
+     * remove bookmark from the adapter at <code>position</code>
+     * @param position index to delete
+     * */
+    private void removeBookmarkAtPosition(int position) {
+        Bookmark bookmark=bookmarks.get(position);
+        bookmark.deleteBookmark();
+        bookmarks.remove(bookmark);
+        bookmarkActivity.runOnUiThread(() -> notifyItemRemoved(position));
     }
 
     @Override
@@ -62,16 +79,16 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
         return bookmarks.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
-        AppCompatImageButton imgButton;
-        TextView text,page;
-        ConstraintLayout layout;
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        AppCompatImageButton deleteButton;
+        TextView queryText, pageLabel;
+        ConstraintLayout rootLayout;
         ViewHolder(@NonNull View itemView) {
             super(itemView);
-            imgButton=itemView.findViewById(R.id.remove_button);
-            page=itemView.findViewById(R.id.page);
-            text=itemView.findViewById(R.id.title);
-            layout=itemView.findViewById(R.id.master_layout);
+            deleteButton = itemView.findViewById(R.id.remove_button);
+            pageLabel    = itemView.findViewById(R.id.page);
+            queryText    = itemView.findViewById(R.id.title);
+            rootLayout   = itemView.findViewById(R.id.master_layout);
         }
     }
 

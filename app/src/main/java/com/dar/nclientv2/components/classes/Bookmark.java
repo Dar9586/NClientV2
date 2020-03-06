@@ -9,7 +9,6 @@ import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.async.database.Queries;
-import com.dar.nclientv2.settings.Database;
 
 import java.util.Collections;
 
@@ -24,7 +23,7 @@ public class Bookmark {
         this.page = page;
         this.requestType=requestType;
         this.tag=tag;
-        this.tagVal=Queries.TagTable.getTag(Database.getDatabase(),this.tag);
+        this.tagVal=Queries.TagTable.getTagById(this.tag);
         this.uri=Uri.parse(url);
     }
     public InspectorV3 createInspector(Context context, InspectorV3.InspectorResponse response){
@@ -41,7 +40,7 @@ public class Bookmark {
         return null;
     }
     public void deleteBookmark(){
-        Queries.BookmarkTable.deleteBookmark(Database.getDatabase(),url);
+        Queries.BookmarkTable.deleteBookmark(url);
     }
 
     @NonNull

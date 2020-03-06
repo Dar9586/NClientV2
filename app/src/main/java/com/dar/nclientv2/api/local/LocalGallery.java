@@ -2,7 +2,6 @@ package com.dar.nclientv2.api.local;
 
 import android.graphics.BitmapFactory;
 import android.os.Parcel;
-import android.util.Log;
 import android.util.SparseArray;
 
 import androidx.annotation.Nullable;
@@ -10,7 +9,7 @@ import androidx.annotation.Nullable;
 import com.dar.nclientv2.api.components.Comment;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.components.classes.Size;
-import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.utility.LogUtility;
 
 import java.io.File;
 import java.util.List;
@@ -31,7 +30,7 @@ public class LocalGallery extends GenericGallery{
         File[] files=file.listFiles((dir, name) -> (name.endsWith(".jpg")||name.endsWith(".png")||name.endsWith(".gif"))&&name.length()==7);
         //Find page with max number
         if(files!=null) {
-            if (files.length < 1) Log.e(Global.LOGTAG, "FILE INESISTENTI");
+            if (files.length < 1) LogUtility.e( "FILE INESISTENTI");
             for (File f : files) {
                 try {
                     int x = Integer.parseInt(f.getName().substring(0, 3));
@@ -39,7 +38,7 @@ public class LocalGallery extends GenericGallery{
                     if (x < min) min = x;
                     checkSize(x,sizes,f);
                 } catch (NumberFormatException e) {
-                    Log.e(Global.LOGTAG, e.getLocalizedMessage(), e);
+                    LogUtility.e( e.getLocalizedMessage(), e);
                 }
             }
         }
@@ -48,7 +47,7 @@ public class LocalGallery extends GenericGallery{
         valid=max<9999&&min>0&&id!=-1;
     }
     private void checkSize(int x, SparseArray<Size> sizes, File f){
-        Log.d(Global.LOGTAG,"Decoding: "+f);
+        LogUtility.d("Decoding: "+f);
         BitmapFactory.Options options=new BitmapFactory.Options();
         options.inJustDecodeBounds=true;
         BitmapFactory.decodeFile(f.getAbsolutePath(),options);

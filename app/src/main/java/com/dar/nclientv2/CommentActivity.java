@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.JsonWriter;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -19,6 +18,7 @@ import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
+import com.dar.nclientv2.utility.LogUtility;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -87,7 +87,7 @@ public class CommentActivity extends BaseActivity {
                             @Override
                             public void onResponse(Call call, Response response) throws IOException {
                                 String s=response.body().string();
-                                Log.d(Global.LOGTAG,s);
+                                LogUtility.d(s);
                                 //JsonReader reader =new JsonReader(response.body().charStream());
                                 JsonReader reader =new JsonReader(new StringReader(s));
                                 boolean success=false;

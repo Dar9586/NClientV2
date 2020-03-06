@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.text.Layout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,14 +22,13 @@ import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.activities.BaseActivity;
-import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.settings.TagV2;
+import com.dar.nclientv2.utility.LogUtility;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,8 +45,8 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         this.mDataset =new ArrayList<>();
         storagePermission=Global.hasStoragePermission(context);
         black=Global.getTheme()== Global.ThemeScheme.BLACK;
-        Set<Tag>t=new HashSet<>(Arrays.asList(Queries.TagTable.getAllStatus(Database.getDatabase(), TagStatus.AVOIDED)));
-        if(Login.useAccountTag())t.addAll(Arrays.asList(Queries.TagTable.getAllOnlineFavorite(Database.getDatabase())));
+        Set<Tag>t=new HashSet<>(Queries.TagTable.getAllStatus( TagStatus.AVOIDED));
+        if(Login.useAccountTag())t.addAll(Queries.TagTable.getAllOnlineBlacklisted());
         queryString=TagV2.getAvoidedTags();
     }
 
@@ -82,7 +80,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
                     Global.setGalleryWidth(holder.title.getMeasuredWidth());
                     Global.setGalleryHeigth(holder.imgView.getMeasuredHeight());
                     if(Global.getCol)
-                    Log.d(Global.LOGTAG,"MEASURED: "+holder.title.getMeasuredWidth()+";"+holder.imgView.getMeasuredHeight());
+                    LogUtility.d("MEASURED: "+holder.title.getMeasuredWidth()+";"+holder.imgView.getMeasuredHeight());
                 });
             */
             if(context instanceof GalleryActivity){
@@ -124,7 +122,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
                     public void onSuccess(List<GenericGallery> galleries) {
                         Intent intent=new Intent(context, GalleryActivity.class);
                         if(galleries.size()!=1)return;
-                        Log.d(Global.LOGTAG,galleries.get(0).toString());
+                        LogUtility.d(galleries.get(0).toString());
                         intent.putExtra(context.getPackageName()+".GALLERY",galleries.get(0));
                         context.runOnUiThread(()->context.startActivity(intent));
                     }
@@ -154,9 +152,9 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         for(GenericGallery g:galleries) {
             mDataset.add((SimpleGallery) g);
 
-            Log.d(Global.LOGTAG,"Simple: "+g);
+            LogUtility.d("Simple: "+g);
         }
-        Log.d(Global.LOGTAG,String.format("%s,old:%d,new:%d,len%d",this,c,mDataset.size(),galleries.size()));
+        LogUtility.d(String.format("%s,old:%d,new:%d,len%d",this,c,mDataset.size(),galleries.size()));
         context.runOnUiThread(()->notifyItemRangeInserted(c,galleries.size()));
     }
 

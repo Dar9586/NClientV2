@@ -3,19 +3,19 @@ package com.dar.nclientv2.api;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Parcel;
-import android.util.Log;
 
 import com.dar.nclientv2.api.components.Comment;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.components.Tag;
+import com.dar.nclientv2.api.components.TagList;
 import com.dar.nclientv2.api.enums.ImageExt;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.classes.Size;
-import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.utility.LogUtility;
 
 import org.jsoup.nodes.Element;
 
@@ -24,7 +24,7 @@ import java.util.Locale;
 
 public class SimpleGallery extends GenericGallery {
     private Language language=Language.UNKNOWN;
-    private Tag[][] tags;
+    private TagList tags;
     private final String title;
     private final ImageExt thumbnail;
     private final int id,mediaId;
@@ -47,7 +47,7 @@ public class SimpleGallery extends GenericGallery {
     public SimpleGallery(Context context, Element e) {
         String temp;
         String tags=e.attr("data-tags").replace(' ',',');
-        this.tags=Queries.TagTable.getTags(Database.getDatabase(),tags);
+        this.tags=Queries.TagTable.getTagsFromListOfInt(tags);
         language= Gallery.loadLanguage(this.tags);
         Element a=e.getElementsByTag("a").first();
         temp=a.attr("href");
@@ -72,8 +72,8 @@ public class SimpleGallery extends GenericGallery {
     }
     public boolean hasIgnoredTags(String s){
         if(tags==null)return false;
-        for(Tag[]t:tags)if(t!=null)for(Tag t1:t)if(s.contains(t1.toQueryTag(TagStatus.AVOIDED))){
-            Log.d(Global.LOGTAG,"Found: "+s+",,"+t1.toQueryTag());
+        for(Tag t:tags.getAllTagsList())if(s.contains(t.toQueryTag(TagStatus.AVOIDED))){
+            LogUtility.d("Found: "+s+",,"+t.toQueryTag());
             return true;
         }
         return false;

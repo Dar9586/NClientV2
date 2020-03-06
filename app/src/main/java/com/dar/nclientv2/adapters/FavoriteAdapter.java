@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
 import android.text.Layout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Filter;
@@ -18,8 +17,8 @@ import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.async.database.Queries;
-import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.utility.LogUtility;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -54,7 +53,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
         cursor.moveToPosition(position);
         final Gallery ent;
         try{
-            ent = Queries.GalleryTable.cursorToGallery(Database.getDatabase(),cursor);
+            ent = Queries.GalleryTable.cursorToGallery(cursor);
         }catch(IOException e){
             e.printStackTrace();
             return;
@@ -80,7 +79,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
         holder.layout.setOnClickListener(v -> {
             //Global.setLoadedGallery(ent);
             Intent intent = new Intent(activity, GalleryActivity.class);
-            Log.d(Global.LOGTAG,ent+"");
+            LogUtility.d(ent+"");
             intent.putExtra(activity.getPackageName()+ ".GALLERY",ent);
             activity.startActivity(intent);
         });
@@ -104,17 +103,17 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
             protected FilterResults performFiltering(CharSequence constraint){
                 constraint=constraint.toString().toLowerCase(Locale.US);
                 if((!force&&lastQuery.equals(constraint)))return null;
-                Log.d(Global.LOGTAG,"FILTERING");
+                LogUtility.d("FILTERING");
                 setRefresh(true);
                 FilterResults results=new FilterResults();
                 lastQuery=constraint.toString();
-                Log.d(Global.LOGTAG,lastQuery+"LASTQERY");
+                LogUtility.d(lastQuery+"LASTQERY");
                 force=false;
-                Cursor c=Queries.GalleryTable.getAllFavoriteCursor(Database.getDatabase(),lastQuery,false);
+                Cursor c=Queries.FavoriteTable.getAllFavoriteGalleriesCursor(lastQuery);
                 results.count=c.getCount();
                 results.values=c;
-                Log.d(Global.LOGTAG,"FILTERING3");
-                Log.e(Global.LOGTAG,results.count+";"+results.values);
+                LogUtility.d("FILTERING3");
+                LogUtility.e(results.count+";"+results.values);
                 setRefresh(false);
                 return results;
             }
@@ -122,7 +121,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
             protected void publishResults(CharSequence constraint, FilterResults results){
                 if(results==null)return;
                 setRefresh(true);
-                Log.d(Global.LOGTAG,"After called2");
+                LogUtility.d("After called2");
                 final int oldSize=getItemCount(),newSize=results.count;
                 updateCursor((Cursor)results.values);
                 //not in runOnUIThread because is always executed on UI
@@ -142,7 +141,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
         activity.runOnUiThread(()->activity.getRefresher().setRefreshing(refresh));
     }
     public void clearGalleries(){
-        Queries.GalleryTable.removeAllFavorite(Database.getDatabase(),online);
+        Queries.FavoriteTable.removeAllFavorite();
         int s=getItemCount();
         updateCursor(null);
         activity.runOnUiThread(()->notifyItemRangeRemoved(0,s));

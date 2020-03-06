@@ -3,7 +3,6 @@ package com.dar.nclientv2.adapters;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.util.JsonWriter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +23,10 @@ import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.database.Queries;
-import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.settings.TagV2;
+import com.dar.nclientv2.utility.LogUtility;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
@@ -48,7 +47,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
     private final TagType type;
     private boolean wasSortedByName;
     private Cursor cursor=null;
-    public TagsAdapter(TagFilterActivity cont, String query, TagType type, boolean online){
+    public TagsAdapter(TagFilterActivity cont, String query,@NonNull TagType type, boolean online){
         context=cont;
         this.type=type;
         this.online=online;
@@ -66,18 +65,18 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
                 force=false;
                 wasSortedByName=TagV2.isSortedByName();
                 lastQuery = constraint.toString();
-                Cursor tags = Queries.TagTable.getFilterCursor(Database.getDatabase(), lastQuery, type, online, TagV2.isSortedByName());
+                Cursor tags = Queries.TagTable.getFilterCursor( lastQuery, type, online, TagV2.isSortedByName());
                 results.count = tags.getCount();
                 results.values = tags;
 
-                Log.d(Global.LOGTAG,results.count+","+results.values);
+                LogUtility.d(results.count+","+results.values);
                 return results;
             }
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 if(results.count==-1)return;
-                Log.d(Global.LOGTAG,"PASSED");
+                LogUtility.d("PASSED");
                 Cursor newCursor=(Cursor)results.values;
                 int oldCount=getItemCount(),newCount=results.count;
                 if(cursor!=null)cursor.close();
@@ -132,7 +131,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
             return true;
         });
         updateLogo(holder.imgView,online?TagStatus.AVOIDED:ent.getStatus());
-        Log.d(Global.LOGTAG,"PASSED: "+ent);
+        LogUtility.d("PASSED: "+ent);
     }
 
     @Override

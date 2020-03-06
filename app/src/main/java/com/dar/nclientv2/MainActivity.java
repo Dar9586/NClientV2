@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,10 +36,10 @@ import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
 import com.dar.nclientv2.loginapi.Login;
-import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
+import com.dar.nclientv2.utility.LogUtility;
 import com.google.android.material.navigation.NavigationView;
 
 import org.acra.ACRA;
@@ -103,13 +102,13 @@ public class MainActivity extends BaseActivity
         public void onSuccess(List<GenericGallery> galleries) {
             Gallery g=galleries.size()==1?(Gallery) galleries.get(0):Gallery.emptyGallery(MainActivity.this);
             Intent intent=new Intent(MainActivity.this, GalleryActivity.class);
-            Log.d(Global.LOGTAG,g.toString());
+            LogUtility.d(g.toString());
             intent.putExtra(getPackageName()+".GALLERY",g);
             runOnUiThread(()->{
                 startActivity(intent);
                 finish();
             });
-            Log.d(Global.LOGTAG,"STARTED");
+            LogUtility.d("STARTED");
         }
         @Override
         public void onStart() {
@@ -128,7 +127,7 @@ public class MainActivity extends BaseActivity
         Global.initActivity(this);
         if(Global.hasStoragePermission(this)){//delete older APK
             final File f=new File(Global.UPDATEFOLDER,"NClientV2_"+Global.getVersionName(this)+".apk");
-            Log.d(Global.LOGTAG,f.getAbsolutePath());
+            LogUtility.d(f.getAbsolutePath());
             if(f.exists())f.delete();
         }
         final Toolbar toolbar = findViewById(R.id.toolbar);
@@ -178,7 +177,7 @@ public class MainActivity extends BaseActivity
         }
 
 
-        Log.d(Global.LOGTAG,"Main started with status "+status);
+        LogUtility.d("Main started with status "+status);
 
         navigationView = findViewById(R.id.nav_view);
         changeNavigationImage(navigationView);
@@ -269,7 +268,7 @@ public class MainActivity extends BaseActivity
     //FIND AND INIT INSPECTOR
     private MainStatus manageDataStart(Uri data) {
         List<String>datas=data.getPathSegments();
-        Log.d(Global.LOGTAG,"Datas: "+datas);
+        LogUtility.d("Datas: "+datas);
         if(datas.size()==0){
             inspector=InspectorV3.searchInspector(this,null,null,1,Global.isByPopular(),resetDataset);
             return MainStatus.NORMAL;
@@ -289,7 +288,7 @@ public class MainActivity extends BaseActivity
         }
         if(dataType!=null){
             query=datas.get(1);
-            Tag tag=Queries.TagTable.getTagFromTagName(Database.getDatabase(),query);
+            Tag tag=Queries.TagTable.getTagFromTagName(query);
             if(tag==null) tag=new Tag(query,-1,-1 ,dataType,TagStatus.DEFAULT);
             byPop=datas.size()==3;
             inspector=InspectorV3.searchInspector(this,null,new HashSet<>(Collections.singleton(tag)),1,byPop,resetDataset);
@@ -532,7 +531,7 @@ public class MainActivity extends BaseActivity
                         DownloadGallery.download(this,g,true);
                 break;
             case R.id.add_bookmark:
-                Queries.BookmarkTable.addBookmark(Database.getDatabase(),inspector);
+                Queries.BookmarkTable.addBookmark(inspector);
                 break;
             case R.id.tag_manager:
                 TagStatus ts=TagV2.updateStatus(inspector.getTag());
@@ -570,7 +569,7 @@ public class MainActivity extends BaseActivity
         getSupportActionBar().setTitle(builder.toString());
         supportInvalidateOptionsMenu();
 
-        Log.d(Global.LOGTAG,"TAGS: "+tags);
+        LogUtility.d("TAGS: "+tags);
         inspector=InspectorV3.searchInspector(this, query, tags, 1, Global.isByPopular(), resetDataset);
         inspector.start();
     }

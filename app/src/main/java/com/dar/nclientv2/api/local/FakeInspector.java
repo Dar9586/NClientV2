@@ -1,11 +1,11 @@
 package com.dar.nclientv2.api.local;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.dar.nclientv2.LocalActivity;
 import com.dar.nclientv2.adapters.LocalAdapter;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.utility.LogUtility;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,7 +27,7 @@ public class FakeInspector extends AsyncTask<LocalActivity,LocalActivity,LocalAc
         File parent=Global.DOWNLOADFOLDER;
         parent.mkdirs();
         for (File f:parent.listFiles())createGallery(f);
-        for (String x:invalidPaths) Log.d(Global.LOGTAG,"Invalid path: "+x);
+        for (String x:invalidPaths) LogUtility.d("Invalid path: "+x);
         return voids[0];
     }
 
@@ -58,7 +58,7 @@ public class FakeInspector extends AsyncTask<LocalActivity,LocalActivity,LocalAc
             LocalGallery lg=new LocalGallery(file,-1);
             if(lg.isValid()) galleries.add(lg);
             else if(lg.getPageCount()>0)invalidPaths.add(file.getAbsolutePath());
-            Log.e(Global.LOGTAG,"WTF: "+e.getLocalizedMessage(),e);
+            LogUtility.e("WTF: "+e.getLocalizedMessage(),e);
         }
     }
 }

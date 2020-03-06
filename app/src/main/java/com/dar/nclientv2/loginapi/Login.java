@@ -1,13 +1,13 @@
 package com.dar.nclientv2.loginapi;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 
 import com.dar.nclientv2.LoginActivity;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.utility.LogUtility;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 
 import org.jsoup.Jsoup;
@@ -62,7 +62,7 @@ public class Login {
 
             @Override
             public void onResponse(@NonNull Call call,@NonNull Response response) {
-                Log.d(Global.LOGTAG,"Logged out: "+response.networkResponse().code());
+                LogUtility.d("Logged out: "+response.networkResponse().code());
                 com.dar.nclientv2.settings.Login.logout();
                 com.dar.nclientv2.settings.Login.updateUser(null);
             }
@@ -80,7 +80,7 @@ public class Login {
 
             @Override
             public void onResponse(@NonNull Call call,@NonNull Response response) {
-                Log.d(Global.LOGTAG,"Log in: "+response.networkResponse().code());
+                LogUtility.d("Log in: "+response.networkResponse().code());
                 if(com.dar.nclientv2.settings.Login.isLogged()) {
                     activity.finish();
                     User.createUser(user ->{

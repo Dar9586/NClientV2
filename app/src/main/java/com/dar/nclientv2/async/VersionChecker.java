@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.util.JsonReader;
 import android.util.JsonToken;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,6 +16,7 @@ import androidx.core.content.FileProvider;
 import com.dar.nclientv2.BuildConfig;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.utility.LogUtility;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -42,13 +42,13 @@ public class VersionChecker{
             return;
         }
         String versionName= Global.getVersionName(context);
-        Log.d(Global.LOGTAG,"ACTUAL VERSION: "+versionName);
+        LogUtility.d("ACTUAL VERSION: "+versionName);
         if(versionName!=null){
             Global.client.newCall(new Request.Builder().url(LATEST_API_URL).build()).enqueue(new Callback(){
                 @Override
                 public void onFailure(@NonNull Call call,@NonNull IOException e){
                     context.runOnUiThread(()->{
-                        Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
+                        LogUtility.e(e.getLocalizedMessage(),e);
                         if(!silent) Toast.makeText(context, R.string.error_retrieving, Toast.LENGTH_SHORT).show();
                     });
                 }
@@ -65,7 +65,7 @@ public class VersionChecker{
                             if(!silent)
                                 Toast.makeText(context, R.string.no_updates_found, Toast.LENGTH_SHORT).show();
                         }else{
-                            Log.d(Global.LOGTAG,"Executing false");
+                            LogUtility.d("Executing false");
                             createDialog(versionName, verName, body);
                         }
                     });
@@ -111,10 +111,10 @@ public class VersionChecker{
                 .replace("NClientV2 "+latestVersion,"")//remove version header
                 .replaceAll("(\\s*\n\\s*)+","\n")//remove multiple newline
                 .replaceAll("\\(.*\\)","").trim();//remove things between ()
-        Log.d(Global.LOGTAG,"Evaluated: "+finalBody);
-        Log.d(Global.LOGTAG,"Creating dialog");
+        LogUtility.d("Evaluated: "+finalBody);
+        LogUtility.d("Creating dialog");
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
-        Log.d(Global.LOGTAG,""+context);
+        LogUtility.d(""+context);
         builder.setTitle(R.string.new_version_found);
         builder.setIcon(R.drawable.ic_file_download);
         builder.setMessage(context.getString(R.string.update_version_format,versionName,latestVersion,finalBody));
@@ -141,7 +141,7 @@ public class VersionChecker{
             }
             f.delete();
         }
-        Log.d(Global.LOGTAG,f.getAbsolutePath());
+        LogUtility.d(f.getAbsolutePath());
         Global.client.newCall(new Request.Builder().url(downloadUrl).build()).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {

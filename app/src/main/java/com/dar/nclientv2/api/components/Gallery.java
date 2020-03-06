@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.os.Parcel;
 import android.util.JsonReader;
 import android.util.JsonToken;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -18,9 +17,8 @@ import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.classes.Size;
-import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
-import com.dar.nclientv2.settings.TagV2;
+import com.dar.nclientv2.utility.LogUtility;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -30,7 +28,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -39,7 +36,7 @@ import java.util.Set;
 
 public class Gallery extends GenericGallery{
     private static final int MAX_COMMENT=50;
-    public Gallery(Context context,String x, Elements com, Elements rel) throws IOException{
+    public Gallery(Context context, String x, Elements com, Elements rel, boolean isFavorite) throws IOException{
         JsonReader reader=new JsonReader(new StringReader(x));
         comments=com.size()==0?null:new ArrayList<>(com.size());
         related=new ArrayList<>(rel.size());
@@ -50,6 +47,7 @@ public class Gallery extends GenericGallery{
         for(Element e:rel)related.add(new SimpleGallery(context,e));
         parseJSON(reader);
         complete=true;
+        onlineFavorite=isFavorite;
     }
 
     public String getPathTitle() {
@@ -61,15 +59,15 @@ public class Gallery extends GenericGallery{
     private final String[] titles=new String[]{"","",""};
     private List<SimpleGallery>related;
     private List<Comment>comments;
-    private Tag[][] tags;
+    private TagList tags;
     //true=jpg, false=png
     private ImageExt cover,thumbnail;
     private ImageExt[] pages;
     private Language language= Language.UNKNOWN;
     private Size maxSize=new Size(0,0),minSize=new Size(Integer.MAX_VALUE,Integer.MAX_VALUE);
-    private final boolean complete;
+    private final boolean complete,onlineFavorite;
     private static volatile boolean updating=false;
-    public Gallery(Cursor cursor, Tag[][] tags) throws IOException{
+    public Gallery(Cursor cursor, TagList tags) throws IOException{
         id=cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.IDGALLERY));
         mediaId=cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.MEDIAID));
         favoriteCount=cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.FAVORITE_COUNT));
@@ -95,6 +93,11 @@ public class Gallery extends GenericGallery{
         this.tags=tags;
         this.language=loadLanguage(tags);
         complete=true;
+        onlineFavorite=false;//to review
+    }
+
+    public boolean isOnlineFavorite() {
+        return onlineFavorite;
     }
 
     private void updateSize() {
@@ -108,8 +111,8 @@ public class Gallery extends GenericGallery{
             }
             updating=true;
             try {
-                Queries.GalleryTable.updateSizes(Database.getDatabase(), Gallery.galleryFromId(id));
-                Gallery gallery=Queries.GalleryTable.galleryFromId(Database.getDatabase(),id);
+                Queries.GalleryTable.updateSizes( Gallery.galleryFromId(id));
+                Gallery gallery=Queries.GalleryTable.galleryFromId(id);
                 maxSize=gallery.maxSize;
                 minSize=gallery.minSize;
             } catch (IOException e) {
@@ -224,6 +227,7 @@ public class Gallery extends GenericGallery{
         }
     }
     private Gallery(Parcel in){
+        onlineFavorite=in.readByte()==1;
         complete=in.readByte()==1;
         maxSize=in.readParcelable(Size.class.getClassLoader());
         minSize=in.readParcelable(Size.class.getClassLoader());
@@ -242,13 +246,10 @@ public class Gallery extends GenericGallery{
         int i=0;
         for(byte b:array)pages[i++]=ImageExt.values()[b];
         language=Language.values()[in.readInt()];
-        tags=new Tag[TagType.values().length][];
-        for(int a=0;a<TagType.values().length;a++){
-            int l=in.readInt();
-            if(l==0)continue;
-            tags[a]=new Tag[l];
-            in.readTypedArray(tags[a],Tag.CREATOR);
-        }
+        tags=new TagList();
+        List<Tag>readTags=new ArrayList<>();
+        in.readTypedList(readTags,Tag.CREATOR);
+        tags.addTags(readTags);
         int x;
         if((x=in.readByte())>0){
             related=new ArrayList<>(x);
@@ -274,6 +275,7 @@ public class Gallery extends GenericGallery{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte((byte) (onlineFavorite?1:0));
         dest.writeByte((byte) (complete?1:0));
         dest.writeParcelable(maxSize,flags);
         dest.writeParcelable(minSize,flags);
@@ -290,11 +292,8 @@ public class Gallery extends GenericGallery{
         for(ImageExt e:pages)array[i++]=(byte)e.ordinal();
         dest.writeByteArray(array);
         dest.writeInt(language.ordinal());
-        for(Tag[] x:tags){
-            int l=x==null?0:x.length;
-            dest.writeInt(l);
-            if(l>0) dest.writeTypedArray(x,flags);
-        }
+        dest.writeTypedList(tags.getAllTagsList());
+
         boolean x=isRelatedLoaded();
         dest.writeByte((byte)(x?related.size():0));
         if(x){
@@ -315,6 +314,7 @@ public class Gallery extends GenericGallery{
         this.related=related;
         parseJSON(jr);
         complete = true;
+        onlineFavorite=false;//to review
     }
 
     private void parseJSON(JsonReader jr) throws IOException {
@@ -342,7 +342,7 @@ public class Gallery extends GenericGallery{
         @Override
         public Gallery createFromParcel(Parcel in) {
 
-                Log.d(Global.LOGTAG,"Reading to parcel");
+                LogUtility.d("Reading to parcel");
                 return new Gallery(in);
 
 
@@ -361,36 +361,18 @@ public class Gallery extends GenericGallery{
 
 
     private void readTags(JsonReader jr)throws IOException {
-        List<Tag>t=new ArrayList<>();
+        tags=new TagList();
         jr.beginArray();
-        while(jr.hasNext())t.add(new Tag(jr));
+        while(jr.hasNext())tags.addTag(new Tag(jr));
         jr.endArray();
-        Collections.sort(t, (o1, o2) -> {
-            int x=o1.getType().ordinal()-o2.getType().ordinal();
-            if(x==0)return o1.getCount()-o2.getCount();
-            return x;
-        });
-        tags=new Tag[TagType.values().length][];
-        int i=0;
-        TagType type=t.get(0).getType();
-        for(int a=1;a<t.size();a++){
-            TagType tag=t.get(a).getType();
-            if(tag!=type){
-                tags[type.ordinal()]=new Tag[a-i];
-                tags[type.ordinal()]=t.subList(i,a).toArray(tags[type.ordinal()]);
-                i=a;
-                type=tag;
-            }
-        }
-        tags[type.ordinal()]=new Tag[t.size()-i];
-        tags[type.ordinal()]=t.subList(i,t.size()).toArray(tags[type.ordinal()]);
+        tags.sort((o1, o2) -> o2.getCount()-o1.getCount());
         language=loadLanguage(tags);
-        for(Tag[]t1:tags)if(t1!=null)for(Tag t2:t1)Queries.TagTable.insert(Database.getDatabase(),t2);
+        for(Tag tag:tags.getAllTagsList())Queries.TagTable.insert(tag);
     }
-    public static Language loadLanguage(Tag[][]tags){
+    public static Language loadLanguage(TagList tags){
         Language language=Language.UNKNOWN;
         //CHINESE 29963 ENGLISH 12227 JAPANESE 6346
-        for(Tag tag:tags[TagType.LANGUAGE.ordinal()]){
+        for(Tag tag:tags.retrieveForType(TagType.LANGUAGE)){
             switch (tag.getId()){
                 case 6346 :language= Language.JAPANESE;break;
                 case 12227:language= Language.ENGLISH;break;
@@ -410,11 +392,7 @@ public class Gallery extends GenericGallery{
                 .append(", mediaId=").append(mediaId)
                 .append(", titles=").append(Arrays.toString(titles))
                 .append(", tags={");
-        int len=tags.length;
-                for(int a=0;a<len;a++){
-                    if(tags[a]!=null)
-                        builder.append(TagType.values()[a]).append(Arrays.toString(tags[a])).append(',');
-                }
+
                 builder.append("}, cover=").append(cover).append(", thumbnail=").append(thumbnail).append(", pages=").append(Arrays.toString(pages)).append('}');
                 return builder.toString();
     }
@@ -557,19 +535,11 @@ public class Gallery extends GenericGallery{
 
 
     public int getTagCount(@NonNull TagType type){
-        return getTagCount(type.ordinal());
+        return tags.getCount(type);
     }
 
-    private int getTagCount(int type) {
-        if(type<0||type>tags.length||tags[type]==null)return 0;
-        return tags[type].length;
-    }
-    private Tag getTag(int type,int index){
-        if(type<0||index<0||type>tags.length||tags[type]==null||index>tags[type].length)return null;
-        return tags[type][index];
-    }
     public Tag getTag(@NonNull TagType type,int index){
-        return getTag(type.ordinal(),index);
+        return tags.getTag(type,index);
     }
 
 
@@ -579,21 +549,22 @@ public class Gallery extends GenericGallery{
         if(i.getGalleries().size()==0)return null;
         return (Gallery) i.getGalleries().get(0);
     }
-    public boolean hasIgnoredTags(String s){
-        for(Tag[]t:tags)if(t!=null)for(Tag t1:t)if(s.contains(t1.toQueryTag(TagStatus.AVOIDED))){
-            Log.d(Global.LOGTAG,"Found: "+s+",,"+t1.toQueryTag());
+    public boolean hasIgnoredTags(Set<Tag> s){
+        for(Tag t:tags.getAllTagsSet())if(s.contains(t)){
+            LogUtility.d("Found: "+s+",,"+t.toQueryTag());
             return true;
         }
         return false;
     }
     public boolean hasIgnoredTags(){
-        Set<Tag>tags=new HashSet<>(Arrays.asList(Queries.TagTable.getAllStatus(Database.getDatabase(),TagStatus.AVOIDED)));
+        Set<Tag>tags=new HashSet<>(Queries.TagTable.getAllStatus(TagStatus.AVOIDED));
         if(Global.removeAvoidedGalleries())
-            tags.addAll(Arrays.asList(Queries.TagTable.getAllOnlineFavorite(Database.getDatabase())));
-        return hasIgnoredTags(TagV2.getQueryString("",tags));
+            tags.addAll(Queries.TagTable.getAllOnlineBlacklisted());
+        return hasIgnoredTags(tags);
     }
     private Gallery(){
         complete=true;
+        onlineFavorite=false;
     }
     public static Gallery emptyGallery(Context context){
         Gallery g=new Gallery();
@@ -617,38 +588,10 @@ public class Gallery extends GenericGallery{
         g.pages=new ImageExt[0];
         g.thumbnail=ImageExt.PNG;
         g.cover=ImageExt.PNG;
-        g.tags=new Tag[TagType.values().length][];
+        g.tags=new TagList();
         return g;
     }
-    public static Gallery fakeGallery(){
-        Gallery g=new Gallery();
-        g.id=999999;
-        g.mediaId=999999;
-        g.favoriteCount=0;
-        g.titles[0]="TEST JP";
-        g.titles[1]="TEST PRETTY";
-        g.titles[2]="TEST ENG";
-        g.uploadDate=new Date();
-        g.maxSize=new Size(
-                900,
-                900
-        );
-        g.minSize=new Size(
-                600,
-                600
-        );
-        g.comments=null;
-        g.pageCount=100;
-        g.pages=new ImageExt[100];
-        for(int i=0;i<100;i++){
-            g.pages[i]=ImageExt.values()[i%3];
-        }
-        g.thumbnail=ImageExt.JPG;
-        g.cover=ImageExt.PNG;
-        g.tags=Queries.TagTable.getRandomTags(Database.getDatabase(),50);
-        g.language=g.loadLanguage(g.tags);
-        return g;
-    }
+
     public boolean isComplete() {
         return complete;
     }

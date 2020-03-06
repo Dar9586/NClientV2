@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.JobIntentService;
@@ -20,6 +19,7 @@ import androidx.core.content.FileProvider;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.utility.LogUtility;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -68,7 +68,7 @@ public class CreatePDF extends JobIntentService {
             finalPath.mkdirs();
             finalPath=new File(finalPath,gallery.getTitle()+".pdf");
             finalPath.createNewFile();
-            Log.d(Global.LOGTAG,"Generating PDF at: "+finalPath);
+            LogUtility.d("Generating PDF at: "+finalPath);
             FileOutputStream out = new FileOutputStream(finalPath);
             document.writeTo(out);
             out.close();
@@ -90,8 +90,8 @@ public class CreatePDF extends JobIntentService {
 
             notification.setContentIntent(PendingIntent.getActivity(getApplicationContext(),0,i,0));
             notificationManager.notify(getString(R.string.channel2_name),notId,notification.build());
-            Log.d(Global.LOGTAG,finalPath.getAbsolutePath());
-            Log.d(Global.LOGTAG,apkURI.toString());
+            LogUtility.d(finalPath.getAbsolutePath());
+            LogUtility.d(apkURI.toString());
         }catch(IOException e){
             notification.setContentTitle(getString(R.string.error_pdf));
             notification.setContentText(getString(R.string.failed));

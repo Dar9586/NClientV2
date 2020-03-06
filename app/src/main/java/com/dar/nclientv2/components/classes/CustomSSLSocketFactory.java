@@ -1,9 +1,8 @@
 package com.dar.nclientv2.components.classes;
 
 import android.os.Build;
-import android.util.Log;
 
-import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.utility.LogUtility;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -88,7 +87,7 @@ public class CustomSSLSocketFactory extends SSLSocketFactory {
 
                 client.connectionSpecs(specs);
             } catch (Exception exc) {
-                Log.e(Global.LOGTAG, "Error while setting TLS 1.2", exc);
+                LogUtility.e( "Error while setting TLS 1.2", exc);
             }
         }
 

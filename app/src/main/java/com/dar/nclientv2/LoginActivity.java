@@ -27,7 +27,7 @@ public class LoginActivity extends AppCompatActivity {
         final EditText password=findViewById(R.id.password);
         final Button button=findViewById(R.id.sign_in);
         button.setOnClickListener(view -> {
-            //Log.d(Global.LOGTAG,username.getText().toString()+","+password.getText().toString());
+            //LogUtility.d(username.getText().toString()+","+password.getText().toString());
             Login.login(LoginActivity.this,username.getText().toString(),password.getText().toString());
 
         });

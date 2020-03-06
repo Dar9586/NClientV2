@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -23,6 +22,7 @@ import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.utility.LogUtility;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -80,7 +80,7 @@ public class DownloadGallery extends JobIntentService {
             Intent i = new Intent(context, DownloadGallery.class);
             if(context instanceof Activity) ((Activity)context).runOnUiThread(()->context.startService(i));
             else context.startService(i);
-            Log.d(Global.LOGTAG," download Service started");
+            LogUtility.d(" download Service started");
         }*/
     }
     public static void downloadRange(Context context, Gallery gallery,boolean start,int s,int end){
@@ -167,7 +167,7 @@ public class DownloadGallery extends JobIntentService {
             ostream.flush();
             ostream.close();
         }catch (IOException e){
-           Log.e(Global.LOGTAG, e.getLocalizedMessage(),e); }
+           LogUtility.e( e.getLocalizedMessage(),e); }
     }
 
     private void addStopButton(){
@@ -199,7 +199,7 @@ public class DownloadGallery extends JobIntentService {
         for(int i=0;i<galleryDownloader.getCount();i++){
             String u=gallery.getPage(galleryDownloader.incrementProgress());
             urls.add(u);
-            Log.d(Global.LOGTAG,"Adding: "+u);
+            LogUtility.d("Adding: "+u);
         }
         galleryDownloader.setProgress(0);
 
@@ -217,7 +217,7 @@ public class DownloadGallery extends JobIntentService {
                     break;
                 }
             } catch (IOException e) {
-                Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
+                LogUtility.e(e.getLocalizedMessage(),e);
                 break;
             }
         }
@@ -228,7 +228,7 @@ public class DownloadGallery extends JobIntentService {
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
         if(intent!=null&&"stop".equals(intent.getAction())){
             stopSignal=true;
-            Log.d(Global.LOGTAG,flags+","+startId);
+            LogUtility.d(flags+","+startId);
         }
 
         return super.onStartCommand(intent, flags, startId);
@@ -242,7 +242,7 @@ public class DownloadGallery extends JobIntentService {
         return new File(folder,name.toString());
     }
     private boolean saveImage(int index,File file)throws IOException {
-        Log.d(Global.LOGTAG,"Saving: "+file.getAbsolutePath()+" from rl: "+urls.get(0));
+        LogUtility.d("Saving: "+file.getAbsolutePath()+" from rl: "+urls.get(0));
         Response response=Global.client.newCall(new Request.Builder().url(urls.get(0)).build()).execute();
         InputStream str=response.body().byteStream();
         if(!file.createNewFile())return false;

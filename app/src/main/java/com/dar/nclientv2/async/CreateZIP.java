@@ -1,7 +1,6 @@
 package com.dar.nclientv2.async;
 
 import android.content.Intent;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.JobIntentService;
@@ -11,6 +10,7 @@ import androidx.core.app.NotificationManagerCompat;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.utility.LogUtility;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -58,7 +58,7 @@ public class CreateZIP extends JobIntentService {
             out.close();
             postExecute(true, gallery, null);
         }catch (IOException e){
-            Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
+            LogUtility.e(e.getLocalizedMessage(),e);
             postExecute(false,gallery,e.getLocalizedMessage());
         }
 

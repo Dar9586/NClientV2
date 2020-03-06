@@ -13,7 +13,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -45,6 +44,7 @@ import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.components.widgets.CustomViewPager;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.targets.BitmapTarget;
+import com.dar.nclientv2.utility.LogUtility;
 import com.github.chrisbanes.photoview.PhotoView;
 
 import java.io.File;
@@ -288,7 +288,7 @@ public class ZoomActivity extends AppCompatActivity {
         try {
             file = File.createTempFile(""+gallery.getId(),endName);
             file.deleteOnExit();
-            Log.d(Global.LOGTAG,"TEMP: "+file.getAbsolutePath());
+            LogUtility.d("TEMP: "+file.getAbsolutePath());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -339,7 +339,7 @@ public class ZoomActivity extends AppCompatActivity {
             ostream.close();
             if(!silent)Toast.makeText(this, R.string.download_completed, Toast.LENGTH_SHORT).show();
         }catch (IOException e){
-            Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);}
+            LogUtility.e(e.getLocalizedMessage(),e);}
     }
 
     public static class PlaceholderFragment extends Fragment {
@@ -406,7 +406,7 @@ public class ZoomActivity extends AppCompatActivity {
 
             });
             page=getArguments().getInt("PAGE",0);
-            Log.d(Global.LOGTAG,"Loaded page: "+page);
+            LogUtility.d("Loaded page: "+page);
             if(page==current)loadPage(true);
             else if(page==(current-1)||page==(current+1))loadPage(false);
             return rootView;

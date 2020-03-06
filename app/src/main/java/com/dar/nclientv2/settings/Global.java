@@ -16,7 +16,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.annotation.DrawableRes;
@@ -38,6 +37,7 @@ import com.dar.nclientv2.components.classes.CustomSSLSocketFactory;
 import com.dar.nclientv2.loginapi.LoadTags;
 import com.dar.nclientv2.loginapi.User;
 import com.dar.nclientv2.targets.BitmapTarget;
+import com.dar.nclientv2.utility.LogUtility;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
@@ -321,7 +321,7 @@ public class Global {
     public static void initStorage(Context context){
         if(!Global.hasStoragePermission(context))return;
         Global.initFilesTree(context);
-        Log.d(Global.LOGTAG,
+        LogUtility.d(
                 "0:"+context.getFilesDir()+'\n'+
                 "1:"+Global.MAINFOLDER+Global.MAINFOLDER.mkdirs()+'\n'+
                 "2:"+Global.DOWNLOADFOLDER+Global.DOWNLOADFOLDER.mkdir()+'\n'+
@@ -444,7 +444,7 @@ public class Global {
             fh.read(eoi);
             return eoi[0] != (byte)0xFF || eoi[1] != (byte)0xD9; // FF D9
         }catch (IOException e){
-            Log.e(Global.LOGTAG,e.getMessage(),e);}
+            LogUtility.e(e.getMessage(),e);}
         return true;
     }
 
@@ -462,7 +462,7 @@ public class Global {
                     if (h!=null&&h.equals("" + id))return tmp2.getParentFile();
 
                 } catch (IOException e) {
-                    Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
+                    LogUtility.e(e.getLocalizedMessage(),e);
                 }
             }
         }

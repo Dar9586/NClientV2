@@ -2,7 +2,6 @@ package com.dar.nclientv2.components.widgets;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
@@ -10,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
 
-import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.utility.LogUtility;
 
 public class CustomViewPager extends ViewPager {
     private OnItemClickListener mOnItemClickListener;
@@ -29,7 +28,7 @@ public class CustomViewPager extends ViewPager {
             performClick();
             return super.onTouchEvent(ev);
         } catch (IllegalArgumentException ex) {
-            Log.e(Global.LOGTAG,ex.getLocalizedMessage(),ex);
+            LogUtility.e(ex.getLocalizedMessage(),ex);
         }
         return false;
     }
@@ -39,7 +38,7 @@ public class CustomViewPager extends ViewPager {
         try {
             return super.performClick();
         } catch (IllegalArgumentException ex) {
-            Log.e(Global.LOGTAG,ex.getLocalizedMessage(),ex);
+            LogUtility.e(ex.getLocalizedMessage(),ex);
         }
         return false;
     }

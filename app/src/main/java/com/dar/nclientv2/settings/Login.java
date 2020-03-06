@@ -2,17 +2,16 @@ package com.dar.nclientv2.settings;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.dar.nclientv2.R;
-import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.loginapi.User;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 
-import java.io.IOException;
+import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import okhttp3.Cookie;
 import okhttp3.HttpUrl;
 
@@ -27,20 +26,20 @@ public class Login{
     }
 
     public static void logout(){
-        Queries.GalleryTable.removeAllFavorite(Database.getDatabase(),true);
+
     }
-    public static Tag[] getOnlineTags() {
-        return Queries.TagTable.getAllOnlineFavorite(Database.getDatabase());
+    public static List<Tag> getOnlineTags() {
+        return Queries.TagTable.getAllOnlineBlacklisted();
     }
     public static void clearOnlineTags(){
-        Queries.TagTable.resetOnlineFavorite(Database.getDatabase());
+        Queries.TagTable.removeAllBlacklisted(Database.getDatabase());
     }
     public static void addOnlineTag(Tag tag){
-        Queries.TagTable.insert(Database.getDatabase(),tag);
-        Queries.TagTable.updateOnlineFavorite(Database.getDatabase(),tag,true);
+        Queries.TagTable.insert(tag);
+        Queries.TagTable.updateBlacklistedTag(tag,true);
     }
     public static void removeOnlineTag(Tag tag){
-        Queries.TagTable.updateOnlineFavorite(Database.getDatabase(),tag,false);
+        Queries.TagTable.updateBlacklistedTag(tag,false);
     }
 
     public static boolean isLogged(){
@@ -63,27 +62,8 @@ public class Login{
         Login.user = user;
     }
 
-    public static void saveOnlineFavorite(Gallery gallery){
-        Queries.GalleryTable.addFavorite(Database.getDatabase(),gallery,true);
-    }
-    public static void removeOnlineFavorite(Gallery gallery){
-        Queries.GalleryTable.removeFavorite(Database.getDatabase(),gallery,true);
-    }
-    public static boolean isOnlineFavorite(int id){
-        return Queries.GalleryTable.isFavorite(Queries.GalleryTable.isFavorite(Database.getDatabase(),id),true);
-    }
-    @Nullable
-    public static Gallery getOnlineFavorite(int id){
-        try{
-            return Queries.GalleryTable.galleryFromId(Database.getDatabase(),id);
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-        return null;
-    }
-
 
     public static boolean isOnlineTags(Tag tag){
-        return Queries.TagTable.isOnlineFavorite(Database.getDatabase(),tag);
+        return Queries.TagTable.isBlackListed(tag);
     }
 }

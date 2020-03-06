@@ -10,7 +10,6 @@ import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.database.Queries;
-import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
 
 import java.io.IOException;
@@ -46,7 +45,7 @@ public class ScrapeTags extends JobIntentService {
                 String name=reader.nextString();
                 int count=reader.nextInt();
                 TagType type=TagType.values()[reader.nextInt()];
-                Queries.TagTable.insert(Database.getDatabase(),new Tag(name,count,id,type, TagStatus.DEFAULT),true);
+                Queries.TagTable.insert(new Tag(name,count,id,type, TagStatus.DEFAULT),true);
                 reader.endArray();
             }
             reader.close();

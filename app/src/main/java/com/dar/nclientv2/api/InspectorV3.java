@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -16,9 +15,9 @@ import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.database.Queries;
-import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
+import com.dar.nclientv2.utility.LogUtility;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -28,7 +27,6 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -101,7 +99,7 @@ public class InspectorV3 extends Thread implements Parcelable {
         @Override public void onEnd() {}
         @Override public void onSuccess(List<GenericGallery> galleries) {}
         @Override public void onFailure(Exception e) {
-            Log.e(Global.LOGTAG,e.getLocalizedMessage(),e);
+            LogUtility.e(e.getLocalizedMessage(),e);
         }
     }
 
@@ -216,7 +214,7 @@ public class InspectorV3 extends Thread implements Parcelable {
 
         }
         url=builder.toString().replace(' ','+');
-        Log.d(Global.LOGTAG,"WWW: "+getBookmarkURL());
+        LogUtility.d("WWW: "+getBookmarkURL());
     }
     private String getBookmarkURL(){
         if(page<2)return url;
@@ -225,23 +223,23 @@ public class InspectorV3 extends Thread implements Parcelable {
 
     @NonNull
     public static Set<Tag> getDefaultTags(){
-        Set<Tag> tags = new HashSet<>(Arrays.asList(Queries.TagTable.getAllStatus(Database.getDatabase(), TagStatus.ACCEPTED)));
+        Set<Tag> tags = new HashSet<>(Queries.TagTable.getAllStatus( TagStatus.ACCEPTED));
         tags.addAll(getLanguageTags(Global.getOnlyLanguage()));
-        if(Global.removeAvoidedGalleries()) tags.addAll(Arrays.asList(Queries.TagTable.getAllStatus(Database.getDatabase(),TagStatus.AVOIDED)));
-        if(Login.isLogged())tags.addAll(Arrays.asList(Queries.TagTable.getAllOnlineFavorite(Database.getDatabase())));
+        if(Global.removeAvoidedGalleries()) tags.addAll(Queries.TagTable.getAllStatus(TagStatus.AVOIDED));
+        if(Login.isLogged())tags.addAll(Queries.TagTable.getAllOnlineBlacklisted());
         return tags;
     }
     public static Set<Tag> getLanguageTags(Language onlyLanguage) {
         Set<Tag>tags=new HashSet<>();
         if(onlyLanguage==null)return tags;
         switch (onlyLanguage){
-            case ENGLISH:tags.add(Queries.TagTable.getTag(Database.getDatabase(),12227));break;
-            case JAPANESE:tags.add(Queries.TagTable.getTag(Database.getDatabase(),6346));break;
-            case CHINESE:tags.add(Queries.TagTable.getTag(Database.getDatabase(),29963));break;
+            case ENGLISH:tags.add(Queries.TagTable.getTagById(12227));break;
+            case JAPANESE:tags.add(Queries.TagTable.getTagById(6346));break;
+            case CHINESE:tags.add(Queries.TagTable.getTagById(29963));break;
             case UNKNOWN:
-                tags.add(Queries.TagTable.getTag(Database.getDatabase(),12227));
-                tags.add(Queries.TagTable.getTag(Database.getDatabase(),6346));
-                tags.add(Queries.TagTable.getTag(Database.getDatabase(),29963));
+                tags.add(Queries.TagTable.getTagById(12227));
+                tags.add(Queries.TagTable.getTagById(6346));
+                tags.add(Queries.TagTable.getTagById(29963));
                 for(Tag t:tags)t.setStatus(TagStatus.AVOIDED);
                 break;
         }
@@ -257,7 +255,7 @@ public class InspectorV3 extends Thread implements Parcelable {
 
     @Override
     public void run() {
-        Log.d(Global.LOGTAG,"Starting download: "+url);
+        LogUtility.d("Starting download: "+url);
         if(response!=null)response.onStart();
         try {
             execute();
@@ -266,7 +264,7 @@ public class InspectorV3 extends Thread implements Parcelable {
             if(response!=null)response.onFailure(e);
         }
         if(response!=null)response.onEnd();
-        Log.d(Global.LOGTAG,"Finished download: "+url);
+        LogUtility.d("Finished download: "+url);
     }
     private void doSingle(Element document) throws IOException {
         galleries=new ArrayList<>(1);
@@ -277,7 +275,9 @@ public class InspectorV3 extends Thread implements Parcelable {
         x=x.substring(s,x.indexOf('\n',s)-2);
         Elements com=document.getElementById("comments").getElementsByClass("comment");
         Elements rel=document.getElementById("related-container").getElementsByClass("gallery");
-        galleries.add(new Gallery(context.get(), x,com,rel));
+        boolean isFavorite=document.getElementById("favorite").getElementsByTag("span").get(0).text().equals("Unfavorite");
+        LogUtility.d("is favorite? "+isFavorite);
+        galleries.add(new Gallery(context.get(), x,com,rel,isFavorite));
     }
 
     private void doSearch(Element document) {
