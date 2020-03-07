@@ -95,6 +95,28 @@ public class Queries{
         public static void setDb(SQLiteDatabase database) {
             db=database;
         }
+
+
+        static void clearGalleries(){
+            db.delete(GalleryTable.TABLE_NAME, String.format(Locale.US,
+                    "%s NOT IN (SELECT * FROM %s) AND " +
+                            "%s NOT IN (SELECT * FROM %s)",
+                    IDGALLERY,DownloadTable.TABLE_NAME,IDGALLERY,FavoriteTable.TABLE_NAME)
+            ,null);
+            db.delete(GalleryBridgeTable.TABLE_NAME,String.format(Locale.US,
+                    "%s NOT IN (SELECT %s FROM %s)",
+                    GalleryBridgeTable.ID_GALLERY,GalleryTable.IDGALLERY,GalleryTable.TABLE_NAME)
+                    ,null);
+            db.delete(FavoriteTable.TABLE_NAME,String.format(Locale.US,
+                    "%s NOT IN (SELECT %s FROM %s)",
+                    FavoriteTable.ID_GALLERY,GalleryTable.IDGALLERY,GalleryTable.TABLE_NAME)
+                    ,null);
+            db.delete(DownloadTable.TABLE_NAME,String.format(Locale.US,
+                    "%s NOT IN (SELECT %s FROM %s)",
+                    DownloadTable.ID_GALLERY,GalleryTable.IDGALLERY,GalleryTable.TABLE_NAME)
+                    ,null);
+        }
+
         /**
          * Retrieve gallery using the id
          * @param id id of the gallery to retrieve

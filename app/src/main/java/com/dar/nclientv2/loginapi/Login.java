@@ -24,6 +24,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class Login {
+    // TODO: 07/03/20 REVIEW ALL LOGIN STACK
     private static final String base_url="https://nhentai.net/";
     private static final String login_url=base_url+"login/";
     private static final String logout_url=base_url+"logout/";

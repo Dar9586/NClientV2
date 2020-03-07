@@ -42,6 +42,8 @@ import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 
+import org.acra.ACRA;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -85,6 +87,10 @@ public class Global {
         return colPortHist;
     }
 
+    public static void updateACRAReportStatus(Context context) {
+        ACRA.getErrorReporter().setEnabled(context.getSharedPreferences("Settings",0).getBoolean(context.getString(R.string.key_send_report),true));
+    }
+
     public enum ThemeScheme{LIGHT,DARK,BLACK}
 
     public static OkHttpClient client=null;
@@ -113,7 +119,7 @@ public class Global {
 
     public static final String LOGTAG="NCLIENTLOG";
     public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf",CHANNEL_ID3="create_pdf";
-    private static Language onlyLanguage=null;
+    private static Language onlyLanguage;
     private static TitleType titleType;
     private static boolean volumeOverride,byPopular,keepHistory,loadImages,highRes,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
     private static ThemeScheme theme;
@@ -187,7 +193,7 @@ public class Global {
         columnCount=shared.getInt(context.getString(R.string.key_column_count),2);
         showTitles=shared.getBoolean(context.getString(R.string.key_show_titles),true);
         lockScreen=shared.getBoolean(context.getString(R.string.key_disable_lock),false);
-        maxId=shared.getInt(context.getString(R.string.key_max_id),291738);
+        maxId=shared.getInt(context.getString(R.string.key_max_id),300000);
         maxHistory=shared.getInt(context.getString(R.string.key_max_history_size),2);
         colPortMain=shared.getInt(context.getString(R.string.key_column_port_main),2);
         colLandMain=shared.getInt(context.getString(R.string.key_column_land_main),4);
@@ -197,8 +203,8 @@ public class Global {
         colLandFavorite=shared.getInt(context.getString(R.string.key_column_land_favo),4);
         colPortHist=shared.getInt(context.getString(R.string.key_column_port_hist),2);
         colLandHist=shared.getInt(context.getString(R.string.key_column_land_hist),4);
-        int x=shared.getInt(context.getString(R.string.key_only_language),-1);
-        onlyLanguage=x==-1?null:Language.values()[x];
+        int x=shared.getInt(context.getString(R.string.key_only_language),Language.ALL.ordinal());
+        onlyLanguage=Language.values()[x];
 
     }
 
@@ -251,7 +257,7 @@ public class Global {
         return theme;
     }
     public static boolean removeAvoidedGalleries(){return removeAvoidedGalleries;}
-    @Nullable public static Language getOnlyLanguage() {
+    @NonNull public static Language getOnlyLanguage() {
         return onlyLanguage;
     }
     public static boolean isHighRes() {
@@ -337,8 +343,8 @@ public class Global {
     }
 
 
-    public static void updateOnlyLanguage(@NonNull Context context, @Nullable Language type){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_only_language)),type==null?-1:type.ordinal()).apply();onlyLanguage=type; }
-    public static boolean  updateByPopular(@NonNull Context context,boolean popular){context.getSharedPreferences("Settings", 0).edit().putBoolean(context.getString((R.string.key_by_popular)),popular).apply();byPopular=popular; return byPopular;}
+    public static void updateOnlyLanguage(@NonNull Context context, @Nullable Language type){ context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_only_language)),type.ordinal()).apply();onlyLanguage=type; }
+    public static void  updateByPopular(@NonNull Context context,boolean popular){context.getSharedPreferences("Settings", 0).edit().putBoolean(context.getString((R.string.key_by_popular)),popular).apply();byPopular=popular;}
     public static boolean  updateLoadImages(@NonNull Context context,boolean load){context.getSharedPreferences("Settings", 0).edit().putBoolean(context.getString((R.string.key_load_images)),load).apply();loadImages=load; return loadImages;}
     public static void updateColumnCount(@NonNull Context context, int count){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_column_count)),count).apply();columnCount=count; }
     public static void updateMaxId(@NonNull Context context, int id){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_max_id)),id).apply();maxId=id; }

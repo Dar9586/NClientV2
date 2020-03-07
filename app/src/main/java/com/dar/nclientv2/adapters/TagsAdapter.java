@@ -27,7 +27,6 @@ import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.settings.TagV2;
 import com.dar.nclientv2.utility.LogUtility;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -41,18 +40,25 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> implements Filterable{
+    private enum TagMode{ONLINE,OFFLINE,TYPE}
     private final TagFilterActivity context;
-    private final boolean logged=Login.isLogged(),black=Global.getTheme()==Global.ThemeScheme.BLACK,online;
+    private final boolean logged=Login.isLogged(),black=Global.getTheme()==Global.ThemeScheme.BLACK;
     private String lastQuery=null;
     private final TagType type;
+    private final TagMode tagMode;
     private boolean wasSortedByName;
     private Cursor cursor=null;
-    public TagsAdapter(TagFilterActivity cont, String query,@NonNull TagType type, boolean online){
-        context=cont;
-        this.type=type;
-        this.online=online;
+    public TagsAdapter(TagFilterActivity cont,String query,boolean online){
+        this.context=cont;
+        this.type=null;
+        this.tagMode=online?TagMode.ONLINE:TagMode.OFFLINE;
         getFilter().filter(query);
-
+    }
+    public TagsAdapter(TagFilterActivity cont, String query,TagType type){
+        this.context=cont;
+        this.type=type;
+        this.tagMode=TagMode.TYPE;
+        getFilter().filter(query);
     }
 
     @Override
@@ -65,7 +71,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
                 force=false;
                 wasSortedByName=TagV2.isSortedByName();
                 lastQuery = constraint.toString();
-                Cursor tags = Queries.TagTable.getFilterCursor( lastQuery, type, online, TagV2.isSortedByName());
+                Cursor tags = Queries.TagTable.getFilterCursor( lastQuery, type, tagMode==TagMode.ONLINE, TagV2.isSortedByName());
                 results.count = tags.getCount();
                 results.values = tags;
 
@@ -114,23 +120,31 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         holder.title.setText(ent.getName());
         holder.count.setText(String.format(Locale.US,"%d",ent.getCount()));
         holder.master.setOnClickListener(v -> {
-            if(!online) {
-                if (!TagV2.maxTagReached() || ent.getStatus() != TagStatus.DEFAULT) updateLogo(holder.imgView, TagV2.updateStatus(ent));
-                else Snackbar.make(context.getViewPager(), context.getString(R.string.tags_max_reached, TagV2.MAXTAGS), Snackbar.LENGTH_LONG).show();
-            }else{
-                try {
-                    onlineTagUpdate(ent,!Login.isOnlineTags(ent),holder.imgView);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            switch (tagMode){
+                case OFFLINE:case TYPE:
+                    if(TagV2.maxTagReached()&&ent.getStatus()==TagStatus.DEFAULT){
+                        context.runOnUiThread(()-> Toast.makeText(context,context.getString(R.string.tags_max_reached, TagV2.MAXTAGS), Toast.LENGTH_LONG).show());
+                    }else {
+                        TagV2.updateStatus(ent);
+                        updateLogo(holder.imgView, ent.getStatus());
+                    }
+                    break;
+                case ONLINE:
+                    try {
+                        onlineTagUpdate(ent,!Login.isOnlineTags(ent),holder.imgView);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
             }
+
         });
-        if(!online&&logged)holder.master.setOnLongClickListener(view -> {
+        if(tagMode!=TagMode.ONLINE&&logged)holder.master.setOnLongClickListener(view -> {
             if(!Login.isOnlineTags(ent)) showBlacklistDialog(ent,holder.imgView);
             else Toast.makeText(context, R.string.tag_already_in_blacklist, Toast.LENGTH_SHORT).show();
             return true;
         });
-        updateLogo(holder.imgView,online?TagStatus.AVOIDED:ent.getStatus());
+        updateLogo(holder.imgView,tagMode==TagMode.ONLINE?TagStatus.AVOIDED:ent.getStatus());
         LogUtility.d("PASSED: "+ent);
     }
 
@@ -180,7 +194,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
                         if(s.equals("{\"status\": \"ok\"}")) {
                             if (add) Login.addOnlineTag(tag);
                             else Login.removeOnlineTag(tag);
-                            if(online)updateLogo(imgView, add ? TagStatus.AVOIDED : TagStatus.DEFAULT);
+                            if(tagMode==TagMode.ONLINE)updateLogo(imgView, add ? TagStatus.AVOIDED : TagStatus.DEFAULT);
                         }
                     }
                 });

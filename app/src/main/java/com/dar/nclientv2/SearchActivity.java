@@ -40,15 +40,16 @@ import java.util.Locale;
 
 public class SearchActivity extends AppCompatActivity {
     private ArrayList<ChipTag>tags=new ArrayList<>();
-    private ChipGroup groups[];
-    private Chip addChip[]=new Chip[TagType.values().length];
+    private ChipGroup[] groups;
+    private Chip[] addChip =new Chip[TagType.values().length];
     private SearchView searchView;
     private RecyclerView recyclerView;
     private AppCompatAutoCompleteTextView autoComplete;
     private TagType editTag=null,loadedTag=null;
     private HistoryAdapter adapter;
     private boolean advanced=false;
-    private InputMethodManager imm;
+    private int id=1000000;
+    private InputMethodManager inputMethodManager;
     public void setQuery(String str,boolean submit){
         runOnUiThread(() -> searchView.setQuery(str,submit));
     }
@@ -57,11 +58,17 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Global.initActivity(this);
         setContentView(R.layout.activity_search);
+        //init toolbar
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        imm=(InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        inputMethodManager =(InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        //find IDs
+        searchView=findViewById(R.id.search);
+        recyclerView=findViewById(R.id.recycler);
 
         groups=new ChipGroup[]{
                 null,
@@ -73,7 +80,7 @@ public class SearchActivity extends AppCompatActivity {
                 findViewById(R.id.language_group),
                 findViewById(R.id.category_group),
         };
-        searchView=findViewById(R.id.search);
+
         adapter=new HistoryAdapter(this);
         autoComplete=(AppCompatAutoCompleteTextView) getLayoutInflater().inflate(R.layout.autocomplete_entry,findViewById(R.id.appbar),false);
         autoComplete.setOnEditorActionListener((v, actionId, event) -> {
@@ -84,16 +91,19 @@ public class SearchActivity extends AppCompatActivity {
             }
             return false;
         });
-        recyclerView=findViewById(R.id.recycler);
+
+        //init recyclerview
         recyclerView.setLayoutManager(new CustomLinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 query=query.trim();
                 if(query.length()==0&&!advanced)return true;
-                if(query.length()!=0)adapter.addHistory(query);
+                if(query.length()>0)adapter.addHistory(query);
                 Intent i=new Intent(SearchActivity.this,MainActivity.class);
                 i.putExtra(getPackageName()+".SEARCHSTART",true);
                 i.putExtra(getPackageName()+".QUERY",query);
@@ -203,7 +213,7 @@ public class SearchActivity extends AppCompatActivity {
         }
         addDialog();
         autoComplete.requestFocus();
-        imm.showSoftInput(autoComplete,InputMethodManager.SHOW_IMPLICIT);
+        inputMethodManager.showSoftInput(autoComplete,InputMethodManager.SHOW_IMPLICIT);
     }
     private void addTag(Tag t){
             ChipGroup cg=getGroup(t.getType());
@@ -243,14 +253,13 @@ public class SearchActivity extends AppCompatActivity {
         }
 
     }
-    private int id=1000000;
     private void createChip() {
         Tag t=new Tag(autoComplete.getText().toString().toLowerCase(Locale.US),0,id++,editTag,TagStatus.ACCEPTED);
         if(tagAlreadyExist(t.getName()))return;
         getGroup(editTag).removeView(addChip[editTag.ordinal()]);
         addTag(t);
         getGroup(editTag).addView(addChip[editTag.ordinal()]);
-        imm.hideSoftInputFromWindow(searchView.getWindowToken(),InputMethodManager.SHOW_IMPLICIT);
+        inputMethodManager.hideSoftInputFromWindow(searchView.getWindowToken(),InputMethodManager.SHOW_IMPLICIT);
         editTag=null;
         autoComplete.setText("");
         advanced=true;

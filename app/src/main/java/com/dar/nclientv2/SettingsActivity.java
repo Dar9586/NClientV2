@@ -16,14 +16,16 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Global.initActivity(this);
         setContentView(R.layout.activity_settings);
+
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.settings);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
-        GeneralPreferenceFragment frag= (GeneralPreferenceFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
-        frag.setAct(this);
-        frag.setType(SettingsActivity.Type.values()[getIntent().getIntExtra(getPackageName()+".TYPE", SettingsActivity.Type.MAIN.ordinal())]);
+
+        GeneralPreferenceFragment fragment= (GeneralPreferenceFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
+        fragment.setAct(this);
+        fragment.setType(SettingsActivity.Type.values()[getIntent().getIntExtra(getPackageName()+".TYPE", SettingsActivity.Type.MAIN.ordinal())]);
 
     }
     @Override

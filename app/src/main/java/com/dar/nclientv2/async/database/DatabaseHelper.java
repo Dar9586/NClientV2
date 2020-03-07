@@ -126,4 +126,11 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         LogUtility.d("Downgrading database from "+oldVersion+" to "+newVersion);
         onCreate(db);
     }
+
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        Database.setDatabase(db);
+        Queries.GalleryTable.clearGalleries();
+    }
 }

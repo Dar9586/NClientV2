@@ -93,7 +93,7 @@ public class Tag implements Parcelable{
         }
         return "";
     }
-    private TagType findType(String s) {
+    public static TagType findType(String s) {
         switch (s){
             case "parody":   return  TagType.PARODY;
             case "character":return  TagType.CHARACTER;

@@ -32,6 +32,7 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
 
     private void mainMenu(){
         addPreferencesFromResource(R.xml.settings);
+
         findPreference("col_screen").setOnPreferenceClickListener(preference -> {
             Intent i=new Intent(act,SettingsActivity.class);
             i.putExtra(act.getPackageName()+".TYPE", SettingsActivity.Type.COLUMN.ordinal());
@@ -40,17 +41,23 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
         });
 
         findPreference(getString(R.string.key_use_account_tag)).setEnabled(Login.isLogged());
+
         findPreference(getString(R.string.key_theme_select)).setOnPreferenceChangeListener((preference, newValue) -> {
             act.recreate();
             return true;
         });
+
         findPreference(getString(R.string.key_language)).setOnPreferenceChangeListener((preference, newValue) -> {
             act.recreate();
             return true;
         });
-        findPreference("version").setTitle(getString(R.string.app_version_format, Global.getVersionName(getContext())));
-        double cacheSize=Global.recursiveSize(act.getCacheDir())/((double)(2<<20));
 
+
+        findPreference("version").setTitle(getString(R.string.app_version_format, Global.getVersionName(getContext())));
+
+        double cacheSize=Global.recursiveSize(act.getCacheDir())/((double)(1<<20));
+
+        //clear cache if pressed
         findPreference(getString(R.string.key_cache)).setSummary(getString(R.string.cache_size_formatted,cacheSize));
         findPreference(getString(R.string.key_cache)).setOnPreferenceClickListener(preference -> {
             AlertDialog.Builder builder=new AlertDialog.Builder(act);
@@ -116,7 +123,6 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
             ((SeekBarPreference)preference).setValue(1);
             return false;
         }
-
         return true;
     };
 }

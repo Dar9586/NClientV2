@@ -144,7 +144,12 @@ public class InspectorV3 extends Thread implements Parcelable {
         inspector.createUrl();
         return inspector;
     }
-
+    public static InspectorV3 randomInspector(Context context,InspectorResponse response){
+        InspectorV3 inspector=new InspectorV3(context,response);
+        inspector.requestType=ApiRequestType.RANDOM;
+        inspector.createUrl();
+        return inspector;
+    }
     public static InspectorV3 galleryInspector(Context context,int id,InspectorResponse response){
         InspectorV3 inspector=new InspectorV3(context,response);
         inspector.id=id;
@@ -184,6 +189,9 @@ public class InspectorV3 extends Thread implements Parcelable {
         switch (requestType){
             case BYALL:
                 builder.append("?page=").append(page);
+                break;
+            case RANDOM:
+                builder.append("random/");
                 break;
             case BYSINGLE:
                 builder.append("g/").append(id);
@@ -249,7 +257,8 @@ public class InspectorV3 extends Thread implements Parcelable {
     public void execute()throws IOException{
             Response response=Global.client.newCall(new Request.Builder().url(url).build()).execute();
             Document document= Jsoup.parse(response.body().byteStream(),"UTF-8","https://nhentai.net/");
-            if(requestType==ApiRequestType.BYSINGLE)doSingle(document.body());
+            if(requestType==ApiRequestType.BYSINGLE||requestType==ApiRequestType.RANDOM)
+                doSingle(document.body());
             else doSearch(document.body());
     }
 
@@ -267,7 +276,10 @@ public class InspectorV3 extends Thread implements Parcelable {
         LogUtility.d("Finished download: "+url);
     }
     private void doSingle(Element document) throws IOException {
+
+        LogUtility.d(document.getElementsByTag("script"));
         galleries=new ArrayList<>(1);
+        //Elements xxxxxxx=document.getElementsByTag("script");
         String x=document.getElementsByTag("script").last().html();
         int s=x.indexOf("new N.gallery(");
         if(s<0)return;
