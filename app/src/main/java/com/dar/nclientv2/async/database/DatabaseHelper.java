@@ -76,7 +76,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     /**
      * Add all item which are favorite into the favorite table
      * */
-    private int[] getAllFavoriteIndex() throws IOException {
+    private int[] getAllFavoriteIndex() {
         Cursor c=Queries.GalleryTable.getAllFavoriteCursorDeprecated("%",false);
         int[]favorites=new int[c.getCount()];
         int i=0;
