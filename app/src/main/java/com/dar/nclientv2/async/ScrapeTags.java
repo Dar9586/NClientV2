@@ -11,26 +11,29 @@ import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.utility.LogUtility;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 
 import okhttp3.Request;
 import okhttp3.Response;
 
 public class ScrapeTags extends JobIntentService {
-
+    private static final int DAYS_UNTIL_SCRAPE=15;
     private static final String URL="https://raw.githubusercontent.com/Dar9586/NClientV2/master/data/tags.json";
-    //check every 30day
-    private static final long DIFFERENCE_TIME=30L*24*60*60;
     public ScrapeTags() {
     }
 
 
     @Override
     protected void onHandleWork(@Nullable Intent intent) {
+        Date nowTime=new Date();
+        Date lastTime=new Date(getApplicationContext().getSharedPreferences("Settings",0).getLong("lastSync",nowTime.getTime()));
+        if(!enoughDayPassed(nowTime,lastTime))return;
+        LogUtility.d("Scraping tags");
         try {
-            if(new Date().getTime()-getApplicationContext().getSharedPreferences("Settings",0).getLong("lastSync",new Date().getTime())<DIFFERENCE_TIME)return;
             Response x=Global.client.newCall(new Request.Builder().url(URL).build()).execute();
             if(x.code()!=200)return;
             JsonReader reader=new JsonReader(x.body().charStream());
@@ -42,13 +45,29 @@ public class ScrapeTags extends JobIntentService {
                 String name=reader.nextString();
                 int count=reader.nextInt();
                 TagType type=TagType.values()[reader.nextInt()];
-                Queries.TagTable.insert(new Tag(name,count,id,type, TagStatus.DEFAULT),true);
+                Tag tag=new Tag(name,count,id,type,TagStatus.DEFAULT);
+                Queries.TagTable.insert(tag,true);
                 reader.endArray();
             }
-            reader.close();
-            getApplicationContext().getSharedPreferences("Settings",0).edit().putLong("lastSync",new Date().getTime()).apply();
+            getApplicationContext().getSharedPreferences("Settings",0).edit().putLong("lastSync",nowTime.getTime()).apply();
+            LogUtility.d("End scraping");
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean enoughDayPassed(Date nowTime, Date lastTime) {
+        //first start or never completed
+        if(nowTime.getTime()==lastTime.getTime())return true;
+        int daysBetween=0;
+        Calendar now=Calendar.getInstance(),last=Calendar.getInstance();
+        now.setTime(nowTime);
+        last.setTime(lastTime);
+        while (last.before(now)) {
+            last.add(Calendar.DAY_OF_MONTH, 1);
+            daysBetween++;
+        }
+        LogUtility.d("Passed "+daysBetween+" days since last scrape: "+(daysBetween>DAYS_UNTIL_SCRAPE));
+        return daysBetween>DAYS_UNTIL_SCRAPE;
     }
 }

@@ -67,9 +67,10 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults results=new FilterResults();
-
+                if(constraint==null)constraint="";
                 force=false;
                 wasSortedByName=TagV2.isSortedByName();
+
                 lastQuery = constraint.toString();
                 Cursor tags = Queries.TagTable.getFilterCursor( lastQuery, type, tagMode==TagMode.ONLINE, TagV2.isSortedByName());
                 results.count = tags.getCount();

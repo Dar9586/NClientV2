@@ -19,6 +19,11 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-assumenosideeffects class com.dar.nclientv2.utility.LogUtility {
+    public static void d(...);
+    public static void i(...);
+    public static void e(...);
+}
 -assumenosideeffects class android.util.Log {
     public static boolean isLoggable(java.lang.String, int);
     public static int v(...);

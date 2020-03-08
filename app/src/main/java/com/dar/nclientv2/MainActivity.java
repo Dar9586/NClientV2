@@ -275,9 +275,9 @@ public class MainActivity extends BaseActivity
     }
 
     private void checkUpdate() {
-            if(Global.shouldCheckForUpdates(this))new VersionChecker(this,true);
-            Intent i=new Intent(this,ScrapeTags.class);
-            startService(i);
+            if(Global.shouldCheckForUpdates(this))
+                new VersionChecker(this,true);
+            ScrapeTags.enqueueWork(this,ScrapeTags.class,2000,new Intent());
             firstTime=false;
     }
 
@@ -621,6 +621,7 @@ public class MainActivity extends BaseActivity
                 }
                 break;
             case R.id.open_browser:
+                checkUpdate();
                 if(inspector!=null) {
                     i = new Intent(Intent.ACTION_VIEW,Uri.parse(inspector.getUrl()));
                     startActivity(i);

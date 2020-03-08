@@ -276,8 +276,6 @@ public class InspectorV3 extends Thread implements Parcelable {
         LogUtility.d("Finished download: "+url);
     }
     private void doSingle(Element document) throws IOException {
-
-        LogUtility.d(document.getElementsByTag("script"));
         galleries=new ArrayList<>(1);
         //Elements xxxxxxx=document.getElementsByTag("script");
         String x=document.getElementsByTag("script").last().html();
@@ -287,7 +285,13 @@ public class InspectorV3 extends Thread implements Parcelable {
         x=x.substring(s,x.indexOf('\n',s)-2);
         Elements com=document.getElementById("comments").getElementsByClass("comment");
         Elements rel=document.getElementById("related-container").getElementsByClass("gallery");
-        boolean isFavorite=document.getElementById("favorite").getElementsByTag("span").get(0).text().equals("Unfavorite");
+        boolean isFavorite;
+        try {
+             isFavorite = document.getElementById("favorite").getElementsByTag("span").get(0).text().equals("Unfavorite");
+        }catch (Exception e){
+            LogUtility.e(e.getLocalizedMessage(),e);
+            isFavorite=false;
+        }
         LogUtility.d("is favorite? "+isFavorite);
         galleries.add(new Gallery(context.get(), x,com,rel,isFavorite));
     }

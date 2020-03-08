@@ -91,14 +91,7 @@ public class DownloadGallery extends JobIntentService {
         DownloadGallery.enqueueWork(context,DownloadGallery.class,1000,new Intent());
 
     }
-    public static void download(Context context, int id,boolean start){
-        GalleryDownloader d=new GalleryDownloader(id,start? GalleryDownloader.Status.NOT_STARTED: GalleryDownloader.Status.PAUSED);
-        if(!galleries.contains(d))galleries.add(d);
-        if(!running) {
-            Intent i = new Intent(context, DownloadGallery.class);
-            context.startService(i);
-        }
-    }
+
     public static void loadDownloads(Context context){
         try {
             List<Gallery>g=Queries.DownloadTable.getAllDownloads(Database.getDatabase());
