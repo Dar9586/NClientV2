@@ -54,7 +54,6 @@
     <string name="only_english">僅英文</string>
     <string name="only_japanese">僅日文</string>
     <string name="only_chinese">僅中文</string>
-    <string name="only_other">其它語言</string>
     <string name="all_languages">所有語言</string>
 
     <string name="sort_popular">按熱度排列</string>

@@ -2,7 +2,6 @@ package com.dar.nclientv2;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +29,7 @@ import com.dar.nclientv2.components.widgets.ChipTag;
 import com.dar.nclientv2.components.widgets.CustomLinearLayoutManager;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
+import com.dar.nclientv2.utility.LogUtility;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -39,16 +38,17 @@ import java.util.List;
 import java.util.Locale;
 
 public class SearchActivity extends AppCompatActivity {
+    public static final int CUSTOM_ID_START=100000000;
     private ArrayList<ChipTag>tags=new ArrayList<>();
     private ChipGroup[] groups;
-    private Chip[] addChip =new Chip[TagType.values().length];
+    private Chip[] addChip =new Chip[TagType.values.length];
     private SearchView searchView;
     private RecyclerView recyclerView;
     private AppCompatAutoCompleteTextView autoComplete;
-    private TagType editTag=null,loadedTag=null;
+    private TagType loadedTag=null;
     private HistoryAdapter adapter;
     private boolean advanced=false;
-    private int id=1000000;
+    private static int customId = CUSTOM_ID_START;
     private InputMethodManager inputMethodManager;
     public void setQuery(String str,boolean submit){
         runOnUiThread(() -> searchView.setQuery(str,submit));
@@ -104,8 +104,8 @@ public class SearchActivity extends AppCompatActivity {
                 query=query.trim();
                 if(query.length()==0&&!advanced)return true;
                 if(query.length()>0)adapter.addHistory(query);
-                Intent i=new Intent(SearchActivity.this,MainActivity.class);
-                i.putExtra(getPackageName()+".SEARCHSTART",true);
+                final Intent i=new Intent(SearchActivity.this,MainActivity.class);
+                i.putExtra(getPackageName()+".SEARCHMODE",true);
                 i.putExtra(getPackageName()+".QUERY",query);
                 i.putExtra(getPackageName()+".ADVANCED",advanced);
                 if(advanced){
@@ -113,8 +113,10 @@ public class SearchActivity extends AppCompatActivity {
                     for(ChipTag t:tags)if(t.getTag().getStatus()==TagStatus.ACCEPTED)tt.add(t.getTag());
                     i.putParcelableArrayListExtra(getPackageName()+".TAGS",tt);
                 }
-                startActivity(i);
-                finish();
+                SearchActivity.this.runOnUiThread(()->{
+                    startActivity(i);
+                    finish();
+                });
                 return true;
             }
 
@@ -123,117 +125,92 @@ public class SearchActivity extends AppCompatActivity {
                 return false;
             }
         });
+
         populateGroup();
         searchView.requestFocus();
-
     }
     private void populateGroup(){
+        //add top tags
         for(TagType type:new TagType[]{TagType.TAG,TagType.PARODY,TagType.CHARACTER,TagType.ARTIST,TagType.GROUP}) {
-            for (Tag t : Queries.TagTable.getTopTags(type,Global.getFavoriteLimit(this)))addTopTag(t);
+            for (Tag t : Queries.TagTable.getTopTags(type,Global.getFavoriteLimit(this)))
+                addChipTag(t,true,true);
         }
-        for(Tag t:Queries.TagTable.getAllFiltered())if(!tagAlreadyExist(t.getName()))addTag(t);
-        for(Tag t:Queries.TagTable.getTrueAllType(TagType.CATEGORY))addSpecialTag(t);
+        //add already filtered tags
+        for(Tag t:Queries.TagTable.getAllFiltered())if(!tagAlreadyExist(t)) addChipTag(t,true,true);
+        //add categories
+        for(Tag t:Queries.TagTable.getTrueAllType(TagType.CATEGORY)) addChipTag(t,false,false);
+        //add languages
         for(Tag t:Queries.TagTable.getTrueAllType(TagType.LANGUAGE)){
-            if(Global.getOnlyLanguage()== Language.UNKNOWN)t.setStatus(TagStatus.AVOIDED);
-            if(t.getId()==12227&&Global.getOnlyLanguage()==Language.ENGLISH)t.setStatus(TagStatus.ACCEPTED);
-            if(t.getId()==6346&&Global.getOnlyLanguage()==Language.JAPANESE)t.setStatus(TagStatus.ACCEPTED);
-            if(t.getId()==29963&&Global.getOnlyLanguage()==Language.CHINESE)t.setStatus(TagStatus.ACCEPTED);
-            if(t.getId()==-1&&Global.getOnlyLanguage()==Language.UNKNOWN)t.setStatus(TagStatus.ACCEPTED);
-            addSpecialTag(t);
+            if(t.getId()==12227&&Global.getOnlyLanguage()==Language.ENGLISH) t.setStatus(TagStatus.ACCEPTED);
+            if(t.getId()==6346 &&Global.getOnlyLanguage()==Language.JAPANESE)t.setStatus(TagStatus.ACCEPTED);
+            if(t.getId()==29963&&Global.getOnlyLanguage()==Language.CHINESE) t.setStatus(TagStatus.ACCEPTED);
+            addChipTag(t,false,false);
         }
-        if(Login.useAccountTag())for(Tag t:Queries.TagTable.getAllOnlineBlacklisted())if(!tagAlreadyExist(t.getName()))addTag(t);
-        Tag fake=new Tag("-language:japanese+-language:chinese+-language:english",0,-1,TagType.LANGUAGE,Global.getOnlyLanguage()==Language.UNKNOWN?TagStatus.ACCEPTED:TagStatus.DEFAULT);
-        addSpecialTag(fake);
-        fake=new Tag("-language:japanese+-language:chinese+-language:english",0,-1,TagType.UNKNOWN,Global.getOnlyLanguage()==Language.UNKNOWN?TagStatus.ACCEPTED:TagStatus.DEFAULT);
-        ChipTag fakeChip=tags.get(tags.size()-1);
-        fakeChip.setTag(fake);
-        fakeChip.setText(getString(R.string.other));
-        for(TagType type:TagType.values()){
+        //add online tags
+        if(Login.useAccountTag())for(Tag t:Queries.TagTable.getAllOnlineBlacklisted())if(!tagAlreadyExist(t))
+            addChipTag(t,true,true);
+        //add + button
+        for(TagType type:TagType.values){
+            //ignore these tags
             if(type==TagType.UNKNOWN||type==TagType.LANGUAGE||type==TagType.CATEGORY){
-                addChip[type.ordinal()]=null;
+                addChip[type.getId()]=null;
                 continue;
             }
             ChipGroup cg=getGroup(type);
-            Chip c=(Chip)getLayoutInflater().inflate(R.layout.chip_layout,cg,false);
-            c.setCloseIconVisible(false);
-            c.setChipIconResource(R.drawable.ic_add);
-            DrawableCompat.setTint(c.getChipIcon(), Color.BLACK);
-            c.setText(getString(R.string.add));
-            c.setOnClickListener(v -> loadTag(type));
-            addChip[type.ordinal()]=c;
-            cg.addView(c);
+            Chip add=createAddChip(type,cg);
+            addChip[type.getId()]=add;
+            cg.addView(add);
         }
     }
-    private boolean tagAlreadyExist(String s){
+    private Chip createAddChip(TagType type,ChipGroup group){
+        Chip c=(Chip)getLayoutInflater().inflate(R.layout.chip_layout,group,false);
+        c.setCloseIconVisible(false);
+        c.setChipIconResource(R.drawable.ic_add);
+        c.setText(getString(R.string.add));
+        c.setOnClickListener(v -> loadTag(type));
+        Global.setTint(c.getChipIcon());
+        return c;
+    }
+    private boolean tagAlreadyExist(Tag tag){
         for(ChipTag t:tags){
-            if(t.getTag().getName().equals(s))return true;
+            if(t.getTag().getName().equals(tag.getName()))return true;
         }
         return false;
     }
-    private void addTopTag(Tag t) {
+    private void addChipTag(Tag t, boolean close, boolean canBeAvoided) {
         ChipGroup cg=getGroup(t.getType());
         ChipTag c=(ChipTag)getLayoutInflater().inflate(R.layout.chip_layout_entry,cg,false);
-        c.setTag(t);
-        c.setCloseIconVisible(false);
+        c.init(t,close,canBeAvoided);
+        c.setOnCloseIconClickListener(v -> {
+            cg.removeView(c);
+            tags.remove(c);
+            advanced=true;
+        });
         c.setOnClickListener(v -> {
-            c.changeStatus(t.getStatus()== TagStatus.ACCEPTED?TagStatus.AVOIDED:t.getStatus()==TagStatus.AVOIDED?TagStatus.DEFAULT:TagStatus.ACCEPTED);
+            c.updateStatus();
             advanced=true;
         });
         cg.addView(c);
         tags.add(c);
     }
-
-    private void addSpecialTag(Tag t) {
-        ChipGroup cg=getGroup(t.getType());
-        ChipTag c=(ChipTag)getLayoutInflater().inflate(R.layout.chip_layout_entry,cg,false);
-        c.setCloseIconVisible(false);
-        c.setTag(t);
-        c.setOnClickListener(v -> {
-            int len=cg.getChildCount();
-            if(c.getTag().getStatus()==TagStatus.ACCEPTED)c.changeStatus(TagStatus.DEFAULT);
-            else for(int i=0;i<len;i++){
-                ChipTag ct=(ChipTag)cg.getChildAt(i);
-                ct.changeStatus(ct==c?TagStatus.ACCEPTED:TagStatus.DEFAULT);
-            }
-            advanced=true;
-        });
-        cg.addView(c);
-        tags.add(c);
+    private void loadDropdown(TagType type){
+        List<Tag> allTags = Queries.TagTable.getAllTagOfType(type);
+        String[] tagNames = new String[allTags.size()];
+        int i = 0;
+        for (Tag t : allTags) tagNames[i++] = t.getName();
+        autoComplete.setAdapter(new ArrayAdapter<>(SearchActivity.this, android.R.layout.simple_dropdown_item_1line, tagNames));
+        loadedTag = type;
     }
 
     private void loadTag(TagType type) {
-        editTag=type;
-        if(editTag!=loadedTag) {
-            List<Tag> x = Queries.TagTable.getAllTagOfType( editTag);
-            String[] y = new String[x.size()];
-            int i = 0;
-            for (Tag t : x) y[i++] = t.getName();
-            autoComplete.setAdapter(new ArrayAdapter<>(SearchActivity.this, android.R.layout.simple_dropdown_item_1line, y));
-            loadedTag = editTag;
-        }
+        if(type != loadedTag)loadDropdown(type);
         addDialog();
         autoComplete.requestFocus();
         inputMethodManager.showSoftInput(autoComplete,InputMethodManager.SHOW_IMPLICIT);
     }
-    private void addTag(Tag t){
-            ChipGroup cg=getGroup(t.getType());
-            ChipTag c=(ChipTag)getLayoutInflater().inflate(R.layout.chip_layout_entry,cg,false);
-            c.setTag(t);
-            c.setCloseIconVisible(true);
-            c.setOnCloseIconClickListener(v -> {
-                cg.removeView(c);
-                tags.remove(c);
-                advanced=true;
-            });
-            c.setOnClickListener(v -> {
-                c.changeStatus(t.getStatus()== TagStatus.ACCEPTED?TagStatus.AVOIDED:t.getStatus()==TagStatus.AVOIDED?TagStatus.DEFAULT:TagStatus.ACCEPTED);
-                advanced=true;
-            });
-            cg.addView(c);
-            tags.add(c);
-    }
+
     private ChipGroup getGroup(TagType type){
-        return groups[type.ordinal()];
+        return groups[type.getId()];
     }
     private AlertDialog alertDialog;
     private void addDialog(){
@@ -247,20 +224,24 @@ public class SearchActivity extends AppCompatActivity {
         builder.setTitle(R.string.insert_tag_name);
         try{
             alertDialog=builder.show();
-        }catch (IllegalStateException e){
+        }catch (IllegalStateException e){//the autoComplete is still attached to another View
             ((ViewGroup)autoComplete.getParent()).removeView(autoComplete);
             alertDialog=builder.show();
         }
 
     }
     private void createChip() {
-        Tag t=new Tag(autoComplete.getText().toString().toLowerCase(Locale.US),0,id++,editTag,TagStatus.ACCEPTED);
-        if(tagAlreadyExist(t.getName()))return;
-        getGroup(editTag).removeView(addChip[editTag.ordinal()]);
-        addTag(t);
-        getGroup(editTag).addView(addChip[editTag.ordinal()]);
+        String name=autoComplete.getText().toString().toLowerCase(Locale.US);
+        Tag tag = Queries.TagTable.searchTag(name,loadedTag);
+        if(tag==null) tag=new Tag(name,0, customId++,loadedTag,TagStatus.ACCEPTED);
+        LogUtility.d("CREATED WITH ID: "+tag.getId());
+        if(tagAlreadyExist(tag))return;
+        //remove add, insert new tag, reinsert add
+        getGroup(loadedTag).removeView(addChip[loadedTag.getId()]);
+        addChipTag(tag,true,true);
+        getGroup(loadedTag).addView(addChip[loadedTag.getId()]);
+
         inputMethodManager.hideSoftInputFromWindow(searchView.getWindowToken(),InputMethodManager.SHOW_IMPLICIT);
-        editTag=null;
         autoComplete.setText("");
         advanced=true;
         ((ViewGroup)autoComplete.getParent()).removeView(autoComplete);
@@ -270,9 +251,6 @@ public class SearchActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search, menu);
         Global.setTint(menu.findItem(R.id.view_groups).getIcon());
-        //searchView=(SearchView) menu.findItem(R.id.search).getActionView();
-        //searchView.setIconifiedByDefault(false);
-        //searchView.setIconified(false);
         return super.onCreateOptionsMenu(menu);
 
     }
@@ -285,8 +263,9 @@ public class SearchActivity extends AppCompatActivity {
                 return true;
             case R.id.view_groups:
                 View v=findViewById(R.id.groups);
-                v.setVisibility(v.getVisibility()==View.GONE?View.VISIBLE:View.GONE);
-                item.setIcon(v.getVisibility()==View.GONE?R.drawable.ic_add:R.drawable.ic_close);
+                boolean isVisible=v.getVisibility()==View.VISIBLE;
+                v.setVisibility(isVisible?View.GONE:View.VISIBLE);
+                item.setIcon(isVisible?R.drawable.ic_close:R.drawable.ic_add);
                 Global.setTint(item.getIcon());
                 break;
         }

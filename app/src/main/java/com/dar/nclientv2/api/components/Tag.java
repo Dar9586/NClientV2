@@ -23,7 +23,7 @@ public class Tag implements Parcelable{
         text=text.substring(text.indexOf(',')+1);
         this.id = Integer.parseInt(text.substring(0,text.indexOf(',')));
         text=text.substring(text.indexOf(',')+1);
-        this.type = TagType.values()[Integer.parseInt(text.substring(0,text.indexOf(',')))];
+        this.type = TagType.values[Integer.parseInt(text.substring(0,text.indexOf(',')))];
         this.name=text.substring(text.indexOf(',')+1);
     }
     public Tag(String name, int count, int id, TagType type,TagStatus status) {
@@ -40,7 +40,7 @@ public class Tag implements Parcelable{
             switch (jr.nextName()){
                 case "url":jr.skipValue();break;
                 case "count":count=jr.nextInt();break;
-                case "type":type=findType(jr.nextString());break;
+                case "type":type=TagType.typeByName(jr.nextString());break;
                 case "id":id=jr.nextInt();break;
                 case "name":name=jr.nextString();break;
             }
@@ -52,7 +52,7 @@ public class Tag implements Parcelable{
         name = in.readString();
         count = in.readInt();
         id = in.readInt();
-        type=TagType.values()[in.readByte()];
+        type=in.readParcelable(TagType.class.getClassLoader());
         status=TagStatus.values()[in.readByte()];
     }
 
@@ -74,37 +74,20 @@ public class Tag implements Parcelable{
 
     public String toQueryTag(TagStatus status){
         StringBuilder builder=new StringBuilder();
+        boolean hasSpace=name.contains(" ");
+        String escapedName=name.replace(' ','-');
         if(status==TagStatus.AVOIDED)builder.append('-');
-        builder.append(findTagString()).append(":\"").append(name).append('"');
+        builder.append(type.getSingle()).append(':');
+        if(hasSpace)builder.append('"');
+        builder.append(escapedName);
+        if(hasSpace)builder.append('"');
         return builder.toString();
     }
     public String toQueryTag(){
         return toQueryTag(status);
     }
-    public String findTagString(){
-        switch (type){
-            case PARODY:return "parody";
-            case CHARACTER:return "character";
-            case TAG:return "tag";
-            case ARTIST:return "artist";
-            case GROUP:return "group";
-            case LANGUAGE:return "language";
-            case CATEGORY:return "category";
-        }
-        return "";
-    }
-    public static TagType findType(String s) {
-        switch (s){
-            case "parody":   return  TagType.PARODY;
-            case "character":return  TagType.CHARACTER;
-            case "tag":      return  TagType.TAG;
-            case "artist":   return  TagType.ARTIST;
-            case "group":    return  TagType.GROUP;
-            case "language": return  TagType.LANGUAGE;
-            case "category": return  TagType.CATEGORY;
-        }
-        return TagType.UNKNOWN;
-    }
+
+
 
     public String getName() {
         return name;
@@ -135,8 +118,8 @@ public class Tag implements Parcelable{
     public TagType getType() {
         return type;
     }
-    public String getTypeString(){
-        return findTagString();
+    public String getTypeSingleName(){
+        return type.getSingle();
     }
 
 
@@ -152,7 +135,7 @@ public class Tag implements Parcelable{
     }
 
     public String toScrapedString() {
-        return String.format(Locale.US,"%d,%d,%d,%s",count,id,type.ordinal(),name);
+        return String.format(Locale.US,"%d,%d,%d,%s",count,id,type.getId(),name);
     }
 
     @Override
@@ -176,11 +159,11 @@ public class Tag implements Parcelable{
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
+    public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(name);
         parcel.writeInt(count);
         parcel.writeInt(id);
-        parcel.writeByte((byte)type.ordinal());
+        parcel.writeParcelable(type,flags);
         parcel.writeByte((byte)status.ordinal());
     }
 }

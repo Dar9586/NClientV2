@@ -155,7 +155,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         ConstraintLayout lay;
         ChipGroup cg;
         Gallery gallery=(Gallery)this.gallery;
-        for(TagType type:TagType.values()){
+        for(TagType type:TagType.values){
             y=TAG_NAMES[j++];
             len=gallery.getTagCount(type);
             lay=(ConstraintLayout)vg.getChildAt(i++);

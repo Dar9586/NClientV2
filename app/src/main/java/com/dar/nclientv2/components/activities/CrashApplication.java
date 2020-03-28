@@ -10,9 +10,9 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.dar.nclientv2.BuildConfig;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.enums.Language;
-import com.dar.nclientv2.async.DownloadGallery;
 import com.dar.nclientv2.async.ScrapeTags;
 import com.dar.nclientv2.async.database.DatabaseHelper;
+import com.dar.nclientv2.async.downloader.DownloadGalleryV2;
 import com.dar.nclientv2.components.classes.MySenderFactory;
 import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Favorites;
@@ -48,7 +48,7 @@ public class CrashApplication extends Application{
         SharedPreferences preferences=getSharedPreferences("Settings", 0);
         if(!actualVersion.equals(version))afterUpdateChecks(preferences);
         Global.setLastVersion(this);
-        DownloadGallery.loadDownloads(this);
+        DownloadGalleryV2.loadDownloads(this);
     }
     private void afterUpdateChecks(SharedPreferences preferences){
         //update tags

@@ -206,7 +206,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         jw.beginObject();
         jw.name("id").value(tag.getId());
         jw.name("name").value(tag.getName());
-        jw.name("type").value(tag.getTypeString());
+        jw.name("type").value(tag.getTypeSingleName());
         jw.endObject();
     }
     private void updateLogo(ImageView img, TagStatus s){

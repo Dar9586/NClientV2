@@ -44,7 +44,7 @@ public class ScrapeTags extends JobIntentService {
                 int id=reader.nextInt();
                 String name=reader.nextString();
                 int count=reader.nextInt();
-                TagType type=TagType.values()[reader.nextInt()];
+                TagType type=TagType.values[reader.nextInt()];
                 Tag tag=new Tag(name,count,id,type,TagStatus.DEFAULT);
                 Queries.TagTable.insert(tag,true);
                 reader.endArray();

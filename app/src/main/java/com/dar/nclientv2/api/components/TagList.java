@@ -24,10 +24,10 @@ public class TagList{
         }
     }
 
-    private final Tags[]tagList=new Tags[TagType.values().length];
+    private final Tags[]tagList=new Tags[TagType.values.length];
 
     public TagList() {
-        for(TagType type:TagType.values())tagList[type.ordinal()]=new Tags();
+        for(TagType type:TagType.values)tagList[type.getId()]=new Tags();
     }
 
     public Set<Tag> getAllTagsSet(){
@@ -43,10 +43,10 @@ public class TagList{
     }
 
     public int getCount(TagType type){
-        return tagList[type.ordinal()].size();
+        return tagList[type.getId()].size();
     }
     public Tag getTag(TagType type,int index){
-        return tagList[type.ordinal()].get(index);
+        return tagList[type.getId()].get(index);
     }
     public int getTotalCount(){
         int total=0;
@@ -54,14 +54,14 @@ public class TagList{
         return total;
     }
     public void addTag(Tag tag){
-        tagList[tag.getType().ordinal()].add(tag);
+        tagList[tag.getType().getId()].add(tag);
     }
 
     public void addTags(Collection<? extends Tag> tags){
         for(Tag t:tags)addTag(t);
     }
     public List<Tag> retrieveForType(TagType type){
-        return tagList[type.ordinal()];
+        return tagList[type.getId()];
     }
     public int getLenght(){
         return tagList.length;

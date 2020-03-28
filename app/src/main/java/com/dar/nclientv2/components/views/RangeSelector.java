@@ -13,7 +13,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Gallery;
-import com.dar.nclientv2.async.DownloadGallery;
+import com.dar.nclientv2.async.downloader.DownloadGalleryV2;
 
 public class RangeSelector extends AlertDialog.Builder {
     private final View v;
@@ -52,7 +52,7 @@ public class RangeSelector extends AlertDialog.Builder {
         applyLogic(l2,false);
         setPositiveButton(R.string.ok, (dialog, which) -> {
             if(s1.getProgress()<=s2.getProgress())
-                DownloadGallery.downloadRange(context,gallery,true,s1.getProgress(),s2.getProgress()+1);
+                DownloadGalleryV2.downloadRange(context,gallery,s1.getProgress(),s2.getProgress()+1);
             else Toast.makeText(context, R.string.invalid_range_selected,Toast.LENGTH_SHORT).show();
         }).setNegativeButton(R.string.cancel,null);
         setCancelable(true);

@@ -35,13 +35,13 @@ public class TagTypePage extends Fragment {
 
     private static int getTag(int page){
         switch (page){
-            case 0:return TagType.UNKNOWN.ordinal();//tags with status
-            case 1:return TagType.TAG.ordinal();
-            case 2:return TagType.ARTIST.ordinal();
-            case 3:return TagType.CHARACTER.ordinal();
-            case 4:return TagType.PARODY.ordinal();
-            case 5:return TagType.GROUP.ordinal();
-            case 6:return TagType.CATEGORY.ordinal();//online blacklisted tags
+            case 0:return TagType.UNKNOWN.getId();//tags with status
+            case 1:return TagType.TAG.getId();
+            case 2:return TagType.ARTIST.getId();
+            case 3:return TagType.CHARACTER.getId();
+            case 4:return TagType.PARODY.getId();
+            case 5:return TagType.GROUP.getId();
+            case 6:return TagType.CATEGORY.getId();//online blacklisted tags
         }
         return -1;
     }
@@ -62,7 +62,7 @@ public class TagTypePage extends Fragment {
                              Bundle savedInstanceState) {
 
         activity=(TagFilterActivity)getActivity();
-        type=TagType.values()[ getArguments().getInt("TAGTYPE")];
+        type=TagType.values[ getArguments().getInt("TAGTYPE")];
         View rootView = inflater.inflate(R.layout.fragment_tag_filter, container, false);
         recyclerView=rootView.findViewById(R.id.recycler);
 
@@ -78,11 +78,10 @@ public class TagTypePage extends Fragment {
 
         recyclerView.setLayoutManager(new CustomGridLayoutManager(activity, getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE?4:2));
         TagsAdapter adapter;
-        switch(type){
-            case UNKNOWN:adapter=new TagsAdapter(activity,query,false);break;
-            case CATEGORY:adapter=new TagsAdapter(activity,query,true);break;
-            default:adapter=new TagsAdapter(activity,query,type);break;
-        }
+        if(type.equals(TagType.UNKNOWN))adapter=new TagsAdapter(activity,query,false);
+        else if (type.equals(TagType.CATEGORY))adapter=new TagsAdapter(activity,query,true);
+        else adapter=new TagsAdapter(activity,query,type);
+
         recyclerView.setAdapter(adapter);
     }
     public void refilter(String newText){
@@ -90,14 +89,10 @@ public class TagTypePage extends Fragment {
     }
 
     public void reset(){
-        switch(type){
-            case UNKNOWN:
-                TagV2.resetAllStatus();break;
-            case CATEGORY:break;
-            default:
+        if(type.equals(TagType.UNKNOWN))TagV2.resetAllStatus();
+        else if (!type.equals(TagType.CATEGORY)){
                 Intent i=new Intent(activity, ScrapeTags.class);
                 activity.startService(i);
-                break;
         }
     }
 

@@ -88,6 +88,12 @@ public class InspectorV3 extends Thread implements Parcelable {
         dest.writeTypedList(new ArrayList<>(tags));
     }
 
+    public String getSearchTitle() {
+        //triggered only when in searchMode
+        if(query.length()>0)return query;
+        return url.replace("https://nhentai.net/search/?q=","").replace('+',' ');
+    }
+
     public interface InspectorResponse{
         void onSuccess(List<GenericGallery>galleries);
         void onFailure(Exception e);
@@ -204,8 +210,8 @@ public class InspectorV3 extends Thread implements Parcelable {
                 break;
             case BYTAG:
                 for(Tag tt:tags)t=tt;
-                builder.append(t.findTagString()).append('/')
-                        .append(t.getName().replace(' ','-'));
+                builder.append(t.getTypeSingleName()).append('/')
+                        .append(t.getName());
                 if(byPopular)builder.append("/popular");
                 else builder.append('/');
                 builder.append("?page=").append(page);
@@ -289,7 +295,6 @@ public class InspectorV3 extends Thread implements Parcelable {
         try {
              isFavorite = document.getElementById("favorite").getElementsByTag("span").get(0).text().equals("Unfavorite");
         }catch (Exception e){
-            LogUtility.e(e.getLocalizedMessage(),e);
             isFavorite=false;
         }
         LogUtility.d("is favorite? "+isFavorite);

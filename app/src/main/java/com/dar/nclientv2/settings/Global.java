@@ -204,6 +204,10 @@ public class Global {
         colPortHist=shared.getInt(context.getString(R.string.key_column_port_hist),2);
         colLandHist=shared.getInt(context.getString(R.string.key_column_land_hist),4);
         int x=shared.getInt(context.getString(R.string.key_only_language),Language.ALL.ordinal());
+        if(Language.values()[x]==Language.UNKNOWN){
+            updateOnlyLanguage(context,Language.ALL);
+            x=Language.ALL.ordinal();
+        }
         onlyLanguage=Language.values()[x];
 
     }

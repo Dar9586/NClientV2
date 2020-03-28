@@ -25,11 +25,11 @@ import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.CreatePDF;
 import com.dar.nclientv2.async.CreateZIP;
-import com.dar.nclientv2.async.DownloadGallery;
-import com.dar.nclientv2.async.GalleryDownloader;
+import com.dar.nclientv2.async.downloader.DownloadObserver;
+import com.dar.nclientv2.async.downloader.DownloadQueue;
+import com.dar.nclientv2.async.downloader.GalleryDownloaderV2;
 import com.dar.nclientv2.settings.Global;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -41,21 +41,21 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
     private final boolean black;
     private List<Object> filter;
     private List<LocalGallery> dataset;
-    private List<GalleryDownloader> galleryDownloaders;
-    private DownloadGallery.DownloadObserver observer=new DownloadGallery.DownloadObserver() {
+    private List<GalleryDownloaderV2> galleryDownloaders;
+    private DownloadObserver observer=new DownloadObserver() {
         @Override
-        public void triggerStartDownload(GalleryDownloader downloader) { }
+        public void triggerStartDownload(GalleryDownloaderV2 downloader) { }
 
         @Override
-        public void triggerUpdateProgress(GalleryDownloader downloader) {
+        public void triggerUpdateProgress(GalleryDownloaderV2 downloader,int reach,int total) {
             final int id=filter.indexOf(downloader);
             if(id>=0)context.runOnUiThread(() -> notifyItemChanged(id));
         }
 
         @Override
-        public void triggerEndDownload(GalleryDownloader downloader) {
+        public void triggerEndDownload(GalleryDownloaderV2 downloader) {
             filter.remove(downloader);
-            LocalGallery l= new LocalGallery(new File(Global.DOWNLOADFOLDER,downloader.getPathTitle()),downloader.getId());
+            LocalGallery l=downloader.localGallery();
             dataset.remove(l);
             dataset.add(l);
             if(l.getTitle().toLowerCase(Locale.US).contains(lastQuery)){
@@ -71,11 +71,10 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         }
     };
     private Comparator<Object>comparator= (o1, o2) -> {
-        boolean b1,b2;
-        b1=o1 instanceof LocalGallery;
-        b2=o2 instanceof LocalGallery;
-        String s1=b1?((LocalGallery) o1).getTitle():((GalleryDownloader)o1).getPathTitle();
-        String s2=b2?((LocalGallery) o2).getTitle():((GalleryDownloader)o2).getPathTitle();
+        boolean b1=o1 instanceof LocalGallery;
+        boolean b2=o2 instanceof LocalGallery;
+        String s1=b1?((LocalGallery) o1).getTitle():((GalleryDownloaderV2)o1).getPathTitle();
+        String s2=b2?((LocalGallery) o2).getTitle():((GalleryDownloaderV2)o2).getPathTitle();
         int c=s1.compareTo(s2);
         if(c!=0)return c;
         if(b1==b2)return 0;
@@ -85,8 +84,8 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
     private synchronized void shrinkFilter(List<Object> filter){
         Collections.sort(filter,comparator);
         for(int i=0;i<filter.size()-1;i++){
-            if(filter.get(i) instanceof LocalGallery && filter.get(i+1) instanceof GalleryDownloader){
-                if(((LocalGallery) filter.get(i)).getTitle().equals(((GalleryDownloader) filter.get(i+1)).getPathTitle()))
+            if(filter.get(i) instanceof LocalGallery && filter.get(i+1) instanceof GalleryDownloaderV2){
+                if(((LocalGallery) filter.get(i)).getTitle().equals(((GalleryDownloaderV2) filter.get(i+1)).getPathTitle()))
                     filter.remove(i--);
             }
         }
@@ -102,13 +101,13 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         this.context=cont;
         dataset=myDataset;
         colCount=cont.getColCount();
-        galleryDownloaders= DownloadGallery.getGalleries();
+        galleryDownloaders= DownloadQueue.getDownloaders();
         black=Global.getTheme()== Global.ThemeScheme.BLACK;
 
         filter=new ArrayList<>(myDataset);
         filter.addAll(galleryDownloaders);
 
-        DownloadGallery.setObserver(observer);
+        DownloadQueue.addObserver(observer);
         shrinkFilter(filter);
 
     }
@@ -158,13 +157,15 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
             return true;
         });
     }
-    private void bindDownlaod(@NonNull final ViewHolder holder, int position,GalleryDownloader downloader){
+    private void bindDownload(@NonNull final ViewHolder holder, int position, GalleryDownloaderV2 downloader){
         int percentage=downloader.getPercentage();
-        Global.loadImage(downloader.getCover(),holder.imgView);
+        if (!downloader.hasData())return;
+        Global.loadImage(downloader.getGallery().getCover(),holder.imgView);
         holder.title.setText(downloader.getPathTitle());
         holder.cancelButton.setOnClickListener(v -> {
-            downloader.setStatus(GalleryDownloader.Status.PAUSED);
-            DownloadGallery.removeGallery(downloader);
+            downloader.setStatus(GalleryDownloaderV2.Status.PAUSED);
+
+            DownloadQueue.remove(downloader);
             filter.remove(downloader);
             context.runOnUiThread(()->notifyItemRemoved(position));
         });
@@ -172,20 +173,20 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
             case PAUSED:
                 holder.playButton.setImageResource(R.drawable.ic_play);
                 holder.playButton.setOnClickListener(v -> {
-                    downloader.setStatus(GalleryDownloader.Status.NOT_STARTED);
+                    downloader.setStatus(GalleryDownloaderV2.Status.NOT_STARTED);
                     notifyItemChanged(position);
                 });
                 break;
             case DOWNLOADING:
                 holder.playButton.setImageResource(R.drawable.ic_pause);
                 holder.playButton.setOnClickListener(v -> {
-                    downloader.setStatus(GalleryDownloader.Status.PAUSED);
+                    downloader.setStatus(GalleryDownloaderV2.Status.PAUSED);
                     notifyItemChanged(position);
                 });
                 break;
             case NOT_STARTED:
                 holder.playButton.setImageResource(R.drawable.ic_play);
-                holder.playButton.setOnClickListener(v -> DownloadGallery.givePriority(downloader));
+                holder.playButton.setOnClickListener(v -> DownloadQueue.givePriority(downloader));
                 break;
         }
         holder.progress.setText(context.getString(R.string.percentage_format, percentage));
@@ -196,7 +197,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         if(filter.get(position) instanceof LocalGallery)bindGallery(holder,position, (LocalGallery) filter.get(position));
-        else bindDownlaod(holder,position, (GalleryDownloader) filter.get(position));
+        else bindDownload(holder,position, (GalleryDownloaderV2) filter.get(position));
     }
 
     private void showDialogDelete(final int pos){
@@ -266,7 +267,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
                 lastQuery=query;
                 List<Object>filter=new ArrayList<>();
                 for(LocalGallery gallery:dataset)if(gallery.getTitle().toLowerCase(Locale.US).contains(query))filter.add(gallery);
-                for(GalleryDownloader gallery:galleryDownloaders)if(gallery.getPathTitle().toLowerCase(Locale.US).contains(query))filter.add(gallery);
+                for(GalleryDownloaderV2 gallery:galleryDownloaders)if(gallery.getPathTitle().toLowerCase(Locale.US).contains(query))filter.add(gallery);
                 shrinkFilter(filter);
                 results.values=filter;
                 return results;
@@ -283,6 +284,10 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
                 }
             }
         };
+    }
+
+    public void removeObserver() {
+        DownloadQueue.removeObserver(observer);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -310,22 +315,22 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         }
     }
     public void startAll() {
-        for(GalleryDownloader d:galleryDownloaders){
-            if(d.getStatus()== GalleryDownloader.Status.PAUSED)d.setStatus(GalleryDownloader.Status.NOT_STARTED);
+        for(GalleryDownloaderV2 d:galleryDownloaders){
+            if(d.getStatus()== GalleryDownloaderV2.Status.PAUSED)d.setStatus(GalleryDownloaderV2.Status.NOT_STARTED);
         }
         context.runOnUiThread(this::notifyDataSetChanged);
     }
 
     public void pauseAll() {
-        for(GalleryDownloader d:galleryDownloaders){
-            d.setStatus(GalleryDownloader.Status.PAUSED);
+        for(GalleryDownloaderV2 d:galleryDownloaders){
+            d.setStatus(GalleryDownloaderV2.Status.PAUSED);
         }
         context.runOnUiThread(this::notifyDataSetChanged);
     }
 
     public void cancellAll() {
         pauseAll();
-        DownloadGallery.clear();
+        DownloadQueue.clear();
         context.runOnUiThread(this::notifyDataSetChanged);
     }
 }

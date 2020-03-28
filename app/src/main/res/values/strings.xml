@@ -69,7 +69,6 @@
     <string name="only_english">Only english</string>
     <string name="only_japanese">Only japanese</string>
     <string name="only_chinese">Only chinese</string>
-    <string name="only_other">Only other languages</string>
     <string name="all_languages">All languages</string>
 
     <string name="sort_popular">Sort by Popular</string>

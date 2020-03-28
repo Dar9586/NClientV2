@@ -23,6 +23,7 @@ import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.LogUtility;
+import com.dar.nclientv2.utility.Utility;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,7 +35,7 @@ import java.util.Locale;
 
 import okhttp3.Request;
 import okhttp3.Response;
-
+@Deprecated
 public class DownloadGallery extends JobIntentService {
     public static void givePriority(GalleryDownloader downloader) {
         galleries.remove(downloader);
@@ -111,9 +112,7 @@ public class DownloadGallery extends JobIntentService {
         }
         return null;
     }
-    private void sleep(int time){
-        try { Thread.sleep(time); } catch (InterruptedException ignore) {}
-    }
+
 
     @Override
     public void onCreate() {
@@ -130,10 +129,10 @@ public class DownloadGallery extends JobIntentService {
         running=true;
         while(galleries.size()>0) {
             stopSignal=false;
-            sleep(100);
+            Utility.threadSleep(100);
             galleryDownloader = takeNext();
             if(galleryDownloader==null){
-                sleep(2500);
+                Utility.threadSleep(2500);
                 continue;
             }
             gallery=galleryDownloader.getGallery();

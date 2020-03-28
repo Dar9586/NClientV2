@@ -17,8 +17,8 @@ import com.dar.nclientv2.adapters.GalleryAdapter;
 import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
-import com.dar.nclientv2.async.DownloadGallery;
 import com.dar.nclientv2.async.database.Queries;
+import com.dar.nclientv2.async.downloader.DownloadGalleryV2;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.components.views.RangeSelector;
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
@@ -289,6 +289,6 @@ public class GalleryActivity extends BaseActivity{
                 //new DownloadGallery(this,gallery).start();
     }
     private void downloadGallery(){
-        DownloadGallery.download(this, gallery,true);
+        DownloadGalleryV2.downloadGallery(this, gallery);
     }
 }

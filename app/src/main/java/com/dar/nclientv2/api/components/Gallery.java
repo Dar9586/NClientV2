@@ -19,6 +19,7 @@ import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.classes.Size;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.LogUtility;
+import com.dar.nclientv2.utility.Utility;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -49,7 +50,7 @@ public class Gallery extends GenericGallery{
         complete=true;
         onlineFavorite=isFavorite;
     }
-
+    @NonNull
     public String getPathTitle() {
         return getSafeTitle().replace('/', '_').replaceAll("[|\\\\?*<\":>+\\[\\]/']", "_");
     }
@@ -103,11 +104,7 @@ public class Gallery extends GenericGallery{
     private void updateSize() {
         new Thread(() -> {
             while(updating) {
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                Utility.threadSleep(50);
             }
             updating=true;
             try {
@@ -495,6 +492,7 @@ public class Gallery extends GenericGallery{
     public String getTitle(TitleType x){
         return getTitle(x.ordinal());
     }
+    @NonNull
     public String getSafeTitle(){
         String x=getTitle();
         if(x.length()>2)return x;

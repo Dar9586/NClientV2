@@ -32,10 +32,10 @@ import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
-import com.dar.nclientv2.async.DownloadGallery;
 import com.dar.nclientv2.async.ScrapeTags;
 import com.dar.nclientv2.async.VersionChecker;
 import com.dar.nclientv2.async.database.Queries;
+import com.dar.nclientv2.async.downloader.DownloadGalleryV2;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
 import com.dar.nclientv2.loginapi.Login;
@@ -194,7 +194,7 @@ public class MainActivity extends BaseActivity
     private void setActivityTitle() {
         switch (modeType){
             case FAVORITE:  getSupportActionBar().setTitle(R.string.favorite_online_manga);break;
-            case SEARCH:    getSupportActionBar().setTitle(inspector.getQuery());break;
+            case SEARCH:    getSupportActionBar().setTitle(inspector.getSearchTitle());break;
             case TAG:       getSupportActionBar().setTitle(inspector.getTag().getName());break;
             case NORMAL:    getSupportActionBar().setTitle(R.string.app_name);break;
             default:        getSupportActionBar().setTitle("WTF");break;
@@ -292,7 +292,7 @@ public class MainActivity extends BaseActivity
     private void selectStartMode(Intent intent, String packageName) {
         Uri data=intent.getData();
              if(intent.getBooleanExtra(packageName+".ISBYTAG"    ,false))useTagMode(intent,packageName);
-        else if(intent.getBooleanExtra(packageName+".SEARCHSTART",false))useSearchMode(intent,packageName);
+        else if(intent.getBooleanExtra(packageName+".SEARCHMODE" ,false))useSearchMode(intent,packageName);
         else if(intent.getBooleanExtra(packageName+".FAVORITE"   ,false))useFavoriteMode(1);
         else if(intent.getBooleanExtra(packageName+".BYBOOKMARK" ,false))useBookmarkMode(intent,packageName);
         else if(data!=null)manageDataStart(data);
@@ -331,8 +331,11 @@ public class MainActivity extends BaseActivity
         boolean advanced = intent.getBooleanExtra(packageName + ".ADVANCED", false);
         ArrayList<Tag>tagArrayList=intent.getParcelableArrayListExtra(packageName + ".TAGS");
         HashSet<Tag> tags = null;
-        if (query != null) query = query.trim();
-        if (advanced) tags = new HashSet<>(tagArrayList);//tags is always not null when advanced is set
+        query = query.trim();
+        if (advanced) {
+            assert tagArrayList != null;//tags is always not null when advanced is set
+            tags = new HashSet<>(tagArrayList);
+        }
         inspector = InspectorV3.searchInspector(this, query, tags, 1, Global.isByPopular(), resetDataset);
         modeType=ModeType.SEARCH;
     }
@@ -365,7 +368,7 @@ public class MainActivity extends BaseActivity
             useNormalMode();
             return;
         }
-        dataType=Tag.findType(datas.get(0));
+        dataType=TagType.typeByName(datas.get(0));
         if(dataType!=TagType.UNKNOWN)useDataTagMode(datas,dataType);
         else useDataSearchMode(data,datas);
     }
@@ -429,12 +432,9 @@ public class MainActivity extends BaseActivity
         switch (Global.getOnlyLanguage()){
             case ENGLISH:Global.updateOnlyLanguage(this, Language.JAPANESE);break;
             case JAPANESE:Global.updateOnlyLanguage(this, Language.CHINESE);break;
-            case CHINESE:Global.updateOnlyLanguage(this, Language.UNKNOWN);break;
-            case UNKNOWN:Global.updateOnlyLanguage(this, Language.ALL);break;
+            case CHINESE:Global.updateOnlyLanguage(this, Language.ALL);break;
             case ALL:Global.updateOnlyLanguage(this, Language.ENGLISH);break;
         }
-        //this icon shows only when normal
-        Global.setTint(item.getIcon());
         //wait 250ms to reduce the requests
         changeLanguageTimeHandler.removeCallbacks(changeLanguageRunnable);
         changeLanguageTimeHandler.postDelayed(changeLanguageRunnable,CHANGE_LANGUAGE_DELAY);
@@ -578,11 +578,9 @@ public class MainActivity extends BaseActivity
     }
 
     private void showLanguageIcon(MenuItem item) {
-
         switch (Global.getOnlyLanguage()){
             case JAPANESE:item.setTitle(R.string.only_japanese);item.setIcon(R.drawable.ic_jpbw);break;
             case CHINESE:item.setTitle(R.string.only_chinese);item.setIcon(R.drawable.ic_cnbw);break;
-            case UNKNOWN:item.setTitle(R.string.only_other);item.setIcon(R.drawable.ic_help);break;
             case ENGLISH:item.setTitle(R.string.only_english);item.setIcon(R.drawable.ic_gbbw);break;
             case ALL:item.setTitle(R.string.all_languages);item.setIcon(R.drawable.ic_world);break;
         }
@@ -630,7 +628,7 @@ public class MainActivity extends BaseActivity
             case R.id.download_page:
                 if(inspector.getGalleries()!=null)
                     for(GenericGallery g:inspector.getGalleries())
-                        DownloadGallery.download(this,g,true);
+                        DownloadGalleryV2.downloadGallery(this, g);
                 break;
             case R.id.add_bookmark:
                 Queries.BookmarkTable.addBookmark(inspector);

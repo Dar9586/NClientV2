@@ -44,7 +44,7 @@ public class LocalGallery extends GenericGallery{
         }
         this.max=max;
         this.min=min;
-        valid=max<9999&&min>0&&id!=-1;
+        valid=max<9999&&min>0&&id>0;
     }
     private void checkSize(int x, SparseArray<Size> sizes, File f){
         LogUtility.d("Decoding: "+f);

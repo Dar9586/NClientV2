@@ -65,6 +65,12 @@ public class LocalActivity extends BaseActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        adapter.removeObserver();
+        super.onDestroy();
+    }
+
+    @Override
     protected void changeLayout(boolean landscape) {
         colCount=(landscape?getLandCount():getPortCount());
         if(adapter!=null)adapter.setColCount(colCount);

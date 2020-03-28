@@ -254,7 +254,7 @@ public class Queries{
                     cursor.getString(cursor.getColumnIndex(NAME)),
                     cursor.getInt(cursor.getColumnIndex(COUNT)),
                     cursor.getInt(cursor.getColumnIndex(IDTAG)),
-                    TagType.values()[cursor.getInt(cursor.getColumnIndex(TYPE))],
+                    TagType.values[cursor.getInt(cursor.getColumnIndex(TYPE))],
                     TagStatus.values()[cursor.getInt(cursor.getColumnIndex(STATUS))]
             );
         }
@@ -298,7 +298,7 @@ public class Queries{
             ArrayList<String>list=new ArrayList<>();
             list.add(""+TagV2.getMinCount());               //minium tags (always provided)
             if(query.length()>0)list.add('%'+query+'%');    //query
-            if(type!=null)list.add(""+type.ordinal());      //type of the tag
+            if(type!=null)list.add(""+type.getId());      //type of the tag
             LogUtility.d("FILTER URL: "+sql+", ARGS: "+list);
             return db.rawQuery(sql.toString(),list.toArray(new String[0]));
         }
@@ -308,7 +308,7 @@ public class Queries{
          * */
         public static List<Tag> getAllTagOfType(TagType type){
             String query="SELECT * FROM "+ TABLE_NAME +" WHERE "+ TYPE +" = ? AND "+ COUNT +" >= ?";
-            return getTagsFromCursor(db.rawQuery(query,new String[]{""+type.ordinal(),""+TagV2.getMinCount()}));
+            return getTagsFromCursor(db.rawQuery(query,new String[]{""+type.getId(),""+TagV2.getMinCount()}));
         }
         /**
          * Returns a List of all tags of a specific type
@@ -316,7 +316,7 @@ public class Queries{
          * */
         public static List<Tag> getTrueAllType(TagType type){
             String query="SELECT * FROM "+ TABLE_NAME +" WHERE "+ TYPE +" = ?";
-            return getTagsFromCursor(db.rawQuery(query,new String[]{""+type.ordinal()}));
+            return getTagsFromCursor(db.rawQuery(query,new String[]{""+type.getId()}));
         }
         /**
          * Returns a List of all tags of a specific status
@@ -385,7 +385,7 @@ public class Queries{
             ContentValues values=new ContentValues(5);
             values.put(IDTAG,tag.getId());
             values.put(NAME,tag.getName());
-            values.put(TYPE,tag.getType().ordinal());
+            values.put(TYPE,tag.getType().getId());
             values.put(COUNT,tag.getCount());
             values.put(STATUS,tag.getStatus().ordinal());
 
@@ -416,7 +416,7 @@ public class Queries{
          * */
         public static List<Tag> getTopTags(TagType type, int count){
             String query="SELECT * FROM "+TABLE_NAME+" WHERE "+TYPE+"=? ORDER BY "+COUNT+" DESC LIMIT ?;";
-            Cursor cursor=db.rawQuery(query,new String[]{""+type.ordinal(),""+count});
+            Cursor cursor=db.rawQuery(query,new String[]{""+type.getId(),""+count});
             return TagTable.getTagsFromCursor(cursor);
         }
         /**
@@ -467,8 +467,21 @@ public class Queries{
         public static List<Tag> search( String name, TagType type) {
             String query="SELECT * FROM "+TABLE_NAME+" WHERE "+NAME+" LIKE ? AND "+TYPE+"=?";
             LogUtility.d(query);
-            Cursor c=db.rawQuery(query,new String[]{'%'+name+'%',""+type.ordinal()});
+            Cursor c=db.rawQuery(query,new String[]{'%'+name+'%',""+type.getId()});
             return getTagsFromCursor(c);
+        }
+        /**
+         * Search a tag by name and type
+         * @return The Tag if found, null otehrwise
+         * */
+        public static Tag searchTag(String name, TagType type) {
+            Tag tag=null;
+            String query="SELECT * FROM "+TABLE_NAME+" WHERE "+NAME+" = ? AND "+TYPE+"=?";
+            LogUtility.d(query);
+            Cursor c=db.rawQuery(query,new String[]{name,""+type.getId()});
+            if(c.moveToFirst()) tag=cursorToTag(c);
+            c.close();
+            return tag;
         }
 
         /**
@@ -476,7 +489,7 @@ public class Queries{
          * */
         public static void insertTagsForGallery(Gallery gallery) {
             int len;Tag tag;
-            for(TagType t:TagType.values()){
+            for(TagType t:TagType.values){
                 len=gallery.getTagCount(t);
                 for(int i=0;i<len;i++){
                     tag=gallery.getTag(t,i);
@@ -485,6 +498,9 @@ public class Queries{
                 }
             }
         }
+
+
+
     }
     public static class DownloadTable{
         static final String TABLE_NAME="Downloads";

@@ -9,7 +9,7 @@ import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.settings.Global;
 
 import java.io.IOException;
-
+@Deprecated
 public class GalleryDownloader implements Parcelable {
     protected GalleryDownloader(Parcel in) {
         gallery = in.readParcelable(GenericGallery.class.getClassLoader());

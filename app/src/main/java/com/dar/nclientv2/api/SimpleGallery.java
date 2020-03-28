@@ -97,7 +97,7 @@ public class SimpleGallery extends GenericGallery {
 
     @Override
     public boolean isValid() {
-        return false;
+        return id>0;
     }
 
     @Override
