@@ -243,6 +243,8 @@
     <string name="stop">Stop</string>
     <string name="downloading_format">Downloading: %s</string>
     <string name="toggle_favorite">Toggle favorite</string>
+    <string name="resume">Resume</string>
+    <string name="pause">Pause</string>
 
     <string-array name="language">
         <item>英文</item>

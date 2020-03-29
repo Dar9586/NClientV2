@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.JobIntentService;
 
 import com.dar.nclientv2.api.components.Gallery;
@@ -23,13 +24,38 @@ public class DownloadGalleryV2 extends JobIntentService {
         if(gallery.getId()>0)downloadGallery(context,gallery.getId());
     }
     public static void downloadGallery(Context context, int id){
+        if(id<1)return;
         DownloadQueue.add(new GalleryDownloaderManager(context,id));
-        enqueueWork(context,DownloadGalleryV2.class,JOB_DOWNLOAD_GALLERY_ID,new Intent());
+        startWork(context);
     }
 
     private static void downloadGallery(Context context, Gallery gallery){
         DownloadQueue.add(new GalleryDownloaderManager(context,gallery));
-        enqueueWork(context,DownloadGalleryV2.class,JOB_DOWNLOAD_GALLERY_ID,new Intent());
+        startWork(context);
+    }
+
+    @Override
+    public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
+        if(intent!=null){
+            int id=intent.getIntExtra(getPackageName()+".ID",-1);
+            String mode=intent.getStringExtra(getPackageName()+".MODE");
+            LogUtility.d(""+mode);
+            GalleryDownloaderManager manager=DownloadQueue.managerFromId(id);
+            if(manager!=null){
+                LogUtility.d("IntentAction: "+mode+" for id "+id);
+                assert mode != null;
+                switch (mode){
+                    case "STOP": DownloadQueue.remove(id,true); break;
+                    case "PAUSE":manager.downloader().setStatus(GalleryDownloaderV2.Status.PAUSED); break;
+                    case "START":
+                        manager.downloader().setStatus(GalleryDownloaderV2.Status.NOT_STARTED);
+                        DownloadQueue.givePriority(manager.downloader());
+                        startWork(this);
+                        break;
+                }
+            }
+        }
+        return super.onStartCommand(intent, flags, startId);
     }
 
     public static void loadDownloads(Context context) {
@@ -37,6 +63,8 @@ public class DownloadGalleryV2 extends JobIntentService {
             List<Gallery> g = Queries.DownloadTable.getAllDownloads(Database.getDatabase());
             for(Gallery gg:g)downloadGallery(context,gg);
             DownloadQueue.setAllStatus(GalleryDownloaderV2.Status.PAUSED);
+            new PageChecker().start();
+            startWork(context);
         }catch (IOException e){
             LogUtility.e(e,e);
         }
@@ -46,9 +74,13 @@ public class DownloadGalleryV2 extends JobIntentService {
         downloadGallery(context,gallery);
     }
 
+    public static void startWork(Context context) {
+        enqueueWork(context,DownloadGalleryV2.class,JOB_DOWNLOAD_GALLERY_ID,new Intent());
+    }
+
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
-        while (!DownloadQueue.finished()){
+        while (true){
             obtainData();
             GalleryDownloaderManager entry = DownloadQueue.fetch();
             if(entry==null)return;

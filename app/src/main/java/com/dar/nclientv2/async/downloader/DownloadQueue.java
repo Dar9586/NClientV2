@@ -54,12 +54,21 @@ public class DownloadQueue {
                 return manager;
         return null;
     }
-    public static void remove(GalleryDownloaderV2 downloader) {
+    public static void remove(int id,boolean cancel) {
+        remove(findDownloaderFromId(id),cancel);
+    }
+
+    private static GalleryDownloaderV2 findDownloaderFromId(int id) {
+        for(GalleryDownloaderManager manager:downloadQueue)
+            if(manager.downloader().getId()==id)return manager.downloader();
+        return null;
+    }
+
+    public static void remove(GalleryDownloaderV2 downloader,boolean cancel) {
         GalleryDownloaderManager manager=findManagerFromDownloader(downloader);
         if(manager==null)return;
-        downloader.setStatus(GalleryDownloaderV2.Status.CANCELED);
+        if(cancel) downloader.setStatus(GalleryDownloaderV2.Status.CANCELED);
         downloadQueue.remove(manager);
-
     }
 
     public static void givePriority(GalleryDownloaderV2 downloader) {
@@ -70,5 +79,11 @@ public class DownloadQueue {
     }
     public static void setAllStatus(GalleryDownloaderV2.Status status){
         for(GalleryDownloaderManager manager:downloadQueue)manager.downloader().setStatus(status);
+    }
+
+    public static GalleryDownloaderManager managerFromId(int id) {
+        for(GalleryDownloaderManager manager:downloadQueue)
+            if(manager.downloader().getId()==id)return manager;
+        return null;
     }
 }

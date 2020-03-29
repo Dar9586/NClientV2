@@ -25,10 +25,12 @@ import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.CreatePDF;
 import com.dar.nclientv2.async.CreateZIP;
+import com.dar.nclientv2.async.downloader.DownloadGalleryV2;
 import com.dar.nclientv2.async.downloader.DownloadObserver;
 import com.dar.nclientv2.async.downloader.DownloadQueue;
 import com.dar.nclientv2.async.downloader.GalleryDownloaderV2;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.utility.LogUtility;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,31 +45,41 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
     private List<LocalGallery> dataset;
     private List<GalleryDownloaderV2> galleryDownloaders;
     private DownloadObserver observer=new DownloadObserver() {
+        private void updatePosition(GalleryDownloaderV2 downloader){
+            final int id=filter.indexOf(downloader);
+            if(id>=0)context.runOnUiThread(() -> notifyItemChanged(id));
+        }
         @Override
-        public void triggerStartDownload(GalleryDownloaderV2 downloader) { }
+        public void triggerStartDownload(GalleryDownloaderV2 downloader) {
+            updatePosition(downloader);
+        }
 
         @Override
         public void triggerUpdateProgress(GalleryDownloaderV2 downloader,int reach,int total) {
-            final int id=filter.indexOf(downloader);
-            if(id>=0)context.runOnUiThread(() -> notifyItemChanged(id));
+            updatePosition(downloader);
         }
 
         @Override
         public void triggerEndDownload(GalleryDownloaderV2 downloader) {
-            filter.remove(downloader);
             LocalGallery l=downloader.localGallery();
+            galleryDownloaders.remove(downloader);
+            filter.remove(downloader);
             dataset.remove(l);
             dataset.add(l);
-            if(l.getTitle().toLowerCase(Locale.US).contains(lastQuery)){
-                int x=Collections.binarySearch(filter,l,comparator);
-                if(x>=0){
-                    filter.set(x,l);
-                }else {
-                    filter.add(l);
-                    Collections.sort(filter,comparator);
-                }
-            }
+            filter.add(l);
+            LogUtility.d(l);
+            Collections.sort(filter,comparator);
             context.runOnUiThread(()->notifyItemRangeChanged(0,getItemCount()));
+        }
+
+        @Override
+        public void triggerStopDownlaod(GalleryDownloaderV2 downloader) {
+            removeDownloader(downloader);
+        }
+
+        @Override
+        public void triggerPauseDownload(GalleryDownloaderV2 downloader) {
+            context.runOnUiThread(()->notifyItemChanged(filter.indexOf(downloader)));
         }
     };
     private Comparator<Object>comparator= (o1, o2) -> {
@@ -157,23 +169,19 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
             return true;
         });
     }
+
     private void bindDownload(@NonNull final ViewHolder holder, int position, GalleryDownloaderV2 downloader){
         int percentage=downloader.getPercentage();
         if (!downloader.hasData())return;
         Global.loadImage(downloader.getGallery().getCover(),holder.imgView);
         holder.title.setText(downloader.getPathTitle());
-        holder.cancelButton.setOnClickListener(v -> {
-            downloader.setStatus(GalleryDownloaderV2.Status.PAUSED);
-
-            DownloadQueue.remove(downloader);
-            filter.remove(downloader);
-            context.runOnUiThread(()->notifyItemRemoved(position));
-        });
+        holder.cancelButton.setOnClickListener(v -> removeDownloader(downloader));
         switch (downloader.getStatus()){
             case PAUSED:
                 holder.playButton.setImageResource(R.drawable.ic_play);
                 holder.playButton.setOnClickListener(v -> {
                     downloader.setStatus(GalleryDownloaderV2.Status.NOT_STARTED);
+                    DownloadGalleryV2.startWork(context);
                     notifyItemChanged(position);
                 });
                 break;
@@ -194,6 +202,16 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         Global.setTint(holder.playButton.getDrawable());
         Global.setTint(holder.cancelButton.getDrawable());
     }
+
+    private void removeDownloader(GalleryDownloaderV2 downloader) {
+        int position=filter.indexOf(downloader);
+        downloader.setStatus(GalleryDownloaderV2.Status.CANCELED);
+        DownloadQueue.remove(downloader,true);
+        filter.remove(downloader);
+        galleryDownloaders.remove(downloader);
+        context.runOnUiThread(()->notifyItemRemoved(position));
+    }
+
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         if(filter.get(position) instanceof LocalGallery)bindGallery(holder,position, (LocalGallery) filter.get(position));

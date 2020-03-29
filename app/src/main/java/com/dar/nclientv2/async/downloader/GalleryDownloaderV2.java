@@ -32,6 +32,10 @@ public class GalleryDownloaderV2 {
         observers.remove(observer);
     }
 
+    public File getFolder() {
+        return folder;
+    }
+
     public static class PageContainer{
         public final int page;
         public final String url,ext;
@@ -42,7 +46,7 @@ public class GalleryDownloaderV2 {
             this.ext=ext;
         }
         public String getPageName(){
-            StringBuilder fileName= new StringBuilder(page);
+            StringBuilder fileName= new StringBuilder(""+page);
             while(fileName.length()<3) fileName.insert(0, "0");
             fileName.append('.').append(ext);
             return fileName.toString();
@@ -56,6 +60,7 @@ public class GalleryDownloaderV2 {
     private List<DownloadObserver> observers= new ArrayList<>(3);
     private List<PageContainer> urls=new ArrayList<>();
     private File folder;
+    private boolean initialized=false;
 
     public Gallery getGallery() {
         return gallery;
@@ -71,11 +76,18 @@ public class GalleryDownloaderV2 {
     private void onEnd(){
         setStatus(Status.FINISHED);
         for(DownloadObserver observer:observers)observer.triggerEndDownload(this);
+        LogUtility.d("Delete 75: "+id);
         Queries.DownloadTable.removeGallery(id);
     }
     private void onUpdate(){
         int reach=gallery.getPageCount()-urls.size();
         for(DownloadObserver observer:observers)observer.triggerUpdateProgress(this,reach,gallery.getPageCount());
+    }
+    private void onCancel(){
+        for(DownloadObserver observer:observers)observer.triggerStopDownlaod(this);
+    }
+    private void onPause(){
+        for(DownloadObserver observer:observers)observer.triggerPauseDownload(this);
     }
 
     public GalleryDownloaderV2(Context context, int id) {
@@ -87,17 +99,27 @@ public class GalleryDownloaderV2 {
         return new LocalGallery(folder,id);
     }
     public void setStatus(Status status) {
+        if(this.status==status)return;
         this.status = status;
-        if(status==Status.CANCELED)Queries.DownloadTable.removeGallery(id);
+        if(status==Status.CANCELED) {
+            LogUtility.d("Delete 95: "+id);
+            onCancel();
+            Global.recursiveDelete(folder);
+            Queries.DownloadTable.removeGallery(id);
+        }
     }
     public void addObserver(DownloadObserver observer){
         if(observer==null)return;
         observers.add(observer);
     }
     public GalleryDownloaderV2(Context context, Gallery gallery) {
-        this.context=context;
+        this(context,gallery.getId());
+        setGallery(gallery);
+    }
+
+    private void setGallery(Gallery gallery) {
         this.gallery = gallery;
-        this.id = gallery.getId();
+        Queries.DownloadTable.addGallery(gallery);
     }
 
     public int getId() {
@@ -117,10 +139,8 @@ public class GalleryDownloaderV2 {
         try {
             inspector.execute();
             Gallery g=(Gallery) inspector.getGalleries().get(0);
-            if(g.isValid()){
-                this.gallery=g;
-                Queries.DownloadTable.addGallery(g);
-            }
+            if(g.isValid())
+                setGallery(g);
             return g.isValid();
         } catch (IOException e) {
             LogUtility.e("Error while downloading",e);
@@ -139,8 +159,9 @@ public class GalleryDownloaderV2 {
         onStart();
         while(!urls.isEmpty()){
             downloadPage(urls.get(0));
-            Utility.threadSleep(1000);
-            if(status==Status.PAUSED)return;
+            Utility.threadSleep(2000);
+            if(status==Status.PAUSED){onPause();return;}
+            if(status==Status.CANCELED){onCancel();return;}
         }
         onEnd();
     }
@@ -162,6 +183,7 @@ public class GalleryDownloaderV2 {
     }
     private boolean savePage(PageContainer page) {
         File filePath=new File(folder,page.getPageName());
+        LogUtility.d("Saving into: "+filePath+","+page.url);
         if(filePath.exists()&&!isCorrupted(filePath))return true;
         try {
             Response r = Global.client.newCall(new Request.Builder().url(page.url).build()).execute();
@@ -186,8 +208,24 @@ public class GalleryDownloaderV2 {
         inputStream.close();
     }
 
-    private void initDownload() {
+    public void initDownload() {
+        if(initialized)return;
+        initialized=true;
         createFolder();
+        createPages();
+        checkPages();
+    }
+
+    private void checkPages() {
+        File filePath;
+        for(int i=0;i<urls.size();i++){
+            filePath=new File(folder,urls.get(i).getPageName());
+            if(filePath.exists()&&!isCorrupted(filePath))
+                urls.remove(i--);
+        }
+    }
+
+    private void createPages() {
         final int total=gallery.getPageCount();
         for(int i=0;i<total;i++)
             urls.add(new PageContainer(i+1,gallery.getPage(i),gallery.getPageExtension(i)));
@@ -205,8 +243,9 @@ public class GalleryDownloaderV2 {
 
     private void writeNoMedia()throws IOException {
         File nomedia=new File(folder,".nomedia");
+        LogUtility.d("NOMEDIA: "+nomedia+" for id "+id);
         FileWriter writer=new FileWriter(nomedia);
-        writer.append(Integer.toString(id));
+        writer.write(Integer.toString(id));
         writer.flush();
         writer.close();
     }
