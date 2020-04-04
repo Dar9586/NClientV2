@@ -28,9 +28,11 @@ public class DownloadGalleryV2 extends JobIntentService {
         DownloadQueue.add(new GalleryDownloaderManager(context,id));
         startWork(context);
     }
-
     private static void downloadGallery(Context context, Gallery gallery){
-        DownloadQueue.add(new GalleryDownloaderManager(context,gallery));
+        downloadGallery(context,gallery,0,gallery.getPageCount()-1);
+    }
+    private static void downloadGallery(Context context, Gallery gallery,int start,int end){
+        DownloadQueue.add(new GalleryDownloaderManager(context,gallery,start,end));
         startWork(context);
     }
 
@@ -60,9 +62,11 @@ public class DownloadGalleryV2 extends JobIntentService {
 
     public static void loadDownloads(Context context) {
         try {
-            List<Gallery> g = Queries.DownloadTable.getAllDownloads(Database.getDatabase());
-            for(Gallery gg:g)downloadGallery(context,gg);
-            DownloadQueue.setAllStatus(GalleryDownloaderV2.Status.PAUSED);
+            List<GalleryDownloaderManager> g = Queries.DownloadTable.getAllDownloads(context,Database.getDatabase());
+            for(GalleryDownloaderManager gg:g){
+                gg.downloader().setStatus(GalleryDownloaderV2.Status.PAUSED);
+                DownloadQueue.add(gg);
+            }
             new PageChecker().start();
             startWork(context);
         }catch (IOException e){
@@ -71,7 +75,7 @@ public class DownloadGalleryV2 extends JobIntentService {
     }
 
     public static void downloadRange(Context context, Gallery gallery, int start, int end) {
-        downloadGallery(context,gallery);
+        downloadGallery(context,gallery,start,end);
     }
 
     public static void startWork(Context context) {

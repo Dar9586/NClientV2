@@ -11,6 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.dar.nclientv2.adapters.LocalAdapter;
 import com.dar.nclientv2.api.local.FakeInspector;
+import com.dar.nclientv2.async.downloader.DownloadQueue;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.settings.Global;
 
@@ -48,6 +49,14 @@ public class LocalActivity extends BaseActivity {
         Global.setTint(menu.findItem(R.id.cancelAll).getIcon());
         Global.setTint(menu.findItem(R.id.startAll).getIcon());
         Global.setTint(menu.findItem(R.id.search).getIcon());
+        Global.setTint(menu.findItem(R.id.random_favorite).getIcon());
+
+        if(DownloadQueue.isEmpty()){
+            menu.findItem(R.id.pauseAll).setVisible(false);
+            menu.findItem(R.id.cancelAll).setVisible(false);
+            menu.findItem(R.id.startAll).setVisible(false);
+        }
+
         final androidx.appcompat.widget.SearchView searchView=(androidx.appcompat.widget.SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
@@ -94,6 +103,9 @@ public class LocalActivity extends BaseActivity {
                 break;
             case R.id.cancelAll:
                 adapter.cancellAll();
+                break;
+            case R.id.random_favorite:
+                adapter.viewRandom();
                 break;
         }
         return super.onOptionsItemSelected(item);

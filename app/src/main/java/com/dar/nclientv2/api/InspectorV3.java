@@ -45,7 +45,7 @@ public class InspectorV3 extends Thread implements Parcelable {
         id = in.readInt();
         query = in.readString();
         url = in.readString();
-        requestType=ApiRequestType.values()[in.readByte()];
+        requestType=ApiRequestType.values[in.readByte()];
         ArrayList x=null;
         switch (GenericGallery.Type.values()[in.readByte()]){
             case LOCAL:x = in.createTypedArrayList(LocalGallery.CREATOR); break;
@@ -151,9 +151,12 @@ public class InspectorV3 extends Thread implements Parcelable {
         inspector.createUrl();
         return inspector;
     }
-    public static InspectorV3 randomInspector(Context context,InspectorResponse response){
+    /**
+     * @param favorite true if random online favorite, false for general random manga
+     * */
+    public static InspectorV3 randomInspector(Context context,InspectorResponse response,boolean favorite){
         InspectorV3 inspector=new InspectorV3(context,response);
-        inspector.requestType=ApiRequestType.RANDOM;
+        inspector.requestType=favorite?ApiRequestType.RANDOM_FAVORITE:ApiRequestType.RANDOM;
         inspector.createUrl();
         return inspector;
     }
@@ -192,41 +195,32 @@ public class InspectorV3 extends Thread implements Parcelable {
 
     private void createUrl() {
         Tag t=null;
-        StringBuilder builder=new StringBuilder("https://nhentai.net/");
-        switch (requestType){
-            case BYALL:
-                builder.append("?page=").append(page);
-                break;
-            case RANDOM:
-                builder.append("random/");
-                break;
-            case BYSINGLE:
-                builder.append("g/").append(id);
-                break;
-            case FAVORITE:
-                builder.append("favorites/");
-                if(query!=null&&query.length()>0)builder.append("?q=").append(query).append('&');
-                else builder.append('?');
-                builder.append("page=").append(page);
-                break;
-            case BYTAG:
-                for(Tag tt:tags)t=tt;
-                builder.append(t.getTypeSingleName()).append('/')
-                        .append(t.getName());
-                if(byPopular)builder.append("/popular");
-                else builder.append('/');
-                builder.append("?page=").append(page);
-                break;
-            case BYSEARCH:
-                builder.append("search/?q=").append(query);
-                for(Tag tt:tags){
-                    if(builder.toString().contains(tt.toQueryTag(TagStatus.ACCEPTED)))continue;
-                    builder.append('+').append(tt.toQueryTag());
-                }
-                builder.append("&page=").append(page);
-                if(byPopular)builder.append("&sort=popular");
-                break;
-
+        StringBuilder builder=new StringBuilder(Utility.BASE_URL);
+             if(requestType==ApiRequestType.BYALL)builder.append("?page=").append(page);
+        else if(requestType==ApiRequestType.RANDOM)builder.append("random/");
+        else if(requestType==ApiRequestType.RANDOM_FAVORITE)builder.append("favorites/random");
+        else if(requestType==ApiRequestType.BYSINGLE)builder.append("g/").append(id);
+        else if(requestType==ApiRequestType.FAVORITE){
+                 builder.append("favorites/");
+                 if(query!=null&&query.length()>0)builder.append("?q=").append(query).append('&');
+                 else builder.append('?');
+                 builder.append("page=").append(page);
+        }else if(requestType==ApiRequestType.BYTAG){
+                 for(Tag tt:tags)t=tt;
+                 assert t!=null;
+                 builder.append(t.getTypeSingleName()).append('/')
+                         .append(t.getName());
+                 if(byPopular)builder.append("/popular");
+                 else builder.append('/');
+                 builder.append("?page=").append(page);
+        }else if(requestType==ApiRequestType.BYSEARCH){
+                 builder.append("search/?q=").append(query);
+                 for(Tag tt:tags){
+                     if(builder.toString().contains(tt.toQueryTag(TagStatus.ACCEPTED)))continue;
+                     builder.append('+').append(tt.toQueryTag());
+                 }
+                 builder.append("&page=").append(page);
+                 if(byPopular)builder.append("&sort=popular");
         }
         url=builder.toString().replace(' ','+');
         LogUtility.d("WWW: "+getBookmarkURL());
@@ -237,14 +231,14 @@ public class InspectorV3 extends Thread implements Parcelable {
     }
 
     @NonNull
-    public static Set<Tag> getDefaultTags(){
+    private static Set<Tag> getDefaultTags(){
         Set<Tag> tags = new HashSet<>(Queries.TagTable.getAllStatus( TagStatus.ACCEPTED));
         tags.addAll(getLanguageTags(Global.getOnlyLanguage()));
         if(Global.removeAvoidedGalleries()) tags.addAll(Queries.TagTable.getAllStatus(TagStatus.AVOIDED));
         if(Login.isLogged())tags.addAll(Queries.TagTable.getAllOnlineBlacklisted());
         return tags;
     }
-    public static Set<Tag> getLanguageTags(Language onlyLanguage) {
+    private static Set<Tag> getLanguageTags(Language onlyLanguage) {
         Set<Tag>tags=new HashSet<>();
         if(onlyLanguage==null)return tags;
         switch (onlyLanguage){
@@ -264,8 +258,7 @@ public class InspectorV3 extends Thread implements Parcelable {
     public void execute()throws IOException{
             Response response=Global.client.newCall(new Request.Builder().url(url).build()).execute();
             Document document= Jsoup.parse(response.body().byteStream(),"UTF-8", Utility.BASE_URL);
-            if(requestType==ApiRequestType.BYSINGLE||requestType==ApiRequestType.RANDOM)
-                doSingle(document.body());
+            if(requestType.isSingle()) doSingle(document.body());
             else doSearch(document.body());
             response.close();
     }

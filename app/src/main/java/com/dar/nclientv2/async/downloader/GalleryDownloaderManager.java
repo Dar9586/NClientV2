@@ -77,11 +77,11 @@ public class GalleryDownloaderManager {
         return downloaderV2;
     }
 
-    public GalleryDownloaderManager(Context context, Gallery gallery) {
+    public GalleryDownloaderManager(Context context, Gallery gallery,int start,int end) {
         this.notificationManager= NotificationManagerCompat.from(context);
         this.context = context;
         this.gallery = gallery;
-        this.downloaderV2=new GalleryDownloaderV2(context,gallery);
+        this.downloaderV2=new GalleryDownloaderV2(context,gallery,start,end);
         this.downloaderV2.addObserver(observer);
     }
     public GalleryDownloaderManager(Context context,int id){
@@ -155,4 +155,5 @@ public class GalleryDownloaderManager {
     private void notificationUpdate() {
         notificationManager.notify(context.getString(R.string.channel1_name),notificationId,notification.build());
     }
+
 }

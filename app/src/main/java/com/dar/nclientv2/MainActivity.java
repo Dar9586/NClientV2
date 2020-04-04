@@ -29,6 +29,7 @@ import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.components.Tag;
+import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
@@ -308,12 +309,12 @@ public class MainActivity extends BaseActivity
         inspector=intent.getParcelableExtra(packageName+".INSPECTOR");
         inspector.initialize(this,resetDataset);
         modeType = ModeType.BOOKMARK;
-        switch (inspector.getRequestType()){
-            case BYTAG:    modeType = ModeType.TAG;break;
-            case BYALL:    modeType = ModeType.NORMAL;break;
-            case BYSEARCH: modeType = ModeType.SEARCH;break;
-            case FAVORITE: modeType = ModeType.FAVORITE;break;
-        }
+        ApiRequestType type=inspector.getRequestType();
+             if(type==ApiRequestType.BYTAG)modeType = ModeType.TAG;
+        else if(type==ApiRequestType.BYALL)modeType = ModeType.NORMAL;
+        else if(type==ApiRequestType.BYSEARCH)modeType = ModeType.SEARCH;
+        else if(type==ApiRequestType.FAVORITE)modeType = ModeType.FAVORITE;
+
     }
 
     private void useFavoriteMode(int page) {
@@ -532,10 +533,12 @@ public class MainActivity extends BaseActivity
         Global.setTint(menu.findItem(R.id.open_browser) .getIcon());
         Global.setTint(menu.findItem(R.id.add_bookmark) .getIcon());
         Global.setTint(menu.findItem(R.id.search).getIcon());
+        Global.setTint(menu.findItem(R.id.random_favorite).getIcon());
 
         showLanguageIcon(menu.findItem(R.id.only_language));
 
         menu.findItem(R.id.only_language).setVisible(modeType == ModeType.NORMAL);
+        menu.findItem(R.id.random_favorite).setVisible(modeType == ModeType.FAVORITE);
 
         initializeSearchItem(menu.findItem(R.id.search));
 
@@ -624,6 +627,10 @@ public class MainActivity extends BaseActivity
                     i = new Intent(Intent.ACTION_VIEW,Uri.parse(inspector.getUrl()));
                     startActivity(i);
                 }
+                break;
+            case R.id.random_favorite:
+                inspector=InspectorV3.randomInspector(this,startGallery,true);
+                inspector.start();
                 break;
             case R.id.download_page:
                 if(inspector.getGalleries()!=null)

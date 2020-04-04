@@ -29,13 +29,11 @@ public class Bookmark {
     public InspectorV3 createInspector(Context context, InspectorV3.InspectorResponse response){
         String query=uri.getQueryParameter("q");
         boolean popular="popular".equals(uri.getQueryParameter("sort"));
-        switch (requestType){
-            case FAVORITE:return InspectorV3.favoriteInspector(context,query,page,response);
-            case BYSEARCH:return InspectorV3.searchInspector(context,query,null,page,popular,response);
-            case BYALL:return InspectorV3.searchInspector(context,"",null,page,false,response);
-            case BYTAG:return InspectorV3.searchInspector(context,"",
-                    Collections.singleton(tagVal),page,this.url.contains("/popular"),response);
-        }
+        if(requestType==ApiRequestType.FAVORITE)return InspectorV3.favoriteInspector(context,query,page,response);
+        if(requestType==ApiRequestType.BYSEARCH)return InspectorV3.searchInspector(context,query,null,page,popular,response);
+        if(requestType==ApiRequestType.BYALL)return InspectorV3.searchInspector(context,"",null,page,false,response);
+        if(requestType==ApiRequestType.BYTAG)return InspectorV3.searchInspector(context,"",
+                Collections.singleton(tagVal),page,this.url.contains("/popular"),response);
         return null;
     }
     public void deleteBookmark(){
@@ -45,12 +43,10 @@ public class Bookmark {
     @NonNull
     @Override
     public String toString() {
-        switch (requestType){
-            case BYTAG:return tagVal.getType().getSingle()+": "+tagVal.getName();
-            case FAVORITE:return "Favorite";
-            case BYSEARCH:return ""+uri.getQueryParameter("q");
-            case BYALL:return "Main page";
-        }
+        if(requestType==ApiRequestType.BYTAG)return tagVal.getType().getSingle()+": "+tagVal.getName();
+        if(requestType==ApiRequestType.FAVORITE)return "Favorite";
+        if(requestType==ApiRequestType.BYSEARCH)return ""+uri.getQueryParameter("q");
+        if(requestType==ApiRequestType.BYALL)return "Main page";
         return "WTF";
     }
 }

@@ -171,11 +171,6 @@
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:exported="true" />
         <service
-            android:name=".async.DownloadGallery"
-            android:enabled="true"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="true" />
-        <service
             android:name=".async.CreatePDF"
             android:enabled="true"
             android:permission="android.permission.BIND_JOB_SERVICE"

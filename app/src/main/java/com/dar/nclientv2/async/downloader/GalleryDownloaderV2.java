@@ -54,6 +54,7 @@ public class GalleryDownloaderV2 {
     private final Context context;
     private Status status=Status.NOT_STARTED;
     private final int id;
+    private int start=-1,end=-1;
     private Gallery gallery;
     private List<DownloadObserver> observers= new ArrayList<>(3);
     private List<PageContainer> urls=new ArrayList<>();
@@ -63,9 +64,12 @@ public class GalleryDownloaderV2 {
     public Gallery getGallery() {
         return gallery;
     }
+    private int getTotalPage(){
+        return end-start+1;
+    }
     public int getPercentage(){
         if(gallery==null)return 0;
-        return ((gallery.getPageCount()-urls.size())*100)/gallery.getPageCount();
+        return ((getTotalPage()-urls.size())*100)/getTotalPage();
     }
     private void onStart(){
         setStatus(Status.DOWNLOADING);
@@ -78,8 +82,8 @@ public class GalleryDownloaderV2 {
         Queries.DownloadTable.removeGallery(id);
     }
     private void onUpdate(){
-        int reach=gallery.getPageCount()-urls.size();
-        for(DownloadObserver observer:observers)observer.triggerUpdateProgress(this,reach,gallery.getPageCount());
+        int reach=getTotalPage()-urls.size();
+        for(DownloadObserver observer:observers)observer.triggerUpdateProgress(this,reach,getTotalPage());
     }
     private void onCancel(){
         for(DownloadObserver observer:observers)observer.triggerStopDownlaod(this);
@@ -110,18 +114,30 @@ public class GalleryDownloaderV2 {
         if(observer==null)return;
         observers.add(observer);
     }
-    public GalleryDownloaderV2(Context context, Gallery gallery) {
+    public GalleryDownloaderV2(Context context, Gallery gallery, int start, int end) {
         this(context,gallery.getId());
+        this.start=start;
+        this.end=end;
         setGallery(gallery);
     }
 
     private void setGallery(Gallery gallery) {
         this.gallery = gallery;
-        Queries.DownloadTable.addGallery(gallery);
+        Queries.DownloadTable.addGallery(this);
+        if(start==-1)start=0;
+        if(end==-1)end=gallery.getPageCount()-1;
     }
 
     public int getId() {
         return id;
+    }
+
+    public int getStart() {
+        return start;
+    }
+
+    public int getEnd() {
+        return end;
     }
 
     public String getPathTitle(){
@@ -157,7 +173,7 @@ public class GalleryDownloaderV2 {
         onStart();
         while(!urls.isEmpty()){
             downloadPage(urls.get(0));
-            Utility.threadSleep(2000);
+            Utility.threadSleep(50);
             if(status==Status.PAUSED){onPause();return;}
             if(status==Status.CANCELED){onCancel();return;}
         }
@@ -225,8 +241,7 @@ public class GalleryDownloaderV2 {
     }
 
     private void createPages() {
-        final int total=gallery.getPageCount();
-        for(int i=0;i<total;i++)
+        for(int i=start;i<end;i++)
             urls.add(new PageContainer(i+1,gallery.getPage(i),gallery.getPageExtension(i)));
     }
 

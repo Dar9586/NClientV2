@@ -41,7 +41,7 @@ public class RandomLoader {
     }
     private void loadRandomGallery(){
         if(galleries.size()>=MAXLOADED)return;
-        InspectorV3.randomInspector(activity,response).start();
+        InspectorV3.randomInspector(activity,response,false).start();
     }
     public void requestGallery(){
         galleryHasBeenRequested=true;

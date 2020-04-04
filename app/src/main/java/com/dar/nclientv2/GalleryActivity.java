@@ -286,7 +286,6 @@ public class GalleryActivity extends BaseActivity{
             Global.initStorage(this);
             if(requestCode==1&&grantResults.length >0&&grantResults[0]==PackageManager.PERMISSION_GRANTED)
                 downloadGallery();
-                //new DownloadGallery(this,gallery).start();
     }
     private void downloadGallery(){
         DownloadGalleryV2.downloadGallery(this, gallery);

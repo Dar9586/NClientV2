@@ -17,7 +17,7 @@ import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class DatabaseHelper extends SQLiteOpenHelper{
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 10;
     private static final String DATABASE_NAME = "Entries.db";
     public DatabaseHelper(Context context){
         super(context,DATABASE_NAME,null,DATABASE_VERSION);
@@ -72,7 +72,14 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         if(oldVersion<=6)db.execSQL(Queries.DownloadTable.CREATE_TABLE);
         if(oldVersion<=7)db.execSQL(Queries.HistoryTable.CREATE_TABLE);
         if(oldVersion<=8)insertFavorite(db);
+        if(oldVersion<=9)addRangeColumn(db);
     }
+
+    private void addRangeColumn(SQLiteDatabase db) {
+        db.execSQL("ALTER TABLE Downloads ADD COLUMN `range_start` INT NOT NULL DEFAULT -1");
+        db.execSQL("ALTER TABLE Downloads ADD COLUMN `range_end`   INT NOT NULL DEFAULT -1");
+    }
+
     /**
      * Add all item which are favorite into the favorite table
      * */

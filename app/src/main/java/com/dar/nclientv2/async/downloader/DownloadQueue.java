@@ -89,4 +89,8 @@ public class DownloadQueue {
             if(manager.downloader().getId()==id)return manager;
         return null;
     }
+
+    public static boolean isEmpty() {
+        return downloadQueue.size()==0;
+    }
 }

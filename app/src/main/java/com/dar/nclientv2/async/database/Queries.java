@@ -1,6 +1,7 @@
 package com.dar.nclientv2.async.database;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,6 +18,8 @@ import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.enums.TitleType;
+import com.dar.nclientv2.async.downloader.GalleryDownloaderManager;
+import com.dar.nclientv2.async.downloader.GalleryDownloaderV2;
 import com.dar.nclientv2.components.classes.Bookmark;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
@@ -99,9 +102,9 @@ public class Queries{
 
         static void clearGalleries(){
             db.delete(GalleryTable.TABLE_NAME, String.format(Locale.US,
-                    "%s NOT IN (SELECT * FROM %s) AND " +
+                    "%s NOT IN (SELECT %s FROM %s) AND " +
                             "%s NOT IN (SELECT * FROM %s)",
-                    IDGALLERY,DownloadTable.TABLE_NAME,IDGALLERY,FavoriteTable.TABLE_NAME)
+                    IDGALLERY,DownloadTable.ID_GALLERY,DownloadTable.TABLE_NAME,IDGALLERY,FavoriteTable.TABLE_NAME)
             ,null);
             db.delete(GalleryBridgeTable.TABLE_NAME,String.format(Locale.US,
                     "%s NOT IN (SELECT %s FROM %s)",
@@ -507,9 +510,14 @@ public class Queries{
 
         public static final String DROP_TABLE= "DROP TABLE IF EXISTS "+ TABLE_NAME;
         public static final String ID_GALLERY= "id_gallery";
+        public static final String RANGE_START= "range_start";
+        public static final String RANGE_END= "range_end";
+
 
         static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `Downloads` (" +
-                "`id_gallery` INT NOT NULL PRIMARY KEY , " +
+                "`id_gallery`  INT NOT NULL PRIMARY KEY , " +
+                "`range_start` INT NOT NULL," +
+                "`range_end`   INT NOT NULL," +
                 "FOREIGN KEY(`id_gallery`) REFERENCES `Gallery`(`idGallery`) ON UPDATE CASCADE ON DELETE CASCADE" +
                 "); ";
         private static SQLiteDatabase db;
@@ -517,11 +525,14 @@ public class Queries{
             db=database;
         }
 
-        public static void addGallery(Gallery gallery){
+        public static void addGallery(GalleryDownloaderV2 downloader){
+            Gallery gallery=downloader.getGallery();
             if(!gallery.isComplete())return;
             Queries.GalleryTable.insert(gallery);
-            ContentValues values=new ContentValues(1);
+            ContentValues values=new ContentValues(3);
             values.put(ID_GALLERY,gallery.getId());
+            values.put(RANGE_START,downloader.getStart());
+            values.put(RANGE_END,downloader.getEnd());
             db.insertWithOnConflict(TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_IGNORE);
         }
         public static void removeGallery(int id){
@@ -529,12 +540,23 @@ public class Queries{
             if(!favorite) Queries.GalleryTable.delete(id);
             db.delete(TABLE_NAME,ID_GALLERY+"=?",new String[]{""+id});
         }
-        public static List<Gallery>getAllDownloads(SQLiteDatabase db) throws IOException {
-            String query="SELECT * FROM "+GalleryTable.TABLE_NAME+" WHERE "+GalleryTable.IDGALLERY+" IN (SELECT * FROM "+TABLE_NAME+")";
+        public static List<GalleryDownloaderManager> getAllDownloads(Context context, SQLiteDatabase db) throws IOException {
+            String q="SELECT * FROM %s INNER JOIN %s ON %s=%s";
+            String query=String.format(Locale.US,q,GalleryTable.TABLE_NAME,DownloadTable.TABLE_NAME,GalleryTable.IDGALLERY,DownloadTable.ID_GALLERY);
             Cursor c=db.rawQuery(query,null);
-            List<Gallery>galleries= GalleryTable.cursorToList(c);
+            List<GalleryDownloaderManager>managers=new ArrayList<>();
+
+            Gallery x;
+            GalleryDownloaderManager m;
+            if(c.moveToFirst()){
+                do{
+                    x=GalleryTable.cursorToGallery(c);
+                    m=new GalleryDownloaderManager(context,x,c.getInt(c.getColumnIndex(RANGE_START)),c.getInt(c.getColumnIndex(RANGE_END)));
+                    managers.add(m);
+                }while (c.moveToNext());
+            }
             c.close();
-            return galleries;
+            return managers;
         }
     }
 
@@ -628,7 +650,7 @@ public class Queries{
                     b=new Bookmark(
                             cursor.getString(cursor.getColumnIndex(URL)),
                             cursor.getInt(cursor.getColumnIndex(PAGE)),
-                            ApiRequestType.values()[cursor.getInt(cursor.getColumnIndex(TYPE))],
+                            ApiRequestType.values[cursor.getInt(cursor.getColumnIndex(TYPE))],
                             cursor.getInt(cursor.getColumnIndex(TAG_ID))
                             );
                     bookmarks.add(b);

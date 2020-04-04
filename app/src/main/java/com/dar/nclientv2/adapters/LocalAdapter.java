@@ -31,6 +31,7 @@ import com.dar.nclientv2.async.downloader.DownloadQueue;
 import com.dar.nclientv2.async.downloader.GalleryDownloaderV2;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.LogUtility;
+import com.dar.nclientv2.utility.Utility;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -158,16 +159,19 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
             }else holder.layout.performClick();
         });
         holder.layout.setOnClickListener(v -> {
-            //Global.setLoadedGallery(ent);
-            Intent intent = new Intent(context, GalleryActivity.class);
-            intent.putExtra(context.getPackageName()+ ".GALLERY",ent);
-            intent.putExtra(context.getPackageName()+ ".ISLOCAL",true);
-            context.startActivity(intent);
+            startGallery(ent);
         });
         holder.layout.setOnLongClickListener(v -> {
             createPDF(holder.getAdapterPosition());
             return true;
         });
+    }
+
+    private void startGallery(LocalGallery ent) {
+        Intent intent = new Intent(context, GalleryActivity.class);
+        intent.putExtra(context.getPackageName()+ ".GALLERY",ent);
+        intent.putExtra(context.getPackageName()+ ".ISLOCAL",true);
+        context.runOnUiThread(()->context.startActivity(intent));
     }
 
     private void bindDownload(@NonNull final ViewHolder holder, int position, GalleryDownloaderV2 downloader){
@@ -306,6 +310,12 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
 
     public void removeObserver() {
         DownloadQueue.removeObserver(observer);
+    }
+
+    public void viewRandom() {
+        if(dataset.size()==0)return;
+        int x=Utility.RANDOM.nextInt(dataset.size());
+        startGallery(dataset.get(x));
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
