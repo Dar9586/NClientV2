@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import okhttp3.Request;
 import okhttp3.Response;
@@ -46,10 +47,7 @@ public class GalleryDownloaderV2 {
             this.ext=ext;
         }
         public String getPageName(){
-            StringBuilder fileName= new StringBuilder(""+page);
-            while(fileName.length()<3) fileName.insert(0, "0");
-            fileName.append('.').append(ext);
-            return fileName.toString();
+            return String.format(Locale.US,"%03d.%s",page,ext);
         }
     }
     public enum Status{NOT_STARTED,DOWNLOADING,PAUSED,FINISHED,CANCELED}
@@ -187,8 +185,9 @@ public class GalleryDownloaderV2 {
         if(filePath.exists()&&!isCorrupted(filePath))return true;
         try {
             Response r = Global.client.newCall(new Request.Builder().url(page.url).build()).execute();
-            if (r.code() != 200) return false;
+            if (r.code() != 200) {r.close();return false;}
             writeStreamToFile(r.body().byteStream(), filePath);
+            r.close();
             return true;
         }catch (IOException e){
             LogUtility.e(e,e);

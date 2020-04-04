@@ -8,9 +8,8 @@ import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.loginapi.User;
+import com.dar.nclientv2.utility.Utility;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
-
-import java.util.List;
 
 import okhttp3.Cookie;
 import okhttp3.HttpUrl;
@@ -19,18 +18,19 @@ public class Login{
     private static User user;
     private static boolean accountTag;
 
-    public static void  initUseAccountTag(@NonNull Context context){accountTag=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_use_account_tag),false);}
+    public static void  initUseAccountTag(@NonNull Context context){
+        accountTag=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_use_account_tag),false);
+    }
 
     public static boolean useAccountTag(){
         return accountTag;
     }
 
     public static void logout(){
+        updateUser(null);
+        clearOnlineTags();
+    }
 
-    }
-    public static List<Tag> getOnlineTags() {
-        return Queries.TagTable.getAllOnlineBlacklisted();
-    }
     public static void clearOnlineTags(){
         Queries.TagTable.removeAllBlacklisted(Database.getDatabase());
     }
@@ -45,11 +45,10 @@ public class Login{
     public static boolean isLogged(){
         if(Global.client==null)return false;
         PersistentCookieJar p=((PersistentCookieJar)Global.client.cookieJar());
-        for(Cookie c:p.loadForRequest(HttpUrl.get("https://nhentai.net/"))){
+        for(Cookie c:p.loadForRequest(HttpUrl.get(Utility.BASE_URL))){
             if(c.name().equals("sessionid"))return true;
         }
         return false;
-
     }
 
 

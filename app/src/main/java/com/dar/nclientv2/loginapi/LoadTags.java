@@ -2,7 +2,6 @@ package com.dar.nclientv2.loginapi;
 
 import android.util.JsonReader;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.dar.nclientv2.adapters.TagsAdapter;
@@ -11,56 +10,75 @@ import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.utility.LogUtility;
+import com.dar.nclientv2.utility.Utility;
 
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Locale;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.Request;
 import okhttp3.Response;
 
 public class LoadTags extends Thread {
+    @Nullable
     private final TagsAdapter adapter;
 
     public LoadTags(@Nullable TagsAdapter adapter) {
         this.adapter = adapter;
     }
 
+    private Elements getScripts(String url)throws IOException{
+
+        Response response = Global.client.newCall(new Request.Builder().url(url).build()).execute();
+        Elements x = Jsoup.parse(response.body().byteStream(), null, Utility.BASE_URL).getElementsByTag("script");
+        response.close();
+        return x;
+    }
+
+    private String extractArray(Element e) {
+        String t = e.toString();
+        return t.substring(t.indexOf('['), t.indexOf(';'));
+    }
+
+    private void readTags(JsonReader reader) throws IOException{
+        reader.beginArray();
+        while (reader.hasNext()) {
+            Tag tt = new Tag(reader);
+            if (tt.getType() != TagType.LANGUAGE && tt.getType() != TagType.CATEGORY) {
+                Login.addOnlineTag(tt);
+                if (adapter != null) adapter.addItem();
+            }
+        }
+    }
+
     @Override
     public void run() {
         super.run();
-        if(Login.getUser()==null)return;
-        LogUtility.d(String.format(Locale.US,"Creating blacklist of: https://nhentai.net/users/%d/%s/blacklist",Login.getUser().getId(),Login.getUser().getCodename()));
-        Global.client.newCall(new Request.Builder().url(String.format(Locale.US,"https://nhentai.net/users/%s/%s/blacklist",Login.getUser().getId(),Login.getUser().getCodename())).build()).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+        if (Login.getUser() == null) return;
+        String url = String.format(Locale.US, "https://nhentai.net/users/%s/%s/blacklist",
+                Login.getUser().getId(), Login.getUser().getCodename()
+        );
+        LogUtility.d(url);
+        try {
+            Elements scripts = getScripts(url);
+            analyzeScripts(scripts);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-            }
+    }
 
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                Login.clearOnlineTags();
-                Elements x= Jsoup.parse(response.body().byteStream(),null,"https://nhentai.net/").getElementsByTag("script");
-                if(x.size()>0) {
-                    String t = x.last().toString();
-                    t=t.substring(t.indexOf('['), t.indexOf(';'));
-                    JsonReader reader=new JsonReader(new StringReader(t));
-                    reader.beginArray();
-                    while (reader.hasNext()){
-                        Tag tt=new Tag(reader);
-                        if(tt.getType()!=TagType.LANGUAGE&&tt.getType()!=TagType.CATEGORY) {
-                            Login.addOnlineTag(tt);
-                            if (adapter != null) adapter.addItem();
-                        }
-                    }
-                    reader.close();
-                }
-            }
-        });
+    private void analyzeScripts(Elements scripts)throws IOException {
+        if (scripts.size() > 0) {
+            Login.clearOnlineTags();
+            String array=extractArray(scripts.last());
+            JsonReader reader = new JsonReader(new StringReader(array));
+            readTags(reader);
+            reader.close();
+        }
     }
 }

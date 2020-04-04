@@ -477,7 +477,9 @@ public class Gallery extends GenericGallery{
         }
         jr.endObject();
     }
-
+    public String getFilename(int page){
+        return String.format(Locale.US,"%03d.%s",page,getPageExtension(page));
+    }
     @Override
     public String getTitle() {
         return getTitle(Global.getTitleType());

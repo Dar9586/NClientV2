@@ -227,11 +227,7 @@ public class DownloadGallery extends JobIntentService {
     }
 */
     private File getFilename(int page){
-        StringBuilder name=new StringBuilder(7);
-        if(page<10)name.append("00");
-        else if(page<100)name.append('0');
-        name.append(page).append('.').append(gallery.getPageExtension(0));
-        return new File(folder,name.toString());
+        return new File(folder, gallery.getFilename(page));
     }
     private boolean saveImage(int index,File file)throws IOException {
         LogUtility.d("Saving: "+file.getAbsolutePath()+" from rl: "+urls.get(0));
@@ -250,6 +246,7 @@ public class DownloadGallery extends JobIntentService {
         stream.flush();
         str.close();
         stream.close();
+        response.close();
         return true;
     }
 

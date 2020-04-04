@@ -32,6 +32,7 @@ public class MySender implements ReportSender{
             Request.Builder request = new Request.Builder().post(requestBody).url("https://alpastudios.000webhostapp.com/report.php");
             Response x = new OkHttpClient().newCall(request.build()).execute();
             LogUtility.d( x.code() + x.body().string());
+            x.close();
         }catch(JSONException | IOException e){
             LogUtility.e( e.getLocalizedMessage(), e);
         }

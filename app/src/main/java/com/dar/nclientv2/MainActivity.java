@@ -657,7 +657,7 @@ public class MainActivity extends BaseActivity
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
         builder.setIcon(R.drawable.ic_exit_to_app).setTitle(R.string.logout).setMessage(R.string.are_you_sure);
         builder.setPositiveButton(R.string.yes, (dialogInterface, i) -> {
-            Login.logout(MainActivity.this);
+            Login.logout();
             onlineFavoriteManager.setVisible(false);
             loginItem.setTitle(R.string.login);
         }).setNegativeButton(R.string.no,null).show();

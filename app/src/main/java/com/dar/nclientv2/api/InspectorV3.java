@@ -18,6 +18,7 @@ import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.utility.LogUtility;
+import com.dar.nclientv2.utility.Utility;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -262,10 +263,11 @@ public class InspectorV3 extends Thread implements Parcelable {
 
     public void execute()throws IOException{
             Response response=Global.client.newCall(new Request.Builder().url(url).build()).execute();
-            Document document= Jsoup.parse(response.body().byteStream(),"UTF-8","https://nhentai.net/");
+            Document document= Jsoup.parse(response.body().byteStream(),"UTF-8", Utility.BASE_URL);
             if(requestType==ApiRequestType.BYSINGLE||requestType==ApiRequestType.RANDOM)
                 doSingle(document.body());
             else doSearch(document.body());
+            response.close();
     }
 
     @Override
@@ -283,8 +285,9 @@ public class InspectorV3 extends Thread implements Parcelable {
     }
     private void doSingle(Element document) throws IOException {
         galleries=new ArrayList<>(1);
-        //Elements xxxxxxx=document.getElementsByTag("script");
-        String x=document.getElementsByTag("script").last().html();
+        Elements scripts=document.getElementsByTag("script");
+        if(scripts.size()==0 )return;
+        String x=scripts.last().html();
         int s=x.indexOf("new N.gallery(");
         if(s<0)return;
         s+=14;

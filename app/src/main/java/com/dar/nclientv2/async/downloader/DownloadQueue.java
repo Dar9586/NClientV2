@@ -7,8 +7,11 @@ public class DownloadQueue {
     private static final ArrayList<GalleryDownloaderManager>downloadQueue=new ArrayList<>();
     public static void add(GalleryDownloaderManager x){
         for(GalleryDownloaderManager manager:downloadQueue)
-            if(x.downloader().getId()==manager.downloader().getId())
+            if(x.downloader().getId()==manager.downloader().getId()) {
+                manager.downloader().setStatus(GalleryDownloaderV2.Status.NOT_STARTED);
+                givePriority(manager.downloader());
                 return;
+            }
         downloadQueue.add(x);
     }
     public static boolean finished(){

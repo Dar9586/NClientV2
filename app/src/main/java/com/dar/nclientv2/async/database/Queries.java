@@ -402,7 +402,7 @@ public class Queries{
         public static void removeAllBlacklisted(SQLiteDatabase db){
             ContentValues values=new ContentValues(1);
             values.put(ONLINE,0);
-            db.updateWithOnConflict(TABLE_NAME,values, ONLINE +"=1",null,SQLiteDatabase.CONFLICT_IGNORE);
+            db.updateWithOnConflict(TABLE_NAME,values, null,null,SQLiteDatabase.CONFLICT_IGNORE);
         }
 
         public static void resetAllStatus(SQLiteDatabase db){

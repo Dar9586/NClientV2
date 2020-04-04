@@ -15,7 +15,7 @@ import java.util.Collections;
 public class Bookmark {
     public final String url;
     public final int page,tag;
-    public final ApiRequestType requestType;
+    private final ApiRequestType requestType;
     private final Tag tagVal;
     private final Uri uri;
     public Bookmark(String url, int page, ApiRequestType requestType, int tag) {
@@ -27,7 +27,6 @@ public class Bookmark {
         this.uri=Uri.parse(url);
     }
     public InspectorV3 createInspector(Context context, InspectorV3.InspectorResponse response){
-
         String query=uri.getQueryParameter("q");
         boolean popular="popular".equals(uri.getQueryParameter("sort"));
         switch (requestType){
@@ -47,7 +46,7 @@ public class Bookmark {
     @Override
     public String toString() {
         switch (requestType){
-            case BYTAG:return tagVal.getType()+": "+tagVal.getName();
+            case BYTAG:return tagVal.getType().getSingle()+": "+tagVal.getName();
             case FAVORITE:return "Favorite";
             case BYSEARCH:return ""+uri.getQueryParameter("q");
             case BYALL:return "Main page";

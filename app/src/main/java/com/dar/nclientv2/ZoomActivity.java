@@ -280,10 +280,7 @@ public class ZoomActivity extends AppCompatActivity {
             endName=gallery.getPage(pageNum).getName();
         }else{
             Gallery gallery=(Gallery) this.gallery;
-            if(pageNum>100)endName="";
-            else if (pageNum>10)endName="0";
-            else endName="00";
-            endName+=pageNum+"."+gallery.getPageExtension(pageNum);
+            endName=gallery.getFilename(pageNum);
         }
         try {
             file = File.createTempFile(""+gallery.getId(),endName);

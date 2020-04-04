@@ -7,7 +7,6 @@ import android.content.Intent;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.core.app.TaskStackBuilder;
 
 import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.R;
@@ -49,6 +48,7 @@ public class GalleryDownloaderManager {
         @Override
         public void triggerStopDownlaod(GalleryDownloaderV2 downloader) {
             cancelNotification();
+            Global.recursiveDelete(downloader.getFolder());
         }
 
         @Override

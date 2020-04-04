@@ -35,7 +35,7 @@ public class ScrapeTags extends JobIntentService {
         LogUtility.d("Scraping tags");
         try {
             Response x=Global.client.newCall(new Request.Builder().url(URL).build()).execute();
-            if(x.code()!=200)return;
+            if(x.code()!=200){x.close();return;}
             JsonReader reader=new JsonReader(x.body().charStream());
             reader.beginArray();
 
@@ -49,6 +49,8 @@ public class ScrapeTags extends JobIntentService {
                 Queries.TagTable.insert(tag,true);
                 reader.endArray();
             }
+            reader.close();
+            x.close();
             getApplicationContext().getSharedPreferences("Settings",0).edit().putLong("lastSync",nowTime.getTime()).apply();
             LogUtility.d("End scraping");
         } catch (IOException e) {

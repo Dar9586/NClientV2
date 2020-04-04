@@ -21,10 +21,9 @@ import com.dar.nclientv2.settings.Login;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -36,11 +35,12 @@ import okhttp3.Response;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHolder> {
     private List<Comment>comments;
-    private SimpleDateFormat format=new SimpleDateFormat("dd/MM/yyyy", Locale.US);
+    private DateFormat format;
     private int userId,galleryId;
     private final AppCompatActivity context;
     public CommentAdapter(AppCompatActivity context, List<Comment> comments, int galleryId) {
         this.context=context;
+        format=android.text.format.DateFormat.getDateFormat(context);
         this.galleryId=galleryId;
         this.comments =comments==null?new ArrayList<>():comments;
         if(Login.isLogged()&&Login.getUser()!=null){
