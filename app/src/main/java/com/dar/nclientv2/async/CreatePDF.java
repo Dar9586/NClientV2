@@ -2,6 +2,7 @@ package com.dar.nclientv2.async;
 
 import android.annotation.TargetApi;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -33,7 +34,11 @@ public class CreatePDF extends JobIntentService {
     private NotificationCompat.Builder notification;
     public CreatePDF() {
     }
-
+    public static void startWork(Context context, LocalGallery gallery){
+        Intent i=new Intent();
+        i.putExtra(context.getPackageName() + ".GALLERY",gallery);
+        enqueueWork(context,CreatePDF.class,444,i);
+    }
     @Override
     protected void onHandleWork(@Nullable Intent intent) {
         notId=Global.getNotificationId();

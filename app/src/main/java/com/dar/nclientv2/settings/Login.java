@@ -32,7 +32,7 @@ public class Login{
     }
 
     public static void clearOnlineTags(){
-        Queries.TagTable.removeAllBlacklisted(Database.getDatabase());
+        Queries.TagTable.removeAllBlacklisted();
     }
     public static void addOnlineTag(Tag tag){
         Queries.TagTable.insert(tag);
@@ -43,8 +43,8 @@ public class Login{
     }
 
     public static boolean isLogged(){
-        if(Global.client==null)return false;
-        PersistentCookieJar p=((PersistentCookieJar)Global.client.cookieJar());
+        if(Global.getClient()==null)return false;
+        PersistentCookieJar p=((PersistentCookieJar)Global.getClient().cookieJar());
         for(Cookie c:p.loadForRequest(HttpUrl.get(Utility.BASE_URL))){
             if(c.name().equals("sessionid"))return true;
         }

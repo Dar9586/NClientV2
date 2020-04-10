@@ -1,7 +1,6 @@
 package com.dar.nclientv2.adapters;
 
 import android.database.Cursor;
-import android.graphics.Color;
 import android.util.JsonWriter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +41,7 @@ import okhttp3.Response;
 public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> implements Filterable{
     private enum TagMode{ONLINE,OFFLINE,TYPE}
     private final TagFilterActivity context;
-    private final boolean logged=Login.isLogged(),black=Global.getTheme()==Global.ThemeScheme.BLACK;
+    private final boolean logged=Login.isLogged();
     private String lastQuery=null;
     private final TagType type;
     private final TagMode tagMode;
@@ -115,7 +114,6 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
     }
     @Override
     public void onBindViewHolder(@NonNull final TagsAdapter.ViewHolder holder, int position) {
-        if(black)holder.master.setBackgroundColor(Color.BLACK);
         cursor.moveToPosition(position);
         final Tag ent=Queries.TagTable.cursorToTag(cursor);
         holder.title.setText(ent.getName());
@@ -175,7 +173,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         jw.endArray().endObject();
         final String url=String.format(Locale.US,"https://nhentai.net/users/%d/%s/blacklist",Login.getUser().getId(),Login.getUser().getCodename());
         final RequestBody ss=RequestBody.create(MediaType.get("application/json"),sw.toString());
-        Global.client.newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
+        Global.getClient(context).newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {}
 
@@ -185,7 +183,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
                 token=token.substring(token.lastIndexOf("csrf_token"));
                 token=token.substring(token.indexOf('"')+1);
                 token=token.substring(0,token.indexOf('"'));
-                Global.client.newCall(new Request.Builder().addHeader("Referer",url).addHeader("X-CSRFToken",token).url(url).post(ss).build()).enqueue(new Callback() {
+                Global.getClient(context).newCall(new Request.Builder().addHeader("Referer",url).addHeader("X-CSRFToken",token).url(url).post(ss).build()).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call, @NonNull IOException e) {}
 

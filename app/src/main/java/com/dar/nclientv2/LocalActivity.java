@@ -75,7 +75,7 @@ public class LocalActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        adapter.removeObserver();
+        if(adapter!=null)adapter.removeObserver();
         super.onDestroy();
     }
 
@@ -96,16 +96,16 @@ public class LocalActivity extends BaseActivity {
                 finish();
                 return true;
             case R.id.pauseAll:
-                adapter.pauseAll();
+                if(adapter!=null)adapter.pauseAll();
                 break;
             case R.id.startAll:
-                adapter.startAll();
+                if(adapter!=null)adapter.startAll();
                 break;
             case R.id.cancelAll:
-                adapter.cancellAll();
+                if(adapter!=null)adapter.cancellAll();
                 break;
             case R.id.random_favorite:
-                adapter.viewRandom();
+                if(adapter!=null)adapter.viewRandom();
                 break;
         }
         return super.onOptionsItemSelected(item);

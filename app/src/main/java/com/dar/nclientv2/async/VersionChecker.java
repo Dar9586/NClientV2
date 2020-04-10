@@ -44,7 +44,7 @@ public class VersionChecker{
         String versionName= Global.getVersionName(context);
         LogUtility.d("ACTUAL VERSION: "+versionName);
         if(versionName!=null){
-            Global.client.newCall(new Request.Builder().url(LATEST_API_URL).build()).enqueue(new Callback(){
+            Global.getClient(context).newCall(new Request.Builder().url(LATEST_API_URL).build()).enqueue(new Callback(){
                 @Override
                 public void onFailure(@NonNull Call call,@NonNull IOException e){
                     context.runOnUiThread(()->{
@@ -142,7 +142,7 @@ public class VersionChecker{
             f.delete();
         }
         LogUtility.d(f.getAbsolutePath());
-        Global.client.newCall(new Request.Builder().url(downloadUrl).build()).enqueue(new Callback() {
+        Global.getClient(context).newCall(new Request.Builder().url(downloadUrl).build()).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 context.runOnUiThread(() -> Toast.makeText(context,R.string.download_update_failed,Toast.LENGTH_LONG).show());

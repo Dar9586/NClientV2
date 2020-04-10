@@ -29,7 +29,7 @@ public class HistoryActivity extends BaseActivity {
         getSupportActionBar().setTitle(R.string.history);
         recycler=findViewById(R.id.recycler);
         adapter=new ListAdapter(this);
-        adapter.addGalleries(new ArrayList<>(Queries.HistoryTable.getHistory(Database.getDatabase())));
+        adapter.addGalleries(new ArrayList<>(Queries.HistoryTable.getHistory()));
         changeLayout(getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE);
         recycler.setAdapter(adapter);
     }

@@ -67,7 +67,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.close.setVisibility(c.getPosterId()!=userId?View.GONE:View.VISIBLE);
         holder.close.setOnClickListener(v -> {
             Comment cr=comments.get(holder.getAdapterPosition());
-            Global.client.newCall(new Request.Builder().post(new FormBody.Builder().build()).url("https://nhentai.net/g/"+galleryId).build()).enqueue(new Callback() {
+            Global.getClient(context).newCall(new Request.Builder().post(new FormBody.Builder().build()).url("https://nhentai.net/g/"+galleryId).build()).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
 
@@ -87,11 +87,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                             .url("https://nhentai.net/api/comments/"+cr.getId()+"/delete");
 
                     StringBuilder builder1=new StringBuilder();
-                    for (Cookie cookie:Global.client.cookieJar().loadForRequest(HttpUrl.get("https://nhentai.net/api/comments/"+cr.getId()+"/delete"))){
+                    for (Cookie cookie:Global.getClient(context).cookieJar().loadForRequest(HttpUrl.get("https://nhentai.net/api/comments/"+cr.getId()+"/delete"))){
                         builder1.append(cookie.name()).append('=').append(cookie.value()).append("; ");
                     }
                     builder.addHeader("Cookie",builder1.toString());
-                    Global.client.newCall(builder.build()).enqueue(new Callback() {
+                    Global.getClient(context).newCall(builder.build()).enqueue(new Callback() {
                         @Override
                         public void onFailure(Call call, IOException e) {
 

@@ -1,5 +1,6 @@
 package com.dar.nclientv2.async;
 
+import android.content.Context;
 import android.content.Intent;
 import android.util.JsonReader;
 
@@ -25,7 +26,9 @@ public class ScrapeTags extends JobIntentService {
     private static final String URL="https://raw.githubusercontent.com/Dar9586/NClientV2/master/data/tags.json";
     public ScrapeTags() {
     }
-
+    public static void startWork(Context context){
+        enqueueWork(context,ScrapeTags.class,2000,new Intent());
+    }
 
     @Override
     protected void onHandleWork(@Nullable Intent intent) {
@@ -34,7 +37,7 @@ public class ScrapeTags extends JobIntentService {
         if(!enoughDayPassed(nowTime,lastTime))return;
         LogUtility.d("Scraping tags");
         try {
-            Response x=Global.client.newCall(new Request.Builder().url(URL).build()).execute();
+            Response x=Global.getClient(this).newCall(new Request.Builder().url(URL).build()).execute();
             if(x.code()!=200){x.close();return;}
             JsonReader reader=new JsonReader(x.body().charStream());
             reader.beginArray();

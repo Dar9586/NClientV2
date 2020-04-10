@@ -402,13 +402,13 @@ public class Queries{
             values.put(ONLINE,online?1:0);
             db.updateWithOnConflict(TABLE_NAME,values, IDTAG +"=?",new String[]{""+tag.getId()},SQLiteDatabase.CONFLICT_IGNORE);
         }
-        public static void removeAllBlacklisted(SQLiteDatabase db){
+        public static void removeAllBlacklisted(){
             ContentValues values=new ContentValues(1);
             values.put(ONLINE,0);
             db.updateWithOnConflict(TABLE_NAME,values, null,null,SQLiteDatabase.CONFLICT_IGNORE);
         }
 
-        public static void resetAllStatus(SQLiteDatabase db){
+        public static void resetAllStatus(){
             ContentValues values=new ContentValues(1);
             values.put(STATUS,TagStatus.DEFAULT.ordinal());
             db.updateWithOnConflict(TABLE_NAME,values,null,null,SQLiteDatabase.CONFLICT_IGNORE);
@@ -540,7 +540,7 @@ public class Queries{
             if(!favorite) Queries.GalleryTable.delete(id);
             db.delete(TABLE_NAME,ID_GALLERY+"=?",new String[]{""+id});
         }
-        public static List<GalleryDownloaderManager> getAllDownloads(Context context, SQLiteDatabase db) throws IOException {
+        public static List<GalleryDownloaderManager> getAllDownloads(Context context) throws IOException {
             String q="SELECT * FROM %s INNER JOIN %s ON %s=%s";
             String query=String.format(Locale.US,q,GalleryTable.TABLE_NAME,DownloadTable.TABLE_NAME,GalleryTable.IDGALLERY,DownloadTable.ID_GALLERY);
             Cursor c=db.rawQuery(query,null);
@@ -590,7 +590,7 @@ public class Queries{
             db.insertWithOnConflict(TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_REPLACE);
             cleanHistory(db);
         }
-        public static List<SimpleGallery>getHistory(SQLiteDatabase db){
+        public static List<SimpleGallery>getHistory(){
             ArrayList<SimpleGallery>galleries=new ArrayList<>();
             Cursor c=db.query(TABLE_NAME,null,null,null,null,null,TIME+" DESC",""+Global.getMaxHistory());
             if(c.moveToFirst()){
@@ -639,7 +639,7 @@ public class Queries{
             LogUtility.d("ADDED: "+inspector.getUrl());
             db.insertWithOnConflict(TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_IGNORE);
         }
-        public static List<Bookmark>getBookmarks(SQLiteDatabase db){
+        public static List<Bookmark>getBookmarks(){
             String query="SELECT * FROM "+TABLE_NAME;
             Cursor cursor=db.rawQuery(query,null);
             List<Bookmark>bookmarks=new ArrayList<>(cursor.getCount());
@@ -771,8 +771,8 @@ public class Queries{
             db.insertWithOnConflict(TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_IGNORE);
         }
 
-        public static void removeFavorite(Gallery gallery) {
-            db.delete(TABLE_NAME,ID_GALLERY+"=?",new String[]{""+gallery.getId()});
+        public static void removeFavorite(int id) {
+            db.delete(TABLE_NAME,ID_GALLERY+"=?",new String[]{""+id});
         }
 
         public static int countFavorite(){

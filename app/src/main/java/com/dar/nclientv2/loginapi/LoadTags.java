@@ -33,7 +33,7 @@ public class LoadTags extends Thread {
 
     private Elements getScripts(String url)throws IOException{
 
-        Response response = Global.client.newCall(new Request.Builder().url(url).build()).execute();
+        Response response = Global.getClient().newCall(new Request.Builder().url(url).build()).execute();
         Elements x = Jsoup.parse(response.body().byteStream(), null, Utility.BASE_URL).getElementsByTag("script");
         response.close();
         return x;

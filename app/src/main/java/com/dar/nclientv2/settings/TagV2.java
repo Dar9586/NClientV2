@@ -46,7 +46,7 @@ public class TagV2{
 
     }
     public static void resetAllStatus(){
-        Queries.TagTable.resetAllStatus(Database.getDatabase());
+        Queries.TagTable.resetAllStatus();
     }
     public static boolean containTag(Tag[]tags,Tag t){
         for(Tag t1:tags)if(t.equals(t1))return true;

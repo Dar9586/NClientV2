@@ -25,7 +25,7 @@ public class User {
         void onCreateUser(User user);
     }
     public static void createUser(final CreateUser createUser){
-        Global.client.newCall(new Request.Builder().url("https://nhentai.net/").build()).enqueue(new Callback() {
+        Global.getClient().newCall(new Request.Builder().url("https://nhentai.net/").build()).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {}
 

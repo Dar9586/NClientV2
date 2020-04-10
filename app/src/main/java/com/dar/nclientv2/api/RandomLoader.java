@@ -22,11 +22,11 @@ public class RandomLoader {
 
         @Override
         public void onSuccess(List<GenericGallery> galleryList) {
-            Gallery gallery=(Gallery) galleryList.get(0);
-            if(!gallery.isValid()){
+            if(galleryList.size()==0 || !galleryList.get(0).isValid()){
                 loadRandomGallery();
                 return;
             }
+            Gallery gallery=(Gallery) galleryList.get(0);
             galleries.add(gallery);
             Global.preloadImage(activity,gallery.getCover());
             if (galleryHasBeenRequested) requestGallery();//requestGallery will call loadRandomGallery

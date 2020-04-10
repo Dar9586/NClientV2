@@ -200,7 +200,7 @@ public class GalleryDownloaderV2 {
         LogUtility.d("Saving into: "+filePath+","+page.url);
         if(filePath.exists()&&!isCorrupted(filePath))return true;
         try {
-            Response r = Global.client.newCall(new Request.Builder().url(page.url).build()).execute();
+            Response r = Global.getClient(context).newCall(new Request.Builder().url(page.url).build()).execute();
             if (r.code() != 200) {r.close();return false;}
             writeStreamToFile(r.body().byteStream(), filePath);
             r.close();

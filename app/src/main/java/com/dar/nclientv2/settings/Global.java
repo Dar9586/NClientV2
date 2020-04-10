@@ -91,7 +91,7 @@ public class Global {
         ACRA.getErrorReporter().setEnabled(context.getSharedPreferences("Settings",0).getBoolean(context.getString(R.string.key_send_report),true));
     }
 
-    public enum ThemeScheme{LIGHT,DARK,BLACK}
+    public enum ThemeScheme{LIGHT,DARK}
 
     public static OkHttpClient client=null;
     public static  File OLD_GALLERYFOLDER;
@@ -127,7 +127,15 @@ public class Global {
     private static int maxHistory,notificationId,columnCount,maxId,galleryWidth=-1, galleryHeight =-1;
     private static int colPortHist,colLandHist,colPortMain,colLandMain,colPortDownload,colLandDownload,colLandFavorite,colPortFavorite;
     private static Point screenSize;
-
+    @Nullable
+    public static OkHttpClient getClient(){
+        return client;
+    }
+    @NonNull
+    public static OkHttpClient getClient(Context context){
+        if(client==null)initHttpClient(context);
+        return client;
+    }
     public static int getGalleryWidth(){
         return galleryWidth;
     }
@@ -203,7 +211,7 @@ public class Global {
         colLandFavorite=shared.getInt(context.getString(R.string.key_column_land_favo),4);
         colPortHist=shared.getInt(context.getString(R.string.key_column_port_hist),2);
         colLandHist=shared.getInt(context.getString(R.string.key_column_land_hist),4);
-        int x=shared.getInt(context.getString(R.string.key_only_language),Language.ALL.ordinal());
+        int x=Math.max(0,shared.getInt(context.getString(R.string.key_only_language),Language.ALL.ordinal()));
         if(Language.values()[x]==Language.UNKNOWN){
             updateOnlyLanguage(context,Language.ALL);
             x=Language.ALL.ordinal();
@@ -243,7 +251,7 @@ public class Global {
     }
     private static ThemeScheme initTheme(Context context){
         String h=context.getSharedPreferences("Settings",0).getString(context.getString(R.string.key_theme_select),"dark");
-        return theme=h.equals("light")?ThemeScheme.LIGHT:h.equals("dark")?ThemeScheme.DARK:ThemeScheme.BLACK;
+        return theme=h.equals("light")?ThemeScheme.LIGHT:ThemeScheme.DARK;
     }
 
     public static boolean shouldCheckForUpdates(Context context){
@@ -424,6 +432,7 @@ public class Global {
     }
     public static void loadImage(String url, final ImageView imageView){loadImage(url,imageView,false);}
     public static void loadImage(String url, final ImageView imageView,boolean force){
+
         if(loadImages||force)Glide.with(imageView).load(url).placeholder(getLogo(imageView.getResources())).into(imageView);
         else Glide.with(imageView).load(getLogo(imageView.getResources())).into(imageView);
     }
@@ -491,12 +500,11 @@ public class Global {
         switch (initTheme(context)){
             case LIGHT:context.setTheme(R.style.LightTheme);break;
             case DARK:context.setTheme(R.style.DarkTheme);break;
-            case BLACK:context.setTheme(R.style.Theme_Amoled);break;
         }
     }
 
     public static void recursiveDelete(File file){
-        if(!file.exists())return;
+        if(file==null||!file.exists())return;
         if(file.isFile()){file.delete();return;}
         for(File x:file.listFiles())recursiveDelete(x);
         file.delete();

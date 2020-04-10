@@ -46,7 +46,7 @@ public class LoginThread extends Thread {
         loginResponse.responseCode(code);
     }
     private int makeRequest(String url) throws IOException {
-        Response response = Global.client.newCall(new Request.Builder().url(url).build()).execute();
+        Response response = Global.getClient().newCall(new Request.Builder().url(url).build()).execute();
         Document doc=Jsoup.parse(response.body().byteStream(),null,Utility.BASE_URL);
         response.close();
         Element ele=doc.getElementsByAttributeValue("name","csrfmiddlewaretoken").first();
@@ -55,7 +55,7 @@ public class LoginThread extends Thread {
         requestBody.add("csrfmiddlewaretoken",token);
         LogUtility.d("Found token: "+token);
         LogUtility.d(requestBody);
-        response=Global.client.newCall(
+        response=Global.getClient().newCall(
                 new Request.Builder()
                         .addHeader("Referer", url)
                         .url(url)

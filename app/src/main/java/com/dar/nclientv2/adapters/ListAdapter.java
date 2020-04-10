@@ -1,7 +1,6 @@
 package com.dar.nclientv2.adapters;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.text.Layout;
 import android.view.LayoutInflater;
@@ -37,14 +36,13 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
 
     private List<SimpleGallery> mDataset;
     private final BaseActivity context;
-    private final boolean storagePermission,black;
+    private final boolean storagePermission;
     private final String queryString;
 
     public ListAdapter(BaseActivity cont) {
         this.context=cont;
         this.mDataset =new ArrayList<>();
         storagePermission=Global.hasStoragePermission(context);
-        black=Global.getTheme()== Global.ThemeScheme.BLACK;
         Set<Tag>t=new HashSet<>(Queries.TagTable.getAllStatus( TagStatus.AVOIDED));
         if(Login.useAccountTag())t.addAll(Queries.TagTable.getAllOnlineBlacklisted());
         queryString=TagV2.getAvoidedTags();
@@ -90,7 +88,6 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
                 params.height=Global.getGalleryHeight();
                 card.setLayoutParams(params);
             }
-            if(black)holder.layout.setBackgroundColor(Color.BLACK);
             holder.overlay.setVisibility((queryString!=null&&ent.hasIgnoredTags(queryString))?View.VISIBLE:View.GONE);
             loadGallery(holder,ent);
             holder.pages.setVisibility(View.GONE);

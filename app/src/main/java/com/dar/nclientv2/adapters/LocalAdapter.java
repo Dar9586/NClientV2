@@ -1,7 +1,6 @@
 package com.dar.nclientv2.adapters;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.text.Layout;
 import android.view.LayoutInflater;
@@ -41,7 +40,6 @@ import java.util.Locale;
 
 public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> implements Filterable {
     private final LocalActivity context;
-    private final boolean black;
     private List<Object> filter;
     private List<LocalGallery> dataset;
     private List<GalleryDownloaderV2> galleryDownloaders;
@@ -88,6 +86,8 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         boolean b2=o2 instanceof LocalGallery;
         String s1=b1?((LocalGallery) o1).getTitle():((GalleryDownloaderV2)o1).getPathTitle();
         String s2=b2?((LocalGallery) o2).getTitle():((GalleryDownloaderV2)o2).getPathTitle();
+        if(s1==null)s1="";
+        if(s2==null)s2="";
         int c=s1.compareTo(s2);
         if(c!=0)return c;
         if(b1==b2)return 0;
@@ -115,7 +115,6 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         dataset=myDataset;
         colCount=cont.getColCount();
         galleryDownloaders= DownloadQueue.getDownloaders();
-        black=Global.getTheme()== Global.ThemeScheme.BLACK;
 
         filter=new ArrayList<>(myDataset);
         filter.addAll(galleryDownloaders);
@@ -142,7 +141,6 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
     }
 
     private void bindGallery(@NonNull final ViewHolder holder, int position, LocalGallery ent){
-        if(black)holder.layout.setBackgroundColor(Color.BLACK);
         holder.flag.setVisibility(View.GONE);
         Global.loadImage(ent.getPage(ent.getMin()),holder.imgView);
         holder.title.setText(ent.getTitle());
@@ -239,9 +237,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         builder.setTitle(R.string.create_pdf).setMessage(context.getString(R.string.create_pdf_format,gallery.getTitle()));
         builder.setPositiveButton(R.string.yes, (dialog, which) -> {
-            Intent i=new Intent(context.getApplicationContext(),CreatePDF.class);
-            i.putExtra(context.getPackageName()+".GALLERY",gallery);
-            context.startService(i);
+            CreatePDF.startWork(context,gallery);
         }).setNegativeButton(R.string.no,null).setCancelable(true);
         builder.show();
     }
@@ -265,9 +261,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         builder.setTitle(R.string.create_zip).setMessage(context.getString(R.string.create_zip_format,gallery.getTitle()));
         builder.setPositiveButton(R.string.yes, (dialog, which) -> {
-            Intent i=new Intent(context.getApplicationContext(), CreateZIP.class);
-            i.putExtra(context.getPackageName()+".GALLERY",gallery);
-            context.startService(i);
+            CreateZIP.startWork(context,gallery);
         }).setNegativeButton(R.string.no,null).setCancelable(true);
         builder.show();
 

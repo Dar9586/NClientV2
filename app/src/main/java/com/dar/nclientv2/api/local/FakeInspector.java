@@ -26,7 +26,9 @@ public class FakeInspector extends AsyncTask<LocalActivity,LocalActivity,LocalAc
         publishProgress(voids[0]);
         File parent=Global.DOWNLOADFOLDER;
         parent.mkdirs();
-        for (File f:parent.listFiles())createGallery(f);
+        File[]files=parent.listFiles();
+        if(files==null)return voids[0];
+        for (File f:files)createGallery(f);
         for (String x:invalidPaths) LogUtility.d("Invalid path: "+x);
         return voids[0];
     }

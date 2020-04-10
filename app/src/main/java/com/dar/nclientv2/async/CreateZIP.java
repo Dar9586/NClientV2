@@ -1,5 +1,6 @@
 package com.dar.nclientv2.async;
 
+import android.content.Context;
 import android.content.Intent;
 
 import androidx.annotation.Nullable;
@@ -26,7 +27,11 @@ public class CreateZIP extends JobIntentService {
     private byte[]buffer=new byte[1024];
     public CreateZIP() {
     }
-
+    public static void startWork(Context context,LocalGallery gallery){
+        Intent i=new Intent();
+        i.putExtra(context.getPackageName() + ".GALLERY",gallery);
+        enqueueWork(context,CreateZIP.class,555,i);
+    }
     @Override
     protected void onHandleWork(@Nullable Intent intent) {
         System.gc();

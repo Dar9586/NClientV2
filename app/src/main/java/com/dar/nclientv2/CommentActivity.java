@@ -65,8 +65,8 @@ public class CommentActivity extends BaseActivity {
                     e.printStackTrace();
                 }
                 RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),writer.toString());
-
-                Global.client.newCall(new Request.Builder().url("https://nhentai.net/g/"+g.getId()).build()).enqueue(new Callback() {
+                assert Global.getClient()!=null;
+                Global.getClient().newCall(new Request.Builder().url("https://nhentai.net/g/"+g.getId()).build()).enqueue(new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
 
@@ -78,7 +78,7 @@ public class CommentActivity extends BaseActivity {
                         token=token.substring(token.lastIndexOf("csrf_token"));
                         token=token.substring(token.indexOf('"')+1);
                         token=token.substring(0,token.indexOf('"'));
-                        Global.client.newCall(new Request.Builder().addHeader("Referer","https://nhentai.net/g/"+g.getId()).addHeader("X-Requested-With","XMLHttpRequest").addHeader("X-CSRFToken",token).post(body).url("https://nhentai.net/api/comments/submit").build()).enqueue(new Callback() {
+                        Global.getClient().newCall(new Request.Builder().addHeader("Referer","https://nhentai.net/g/"+g.getId()).addHeader("X-Requested-With","XMLHttpRequest").addHeader("X-CSRFToken",token).post(body).url("https://nhentai.net/api/comments/submit").build()).enqueue(new Callback() {
                             @Override
                             public void onFailure(Call call, IOException e) {
 

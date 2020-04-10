@@ -176,7 +176,8 @@ public class MainActivity extends BaseActivity
         manageDrawer();
         setActivityTitle();
         if(firstTime)checkUpdate();
-        inspector.start();
+        if(inspector!=null)
+            inspector.start();
 
     }
 
@@ -278,7 +279,7 @@ public class MainActivity extends BaseActivity
     private void checkUpdate() {
             if(Global.shouldCheckForUpdates(this))
                 new VersionChecker(this,true);
-            ScrapeTags.enqueueWork(this,ScrapeTags.class,2000,new Intent());
+            ScrapeTags.startWork(this);
             firstTime=false;
     }
 
@@ -416,16 +417,8 @@ public class MainActivity extends BaseActivity
         View view=navigationView.getHeaderView(0);
         ImageView imageView=view.findViewById(R.id.imageView);
         View layoutHeader=view.findViewById(R.id.layout_header);
-        switch (Global.getTheme()){
-            case BLACK:
-                Global.loadImage(R.drawable.ic_logo,imageView);
-                layoutHeader.setBackgroundResource(android.R.color.black);
-                break;
-            default:
-                Global.loadImage(R.mipmap.ic_launcher,imageView);
-                layoutHeader.setBackgroundResource(R.drawable.side_nav_bar);
-                break;
-        }
+        Global.loadImage(R.mipmap.ic_launcher,imageView);
+        layoutHeader.setBackgroundResource(R.drawable.side_nav_bar);
     }
 
 

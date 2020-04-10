@@ -18,9 +18,9 @@ public class Favorites{
         return true;
     }
 
-    public static boolean removeFavorite(Gallery gallery){
+    public static boolean removeFavorite(GenericGallery gallery){
         LogUtility.i("Called remove");
-        Queries.FavoriteTable.removeFavorite(gallery);
+        Queries.FavoriteTable.removeFavorite(gallery.getId());
         return true;
     }
 

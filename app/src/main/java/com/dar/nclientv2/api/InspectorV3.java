@@ -256,7 +256,7 @@ public class InspectorV3 extends Thread implements Parcelable {
     }
 
     public void execute()throws IOException{
-            Response response=Global.client.newCall(new Request.Builder().url(url).build()).execute();
+            Response response=Global.getClient(context.get()).newCall(new Request.Builder().url(url).build()).execute();
             Document document= Jsoup.parse(response.body().byteStream(),"UTF-8", Utility.BASE_URL);
             if(requestType.isSingle()) doSingle(document.body());
             else doSearch(document.body());

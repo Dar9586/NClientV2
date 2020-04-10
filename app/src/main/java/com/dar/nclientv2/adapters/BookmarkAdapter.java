@@ -16,7 +16,6 @@ import com.dar.nclientv2.MainActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.classes.Bookmark;
-import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.utility.IntentUtility;
 
 import java.util.List;
@@ -29,7 +28,7 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
 
     public BookmarkAdapter(BookmarkActivity bookmarkActivity) {
         this.bookmarkActivity = bookmarkActivity;
-        this.bookmarks= Queries.BookmarkTable.getBookmarks(Database.getDatabase());
+        this.bookmarks= Queries.BookmarkTable.getBookmarks();
     }
 
 

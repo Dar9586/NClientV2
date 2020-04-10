@@ -1,6 +1,5 @@
 package com.dar.nclientv2.components.widgets;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,7 +8,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dar.nclientv2.R;
@@ -17,7 +15,6 @@ import com.dar.nclientv2.TagFilterActivity;
 import com.dar.nclientv2.adapters.TagsAdapter;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.ScrapeTags;
-import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
 
 public class TagTypePage extends Fragment {
@@ -66,11 +63,6 @@ public class TagTypePage extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_tag_filter, container, false);
         recyclerView=rootView.findViewById(R.id.recycler);
 
-        if(Global.getTheme()== Global.ThemeScheme.BLACK){
-            recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), RecyclerView.VERTICAL));
-            recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), RecyclerView.HORIZONTAL));
-        }
-
         loadTags();
         return rootView;
     }
@@ -91,8 +83,7 @@ public class TagTypePage extends Fragment {
     public void reset(){
         if(type.equals(TagType.UNKNOWN))TagV2.resetAllStatus();
         else if (!type.equals(TagType.CATEGORY)){
-                Intent i=new Intent(activity, ScrapeTags.class);
-                activity.startService(i);
+                ScrapeTags.startWork(activity);
         }
     }
 

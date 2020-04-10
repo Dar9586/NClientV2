@@ -146,7 +146,7 @@ public class GalleryActivity extends BaseActivity{
         this.menu=menu;
         menu.findItem(R.id.favorite_manager).setIcon((isFavorite=Favorites.isFavorite(gallery))?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
         menu.findItem(R.id.add_online_gallery).setVisible(gallery.getId()>=0&&!isLocal&&Login.isLogged());
-        menu.findItem(R.id.favorite_manager).setVisible(isFavorite||(gallery.getId()>=0&&!isLocal));
+        menu.findItem(R.id.favorite_manager).setVisible(gallery.getId()>=0&&!isLocal);
         menu.findItem(R.id.download_gallery).setVisible(gallery.getId()>=0&&!isLocal);
         menu.findItem(R.id.download_range).setVisible(gallery.getId()>=0&&!isLocal);
         menu.findItem(R.id.related).setVisible(gallery.getId()>=0&&!isLocal);
@@ -178,7 +178,7 @@ public class GalleryActivity extends BaseActivity{
                 new RangeSelector(this, (Gallery) gallery).show();
                 break;
             case R.id.add_online_gallery:
-                Global.client.newCall(new Request.Builder().url("https://nhentai.net/g/"+gallery.getId()+"/favorite").build()).enqueue(new Callback() {
+                Global.getClient(this).newCall(new Request.Builder().url("https://nhentai.net/g/"+gallery.getId()+"/favorite").build()).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call,@NonNull IOException e) {}
 
@@ -214,7 +214,7 @@ public class GalleryActivity extends BaseActivity{
                 break;
             case R.id.favorite_manager:
                 if(isFavorite){
-                    if(Favorites.removeFavorite((Gallery)gallery)) isFavorite=!isFavorite;
+                    if(Favorites.removeFavorite(gallery)) isFavorite=!isFavorite;
                 }else if(Favorites.addFavorite((Gallery) gallery)){
                     isFavorite=!isFavorite;
                 }else{

@@ -2,7 +2,6 @@ package com.dar.nclientv2.components.activities;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 
 import androidx.appcompat.app.AppCompatDelegate;
@@ -52,8 +51,7 @@ public class CrashApplication extends Application{
     }
     private void afterUpdateChecks(SharedPreferences preferences){
         //update tags
-        Intent i=new Intent();
-        ScrapeTags.enqueueWork(this,ScrapeTags.class,2000,i);
+        ScrapeTags.startWork(this);
         //add ALL type for languages and replace null
         int val = preferences.getInt(getString(R.string.key_only_language), Language.ALL.ordinal());
         if (val == -1) val = Language.ALL.ordinal();

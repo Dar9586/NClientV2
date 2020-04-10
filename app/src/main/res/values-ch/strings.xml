@@ -254,7 +254,6 @@
     <string-array name="theme">
         <item>亮色</item>
         <item>暗色</item>
-        <item>黑色</item>
     </string-array>
 	
     <string-array name="title_type_array">

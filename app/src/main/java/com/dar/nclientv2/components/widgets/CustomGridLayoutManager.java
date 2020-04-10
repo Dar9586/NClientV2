@@ -11,11 +11,11 @@ public class CustomGridLayoutManager extends GridLayoutManager {
     }
 
     public CustomGridLayoutManager(Context context, int spanCount) {
-        super(context, spanCount);
+        super(context, Math.max(1,spanCount));
     }
 
     public CustomGridLayoutManager(Context context, int spanCount, int orientation, boolean reverseLayout) {
-        super(context, spanCount, orientation, reverseLayout);
+        super(context, Math.max(1,spanCount), orientation, reverseLayout);
     }
 
     @Override

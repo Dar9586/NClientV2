@@ -10,7 +10,6 @@ import androidx.core.app.JobIntentService;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.async.database.Queries;
-import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 
@@ -23,7 +22,7 @@ public class DownloadGalleryV2 extends JobIntentService {
         if(gallery.isValid() && gallery instanceof Gallery)downloadGallery(context,(Gallery) gallery);
         if(gallery.getId()>0)downloadGallery(context,gallery.getId());
     }
-    public static void downloadGallery(Context context, int id){
+    private static void downloadGallery(Context context, int id){
         if(id<1)return;
         DownloadQueue.add(new GalleryDownloaderManager(context,id));
         startWork(context);
@@ -62,7 +61,7 @@ public class DownloadGalleryV2 extends JobIntentService {
 
     public static void loadDownloads(Context context) {
         try {
-            List<GalleryDownloaderManager> g = Queries.DownloadTable.getAllDownloads(context,Database.getDatabase());
+            List<GalleryDownloaderManager> g = Queries.DownloadTable.getAllDownloads(context);
             for(GalleryDownloaderManager gg:g){
                 gg.downloader().setStatus(GalleryDownloaderV2.Status.PAUSED);
                 DownloadQueue.add(gg);
@@ -78,8 +77,9 @@ public class DownloadGalleryV2 extends JobIntentService {
         downloadGallery(context,gallery,start,end);
     }
 
-    public static void startWork(Context context) {
-        enqueueWork(context,DownloadGalleryV2.class,JOB_DOWNLOAD_GALLERY_ID,new Intent());
+    public static void startWork(@Nullable Context context) {
+        if(context!=null)
+            enqueueWork(context,DownloadGalleryV2.class,JOB_DOWNLOAD_GALLERY_ID,new Intent());
     }
 
     @Override
