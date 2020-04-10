@@ -17,6 +17,7 @@ import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.SimpleGallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.components.Tag;
+import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.database.Queries;
@@ -93,7 +94,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
             holder.pages.setVisibility(View.GONE);
             holder.title.setText(ent.getTitle());
             holder.flag.setVisibility(View.VISIBLE);
-            if(Global.getOnlyLanguage()==null||context instanceof GalleryActivity) {
+            if(Global.getOnlyLanguage()== Language.ALL||context instanceof GalleryActivity) {
                 switch (ent.getLanguage()) {
                     case CHINESE:  holder.flag.setText("\uD83C\uDDE8\uD83C\uDDF3");break;
                     case ENGLISH:  holder.flag.setText("\uD83C\uDDEC\uD83C\uDDE7");break;
