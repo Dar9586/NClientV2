@@ -12,6 +12,7 @@ import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.utility.Utility;
 
 import java.util.ArrayList;
 
@@ -59,9 +60,8 @@ public class HistoryActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.history, menu);
-        Global.setTint(menu.findItem(R.id.cancelAll).getIcon());
+        Utility.tintMenu(menu);
         return true;
     }
 }

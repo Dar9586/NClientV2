@@ -209,7 +209,7 @@ public class InspectorV3 extends Thread implements Parcelable {
                  for(Tag tt:tags)t=tt;
                  assert t!=null;
                  builder.append(t.getTypeSingleName()).append('/')
-                         .append(t.getName());
+                         .append(t.getName().replace(' ','-'));
                  if(byPopular)builder.append("/popular");
                  else builder.append('/');
                  builder.append("?page=").append(page);

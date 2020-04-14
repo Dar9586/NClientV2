@@ -30,6 +30,7 @@ import com.dar.nclientv2.components.widgets.CustomLinearLayoutManager;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.utility.LogUtility;
+import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -250,7 +251,7 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search, menu);
-        Global.setTint(menu.findItem(R.id.view_groups).getIcon());
+        Utility.tintMenu(menu);
         return super.onCreateOptionsMenu(menu);
 
     }

@@ -13,6 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.dar.nclientv2.adapters.FavoriteAdapter;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.utility.Utility;
 
 public class FavoriteActivity extends BaseActivity {
     @Override
@@ -79,7 +80,7 @@ public class FavoriteActivity extends BaseActivity {
                 return true;
             }
         });
-        Global.setTint(menu.findItem(R.id.open_browser).getIcon());
+        Utility.tintMenu(menu);
 
         return true;
     }

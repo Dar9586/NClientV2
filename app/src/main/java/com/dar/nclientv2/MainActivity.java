@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
@@ -44,6 +45,7 @@ import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
 import com.dar.nclientv2.utility.LogUtility;
+import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.File;
@@ -176,19 +178,18 @@ public class MainActivity extends BaseActivity
         manageDrawer();
         setActivityTitle();
         if(firstTime)checkUpdate();
-        if(inspector!=null)
+        if(inspector!=null){
             inspector.start();
-
+        }else{
+            LogUtility.e(getIntent().getExtras());
+        }
     }
 
     private void manageDrawer() {
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         if(modeType != ModeType.NORMAL){
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-            toggle.setDrawerIndicatorEnabled(false);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowTitleEnabled(true);
         }else{
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
             drawerLayout.addDrawerListener(toggle);
             toggle.syncState();
         }
@@ -204,8 +205,10 @@ public class MainActivity extends BaseActivity
     }
     private void initializeToolbar() {
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getSupportActionBar().setTitle(R.string.app_name);
+        ActionBar bar=getSupportActionBar();
+        assert bar!=null;
+        bar.setDisplayShowTitleEnabled(true);
+        bar.setTitle(R.string.app_name);
     }
     private void initializePageSwitcherActions() {
         prevPageButton.setOnClickListener(v -> {
@@ -253,15 +256,17 @@ public class MainActivity extends BaseActivity
     private boolean lastGalleryReached(CustomGridLayoutManager manager) {
         return manager.findLastVisibleItemPosition() >= (recycler.getAdapter().getItemCount()-1-manager.getSpanCount());
     }
+
+
+
     private void initializeNavigationView() {
         changeNavigationImage(navigationView);
+        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back));
+        toolbar.setNavigationOnClickListener(v -> finish());
         navigationView.setNavigationItemSelectedListener(this);
         onlineFavoriteManager.setVisible(com.dar.nclientv2.settings.Login.isLogged());
     }
 
-    public void setInspector(InspectorV3 inspector) {
-        this.inspector = inspector;
-    }
     private void findUsefulViews() {
         toolbar = findViewById(R.id.toolbar);
         navigationView = findViewById(R.id.nav_view);
@@ -522,12 +527,6 @@ public class MainActivity extends BaseActivity
         getMenuInflater().inflate(R.menu.main, menu);
         popularItemDispay(menu.findItem(R.id.by_popular));
 
-        Global.setTint(menu.findItem(R.id.download_page).getIcon());
-        Global.setTint(menu.findItem(R.id.open_browser) .getIcon());
-        Global.setTint(menu.findItem(R.id.add_bookmark) .getIcon());
-        Global.setTint(menu.findItem(R.id.search).getIcon());
-        Global.setTint(menu.findItem(R.id.random_favorite).getIcon());
-
         showLanguageIcon(menu.findItem(R.id.only_language));
 
         menu.findItem(R.id.only_language).setVisible(modeType == ModeType.NORMAL);
@@ -542,7 +541,7 @@ public class MainActivity extends BaseActivity
                 TagStatus ts=inspector.getTag().getStatus();
                 updateTagStatus(item,ts);
         }
-
+        Utility.tintMenu(menu);
         return true;
     }
 
@@ -596,6 +595,7 @@ public class MainActivity extends BaseActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent i;
+        LogUtility.d("Pressed item: "+item.getItemId());
         switch (item.getItemId()){
             case R.id.by_popular:
                 Global.updateByPopular(this,!Global.isByPopular());
@@ -615,7 +615,6 @@ public class MainActivity extends BaseActivity
                 }
                 break;
             case R.id.open_browser:
-                checkUpdate();
                 if(inspector!=null) {
                     i = new Intent(Intent.ACTION_VIEW,Uri.parse(inspector.getUrl()));
                     startActivity(i);

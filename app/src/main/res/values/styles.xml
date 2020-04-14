@@ -17,5 +17,8 @@
         <item name="colorPrimaryDark">@color/primary_dark_material_light</item>
         <item name="colorAccent">@color/accent_material_light</item>
     </style>
+    <style name="LightTheme.NoTitle" parent="LightTheme">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+    </style>
 
 </resources>

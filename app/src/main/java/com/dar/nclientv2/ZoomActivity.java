@@ -45,6 +45,7 @@ import com.dar.nclientv2.components.widgets.CustomViewPager;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.targets.BitmapTarget;
 import com.dar.nclientv2.utility.LogUtility;
+import com.dar.nclientv2.utility.Utility;
 import com.github.chrisbanes.photoview.PhotoView;
 
 import java.io.File;
@@ -211,8 +212,7 @@ public class ZoomActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_zoom, menu);
-        Global.setTint(menu.findItem(R.id.save_page).getIcon());
-        Global.setTint(menu.findItem(R.id.share).getIcon());
+        Utility.tintMenu(menu);
         return true;
     }
 

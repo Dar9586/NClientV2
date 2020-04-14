@@ -26,6 +26,7 @@ import com.dar.nclientv2.settings.Favorites;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.utility.LogUtility;
+import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
@@ -152,13 +153,7 @@ public class GalleryActivity extends BaseActivity{
         menu.findItem(R.id.related).setVisible(gallery.getId()>=0&&!isLocal);
         menu.findItem(R.id.comments).setVisible(gallery.getId()>=0&&!isLocal);
         loadMenu();
-        Global.setTint(menu.findItem(R.id.download_gallery).getIcon());
-        Global.setTint(menu.findItem(R.id.load_internet).getIcon());
-        Global.setTint(menu.findItem(R.id.change_view).getIcon());
-        Global.setTint(menu.findItem(R.id.share).getIcon());
-        Global.setTint(menu.findItem(R.id.related).getIcon());
-        Global.setTint(menu.findItem(R.id.favorite_manager).getIcon());
-        Global.setTint(menu.findItem(R.id.comments).getIcon());
+        Utility.tintMenu(menu);
         updateColumnCount(false);
         return true;
     }

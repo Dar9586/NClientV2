@@ -257,7 +257,7 @@ public class Global {
     public static boolean shouldCheckForUpdates(Context context){
         return context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_check_update),true);
     }
-    private static int getLogo(){ return theme==ThemeScheme.LIGHT?R.drawable.ic_logo_dark:R.drawable.ic_logo; }
+
     public static Drawable getLogo(Resources resources){ return ResourcesCompat.getDrawable(resources,theme==ThemeScheme.LIGHT?R.drawable.ic_logo_dark:R.drawable.ic_logo,null); }
     public static TitleType getTitleType() {
         return titleType;
@@ -377,16 +377,19 @@ public class Global {
         }
         return 0;
     }
-    public static void shareGallery(Context context, GenericGallery gallery) {
+    public static void shareURL(Context context,String title, String url){
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT,gallery.getTitle()+":\nhttps://nhentai.net/g/"+gallery.getId());
+        sendIntent.putExtra(Intent.EXTRA_TEXT,title+": "+url);
         sendIntent.setType("text/plain");
         Intent clipboardIntent = new Intent(context, CopyToClipboardActivity.class);
-        clipboardIntent.setData(Uri.parse("https://nhentai.net/g/"+gallery.getId()));
+        clipboardIntent.setData(Uri.parse(url));
         Intent chooserIntent = Intent.createChooser(sendIntent,context.getString(R.string.share_with));
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] { clipboardIntent });
         context.startActivity(chooserIntent);
+    }
+    public static void shareGallery(Context context, GenericGallery gallery) {
+        shareURL(context, gallery.getTitle(),"https://nhentai.net/g/"+gallery.getId());
     }
 
     public static void setTint(Drawable drawable){

@@ -14,6 +14,7 @@ import com.dar.nclientv2.api.local.FakeInspector;
 import com.dar.nclientv2.async.downloader.DownloadQueue;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.utility.Utility;
 
 public class LocalActivity extends BaseActivity {
     private LocalAdapter adapter;
@@ -45,12 +46,6 @@ public class LocalActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.download, menu);
-        Global.setTint(menu.findItem(R.id.pauseAll).getIcon());
-        Global.setTint(menu.findItem(R.id.cancelAll).getIcon());
-        Global.setTint(menu.findItem(R.id.startAll).getIcon());
-        Global.setTint(menu.findItem(R.id.search).getIcon());
-        Global.setTint(menu.findItem(R.id.random_favorite).getIcon());
-
         if(DownloadQueue.isEmpty()){
             menu.findItem(R.id.pauseAll).setVisible(false);
             menu.findItem(R.id.cancelAll).setVisible(false);
@@ -70,6 +65,9 @@ public class LocalActivity extends BaseActivity {
                 return true;
             }
         });
+
+        Utility.tintMenu(menu);
+
         return true;
     }
 

@@ -21,6 +21,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class CreateZIP extends JobIntentService {
+    // TODO: 11/04/20 REFACTOR CREATE ZIP AND PDF
+
     private int notId;
     private NotificationManagerCompat notificationManager;
     private NotificationCompat.Builder notification;
@@ -42,6 +44,7 @@ public class CreateZIP extends JobIntentService {
             File file = new File(Global.ZIPFOLDER, gallery.getTitle() + ".zip");
             FileOutputStream o = new FileOutputStream(file);
             ZipOutputStream out=new ZipOutputStream(o);
+            out.setLevel(9);
             FileInputStream in;
             File actual;
             int read;
