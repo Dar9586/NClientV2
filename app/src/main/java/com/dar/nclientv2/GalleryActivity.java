@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 
 import com.dar.nclientv2.adapters.GalleryAdapter;
@@ -28,6 +29,8 @@ import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.snackbar.Snackbar;
+
+import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 
 import java.io.IOException;
 import java.util.List;
@@ -111,7 +114,9 @@ public class GalleryActivity extends BaseActivity{
     }
     private void loadGallery(GenericGallery gall,int zoom) {
         this.gallery=gall;
-        if(getSupportActionBar()!=null)getSupportActionBar().setTitle(gallery.getTitle());
+        if(getSupportActionBar()!=null){
+            applyTitle();
+        }
         adapter=new GalleryAdapter(this,gallery,Global.getColumnCount());
         recycler.setAdapter(adapter);
         lookup();
@@ -121,6 +126,21 @@ public class GalleryActivity extends BaseActivity{
             intent.putExtra(getPackageName()+".PAGE",zoom);
             startActivity(intent);
         }
+    }
+
+    private void applyTitle() {
+        CollapsingToolbarLayout collapsing=findViewById(R.id.collapsing);
+        ActionBar actionBar=getSupportActionBar();
+        String title=gallery.getTitle();
+        if(actionBar==null)return;
+        if(title.length()>100){
+            collapsing.setExpandedTitleTextAppearance(android.R.style.TextAppearance_DeviceDefault_Medium);
+            collapsing.setMaxLines(5);
+        } else {
+            collapsing.setExpandedTitleTextAppearance(android.R.style.TextAppearance_DeviceDefault_Large);
+            collapsing.setMaxLines(4);
+        }
+        actionBar.setTitle(title);
     }
 
     @Override
