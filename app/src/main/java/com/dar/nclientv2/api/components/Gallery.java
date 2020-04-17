@@ -37,15 +37,15 @@ import java.util.Set;
 
 public class Gallery extends GenericGallery{
     private static final int MAX_COMMENT=50;
-    public Gallery(Context context, String x, Elements com, Elements rel, boolean isFavorite) throws IOException{
-        JsonReader reader=new JsonReader(new StringReader(x));
-        comments=com.size()==0?null:new ArrayList<>(com.size());
-        related=new ArrayList<>(rel.size());
-        for(Element e:com){
-            comments.add(new Comment(e.attr("data-state")));
-            if(comments.size()==MAX_COMMENT)break;
+    public Gallery(Context context, String json, Elements comments, Elements related, boolean isFavorite) throws IOException{
+        JsonReader reader=new JsonReader(new StringReader(json));
+        this.comments =comments.size()==0?null:new ArrayList<>(comments.size());
+        this.related =new ArrayList<>(related.size());
+        for(Element e:comments){
+            this.comments.add(new Comment(e.attr("data-state")));
+            if(this.comments.size()==MAX_COMMENT)break;
         }
-        for(Element e:rel)related.add(new SimpleGallery(context,e));
+        for(Element e:related) this.related.add(new SimpleGallery(context,e));
         parseJSON(reader);
         complete=true;
         onlineFavorite=isFavorite;
@@ -94,7 +94,8 @@ public class Gallery extends GenericGallery{
         this.tags=tags;
         this.language=loadLanguage(tags);
         complete=true;
-        onlineFavorite=false;//to review
+        //The gallery is added to DB only for local favorite and download
+        onlineFavorite=false;
     }
 
     public boolean isOnlineFavorite() {
@@ -304,14 +305,6 @@ public class Gallery extends GenericGallery{
     @Override
     public boolean isValid() {
         return valid&&id>=0;
-    }
-
-    public Gallery(JsonReader jr, List<SimpleGallery> related, List<Comment> comments) throws IOException {
-        this.comments=comments;
-        this.related=related;
-        parseJSON(jr);
-        complete = true;
-        onlineFavorite=false;//to review
     }
 
     private void parseJSON(JsonReader jr) throws IOException {
@@ -566,7 +559,7 @@ public class Gallery extends GenericGallery{
         complete=true;
         onlineFavorite=false;
     }
-    public static Gallery emptyGallery(Context context){
+    public static Gallery emptyGallery(){
         Gallery g=new Gallery();
         g.id=-1;
         g.mediaId=999999;

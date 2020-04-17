@@ -38,10 +38,11 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class GalleryActivity extends BaseActivity{
-    @NonNull private GenericGallery gallery=Gallery.emptyGallery(this);
+    @NonNull private GenericGallery gallery=Gallery.emptyGallery();
     private boolean isLocal;
     private GalleryAdapter adapter;
     private int zoom;
+    private boolean isLocalFavorite;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,18 +56,22 @@ public class GalleryActivity extends BaseActivity{
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
         GenericGallery gal= getIntent().getParcelableExtra(getPackageName()+".GALLERY");
+        if(gal==null&&!tryLoadFromURL()){finish();return;}
         if(gal!=null)this.gallery=gal;
         if(gallery.getType()!= GenericGallery.Type.LOCAL){
             Queries.HistoryTable.addGallery(((Gallery)gallery).toSimpleGallery());
         }
         LogUtility.d(""+gallery);
         if(Global.useRtl())recycler.setRotationY(180);
-        if(getIntent().getBooleanExtra(getPackageName()+".INSTANTDOWNLOAD",false))downloadGallery();
         isLocal=getIntent().getBooleanExtra(getPackageName()+".ISLOCAL",false);
         zoom = getIntent().getIntExtra(getPackageName()+".ZOOM",0);
         refresher.setEnabled(false);
         recycler.setLayoutManager(new CustomGridLayoutManager(this,Global.getColumnCount()));
 
+        loadGallery(gallery,zoom);//if already has gallery
+    }
+
+    private boolean tryLoadFromURL() {
         Uri data = getIntent().getData();
         if(data != null && data.getPathSegments().size() >= 2){//if using an URL
             List<String> params = data.getPathSegments();
@@ -89,9 +94,11 @@ public class GalleryActivity extends BaseActivity{
                     finish();
                 }
             }).start();
-        }else loadGallery(gallery,zoom);//if already has gallery
-
+            return true;
+        }
+        return false;
     }
+
     private void lookup(){
         CustomGridLayoutManager manager= (CustomGridLayoutManager)recycler.getLayoutManager();
         GalleryAdapter adapter=(GalleryAdapter)recycler.getAdapter();
@@ -126,36 +133,37 @@ public class GalleryActivity extends BaseActivity{
         return 0;
     }
 
-    private boolean isFavorite;
-    private Menu menu;
-    public void loadMenu(){
-        if(menu.findItem(R.id.add_online_gallery).isVisible()){
-            menu.findItem(R.id.add_online_gallery).setTitle(R.string.add_to_online_favorite);
-            menu.findItem(R.id.add_online_gallery).setIcon(R.drawable.ic_star_border);
-            //TO-FIX
-            /*boolean x=Login.isOnlineFavorite(gallery.getId());
-            menu.findItem(R.id.add_online_gallery).setTitle(x?R.string.remove_from_online_favorites:R.string.add_to_online_favorite);
-            menu.findItem(R.id.add_online_gallery).setIcon(x?R.drawable.ic_star:R.drawable.ic_star_border);*/
-        }
-        menu.findItem(R.id.share).setVisible(gallery.isValid());
-        menu.findItem(R.id.load_internet).setVisible(isLocal&&gallery.getId()!=-1);
+
+    public void initFvoriteIcon(Menu menu){
+        boolean onlineFavorite=!isLocal&&((Gallery)gallery).isOnlineFavorite();
+        menu.findItem(R.id.add_online_gallery).setTitle(onlineFavorite?R.string.remove_from_online_favorites:R.string.add_to_online_favorite);
+        menu.findItem(R.id.add_online_gallery).setIcon(onlineFavorite?R.drawable.ic_star:R.drawable.ic_star_border);
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.gallery, menu);
-        this.menu=menu;
-        menu.findItem(R.id.favorite_manager).setIcon((isFavorite=Favorites.isFavorite(gallery))?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
-        menu.findItem(R.id.add_online_gallery).setVisible(gallery.getId()>=0&&!isLocal&&Login.isLogged());
-        menu.findItem(R.id.favorite_manager).setVisible(gallery.getId()>=0&&!isLocal);
-        menu.findItem(R.id.download_gallery).setVisible(gallery.getId()>=0&&!isLocal);
-        menu.findItem(R.id.download_range).setVisible(gallery.getId()>=0&&!isLocal);
-        menu.findItem(R.id.related).setVisible(gallery.getId()>=0&&!isLocal);
-        menu.findItem(R.id.comments).setVisible(gallery.getId()>=0&&!isLocal);
-        loadMenu();
+        isLocalFavorite =Favorites.isFavorite(gallery);
+
+        menu.findItem(R.id.favorite_manager).setIcon(isLocalFavorite?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
+        menuItemsVisible(menu);
+        initFvoriteIcon(menu);
         Utility.tintMenu(menu);
         updateColumnCount(false);
         return true;
+    }
+
+    private void menuItemsVisible(Menu menu) {
+        boolean isValidOnline=gallery.isValid()&&!isLocal;
+        menu.findItem(R.id.add_online_gallery).setVisible(isValidOnline&&Login.isLogged());
+        menu.findItem(R.id.favorite_manager).setVisible(isValidOnline);
+        menu.findItem(R.id.download_gallery).setVisible(isValidOnline);
+        menu.findItem(R.id.download_range).setVisible(isValidOnline);
+        menu.findItem(R.id.related).setVisible(isValidOnline);
+        menu.findItem(R.id.comments).setVisible(isValidOnline);
+
+        menu.findItem(R.id.share).setVisible(gallery.isValid());
+        menu.findItem(R.id.load_internet).setVisible(isLocal&&gallery.isValid());
     }
 
     @Override
@@ -208,14 +216,14 @@ public class GalleryActivity extends BaseActivity{
                 recycler.smoothScrollToPosition(recycler.getAdapter().getItemCount());
                 break;
             case R.id.favorite_manager:
-                if(isFavorite){
-                    if(Favorites.removeFavorite(gallery)) isFavorite=!isFavorite;
+                if(isLocalFavorite){
+                    if(Favorites.removeFavorite(gallery)) isLocalFavorite =!isLocalFavorite;
                 }else if(Favorites.addFavorite((Gallery) gallery)){
-                    isFavorite=!isFavorite;
+                    isLocalFavorite =!isLocalFavorite;
                 }else{
                     Snackbar.make(recycler,getString(R.string.favorite_max_reached,Favorites.MAXFAVORITE),Snackbar.LENGTH_LONG).show();
                 }
-                item.setIcon(isFavorite?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
+                item.setIcon(isLocalFavorite ?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
                 Global.setTint(item.getIcon());
             break;
             case android.R.id.home:

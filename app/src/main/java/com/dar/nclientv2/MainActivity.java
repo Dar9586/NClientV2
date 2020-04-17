@@ -116,7 +116,7 @@ public class MainActivity extends BaseActivity
             startGallery=new InspectorV3.DefaultInspectorResponse() {
         @Override
         public void onSuccess(List<GenericGallery> galleries) {
-            Gallery g=galleries.size()==1?(Gallery) galleries.get(0):Gallery.emptyGallery(MainActivity.this);
+            Gallery g=galleries.size()==1?(Gallery) galleries.get(0):Gallery.emptyGallery();
             Intent intent=new Intent(MainActivity.this, GalleryActivity.class);
             LogUtility.d(g.toString());
             intent.putExtra(getPackageName()+".GALLERY",g);

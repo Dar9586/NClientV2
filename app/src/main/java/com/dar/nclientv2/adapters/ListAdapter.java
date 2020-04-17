@@ -118,8 +118,8 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
                 InspectorV3.galleryInspector(context, ent.getId(), new InspectorV3.DefaultInspectorResponse() {
                     @Override
                     public void onSuccess(List<GenericGallery> galleries) {
-                        Intent intent=new Intent(context, GalleryActivity.class);
                         if(galleries.size()!=1)return;
+                        Intent intent=new Intent(context, GalleryActivity.class);
                         LogUtility.d(galleries.get(0).toString());
                         intent.putExtra(context.getPackageName()+".GALLERY",galleries.get(0));
                         context.runOnUiThread(()->context.startActivity(intent));

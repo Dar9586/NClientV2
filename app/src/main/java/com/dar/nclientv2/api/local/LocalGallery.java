@@ -79,7 +79,7 @@ public class LocalGallery extends GenericGallery{
         max = in.readInt();
         title = in.readString();
         directory=new File(in.readString());
-        valid=true;
+        valid=max<9999&&min>0&&id>0;
     }
 
     public static final Creator<LocalGallery> CREATOR = new Creator<LocalGallery>() {
