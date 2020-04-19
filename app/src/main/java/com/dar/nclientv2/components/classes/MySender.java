@@ -1,6 +1,7 @@
 package com.dar.nclientv2.components.classes;
 
 import android.content.Context;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
 
@@ -11,6 +12,7 @@ import org.acra.sender.ReportSender;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.Map;
 
 import okhttp3.FormBody;
@@ -20,6 +22,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class MySender implements ReportSender{
+    private static final String URL="dar9586.altervista.org/php/report.php";
     @Override
     public void send(@NonNull Context context, @NonNull CrashReportData errorContent){
         Map<String,Object>m=errorContent.toMap();
@@ -29,8 +32,14 @@ public class MySender implements ReportSender{
         try{
             LogUtility.d( errorContent.toJSON());
             RequestBody requestBody = new FormBody.Builder().add("json", errorContent.toJSON()).build();
-            Request.Builder request = new Request.Builder().post(requestBody).url("https://alpastudios.000webhostapp.com/report.php");
+            StringReader reader=new StringReader(errorContent.toJSON());
+            char[] buf=new char[1024];
+            while (reader.read(buf)>=0)LogUtility.d("XXX"+new String(buf));
+            String protocol=Build.VERSION.SDK_INT<=Build.VERSION_CODES.LOLLIPOP?"http://":"https://";
+
+            Request.Builder request = new Request.Builder().post(requestBody).url(protocol+URL);
             Response x = new OkHttpClient().newCall(request.build()).execute();
+
             LogUtility.d( x.code() + x.body().string());
             x.close();
         }catch(JSONException | IOException e){
