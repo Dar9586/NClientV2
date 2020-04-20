@@ -52,7 +52,7 @@ public class RangeSelector extends AlertDialog.Builder {
         applyLogic(l2,false);
         setPositiveButton(R.string.ok, (dialog, which) -> {
             if(s1.getProgress()<=s2.getProgress())
-                DownloadGalleryV2.downloadRange(context,gallery,s1.getProgress(),s2.getProgress()+1);
+                DownloadGalleryV2.downloadRange(context,gallery,s1.getProgress(),s2.getProgress());
             else Toast.makeText(context, R.string.invalid_range_selected,Toast.LENGTH_SHORT).show();
         }).setNegativeButton(R.string.cancel,null);
         setCancelable(true);

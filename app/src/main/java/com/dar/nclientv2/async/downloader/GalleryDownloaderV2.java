@@ -82,8 +82,9 @@ public class GalleryDownloaderV2 {
         Queries.DownloadTable.removeGallery(id);
     }
     private void onUpdate(){
-        int reach=getTotalPage()-urls.size();
-        for(DownloadObserver observer:observers)observer.triggerUpdateProgress(this,reach,getTotalPage());
+        int total=getTotalPage();
+        int reach=total-urls.size();
+        for(DownloadObserver observer:observers)observer.triggerUpdateProgress(this,reach,total);
     }
     private void onCancel(){
         for(DownloadObserver observer:observers)observer.triggerStopDownlaod(this);
@@ -202,6 +203,7 @@ public class GalleryDownloaderV2 {
         try {
             Response r = Global.getClient(context).newCall(new Request.Builder().url(page.url).build()).execute();
             if (r.code() != 200) {r.close();return false;}
+            assert r.body() != null;
             writeStreamToFile(r.body().byteStream(), filePath);
             r.close();
             return true;
@@ -241,7 +243,7 @@ public class GalleryDownloaderV2 {
     }
 
     private void createPages() {
-        for(int i=start;i<end;i++)
+        for(int i=start;i<=end;i++)
             urls.add(new PageContainer(i+1,gallery.getPage(i),gallery.getPageExtension(i)));
     }
 
