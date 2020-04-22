@@ -67,8 +67,10 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
             dataset.remove(l);
             dataset.add(l);
             filter.add(l);
+            filter=new ArrayList<>(filter);
             LogUtility.d(l);
             Collections.sort(filter,comparator);
+            filter=new CopyOnWriteArrayList<>(filter);
             context.runOnUiThread(()->notifyItemRangeChanged(0,getItemCount()));
         }
 
@@ -95,7 +97,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         if(b1)return -1;
         return 1;
     };
-    private synchronized void shrinkFilter(List<Object> filter){
+    private void shrinkFilter(List<Object> filter){
         Collections.sort(filter,comparator);
         for(int i=0;i<filter.size()-1;i++){
             if(filter.get(i) instanceof LocalGallery && filter.get(i+1) instanceof GalleryDownloaderV2){
@@ -117,12 +119,12 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         colCount=cont.getColCount();
         galleryDownloaders= DownloadQueue.getDownloaders();
 
-        filter=new CopyOnWriteArrayList<>(myDataset);
+        filter=new ArrayList<>(myDataset);
         filter.addAll(galleryDownloaders);
 
         DownloadQueue.addObserver(observer);
         shrinkFilter(filter);
-
+        filter=new CopyOnWriteArrayList<>(filter);
     }
 
     @NonNull
@@ -293,7 +295,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 if(results!=null){
-                    filter= (List<Object>) results.values;
+                    filter= new CopyOnWriteArrayList<>((List<Object>)results.values);
                     if(filter.size()>results.count)notifyItemRangeInserted(results.count,filter.size()-results.count);
                     else if(filter.size()<results.count)notifyItemRangeRemoved(filter.size(),results.count-filter.size());
                     notifyItemRangeRemoved(filter.size(),results.count);
