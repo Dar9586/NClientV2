@@ -277,7 +277,9 @@ public class ZoomActivity extends AppCompatActivity {
         int pageNum=mViewPager.getCurrentItem();
         if(gallery.isLocal()){
             LocalGallery gallery=(LocalGallery)this.gallery;
-            endName=gallery.getPage(pageNum).getName();
+            file =gallery.getPage(pageNum);
+            if(file==null)return;
+            endName=file.getName();
         }else{
             Gallery gallery=(Gallery) this.gallery;
             endName=gallery.getFilename(pageNum);

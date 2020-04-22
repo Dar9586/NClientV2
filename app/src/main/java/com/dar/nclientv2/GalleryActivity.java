@@ -8,7 +8,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -127,12 +129,23 @@ public class GalleryActivity extends BaseActivity{
             startActivity(intent);
         }
     }
-
     private void applyTitle() {
         CollapsingToolbarLayout collapsing=findViewById(R.id.collapsing);
         ActionBar actionBar=getSupportActionBar();
         String title=gallery.getTitle();
-        if(actionBar==null)return;
+        if(title==null)title="";
+        if(collapsing==null||actionBar==null)return;
+        String finalTitle = title;
+        View.OnLongClickListener listener=v -> {
+            CopyToClipboardActivity.copyTextToClipboard(GalleryActivity.this, finalTitle);
+            GalleryActivity.this.runOnUiThread(
+                    ()->Toast.makeText(GalleryActivity.this, R.string.title_copied_to_clipboard,Toast.LENGTH_SHORT).show()
+            );
+            return true;
+        };
+
+        collapsing.setOnLongClickListener(listener);
+        findViewById(R.id.toolbar).setOnLongClickListener(listener);
         if(title.length()>100){
             collapsing.setExpandedTitleTextAppearance(android.R.style.TextAppearance_DeviceDefault_Medium);
             collapsing.setMaxLines(5);
@@ -141,6 +154,7 @@ public class GalleryActivity extends BaseActivity{
             collapsing.setMaxLines(4);
         }
         actionBar.setTitle(title);
+
     }
 
     @Override

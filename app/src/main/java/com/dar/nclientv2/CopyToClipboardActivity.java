@@ -15,15 +15,16 @@ public class CopyToClipboardActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             Uri uri = getIntent().getData();
             if (uri != null) {
-                copyTextToClipboard(uri.toString());
+                copyTextToClipboard(this,uri.toString());
                 Toast.makeText(this, R.string.link_copied_to_clipboard, Toast.LENGTH_SHORT).show();
             }
             finish();
         }
 
-        private void copyTextToClipboard(String url) {
-            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText("URL", url);
-            clipboard.setPrimaryClip(clip);
+        public static void copyTextToClipboard(Context context, String text) {
+            ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("text", text);
+            if(clipboard!=null)
+                clipboard.setPrimaryClip(clip);
         }
 }

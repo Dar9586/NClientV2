@@ -1,7 +1,6 @@
 package com.dar.nclientv2.adapters;
 
 import android.content.Intent;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +26,7 @@ import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.targets.BitmapTarget;
 import com.dar.nclientv2.utility.LogUtility;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -53,7 +53,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     private Policy policy;
     private static final int TOLERANCE=1000;
     private int colCount;
-    private SparseArray<Size>sizeArray=new SparseArray<>();
 
     public Type positionToType(int pos){
         if(!gallery.isLocal()){
@@ -109,8 +108,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             case TAG:id=R.layout.tags_layout;break;
             case PAGE:
                 switch (policy){
-                    case MAX:case FULL:
+                    case MAX:
                         id=R.layout.image_void;
+                        break;
+                    case FULL:
+                        id=R.layout.image_void_full;
                         break;
                     case PROPORTION:
                         id=R.layout.image_void_static;
@@ -198,6 +200,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     }
 
     private void loadPageLayout(ViewHolder holder){
+        final int pos=holder.getAdapterPosition()+(gallery.isLocal()?1:0);
+        final ImageView imgView=holder.master.findViewById(R.id.image);
 
         if(policy==Policy.MAX)holder.itemView.post(() -> {//find the max size and apply proportion
             if(maxImageSize !=null)return;
@@ -210,8 +214,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             }
         });
 
-        final int pos=holder.getAdapterPosition()+(gallery.isLocal()?1:0);
-        final ImageView imgView=holder.master.findViewById(R.id.image);
         if(policy==Policy.MAX&&maxImageSize !=null) {
             ViewGroup.LayoutParams params = imgView.getLayoutParams();
             params.height = maxImageSize.getHeight();
@@ -219,17 +221,27 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             imgView.setLayoutParams(params);
         }
 
+        if(policy==Policy.FULL){
+            PhotoView photoView=(PhotoView)imgView;
+            photoView.setZoomable(Global.isZoomOneColumn());
+            photoView.setOnMatrixChangeListener(rect -> photoView.setAllowParentInterceptOnEdge(photoView.getScale()<=1f));
+            photoView.setOnClickListener(v -> {
+                if(photoView.getScale()<=1f)
+                    startGallery(1 + holder.getAdapterPosition() - (gallery.isLocal() ? 0 : 1));
+            });
+        }
+
         loadImageOnPolicy(imgView, pos);
 
-        holder.master.setOnClickListener(v -> {
-            Intent intent = new Intent(context, ZoomActivity.class);
-            intent.putExtra(context.getPackageName() + ".GALLERY", gallery);
-            intent.putExtra(context.getPackageName() + ".PAGE", 1+holder.getAdapterPosition()-(gallery.isLocal()?0:1));
-            context.startActivity(intent);
-        });
+        holder.master.setOnClickListener(v -> startGallery(1 + holder.getAdapterPosition() - (gallery.isLocal() ? 0 : 1)));
         holder.pageNumber.setText(String.format(Locale.US,"%d", pos));
     }
-
+    private void startGallery(int page){
+        Intent intent = new Intent(context, ZoomActivity.class);
+        intent.putExtra(context.getPackageName() + ".GALLERY", gallery);
+        intent.putExtra(context.getPackageName() + ".PAGE",page);
+        context.startActivity(intent);
+    }
     private void loadImageOnPolicy(ImageView imgView, int pos) {
         final File file = LocalGallery.getPage(directory, pos);
         if(policy==Policy.FULL) {
@@ -251,9 +263,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     private HashMap<ImageView, BitmapTarget>map=new HashMap<>(5);
     @Override
     public void onViewRecycled(@NonNull ViewHolder holder) {
-        super.onViewRecycled(holder);
         final ImageView imgView=holder.master.findViewById(R.id.image);
-        Glide.with(context).clear(map.remove(imgView));
+        BitmapTarget target=map.remove(imgView);
+        if(!context.isFinishing())
+            Glide.with(context).clear(target);
+        super.onViewRecycled(holder);
     }
 
     @Override

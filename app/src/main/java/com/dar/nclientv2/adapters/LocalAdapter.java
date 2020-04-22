@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> implements Filterable {
     private final LocalActivity context;
@@ -112,11 +113,11 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
 
     public LocalAdapter(LocalActivity cont, ArrayList<LocalGallery> myDataset) {
         this.context=cont;
-        dataset=myDataset;
+        dataset=new CopyOnWriteArrayList<>(myDataset);
         colCount=cont.getColCount();
         galleryDownloaders= DownloadQueue.getDownloaders();
 
-        filter=new ArrayList<>(myDataset);
+        filter=new CopyOnWriteArrayList<>(myDataset);
         filter.addAll(galleryDownloaders);
 
         DownloadQueue.addObserver(observer);

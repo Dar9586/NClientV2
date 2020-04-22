@@ -281,6 +281,10 @@
     <string name="toggle_favorite">Toggle favorite</string>
     <string name="resume">Resume</string>
     <string name="pause">Pause</string>
+    <string name="title_copied_to_clipboard">Title copied to clipboard</string>
+    <string name="key_zoom_one_column" translatable="false">zoom_one_column</string>
+    <string name="setting_zoom_one_column">Enable zoom when in one column mode inside a gallery</string>
+    <string name="zoom_one_column">Enable zoom</string>
 
     <string-array name="language">
         <item>English</item>

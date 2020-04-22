@@ -121,7 +121,7 @@ public class Global {
     public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf",CHANNEL_ID3="create_pdf";
     private static Language onlyLanguage;
     private static TitleType titleType;
-    private static boolean volumeOverride,byPopular,keepHistory,loadImages,highRes,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
+    private static boolean volumeOverride,zoomOneColumn,byPopular,keepHistory,loadImages,highRes,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
     private static ThemeScheme theme;
     private static String lastVersion;
     private static int maxHistory,notificationId,columnCount,maxId,galleryWidth=-1, galleryHeight =-1;
@@ -211,6 +211,7 @@ public class Global {
         colLandFavorite=shared.getInt(context.getString(R.string.key_column_land_favo),4);
         colPortHist=shared.getInt(context.getString(R.string.key_column_port_hist),2);
         colLandHist=shared.getInt(context.getString(R.string.key_column_land_hist),4);
+        zoomOneColumn=shared.getBoolean(context.getString(R.string.key_zoom_one_column),false);
         int x=Math.max(0,shared.getInt(context.getString(R.string.key_only_language),Language.ALL.ordinal()));
         if(Language.values()[x]==Language.UNKNOWN){
             updateOnlyLanguage(context,Language.ALL);
@@ -222,6 +223,10 @@ public class Global {
 
     public static boolean volumeOverride() {
         return volumeOverride;
+    }
+
+    public static boolean isZoomOneColumn() {
+        return zoomOneColumn;
     }
 
     private static void initHttpClient(@NonNull Context context){
@@ -435,7 +440,6 @@ public class Global {
     }
     public static void loadImage(String url, final ImageView imageView){loadImage(url,imageView,false);}
     public static void loadImage(String url, final ImageView imageView,boolean force){
-
         if(loadImages||force)Glide.with(imageView).load(url).placeholder(getLogo(imageView.getResources())).into(imageView);
         else Glide.with(imageView).load(getLogo(imageView.getResources())).into(imageView);
     }

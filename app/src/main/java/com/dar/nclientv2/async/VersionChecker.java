@@ -106,6 +106,7 @@ public class VersionChecker{
     }
 
     private void createDialog(String versionName, String latestVersion, String finalBody){
+        if(finalBody==null)return;
         finalBody=finalBody
                 .replace("\r\n","\n")//Remove ugly newline
                 .replace("NClientV2 "+latestVersion,"")//remove version header

@@ -16,7 +16,7 @@ public class FakeInspector extends AsyncTask<LocalActivity,LocalActivity,LocalAc
     private final ArrayList<LocalGallery> galleries;
     private final ArrayList<String> invalidPaths;
     public FakeInspector(){
-        galleries=new ArrayList<>();
+        galleries= new ArrayList<>();
         invalidPaths=new ArrayList<>();
     }
 
