@@ -440,8 +440,10 @@ public class Global {
     }
     public static void loadImage(String url, final ImageView imageView){loadImage(url,imageView,false);}
     public static void loadImage(String url, final ImageView imageView,boolean force){
-        if(loadImages||force)Glide.with(imageView).load(url).placeholder(getLogo(imageView.getResources())).into(imageView);
-        else Glide.with(imageView).load(getLogo(imageView.getResources())).into(imageView);
+        try {
+            if (loadImages || force) Glide.with(imageView).load(url).placeholder(getLogo(imageView.getResources())).into(imageView);
+            else Glide.with(imageView).load(getLogo(imageView.getResources())).into(imageView);
+        }catch (IllegalStateException ignore){}//thrown when activity is destroyed
     }
     public static void loadImage(File file, ImageView imageView){
         if(loadImages)Glide.with(imageView).load(file).placeholder(getLogo(imageView.getResources())).into(imageView);

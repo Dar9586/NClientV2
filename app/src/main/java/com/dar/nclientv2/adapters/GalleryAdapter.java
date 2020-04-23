@@ -243,7 +243,9 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         context.startActivity(intent);
     }
     private void loadImageOnPolicy(ImageView imgView, int pos) {
-        final File file = LocalGallery.getPage(directory, pos);
+        final File file;
+        if(gallery.isLocal())file=((LocalGallery)gallery).getPage(pos);
+        else file=LocalGallery.getPage(directory,pos);
         if(policy==Policy.FULL) {
             BitmapTarget target=null;
             if (file != null && file.exists()) target=Global.loadImageOp(context, imgView, file);

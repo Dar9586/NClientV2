@@ -155,8 +155,8 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         Global.initActivity(this);
+        setContentView(R.layout.activity_main);
         deleteAPKAfterUpdate();
         //load inspector
         selectStartMode(getIntent(),getPackageName());
@@ -419,11 +419,12 @@ public class MainActivity extends BaseActivity
     }
 
     private void changeNavigationImage(NavigationView navigationView) {
+        boolean light=Global.getTheme()== Global.ThemeScheme.LIGHT;
         View view=navigationView.getHeaderView(0);
         ImageView imageView=view.findViewById(R.id.imageView);
         View layoutHeader=view.findViewById(R.id.layout_header);
-        Global.loadImage(R.mipmap.ic_launcher,imageView);
-        layoutHeader.setBackgroundResource(R.drawable.side_nav_bar);
+        Global.loadImage(light?R.drawable.ic_logo_dark :R.drawable.ic_logo,imageView);
+        layoutHeader.setBackgroundResource(light?R.drawable.side_nav_bar_light:R.drawable.side_nav_bar_dark);
     }
 
 

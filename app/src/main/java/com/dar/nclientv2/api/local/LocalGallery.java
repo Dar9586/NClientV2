@@ -4,6 +4,7 @@ import android.graphics.BitmapFactory;
 import android.os.Parcel;
 import android.util.SparseArray;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.dar.nclientv2.api.components.Comment;
@@ -13,27 +14,31 @@ import com.dar.nclientv2.utility.LogUtility;
 
 import java.io.File;
 import java.util.List;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
 public class LocalGallery extends GenericGallery{
     private final int id,min,max;
     private final String title;
     private final File directory;
     private final boolean valid;
+    private static final Pattern FILE_PATTERN=Pattern.compile("^(\\d{3,9})\\.(gif|png|jpg|jpeg)$",Pattern.CASE_INSENSITIVE);
     private Size maxSize=new Size(0,0),minSize=new Size(Integer.MAX_VALUE,Integer.MAX_VALUE);
     public LocalGallery(File file, int id){
         directory=file;
         title=file.getName();
         this.id=id;
-        int max=0,min=9999;
+        int max=0,min=Integer.MAX_VALUE;
         SparseArray<Size>sizes=new SparseArray<>();
         //Inizio ricerca pagine
-        File[] files=file.listFiles((dir, name) -> (name.endsWith(".jpg")||name.endsWith(".png")||name.endsWith(".gif"))&&name.length()==7);
+        File[] files=file.listFiles((dir, name) -> FILE_PATTERN.matcher(name).matches());
         //Find page with max number
         if(files!=null) {
-            if (files.length < 1) LogUtility.e( "FILE INESISTENTI");
+            if (files.length < 1) LogUtility.e( "False folder found");
             for (File f : files) {
                 try {
-                    int x = Integer.parseInt(f.getName().substring(0, 3));
+                    String name=f.getName();
+                    int x = Integer.parseInt(name.substring(0, name.indexOf('.')));
                     if (x > max) max = x;
                     if (x < min) min = x;
                     checkSize(x,sizes,f);
@@ -44,7 +49,7 @@ public class LocalGallery extends GenericGallery{
         }
         this.max=max;
         this.min=min;
-        valid=max<9999&&min>0&&id>0;
+        valid=max!=0&&min!=Integer.MAX_VALUE&&id>0;
     }
     private void checkSize(int x, SparseArray<Size> sizes, File f){
         LogUtility.d("Decoding: "+f);
@@ -79,7 +84,7 @@ public class LocalGallery extends GenericGallery{
         max = in.readInt();
         title = in.readString();
         directory=new File(in.readString());
-        valid=max<9999&&min>0&&id>0;
+        valid=true;
     }
 
     public static final Creator<LocalGallery> CREATOR = new Creator<LocalGallery>() {
@@ -134,12 +139,15 @@ public class LocalGallery extends GenericGallery{
     }
     public static File getPage(File dir,int page){
         if(dir==null)return null;
+        String pag=String.format(Locale.US,"%03d.",page);
         File x;
-        x=new File(dir,("000"+page+".jpg").substring(Integer.toString(page).length()));
+        x=new File(dir,pag+"jpg");
         if(x.exists())return x;
-        x=new File(dir,("000"+page+".png").substring(Integer.toString(page).length()));
+        x=new File(dir,pag+"png");
         if(x.exists())return x;
-        x=new File(dir,("000"+page+".gif").substring(Integer.toString(page).length()));
+        x=new File(dir,pag+"gif");
+        if(x.exists())return x;
+        x=new File(dir,pag+"jpeg");
         if(x.exists())return x;
         return null;
     }
@@ -184,6 +192,7 @@ public class LocalGallery extends GenericGallery{
         return result;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "LocalGallery{" +

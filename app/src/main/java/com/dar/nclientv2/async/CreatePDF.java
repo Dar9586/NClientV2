@@ -44,6 +44,7 @@ public class CreatePDF extends JobIntentService {
         notId=Global.getNotificationId();
         System.gc();
         LocalGallery gallery=intent.getParcelableExtra(getPackageName()+".GALLERY");
+        totalPage=gallery.getPageCount();
         preExecute(gallery.getDirectory());
         PdfDocument document = new PdfDocument();
         File page;

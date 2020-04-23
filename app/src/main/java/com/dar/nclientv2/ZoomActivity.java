@@ -412,14 +412,15 @@ public class ZoomActivity extends AppCompatActivity {
         }
 
         public void loadPage(boolean high){
-
-            File file= LocalGallery.getPage(activity.directory,page+1);
+            File file;
+            if(activity.gallery.isLocal())file= ((LocalGallery)activity.gallery).getPage(page+1);
+            else file= LocalGallery.getPage(activity.directory,page+1);
             if(file==null||!file.exists()){
                 if(activity.gallery.isLocal()) Glide.with(activity).load(R.mipmap.ic_launcher).into(photoView);
                 else loadImage(activity,((Gallery)activity.gallery).getPage(page),photoView,high);
                 // Glide.with(activity).load(((Gallery)activity.gallery).getPage(page)).placeholder(R.drawable.ic_launcher_foreground).error(R.drawable.ic_close).priority(high? Priority.HIGH: Priority.LOW).into(photoView);
-            }
-            else Glide.with(activity).load(file).placeholder(R.drawable.ic_launcher_foreground).error(R.drawable.ic_close).into(photoView);
+            } else
+                Glide.with(activity).load(file).placeholder(R.drawable.ic_launcher_foreground).error(R.drawable.ic_close).into(photoView);
         }
     }
     public static void loadImage(AppCompatActivity activity, String url, ImageView target, boolean high){
@@ -433,7 +434,7 @@ public class ZoomActivity extends AppCompatActivity {
             super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 
         }
-
+        @NonNull
         @Override
         public Fragment getItem(int position) {
             return PlaceholderFragment.newInstance(position);
