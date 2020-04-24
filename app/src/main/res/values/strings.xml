@@ -285,6 +285,13 @@
     <string name="key_zoom_one_column" translatable="false">zoom_one_column</string>
     <string name="setting_zoom_one_column">Enable zoom when in one column mode inside a gallery</string>
     <string name="zoom_one_column">Enable zoom</string>
+    <string name="empty_circle" translatable="false">○</string>
+    <string name="full_circle" translatable="false">◉</string>
+    <string name="insert_pin">Insert PIN</string>
+    <string name="confirm_pin">Confirm PIN</string>
+    <string name="setting_pin">Enable PIN to enter the app</string>
+    <string name="use_pin">Use PIN</string>
+    <string name="wrong_pin">Wrong PIN</string>
 
     <string-array name="language">
         <item>English</item>

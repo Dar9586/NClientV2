@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:clipChildren="false"
+    android:layout_height="match_parent"
+    tools:context=".PINActivity">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipChildren="false"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:orientation="vertical"
+        android:weightSum="4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipChildren="false"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <Button
+                android:id="@+id/btn1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                style="?attr/borderlessButtonStyle"
+                android:text="1"
+                android:textColor="?android:attr/colorForeground"
+                android:tint="?android:attr/colorForeground"
+                app:backgroundTint="@android:color/transparent" />
+
+            <Button
+                android:id="@+id/btn2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                style="?attr/borderlessButtonStyle"
+                android:text="2"
+                android:textColor="?android:attr/colorForeground"
+                android:tint="?android:attr/colorForeground"
+                app:backgroundTint="@android:color/transparent" />
+
+            <Button
+                android:id="@+id/btn3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                style="?attr/borderlessButtonStyle"
+                android:text="3"
+                android:textColor="?android:attr/colorForeground"
+                android:tint="?android:attr/colorForeground"
+                app:backgroundTint="@android:color/transparent" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipChildren="false"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <Button
+                android:id="@+id/btn4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                style="?attr/borderlessButtonStyle"
+                android:text="4"
+                android:textColor="?android:attr/colorForeground"
+                android:tint="?android:attr/colorForeground"
+                app:backgroundTint="@android:color/transparent" />
+
+            <Button
+                android:id="@+id/btn5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                style="?attr/borderlessButtonStyle"
+                android:text="5"
+                android:textColor="?android:attr/colorForeground"
+                android:tint="?android:attr/colorForeground"
+                app:backgroundTint="@android:color/transparent" />
+
+            <Button
+                android:id="@+id/btn6"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                style="?attr/borderlessButtonStyle"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:text="6"
+                android:textColor="?android:attr/colorForeground"
+                android:tint="?android:attr/colorForeground"
+                app:backgroundTint="@android:color/transparent" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:clipChildren="false"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <Button
+                android:id="@+id/btn7"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                style="?attr/borderlessButtonStyle"
+                android:text="7"
+                android:textColor="?android:attr/colorForeground"
+                android:tint="?android:attr/colorForeground"
+                app:backgroundTint="@android:color/transparent" />
+
+            <Button
+                android:id="@+id/btn8"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                style="?attr/borderlessButtonStyle"
+                android:text="8"
+                android:textColor="?android:attr/colorForeground"
+                android:tint="?android:attr/colorForeground"
+                app:backgroundTint="@android:color/transparent" />
+
+            <Button
+                android:id="@+id/btn9"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="9"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                style="?attr/borderlessButtonStyle"
+                android:textColor="?android:attr/colorForeground"
+                android:tint="?android:attr/colorForeground"
+                app:backgroundTint="@android:color/transparent" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:clipChildren="false"
+            android:weightSum="3">
+
+            <ImageButton
+                android:id="@+id/utility"
+                android:contentDescription="@string/app_name"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textColor="?android:attr/colorForeground"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:tint="?android:attr/colorForeground"
+                app:backgroundTint="@android:color/transparent"
+                app:srcCompat="@drawable/ic_arrow_back" />
+
+            <Button
+                android:id="@+id/btn0"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                style="?attr/borderlessButtonStyle"
+                android:text="0"
+                android:textColor="?android:attr/colorForeground"
+                app:backgroundTint="@android:color/transparent" />
+
+            <ImageButton
+                android:id="@+id/cancelButton"
+                android:contentDescription="@string/app_name"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textColor="?android:attr/colorForeground"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:tint="?android:attr/colorForeground"
+                app:backgroundTint="@android:color/transparent"
+                app:srcCompat="@drawable/ic_backspace" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:orientation="horizontal"
+        android:weightSum="4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/empty_circle"
+            android:textSize="64sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/empty_circle"
+            android:textSize="64sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/empty_circle"
+            android:textSize="64sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/empty_circle"
+            android:textSize="64sp" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_logo" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/insert_pin"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+</androidx.constraintlayout.widget.ConstraintLayout>

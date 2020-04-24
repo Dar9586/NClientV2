@@ -22,6 +22,11 @@
         android:entries="@array/title_type_array"
         android:summary="@string/title_type_summary"
         android:defaultValue="pretty"/>
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="has_pin"
+        android:summary="@string/setting_pin"
+        android:title="@string/use_pin" />
 </PreferenceCategory>
     <PreferenceCategory
         android:title="@string/navigation_settings">

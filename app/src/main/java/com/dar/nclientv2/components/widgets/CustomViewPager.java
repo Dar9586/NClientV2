@@ -65,7 +65,7 @@ public class CustomViewPager extends ViewPager {
         mOnItemClickListener = onItemClickListener;
     }
 
-    interface OnItemClickListener {
+    public interface OnItemClickListener {
         void onItemClick(int position);
     }
 

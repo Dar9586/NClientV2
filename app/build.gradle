@@ -10,8 +10,8 @@ android {
         applicationId "com.dar.nclientv2"
         minSdkVersion 14
         targetSdkVersion 29
-        versionCode 219
-        versionName "2.1.9"
+        versionCode 220
+        versionName "2.2.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
 
@@ -36,21 +36,20 @@ dependencies {
     implementation "androidx.legacy:legacy-support-v4:1.0.0"
     implementation "com.google.android.material:material:1.1.0"
     implementation "androidx.cardview:cardview:1.0.0"
-    implementation "androidx.preference:preference:1.1.0"
+    implementation "androidx.preference:preference:1.1.1"
     implementation "androidx.recyclerview:recyclerview:1.1.0"
     implementation "androidx.viewpager:viewpager:1.0.0"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.12.6'//Because of minium SDK
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
-    implementation 'com.github.bumptech.glide:glide:4.9.0'
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
 
     implementation 'net.opacapp:multiline-collapsingtoolbar:27.1.1'
 
     implementation 'com.github.chrisbanes:PhotoView:2.1.3'
-    implementation 'org.jsoup:jsoup:1.12.1'
+    implementation 'org.jsoup:jsoup:1.13.1'
 
-    implementation "ch.acra:acra-core:5.3.0"
+    implementation 'ch.acra:acra-core:5.5.0'
 
-
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 }

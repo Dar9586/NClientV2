@@ -11,6 +11,7 @@ import com.dar.nclientv2.settings.Global;
 
 public class SettingsActivity extends AppCompatActivity {
     public enum Type{MAIN,COLUMN}
+    GeneralPreferenceFragment fragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,10 +24,8 @@ public class SettingsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
-        GeneralPreferenceFragment fragment= (GeneralPreferenceFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
+        fragment= (GeneralPreferenceFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
         fragment.setAct(this);
-        fragment.setType(SettingsActivity.Type.values()[getIntent().getIntExtra(getPackageName()+".TYPE", SettingsActivity.Type.MAIN.ordinal())]);
-
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -36,5 +35,11 @@ public class SettingsActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fragment.setType(SettingsActivity.Type.values()[getIntent().getIntExtra(getPackageName()+".TYPE", SettingsActivity.Type.MAIN.ordinal())]);
     }
 }

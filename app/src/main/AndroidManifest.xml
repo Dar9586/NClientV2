@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!--JobIntentService crash without-->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".components.activities.CrashApplication"
@@ -18,21 +18,28 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/DarkTheme">
+        <activity android:name=".PINActivity"
+            android:label="@string/app_name"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/DarkTheme"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".HistoryActivity" />
         <activity android:name=".BookmarkActivity" />
         <activity android:name=".CommentActivity" />
         <activity android:name=".SearchActivity" />
         <activity
             android:name=".MainActivity"
+            android:parentActivityName=".PINActivity"
             android:configChanges="orientation|screenSize"
             android:hardwareAccelerated="true"
             android:label="@string/app_name"
             android:theme="@style/DarkTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -165,27 +172,27 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+
         <service
             android:name=".async.downloader.DownloadGalleryV2"
             android:enabled="true"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="true" />
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".async.CreatePDF"
             android:enabled="true"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="true" />
-
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".async.CreateZIP"
             android:enabled="true"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="true" />
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".async.ScrapeTags"
             android:enabled="true"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="true" />
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>

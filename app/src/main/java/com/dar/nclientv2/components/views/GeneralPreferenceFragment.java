@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SeekBarPreference;
 
+import com.dar.nclientv2.PINActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.SettingsActivity;
 import com.dar.nclientv2.async.VersionChecker;
@@ -46,12 +47,21 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
             act.recreate();
             return true;
         });
-
         findPreference(getString(R.string.key_language)).setOnPreferenceChangeListener((preference, newValue) -> {
             act.recreate();
             return true;
         });
-
+        findPreference("has_pin").setOnPreferenceChangeListener((preference, newValue) -> {
+            if(newValue.equals(Boolean.TRUE)) {
+                Intent i = new Intent(act, PINActivity.class);
+                i.putExtra(act.getPackageName() + ".SET", true);
+                startActivity(i);
+                act.finish();
+                return false;
+            }
+            act.getSharedPreferences("Settings",0).edit().remove("pin").apply();
+            return true;
+        });
 
         findPreference("version").setTitle(getString(R.string.app_version_format, Global.getVersionName(getContext())));
 
