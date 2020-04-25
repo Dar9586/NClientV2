@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:orientation="vertical"
-    android:background="?attr/colorPrimary"
+    android:background="?attr/colorPrimaryVariant"
     android:alpha="0.75"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

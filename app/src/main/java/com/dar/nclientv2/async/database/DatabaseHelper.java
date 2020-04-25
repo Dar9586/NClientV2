@@ -43,7 +43,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     }
 
     private void insertCategoryTags(){
-        Tag[] languages = {
+        Tag[] types = {
                 new Tag("doujinshi", 0, 33172, TagType.CATEGORY, TagStatus.DEFAULT),
                 new Tag("manga", 0, 33173, TagType.CATEGORY, TagStatus.DEFAULT),
                 new Tag("misc", 0, 97152, TagType.CATEGORY, TagStatus.DEFAULT),
@@ -51,7 +51,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
                 new Tag("non-h", 0, 34065, TagType.CATEGORY, TagStatus.DEFAULT),
                 new Tag("artistcg", 0, 36320, TagType.CATEGORY, TagStatus.DEFAULT),
         };
-        for(Tag t:languages)Queries.TagTable.insert(t);
+        for(Tag t:types)Queries.TagTable.insert(t);
     }
     private void insertLanguageTags(){
         Tag[] languages = {

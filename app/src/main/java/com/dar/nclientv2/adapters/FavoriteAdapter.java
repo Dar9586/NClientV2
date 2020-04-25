@@ -58,7 +58,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
             e.printStackTrace();
             return;
         }
-        Global.loadImage(ent.getThumbnail(),holder.imgView);
+        Global.loadImage(activity,ent.getThumbnail(),holder.imgView);
         holder.pages.setText(String.format(Locale.US, "%d", ent.getPageCount()));
         holder.title.setText(ent.getTitle());
         switch (ent.getLanguage()){

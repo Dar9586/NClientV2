@@ -2,7 +2,6 @@ package com.dar.nclientv2.api.local;
 
 import android.graphics.BitmapFactory;
 import android.os.Parcel;
-import android.util.SparseArray;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,6 +12,7 @@ import com.dar.nclientv2.components.classes.Size;
 import com.dar.nclientv2.utility.LogUtility;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -24,34 +24,37 @@ public class LocalGallery extends GenericGallery{
     private final boolean valid;
     private static final Pattern FILE_PATTERN=Pattern.compile("^(\\d{3,9})\\.(gif|png|jpg|jpeg)$",Pattern.CASE_INSENSITIVE);
     private Size maxSize=new Size(0,0),minSize=new Size(Integer.MAX_VALUE,Integer.MAX_VALUE);
+    private File[]retriveValidFiles(){
+        return directory.listFiles((dir, name) -> FILE_PATTERN.matcher(name).matches());
+    }
+    private static int getPageFromFile(File f){
+        String n=f.getName();
+        return Integer.parseInt(n.substring(0,n.indexOf('.')));
+    }
     public LocalGallery(File file, int id){
         directory=file;
         title=file.getName();
         this.id=id;
         int max=0,min=Integer.MAX_VALUE;
-        SparseArray<Size>sizes=new SparseArray<>();
         //Inizio ricerca pagine
-        File[] files=file.listFiles((dir, name) -> FILE_PATTERN.matcher(name).matches());
+        File[] files=retriveValidFiles();
         //Find page with max number
-        if(files!=null) {
-            if (files.length < 1) LogUtility.e( "False folder found");
-            for (File f : files) {
-                try {
-                    String name=f.getName();
-                    int x = Integer.parseInt(name.substring(0, name.indexOf('.')));
-                    if (x > max) max = x;
-                    if (x < min) min = x;
-                    checkSize(x,sizes,f);
-                } catch (NumberFormatException e) {
-                    LogUtility.e( e.getLocalizedMessage(), e);
-                }
-            }
+        if(files!=null&&files.length >= 1) {
+            Arrays.sort(files, (o1, o2) -> getPageFromFile(o1)-getPageFromFile(o2));
+            min=getPageFromFile(files[0]);
+            min=getPageFromFile(files[files.length-1]);
         }
         this.max=max;
         this.min=min;
         valid=max!=0&&min!=Integer.MAX_VALUE&&id>0;
     }
-    private void checkSize(int x, SparseArray<Size> sizes, File f){
+    public void calculateSizes(){
+        File[] files=retriveValidFiles();
+        if(files!=null)
+            for(File f:files)
+                checkSize(f);
+    }
+    private void checkSize(File f){
         LogUtility.d("Decoding: "+f);
         BitmapFactory.Options options=new BitmapFactory.Options();
         options.inJustDecodeBounds=true;
@@ -60,7 +63,6 @@ public class LocalGallery extends GenericGallery{
         if(options.outWidth<minSize.getWidth())minSize.setWidth(options.outWidth);
         if(options.outHeight>maxSize.getHeight())maxSize.setHeight(options.outHeight);
         if(options.outHeight<minSize.getHeight())minSize.setHeight(options.outHeight);
-        sizes.append(x,new Size(options.outWidth,options.outHeight));
     }
     @Override
     public List<Comment> getComments() {

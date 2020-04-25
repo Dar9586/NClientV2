@@ -15,7 +15,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dar.nclientv2.GalleryActivity;
@@ -31,6 +30,7 @@ import com.dar.nclientv2.async.downloader.GalleryDownloaderV2;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -145,7 +145,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
 
     private void bindGallery(@NonNull final ViewHolder holder, int position, LocalGallery ent){
         holder.flag.setVisibility(View.GONE);
-        Global.loadImage(ent.getPage(ent.getMin()),holder.imgView);
+        Global.loadImage(context, ent.getPage(ent.getMin()),holder.imgView);
         holder.title.setText(ent.getTitle());
         if(colCount==1)holder.pages.setText(context.getString(R.string.page_count_format,ent.getPageCount()));
         else holder.pages.setText(String.format(Locale.US, "%d", ent.getPageCount()));
@@ -169,6 +169,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
     }
 
     private void startGallery(LocalGallery ent) {
+        ent.calculateSizes();
         Intent intent = new Intent(context, GalleryActivity.class);
         intent.putExtra(context.getPackageName()+ ".GALLERY",ent);
         intent.putExtra(context.getPackageName()+ ".ISLOCAL",true);
@@ -178,7 +179,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
     private void bindDownload(@NonNull final ViewHolder holder, int position, GalleryDownloaderV2 downloader){
         int percentage=downloader.getPercentage();
         if (!downloader.hasData())return;
-        Global.loadImage(downloader.getGallery().getCover(),holder.imgView);
+        Global.loadImage(context, downloader.getGallery().getCover(),holder.imgView);
         holder.title.setText(downloader.getPathTitle());
         holder.cancelButton.setOnClickListener(v -> removeDownloader(downloader));
         switch (downloader.getStatus()){
@@ -203,7 +204,9 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
                 break;
         }
         holder.progress.setText(context.getString(R.string.percentage_format, percentage));
+        holder.progress.setVisibility(downloader.getStatus()== GalleryDownloaderV2.Status.NOT_STARTED?View.GONE:View.VISIBLE);
         holder.progressBar.setProgress(percentage);
+        holder.progressBar.setIndeterminate(downloader.getStatus()== GalleryDownloaderV2.Status.NOT_STARTED);
         Global.setTint(holder.playButton.getDrawable());
         Global.setTint(holder.cancelButton.getDrawable());
     }
@@ -225,7 +228,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
 
     private void showDialogDelete(final int pos){
         final LocalGallery gallery=(LocalGallery)filter.get(pos);
-        AlertDialog.Builder builder=new AlertDialog.Builder(context);
+        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(context);
         builder.setTitle(R.string.delete_gallery).setMessage(context.getString(R.string.delete_gallery_format,gallery.getTitle()));
         builder.setPositiveButton(R.string.yes, (dialog, which) -> {
             filter.remove(gallery);
@@ -237,7 +240,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
     }
     private void showDialogPDF(final int pos){
         final LocalGallery gallery=(LocalGallery)filter.get(pos);
-        AlertDialog.Builder builder=new AlertDialog.Builder(context);
+        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(context);
         builder.setTitle(R.string.create_pdf).setMessage(context.getString(R.string.create_pdf_format,gallery.getTitle()));
         builder.setPositiveButton(R.string.yes, (dialog, which) -> {
             CreatePDF.startWork(context,gallery);
@@ -249,7 +252,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         adapter.add(context.getString(R.string.delete_gallery));
         adapter.add(context.getString(R.string.create_zip));
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT)adapter.add(context.getString(R.string.create_pdf));//api 19
-        AlertDialog.Builder builder=new AlertDialog.Builder(context);
+        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(context);
         builder.setTitle(R.string.settings).setIcon(R.drawable.ic_settings);
         builder.setAdapter(adapter, (dialog, which) -> {
             switch (which){
@@ -261,7 +264,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
     }
     private void createZIP(final int pos){
         final LocalGallery gallery=(LocalGallery)filter.get(pos);
-        AlertDialog.Builder builder=new AlertDialog.Builder(context);
+        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(context);
         builder.setTitle(R.string.create_zip).setMessage(context.getString(R.string.create_zip_format,gallery.getTitle()));
         builder.setPositiveButton(R.string.yes, (dialog, which) -> {
             CreateZIP.startWork(context,gallery);

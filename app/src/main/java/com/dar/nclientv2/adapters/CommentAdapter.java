@@ -124,7 +124,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.body.setText(c.getBody());
         holder.date.setText(format.format(c.getDate()));
         if(c.getUserImageURL()==null)Global.loadImage(R.drawable.ic_person,holder.userImage);
-        else Global.loadImage(c.getUserImageURL(),holder.userImage);
+        else Global.loadImage(context,c.getUserImageURL(),holder.userImage);
     }
 
     @Override

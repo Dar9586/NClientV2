@@ -3,9 +3,9 @@
 
     <style name="DarkTheme" parent="Theme.MaterialComponents.NoActionBar" >
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
-        <item name="colorPrimary">@color/primary_material_dark</item>
-        <item name="colorPrimaryDark">@color/primary_dark_material_dark</item>
-        <item name="colorAccent">@color/accent_material_dark</item>
+        <item name="colorPrimaryVariant">@color/primary_material_dark</item>
+        <item name="colorAccent">@android:color/holo_blue_dark</item>
+        <item name="colorPrimary">@android:color/holo_blue_dark</item>
     </style>
     <style name="DarkTheme.NoTitle" parent="DarkTheme">
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
@@ -13,9 +13,9 @@
 
     <style name="LightTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
-        <item name="colorPrimary">@color/primary_material_light</item>
-        <item name="colorPrimaryDark">@color/primary_dark_material_light</item>
-        <item name="colorAccent">@color/accent_material_light</item>
+        <item name="colorPrimaryVariant">@color/primary_material_light</item>
+        <item name="colorAccent">@android:color/holo_blue_bright</item>
+        <item name="colorPrimary">@android:color/holo_blue_bright</item>
     </style>
     <style name="LightTheme.NoTitle" parent="LightTheme">
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>

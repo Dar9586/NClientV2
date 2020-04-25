@@ -13,6 +13,7 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.StringRes;
 
 import com.dar.nclientv2.R;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.Locale;
 
@@ -80,28 +81,29 @@ public class DefaultDialogs {
         }
     }
     public static void pageChangerDialog(final Builder builder){
-        androidx.appcompat.app.AlertDialog.Builder build = new androidx.appcompat.app.AlertDialog.Builder(builder.context);
+        MaterialAlertDialogBuilder build = new MaterialAlertDialogBuilder(builder.context);
         if(builder.title!=0)build.setTitle(builder.context.getString(builder.title));
         if(builder.drawable!=0) build.setIcon(builder.drawable);
         View v=View.inflate(builder.context, R.layout.page_changer, null);
         build.setView(v);
-        final SeekBar edt=v.findViewById(R.id.seekBar);
-        final TextView pag=v.findViewById(R.id.page);
-        final EditText editText=v.findViewById(R.id.edit_page);
+        final SeekBar seekBar=v.findViewById(R.id.seekBar);
+        if(Global.useRtl())seekBar.setRotationY(180);
+        final TextView totalPage=v.findViewById(R.id.page);
+        final EditText actualPage=v.findViewById(R.id.edit_page);
         v.findViewById(R.id.prev).setOnClickListener(v12 -> {
-            edt.setProgress(edt.getProgress()-1);
-            editText.setText(String.format(Locale.US,"%d",edt.getProgress()+builder.min));
+            seekBar.setProgress(seekBar.getProgress()-1);
+            actualPage.setText(String.format(Locale.US,"%d",seekBar.getProgress()+builder.min));
 
         });
         v.findViewById(R.id.next).setOnClickListener(v1 -> {
-            edt.setProgress(edt.getProgress()+1);
-            editText.setText(String.format(Locale.US,"%d",edt.getProgress()+builder.min));
+            seekBar.setProgress(seekBar.getProgress()+1);
+            actualPage.setText(String.format(Locale.US,"%d",seekBar.getProgress()+builder.min));
         });
-        edt.setMax(builder.max-builder.min);
-        edt.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        seekBar.setMax(builder.max-builder.min);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(fromUser)editText.setText(String.format(Locale.US,"%d",progress+builder.min));
+                if(fromUser)actualPage.setText(String.format(Locale.US,"%d",progress+builder.min));
             }
 
             @Override
@@ -110,13 +112,13 @@ public class DefaultDialogs {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
-        editText.setText(String.format(Locale.US,"%d",builder.actual));
-        edt.setProgress(builder.actual-builder.min-1);
-        pag.setText(String.format(Locale.US,"/%d",builder.max));
+        actualPage.setText(String.format(Locale.US,"%d",builder.actual));
+        seekBar.setProgress(builder.actual-builder.min);
+        totalPage.setText(String.format(Locale.US,"%d",builder.max));
         InputFilter[] filterArray = new InputFilter[1];
         filterArray[0] = new InputFilter.LengthFilter(Integer.toString(builder.max).length());
-        editText.setFilters(filterArray);
-        editText.addTextChangedListener(new TextWatcher() {
+        actualPage.setFilters(filterArray);
+        actualPage.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
@@ -127,12 +129,12 @@ public class DefaultDialogs {
                 try {
                     x = Integer.parseInt(s.toString());
                 }catch (NumberFormatException e){x=-1;}
-                if(x<builder.min)edt.setProgress(0);
-                else edt.setProgress(x-builder.min);
+                if(x<builder.min)seekBar.setProgress(0);
+                else seekBar.setProgress(x-builder.min);
             }
         });
         if(builder.dialogs!=null)
-        build.setPositiveButton(builder.context.getString(builder.yesbtn), (dialog, id) -> builder.dialogs.positive(edt.getProgress()+builder.min)).setNegativeButton(builder.context.getString(builder.nobtn), (dialog, which) -> builder.dialogs.negative());
+        build.setPositiveButton(builder.context.getString(builder.yesbtn), (dialog, id) -> builder.dialogs.positive(seekBar.getProgress()+builder.min)).setNegativeButton(builder.context.getString(builder.nobtn), (dialog, which) -> builder.dialogs.negative());
         build.setCancelable(true);
         build.show();
     }

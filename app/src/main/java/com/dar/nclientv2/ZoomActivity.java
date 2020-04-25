@@ -24,7 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -41,10 +40,12 @@ import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.components.views.ZoomFragment;
 import com.dar.nclientv2.components.widgets.CustomViewPager;
+import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.targets.BitmapTarget;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -130,7 +131,24 @@ public class ZoomActivity extends AppCompatActivity {
             @Override
             public void onPageScrollStateChanged(int state) { }
         });
-
+        pageManagerLabel.setOnClickListener(v -> {
+            DefaultDialogs.pageChangerDialog(
+                    new DefaultDialogs.Builder(this)
+                            .setActual(offsetPage(actualPage)+1)
+                            .setMin(1)
+                            .setMax(gallery.getPageCount())
+                            .setTitle(R.string.change_page)
+                            .setDrawable(R.drawable.ic_find_in_page)
+                            .setDialogs(new DefaultDialogs.DialogResults() {
+                                @Override
+                                public void positive(int actual) {
+                                    changePage(offsetPage(actual-1));
+                                }
+                                @Override
+                                public void negative() {}
+                            })
+            );
+        });
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -144,12 +162,13 @@ public class ZoomActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                changePage(offsetPage(seekBar.getProgress()),true);
+                changePage(offsetPage(seekBar.getProgress()));
             }
         });
 
 
         changePage(offsetPage(page));
+        setPageText(page+1);
     }
     private void setPageText(int page){
         pageManagerLabel.setText(getString(R.string.page_format,page,gallery.getPageCount()));
@@ -212,9 +231,6 @@ public class ZoomActivity extends AppCompatActivity {
     }
 
     private void changePage(int newPage){
-        changePage(newPage,false);
-    }
-    private void changePage(int newPage,boolean force){
         mViewPager.setCurrentItem(newPage);
     }
 
@@ -252,7 +268,7 @@ public class ZoomActivity extends AppCompatActivity {
     }
 
     private void openSendImageDialog() {
-        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(this);
         builder.setPositiveButton(R.string.yes, (dialog, which) -> sendImage(true))
                 .setNegativeButton(R.string.no, (dialog, which) -> sendImage(false))
                 .setCancelable(true).setTitle(R.string.send_with_title)

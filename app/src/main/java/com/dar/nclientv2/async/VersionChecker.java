@@ -9,7 +9,6 @@ import android.util.JsonToken;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
@@ -17,6 +16,7 @@ import com.dar.nclientv2.BuildConfig;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.LogUtility;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -114,7 +114,7 @@ public class VersionChecker{
                 .replaceAll("\\(.*\\)","").trim();//remove things between ()
         LogUtility.d("Evaluated: "+finalBody);
         LogUtility.d("Creating dialog");
-        AlertDialog.Builder builder=new AlertDialog.Builder(context);
+        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(context);
         LogUtility.d(""+context);
         builder.setTitle(R.string.new_version_found);
         builder.setIcon(R.drawable.ic_file_download);

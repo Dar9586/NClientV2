@@ -9,13 +9,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.async.downloader.DownloadGalleryV2;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-public class RangeSelector extends AlertDialog.Builder {
+public class RangeSelector extends MaterialAlertDialogBuilder {
     private final View v;
     private final LinearLayout l1,l2;
     private SeekBar s1,s2;

@@ -107,7 +107,7 @@ public class RandomActivity extends AppCompatActivity {
         loadedGallery=gallery;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
             if(isDestroyed())return;
-        Global.loadImage(gallery.getCover(),thumbnail);
+        Global.loadImage(this, gallery.getCover(),thumbnail);
         switch (gallery.getLanguage()){
             case CHINESE :language.setText("\uD83C\uDDE8\uD83C\uDDF3");break;
             case ENGLISH :language.setText("\uD83C\uDDEC\uD83C\uDDE7");break;

@@ -8,7 +8,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -154,13 +153,13 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
         final ViewGroup vg=(ViewGroup)holder.master;
         int i=0,len,j=0,y;
-        ConstraintLayout lay;
+        ViewGroup lay;
         ChipGroup cg;
         Gallery gallery=(Gallery)this.gallery;
         for(TagType type:TagType.values){
             y=TAG_NAMES[j++];
             len=gallery.getTagCount(type);
-            lay=(ConstraintLayout)vg.getChildAt(i++);
+            lay=(ViewGroup)vg.getChildAt(i++);
             cg=lay.findViewById(R.id.chip_group);
             if(cg.getChildCount()!=0)continue;
             lay.setVisibility(len==0?View.GONE:View.VISIBLE);
@@ -255,10 +254,10 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             }else Global.loadImage(R.mipmap.ic_launcher, imgView);
             if(target!=null)map.put(imgView,target);
         }else{
-            if (file != null && file.exists()) Global.loadImage(file, imgView);
+            if (file != null && file.exists()) Global.loadImage(context, file, imgView);
             else if (!gallery.isLocal()){
                 final Gallery ent = ((Gallery) gallery);
-                Global.loadImage(Global.isHighRes() ? ent.getPage(pos - 1) : ent.getLowPage(pos - 1),imgView);
+                Global.loadImage(context, Global.isHighRes() ? ent.getPage(pos - 1) : ent.getLowPage(pos - 1),imgView);
             }else Global.loadImage(R.mipmap.ic_launcher, imgView);
         }
     }

@@ -33,6 +33,7 @@ import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -215,7 +216,7 @@ public class SearchActivity extends AppCompatActivity {
     }
     private AlertDialog alertDialog;
     private void addDialog(){
-        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(this);
         builder.setView(autoComplete);
         autoComplete.setText("");
         builder.setPositiveButton(R.string.ok, (dialog, which) -> {

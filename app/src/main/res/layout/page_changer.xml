@@ -12,47 +12,61 @@
         android:layout_marginBottom="24dp"
         android:layout_height="wrap_content"
         />
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:weightSum="10"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_height="wrap_content">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:weightSum="11">
+
         <ImageButton
-            android:contentDescription="@string/prev"
             android:id="@+id/prev"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="2"
-            app:srcCompat="@drawable/ic_keyboard_arrow_left"
-            app:backgroundTint="@android:color/transparent"
+            android:contentDescription="@string/prev"
             android:tint="?android:attr/colorForeground"
-            android:layout_height="wrap_content" />
+            app:backgroundTint="@android:color/transparent"
+            app:srcCompat="@drawable/ic_keyboard_arrow_left" />
+
         <EditText
-            android:hint="@string/hashtag"
-            android:inputType="number"
             android:id="@+id/edit_page"
             android:layout_width="0dp"
-            android:layout_weight="3"
-            android:textSize="24sp"
-            android:gravity="center"
             android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:hint="@string/hashtag"
+            android:inputType="number"
+            android:textSize="24sp"
             tools:ignore="Autofill" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="/"
+            android:textSize="24sp" />
+
         <TextView
             android:id="@+id/page"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="3"
-            android:textSize="24sp"
             android:gravity="center"
-            android:layout_height="wrap_content" />
+            android:textSize="24sp" />
+
         <ImageButton
-            android:contentDescription="@string/next"
             android:id="@+id/next"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="2"
-            app:backgroundTint="@android:color/transparent"
-            app:srcCompat="@drawable/ic_keyboard_arrow_right"
+            android:contentDescription="@string/next"
             android:tint="?android:attr/colorForeground"
-            android:layout_height="wrap_content" />
+            app:backgroundTint="@android:color/transparent"
+            app:srcCompat="@drawable/ic_keyboard_arrow_right" />
     </LinearLayout>
 
 

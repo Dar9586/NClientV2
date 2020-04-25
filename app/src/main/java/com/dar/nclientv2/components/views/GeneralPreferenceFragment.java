@@ -5,17 +5,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SeekBarPreference;
 
+import com.bumptech.glide.Glide;
 import com.dar.nclientv2.PINActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.SettingsActivity;
 import com.dar.nclientv2.async.VersionChecker;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
     private AppCompatActivity act;
@@ -70,15 +71,17 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
         //clear cache if pressed
         findPreference(getString(R.string.key_cache)).setSummary(getString(R.string.cache_size_formatted,cacheSize));
         findPreference(getString(R.string.key_cache)).setOnPreferenceClickListener(preference -> {
-            AlertDialog.Builder builder=new AlertDialog.Builder(act);
+            MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(act);
             builder.setTitle(R.string.clear_cache);
             builder.setPositiveButton(R.string.yes, (dialog, which) -> {
-                Global.recursiveDelete(act.getCacheDir());
-                act.runOnUiThread(() -> {
-                    Toast.makeText(act, act.getString(R.string.cache_cleared), Toast.LENGTH_SHORT).show();
-                    double cSize=Global.recursiveSize(act.getCacheDir())/((double)(2<<20));
-                    findPreference(getString(R.string.key_cache)).setSummary(getString(R.string.cache_size_formatted,cSize));
-                });
+                new Thread(() -> {
+                    Glide.get(GeneralPreferenceFragment.this.getContext()).clearDiskCache();
+                    act.runOnUiThread(() -> {
+                        Toast.makeText(act, act.getString(R.string.cache_cleared), Toast.LENGTH_SHORT).show();
+                        double cSize=Global.recursiveSize(act.getCacheDir())/((double)(2<<20));
+                        findPreference(getString(R.string.key_cache)).setSummary(getString(R.string.cache_size_formatted,cSize));
+                    });
+                }).start();
             }).setNegativeButton(R.string.no,null).setCancelable(true);
             builder.show();
 

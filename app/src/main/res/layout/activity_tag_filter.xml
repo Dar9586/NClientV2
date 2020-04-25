@@ -28,7 +28,7 @@
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             app:tabMode="scrollable"
-            android:background="?attr/colorPrimary"
+            android:background="?attr/colorPrimaryVariant"
             android:layout_height="wrap_content">
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"

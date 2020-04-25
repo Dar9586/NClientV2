@@ -1,6 +1,7 @@
 package com.dar.nclientv2.settings;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -438,14 +439,16 @@ public class Global {
         Glide.with(context).asBitmap().error(logo).placeholder(logo).load(url).into(target);
         return target;
     }
-    public static void loadImage(String url, final ImageView imageView){loadImage(url,imageView,false);}
-    public static void loadImage(String url, final ImageView imageView,boolean force){
+    public static void loadImage(Activity activity,String url, final ImageView imageView){loadImage(activity, url,imageView,false);}
+    public static void loadImage(Activity activity,String url, final ImageView imageView,boolean force){
+        if(activity.isFinishing()||(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1&&activity.isDestroyed()))return;
         try {
             if (loadImages || force) Glide.with(imageView).load(url).placeholder(getLogo(imageView.getResources())).into(imageView);
             else Glide.with(imageView).load(getLogo(imageView.getResources())).into(imageView);
         }catch (IllegalStateException ignore){}//thrown when activity is destroyed
     }
-    public static void loadImage(File file, ImageView imageView){
+    public static void loadImage(Activity activity, File file, ImageView imageView){
+        if(activity.isFinishing()||(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1&&activity.isDestroyed()))return;
         if(loadImages)Glide.with(imageView).load(file).placeholder(getLogo(imageView.getResources())).into(imageView);
         else Glide.with(imageView).load(getLogo(imageView.getResources())).into(imageView);
 

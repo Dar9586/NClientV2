@@ -20,7 +20,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:adjustViewBounds="true"
-            android:backgroundTint="?attr/colorPrimary"
+            android:backgroundTint="?attr/colorPrimaryVariant"
             android:contentDescription="@string/image"
             android:scaleType="fitCenter"
             app:layout_constraintDimensionRatio="W,16:9"
