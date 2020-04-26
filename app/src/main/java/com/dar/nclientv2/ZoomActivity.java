@@ -122,10 +122,12 @@ public class ZoomActivity extends AppCompatActivity {
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
 
             @Override
-            public void onPageSelected(int position) {
-                actualPage=position;
-                setPageText(Global.useRtl()?gallery.getPageCount()-position:position+1);
-                seekBar.setProgress(Global.useRtl()?gallery.getPageCount()-1-position:position);
+            public void onPageSelected(int newPage) {
+                int oldPage=actualPage;
+                actualPage=newPage;
+                setPageText(Global.useRtl()?gallery.getPageCount()-newPage:newPage+1);
+                seekBar.setProgress(Global.useRtl()?gallery.getPageCount()-1-newPage:newPage);
+                clearFarRequests(oldPage,newPage);
             }
 
             @Override
@@ -291,6 +293,16 @@ public class ZoomActivity extends AppCompatActivity {
     }
     private ZoomFragment getActualFragment(){
         return getActualFragment(mViewPager.getCurrentItem());
+    }
+    private void clearFarRequests(int oldPage, int newPage){
+        ZoomFragment fragment;
+        for(int i=oldPage-1;i<=oldPage+1;i++){
+            if(i== newPage ||i== newPage -1||i== newPage +1)continue;
+            fragment=getActualFragment(i);
+            if(fragment==null)continue;
+            fragment.cancelRequest();
+        }
+
     }
     private ZoomFragment getActualFragment(int position){
         return (ZoomFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + position);

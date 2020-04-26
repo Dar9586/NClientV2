@@ -28,7 +28,6 @@ import com.github.chrisbanes.photoview.PhotoView;
 import java.io.File;
 
 public class ZoomFragment extends Fragment {
-    // TODO: 25/04/20 Gallery PARCEL too big, maybe
     // TODO: 25/04/20 java.lang.VerifyError: com/bumptech/glide/load/data/ParcelFileDescriptorRewinder at com.bumptech.glide.Glide
     private int page,galleryId;
     private PhotoView photoView;
@@ -36,7 +35,7 @@ public class ZoomFragment extends Fragment {
     private File galleryFolder;
     private String url;
     private View.OnClickListener clickListener;
-
+    private CustomTarget<Drawable>target;
     public ZoomFragment() { }
 
     public void setClickListener(View.OnClickListener clickListener) {
@@ -76,43 +75,49 @@ public class ZoomFragment extends Fragment {
             if(clickListener!=null)clickListener.onClick(v);
         });
         retryButton.setOnClickListener(v -> loadImage());
+        createTarget();
         loadImage();
 
         return rootView;
     }
+
+    private void createTarget() {
+        target=new CustomTarget<Drawable>() {
+            void applyDrawable(ImageView toShow,ImageView toHide,Drawable drawable){
+                toShow.setVisibility(View.VISIBLE);
+                toHide.setVisibility(View.GONE);
+                toShow.setImageDrawable(drawable);
+            }
+
+            @Override
+            public void onLoadStarted(@Nullable Drawable placeholder) {
+                super.onLoadStarted(placeholder);
+                applyDrawable(photoView,retryButton,placeholder);
+            }
+
+            @Override
+            public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                super.onLoadFailed(errorDrawable);
+                applyDrawable(retryButton,photoView,errorDrawable);
+            }
+
+            @Override
+            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                applyDrawable(photoView,retryButton,resource);
+            }
+
+            @Override
+            public void onLoadCleared(@Nullable Drawable placeholder) {
+                applyDrawable(photoView,retryButton,placeholder);
+            }
+        };
+    }
+
     private void loadImage(){
         loadPage()
                 .placeholder(R.drawable.ic_launcher_foreground)
                 .error(R.drawable.ic_refresh)
-                .into(new CustomTarget<Drawable>() {
-                    void applyDrawable(ImageView toShow,ImageView toHide,Drawable drawable){
-                        toShow.setVisibility(View.VISIBLE);
-                        toHide.setVisibility(View.GONE);
-                        toShow.setImageDrawable(drawable);
-                    }
-
-                    @Override
-                    public void onLoadStarted(@Nullable Drawable placeholder) {
-                        super.onLoadStarted(placeholder);
-                        applyDrawable(photoView,retryButton,placeholder);
-                    }
-
-                    @Override
-                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                        super.onLoadFailed(errorDrawable);
-                        applyDrawable(retryButton,photoView,errorDrawable);
-                    }
-
-                    @Override
-                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                        applyDrawable(photoView,retryButton,resource);
-                    }
-
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-                        applyDrawable(photoView,retryButton,placeholder);
-                    }
-                });
+                .into(target);
     }
     private RequestBuilder<Drawable> loadPage() {
         RequestBuilder<Drawable> request;
@@ -129,5 +134,9 @@ public class ZoomFragment extends Fragment {
     }
     public Drawable getDrawable(){
         return photoView.getDrawable();
+    }
+
+    public void cancelRequest() {
+        Glide.with(photoView).clear(target);
     }
 }

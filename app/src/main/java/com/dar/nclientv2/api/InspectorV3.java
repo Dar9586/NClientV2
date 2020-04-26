@@ -181,16 +181,27 @@ public class InspectorV3 extends Thread implements Parcelable {
             switch (inspector.tags.size()) {
                 case 0:
                     inspector.requestType = ApiRequestType.BYALL;
+                    inspector.tryByAllPopular();
                     break;
                 case 1:
                     inspector.requestType = ApiRequestType.BYTAG;
-                    break;
+                    //else by search for the negative tag
+                    if(inspector.getTag().getStatus()!=TagStatus.AVOIDED)
+                        break;
                 default:
                     inspector.requestType = ApiRequestType.BYSEARCH;
+                    break;
             }
         }else inspector.requestType=ApiRequestType.BYSEARCH;
         inspector.createUrl();
         return inspector;
+    }
+
+    private void tryByAllPopular() {
+        if(byPopular){
+            requestType=ApiRequestType.BYSEARCH;
+            query="-nclientv2";
+        }
     }
 
     private void createUrl() {

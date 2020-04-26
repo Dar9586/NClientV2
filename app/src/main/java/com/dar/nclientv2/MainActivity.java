@@ -24,6 +24,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.dar.nclientv2.adapters.ListAdapter;
 import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.components.Gallery;
@@ -512,7 +513,10 @@ public class MainActivity extends BaseActivity
             Global.initFromShared(this);//restart all settings
             inspector=inspector.cloneInspector(this,resetDataset);
             inspector.start();//restart inspector
-            if(setting.theme!=Global.getTheme()||!setting.locale.equals(Global.initLanguage(this)))recreate();
+            if(setting.theme!=Global.getTheme()||!setting.locale.equals(Global.initLanguage(this))){
+                Glide.with(getApplicationContext()).pauseAllRequestsRecursive();
+                recreate();
+            }
             adapter.notifyDataSetChanged();//restart adapter
             showPageSwitcher(inspector.getPage(),inspector.getPageCount());//restart page switcher
             changeLayout(getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE);
