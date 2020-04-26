@@ -35,7 +35,7 @@
     <string name="parodies">原作</string>
     <string name="characters">角色</string>
     <string name="tags">標籤</string>
-    <string name="artists">作家</string>
+    <string name="artists">藝術家</string>
     <string name="groups">社團</string>
     <string name="languages">語言</string>
     <string name="categories">類別</string>
@@ -238,21 +238,22 @@
     <string name="history">歷史</string>
     <string name="history_column_count">選擇歷史列數</string>
     <string name="clear_history">清除歷史</string>
-    <string name="cancelled_format">Cancelled: %s</string>
-    <string name="completed_format">Completed: %s</string>
-    <string name="stop">Stop</string>
-    <string name="downloading_format">Downloading: %s</string>
-    <string name="toggle_favorite">Toggle favorite</string>
-    <string name="resume">Resume</string>
-    <string name="pause">Pause</string>
-    <string name="title_copied_to_clipboard">Title copied to clipboard</string>
-    <string name="setting_zoom_one_column">Enable zoom when in one column mode inside a gallery</string>
-    <string name="zoom_one_column">Enable zoom</string>
-    <string name="insert_pin">Insert PIN</string>
-    <string name="confirm_pin">Confirm PIN</string>
-    <string name="setting_pin">Enable PIN to enter the app</string>
-    <string name="use_pin">Use PIN</string>
-    <string name="wrong_pin">Wrong PIN</string>
+    <string name="cancelled_format">取消: %s</string>
+    <string name="completed_format">完成: %s</string>
+    <string name="stop">停止</string>
+    <string name="downloading_format">下載中: %s</string>
+    <string name="toggle_favorite">切換收藏</string>
+    <string name="resume">恢復</string>
+    <string name="pause">暫停</string>
+    <string name="title_copied_to_clipboard">標題已複製至剪貼板</string>
+    <string name="setting_zoom_one_column">在畫廊內一列顯示時啟用縮放</string>
+    <string name="zoom_one_column">啟用縮放</string>
+    <string name="insert_pin">輸入PIN碼</string>
+    <string name="confirm_pin">確認PIN碼</string>
+    <string name="setting_pin">啟用PIN碼登錄應用</string>
+    <string name="use_pin">使用PIN碼</string>
+    <string name="wrong_pin">PIN碼錯誤</string>
+
 
     <string-array name="language">
         <item>英文</item>
