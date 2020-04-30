@@ -57,17 +57,19 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
     private void loadGallery(final GenericAdapter.ViewHolder holder, SimpleGallery ent){
         boolean online=true;
         if(context.isFinishing())return;
-        if(storagePermission){
-            File f=LocalGallery.getPage(Global.findGalleryFolder(ent.getId()),1);
-            if(f!=null){
-                    online=false;
-                    Global.loadImage(context, f,holder.imgView);
+        try {
+            if (storagePermission) {
+                File f = LocalGallery.getPage(Global.findGalleryFolder(ent.getId()), 1);
+                if (f != null) {
+                    online = false;
+                    Global.loadImage(context, f, holder.imgView);
+                }
             }
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1&&context.isDestroyed()) {
-            return;
-        }
-        if(online)Global.loadImage(context,ent.getThumbnail(),holder.imgView);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && context.isDestroyed()) {
+                return;
+            }
+            if (online) Global.loadImage(context, ent.getThumbnail(), holder.imgView);
+        }catch (VerifyError ignore){}
     }
     @Override
     public void onBindViewHolder(@NonNull final GenericAdapter.ViewHolder holder, int position) {

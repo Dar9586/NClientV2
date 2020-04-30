@@ -82,7 +82,6 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 if(results.count==-1)return;
-                LogUtility.d("PASSED");
                 Cursor newCursor=(Cursor)results.values;
                 int oldCount=getItemCount(),newCount=results.count;
                 if(cursor!=null)cursor.close();
@@ -144,7 +143,6 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
             return true;
         });
         updateLogo(holder.imgView,tagMode==TagMode.ONLINE?TagStatus.AVOIDED:ent.getStatus());
-        LogUtility.d("PASSED: "+ent);
     }
 
     @Override

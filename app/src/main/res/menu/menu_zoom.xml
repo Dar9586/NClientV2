@@ -14,4 +14,10 @@
         android:icon="@drawable/ic_share"
         android:title="@string/share"
         app:showAsAction="ifRoom|collapseActionView"/>
+    <item
+        android:id="@+id/rotate"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_rotate_90_degrees"
+        android:title="@string/rotate_image"
+        app:showAsAction="ifRoom|collapseActionView" />
 </menu>

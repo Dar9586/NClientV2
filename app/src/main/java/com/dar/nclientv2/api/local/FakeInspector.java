@@ -47,7 +47,7 @@ public class FakeInspector extends AsyncTask<LocalActivity,LocalActivity,LocalAc
     private void createGallery(final File file) {
         File nomedia=new File(file,".nomedia");
         String h="-1";
-        try {//controllo l'id tramite il file nomedia
+        try {//ID check with nomedia
             if(nomedia.exists()) {
                 BufferedReader br = new BufferedReader(new FileReader(new File(file, ".nomedia")));
                 h = br.readLine();

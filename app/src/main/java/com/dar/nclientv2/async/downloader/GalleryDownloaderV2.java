@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import okhttp3.Request;
 import okhttp3.Response;
@@ -56,7 +57,7 @@ public class GalleryDownloaderV2 {
     private final int id;
     private int start=-1,end=-1;
     private Gallery gallery;
-    private List<DownloadObserver> observers= new ArrayList<>(3);
+    private CopyOnWriteArraySet<DownloadObserver> observers= new CopyOnWriteArraySet<>();
     private List<PageContainer> urls=new ArrayList<>();
     private File folder;
     private boolean initialized=false;
@@ -153,6 +154,7 @@ public class GalleryDownloaderV2 {
         InspectorV3 inspector = InspectorV3.galleryInspector(context,id,null);
         try {
             inspector.execute();
+            if(inspector.getGalleries().size()==0)return false;
             Gallery g=(Gallery) inspector.getGalleries().get(0);
             if(g.isValid())
                 setGallery(g);
@@ -243,7 +245,7 @@ public class GalleryDownloaderV2 {
     }
 
     private void createPages() {
-        for(int i=start;i<=end;i++)
+        for(int i=start;i<=end&&i<gallery.getPageCount();i++)
             urls.add(new PageContainer(i+1,gallery.getPage(i),gallery.getPageExtension(i)));
     }
 

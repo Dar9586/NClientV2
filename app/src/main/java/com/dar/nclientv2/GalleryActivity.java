@@ -92,10 +92,12 @@ public class GalleryActivity extends BaseActivity{
 
                 @Override
                 public void onSuccess(List<GenericGallery> galleries) {
-                    Intent intent = new Intent(GalleryActivity.this,GalleryActivity.class);
-                    intent.putExtra(getPackageName()+".GALLERY",galleries.get(0));
-                    intent.putExtra(getPackageName()+".ZOOM",zoom);
-                    startActivity(intent);
+                    if(galleries.size()>0) {
+                        Intent intent = new Intent(GalleryActivity.this, GalleryActivity.class);
+                        intent.putExtra(getPackageName() + ".GALLERY", galleries.get(0));
+                        intent.putExtra(getPackageName() + ".ZOOM", zoom);
+                        startActivity(intent);
+                    }
                     finish();
                 }
             }).start();
@@ -305,6 +307,7 @@ public class GalleryActivity extends BaseActivity{
         InspectorV3.galleryInspector(this, gallery.getId(), new InspectorV3.DefaultInspectorResponse() {
             @Override
             public void onSuccess(List<GenericGallery> galleries) {
+                if(galleries.size()==0)return;
                 Intent intent=new Intent(GalleryActivity.this, GalleryActivity.class);
                 LogUtility.d(galleries.get(0).toString());
                 intent.putExtra(getPackageName()+".GALLERY",galleries.get(0));

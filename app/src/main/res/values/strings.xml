@@ -292,6 +292,7 @@
     <string name="setting_pin">Enable PIN to enter the app</string>
     <string name="use_pin">Use PIN</string>
     <string name="wrong_pin">Wrong PIN</string>
+    <string name="rotate_image">Rotate image</string>
 
     <string-array name="language">
         <item>English</item>

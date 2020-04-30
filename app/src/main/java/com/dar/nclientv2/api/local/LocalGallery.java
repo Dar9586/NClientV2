@@ -42,7 +42,7 @@ public class LocalGallery extends GenericGallery{
         if(files!=null&&files.length >= 1) {
             Arrays.sort(files, (o1, o2) -> getPageFromFile(o1)-getPageFromFile(o2));
             min=getPageFromFile(files[0]);
-            min=getPageFromFile(files[files.length-1]);
+            max=getPageFromFile(files[files.length-1]);
         }
         this.max=max;
         this.min=min;
@@ -140,7 +140,7 @@ public class LocalGallery extends GenericGallery{
         return directory;
     }
     public static File getPage(File dir,int page){
-        if(dir==null)return null;
+        if(dir==null||!dir.exists())return null;
         String pag=String.format(Locale.US,"%03d.",page);
         File x;
         x=new File(dir,pag+"jpg");

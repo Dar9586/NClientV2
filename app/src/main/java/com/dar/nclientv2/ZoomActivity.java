@@ -252,6 +252,9 @@ public class ZoomActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         switch(id){
+            case R.id.rotate:
+                getActualFragment().rotate();
+                break;
             case R.id.save_page:
                 if(Global.hasStoragePermission(this)){
                     downloadPage();

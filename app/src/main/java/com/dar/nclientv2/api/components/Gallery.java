@@ -8,7 +8,6 @@ import android.util.JsonToken;
 
 import androidx.annotation.NonNull;
 
-import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.SimpleGallery;
 import com.dar.nclientv2.api.enums.ImageExt;
 import com.dar.nclientv2.api.enums.Language;
@@ -19,7 +18,6 @@ import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.classes.Size;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.LogUtility;
-import com.dar.nclientv2.utility.Utility;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -67,7 +65,7 @@ public class Gallery extends GenericGallery{
     private Language language= Language.UNKNOWN;
     private Size maxSize=new Size(0,0),minSize=new Size(Integer.MAX_VALUE,Integer.MAX_VALUE);
     private final boolean complete,onlineFavorite;
-    private static volatile boolean updating=false;
+
     public Gallery(Cursor cursor, TagList tags) throws IOException{
         id=cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.IDGALLERY));
         mediaId=cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.MEDIAID));
@@ -87,7 +85,6 @@ public class Gallery extends GenericGallery{
         if(maxSize.getWidth()==0){
             maxSize=new Size(0,0);
             minSize=new Size(Integer.MAX_VALUE,Integer.MAX_VALUE);
-            updateSize();
         }
         comments=null;
         readPagePath(cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.PAGES)));
@@ -100,24 +97,6 @@ public class Gallery extends GenericGallery{
 
     public boolean isOnlineFavorite() {
         return onlineFavorite;
-    }
-
-    private void updateSize() {
-        new Thread(() -> {
-            while(updating) {
-                Utility.threadSleep(50);
-            }
-            updating=true;
-            try {
-                Queries.GalleryTable.updateSizes( Gallery.galleryFromId(id));
-                Gallery gallery=Queries.GalleryTable.galleryFromId(id);
-                maxSize=gallery.maxSize;
-                minSize=gallery.minSize;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            updating=false;
-        }).start();
     }
 
 
@@ -536,12 +515,6 @@ public class Gallery extends GenericGallery{
     }
 
 
-    public static Gallery galleryFromId(int id) throws IOException{
-        InspectorV3 i=InspectorV3.galleryInspector(null,id,null);
-        i.execute();
-        if(i.getGalleries().size()==0)return null;
-        return (Gallery) i.getGalleries().get(0);
-    }
     public boolean hasIgnoredTags(Set<Tag> s){
         for(Tag t:tags.getAllTagsSet())if(s.contains(t)){
             LogUtility.d("Found: "+s+",,"+t.toQueryTag());

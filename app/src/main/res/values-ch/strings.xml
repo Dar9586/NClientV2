@@ -253,6 +253,7 @@
     <string name="setting_pin">啟用PIN碼登錄應用</string>
     <string name="use_pin">使用PIN碼</string>
     <string name="wrong_pin">PIN碼錯誤</string>
+    <string name="rotate_image">Rotate image</string>
 
 
     <string-array name="language">

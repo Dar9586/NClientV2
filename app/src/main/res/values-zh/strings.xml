@@ -252,6 +252,7 @@
     <string name="setting_pin">启用PIN码登录应用</string>
     <string name="use_pin">使用PIN码</string>
     <string name="wrong_pin">PIN码错误</string>
+    <string name="rotate_image">Rotate image</string>
 
     <string-array name="language">
         <item>英文</item>
