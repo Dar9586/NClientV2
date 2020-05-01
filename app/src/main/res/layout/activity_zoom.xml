@@ -13,6 +13,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+
+
             <TextView
                 android:id="@+id/page_text"
                 android:background="#5f000000"
@@ -36,11 +38,10 @@
                 tools:context=".ZoomActivity">
 
 
-
             </com.dar.nclientv2.components.widgets.CustomViewPager>
             <androidx.appcompat.widget.Toolbar
                 android:alpha="0.75"
-                android:layout_marginTop="@dimen/status_bar_height"
+                android:paddingTop="@dimen/status_bar_height"
                 android:id="@+id/toolbar"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -50,6 +51,7 @@
                 android:background="?attr/colorPrimaryVariant"
                 android:minHeight="?attr/actionBarSize"
                 android:theme="?attr/actionBarTheme" />
+
             <include
                 layout="@layout/zoom_manager"
                 android:layout_width="match_parent"
@@ -57,6 +59,15 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
-
+            <View
+                android:id="@+id/view"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:alpha="0.75"
+                android:background="?attr/colorPrimaryVariant"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/toolbar"
+                />
         </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

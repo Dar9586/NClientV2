@@ -3,7 +3,6 @@ package com.dar.nclientv2;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -105,8 +104,7 @@ public class RandomActivity extends AppCompatActivity {
 
     public void loadGallery(Gallery gallery){
         loadedGallery=gallery;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
-            if(isDestroyed())return;
+        if (Global.isDestroyed(this))return;
         Global.loadImage(this, gallery.getCover(),thumbnail);
         switch (gallery.getLanguage()){
             case CHINESE :language.setText("\uD83C\uDDE8\uD83C\uDDF3");break;

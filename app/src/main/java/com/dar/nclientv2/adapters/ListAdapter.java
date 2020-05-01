@@ -65,9 +65,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
                     Global.loadImage(context, f, holder.imgView);
                 }
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && context.isDestroyed()) {
-                return;
-            }
+            if(Global.isDestroyed(context))return;
             if (online) Global.loadImage(context, ent.getThumbnail(), holder.imgView);
         }catch (VerifyError ignore){}
     }

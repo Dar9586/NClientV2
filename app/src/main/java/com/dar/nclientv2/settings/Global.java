@@ -92,6 +92,10 @@ public class Global {
         ACRA.getErrorReporter().setEnabled(context.getSharedPreferences("Settings",0).getBoolean(context.getString(R.string.key_send_report),true));
     }
 
+    public static boolean isDestroyed(Activity activity) {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && activity.isDestroyed();
+    }
+
     public enum ThemeScheme{LIGHT,DARK}
 
     public static OkHttpClient client=null;
@@ -441,14 +445,14 @@ public class Global {
     }
     public static void loadImage(Activity activity,String url, final ImageView imageView){loadImage(activity, url,imageView,false);}
     public static void loadImage(Activity activity,String url, final ImageView imageView,boolean force){
-        if(activity.isFinishing()||(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1&&activity.isDestroyed()))return;
+        if(activity.isFinishing()||Global.isDestroyed(activity))return;
         try {
             if (loadImages || force) Glide.with(imageView).load(url).placeholder(getLogo(imageView.getResources())).into(imageView);
             else Glide.with(imageView).load(getLogo(imageView.getResources())).into(imageView);
         }catch (IllegalStateException ignore){}//thrown when activity is destroyed
     }
     public static void loadImage(Activity activity, File file, ImageView imageView){
-        if(activity.isFinishing()||(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1&&activity.isDestroyed()))return;
+        if(activity.isFinishing()||Global.isDestroyed(activity))return;
         if(loadImages)Glide.with(imageView).load(file).placeholder(getLogo(imageView.getResources())).into(imageView);
         else Glide.with(imageView).load(getLogo(imageView.getResources())).into(imageView);
 

@@ -32,6 +32,8 @@ import com.google.android.material.chip.ChipGroup;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Locale;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
@@ -262,12 +264,21 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         }
     }
     private HashMap<ImageView, BitmapTarget>map=new HashMap<>(5);
+    private HashSet<BitmapTarget>toDelete=new HashSet<>();
     @Override
     public void onViewRecycled(@NonNull ViewHolder holder) {
         final ImageView imgView=holder.master.findViewById(R.id.image);
-        BitmapTarget target=map.remove(imgView);
-        if(!context.isFinishing())
-            Glide.with(context).clear(target);
+        toDelete.add(map.remove(imgView));
+        try {
+            for (Iterator<BitmapTarget> iterator = toDelete.iterator(); iterator.hasNext();) {
+                BitmapTarget target = iterator.next();
+                if(context.isFinishing()||Global.isDestroyed(context))
+                    break;
+                if(!map.containsValue(target))
+                    Glide.with(context).clear(target);
+                iterator.remove();
+            }
+        }catch (IllegalStateException ignore){}
         super.onViewRecycled(holder);
     }
 

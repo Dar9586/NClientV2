@@ -17,6 +17,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -71,7 +72,7 @@ public class ZoomActivity extends AppCompatActivity {
     private View pageSwitcher;
     private SeekBar seekBar;
     private Toolbar toolbar;
-
+    private View view;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,6 +108,7 @@ public class ZoomActivity extends AppCompatActivity {
         pageManagerLabel =findViewById(R.id.pages);
         cornerPageViewer =findViewById(R.id.page_text);
         seekBar=findViewById(R.id.seekBar);
+        view=findViewById(R.id.view);
 
         //initial setup for views
         changeLayout(getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE);
@@ -224,12 +226,19 @@ public class ZoomActivity extends AppCompatActivity {
             changeLayout(false);
         }
     }
-
+    private boolean hardwareKeys(){
+        return ViewConfiguration.get(this).hasPermanentMenuKey();
+    }
+    private void applyMargin(boolean landscape,View view){
+        ConstraintLayout.LayoutParams lp=(ConstraintLayout.LayoutParams) view.getLayoutParams();
+        lp.setMargins(0,0,landscape||hardwareKeys()?Global.getNavigationBarHeight(this):0,0);
+        view.setLayoutParams(lp);
+    }
     private void changeLayout(boolean landscape){
-        pageSwitcher.setPadding(0,0,0,landscape?0:Global.getNavigationBarHeight(this));
-        ConstraintLayout.LayoutParams lp=(ConstraintLayout.LayoutParams) pageSwitcher.getLayoutParams();
-        lp.setMargins(0,0,landscape?Global.getNavigationBarHeight(this):0,0);
-        pageSwitcher.setLayoutParams(lp);
+        int statusBarHeight=Global.getStatusBarHeight(this);
+        applyMargin(landscape,pageSwitcher);
+        applyMargin(landscape,toolbar);
+        pageSwitcher.setPadding(0,0,0,landscape?0:statusBarHeight);
     }
 
     private void changePage(int newPage){
@@ -422,6 +431,7 @@ public class ZoomActivity extends AppCompatActivity {
                 if(isHidden){
                     pageSwitcher.setVisibility(View.GONE);
                     toolbar.setVisibility(View.GONE);
+                    view.setVisibility(View.GONE);
                     cornerPageViewer.setVisibility(View.VISIBLE);
                 }
             }
@@ -429,10 +439,11 @@ public class ZoomActivity extends AppCompatActivity {
 
         pageSwitcher.setVisibility(View.VISIBLE);
         toolbar.setVisibility(View.VISIBLE);
+        view.setVisibility(View.VISIBLE);
         cornerPageViewer.setVisibility(View.GONE);
 
         pageSwitcher.animate().alpha(isHidden?0f:0.75f).setDuration(150).setListener(adapter).start();
-
+        view.animate().alpha(isHidden?0f:0.75f).setDuration(150).setListener(adapter).start();
         toolbar.animate().alpha(isHidden?0f:0.75f).setDuration(150).setListener(adapter).start();
     }
 
