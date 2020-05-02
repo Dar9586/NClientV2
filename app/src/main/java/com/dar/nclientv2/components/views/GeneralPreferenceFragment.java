@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SeekBarPreference;
 
-import com.bumptech.glide.Glide;
 import com.dar.nclientv2.PINActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.SettingsActivity;
@@ -74,14 +73,13 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
             MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(act);
             builder.setTitle(R.string.clear_cache);
             builder.setPositiveButton(R.string.yes, (dialog, which) -> {
-                new Thread(() -> {
-                    Glide.get(GeneralPreferenceFragment.this.getContext()).clearDiskCache();
-                    act.runOnUiThread(() -> {
-                        Toast.makeText(act, act.getString(R.string.cache_cleared), Toast.LENGTH_SHORT).show();
-                        double cSize=Global.recursiveSize(act.getCacheDir())/((double)(2<<20));
-                        findPreference(getString(R.string.key_cache)).setSummary(getString(R.string.cache_size_formatted,cSize));
-                    });
-                }).start();
+                Global.recursiveDelete(act.getCacheDir());
+                act.runOnUiThread(() -> {
+                    Toast.makeText(act, act.getString(R.string.cache_cleared), Toast.LENGTH_SHORT).show();
+                    double cSize=Global.recursiveSize(act.getCacheDir())/((double)(2<<20));
+                    findPreference(getString(R.string.key_cache)).setSummary(getString(R.string.cache_size_formatted,cSize));
+                });
+
             }).setNegativeButton(R.string.no,null).setCancelable(true);
             builder.show();
 

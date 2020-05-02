@@ -4,13 +4,8 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -28,7 +23,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -36,9 +30,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
-import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
-import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.components.views.ZoomFragment;
 import com.dar.nclientv2.components.widgets.CustomViewPager;
 import com.dar.nclientv2.settings.DefaultDialogs;
@@ -49,9 +41,6 @@ import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.List;
 
 public class ZoomActivity extends AppCompatActivity {
     @TargetApi(16)
@@ -173,6 +162,7 @@ public class ZoomActivity extends AppCompatActivity {
 
         changePage(offsetPage(page));
         setPageText(page+1);
+        seekBar.setProgress(Global.useRtl()?gallery.getPageCount()-1-offsetPage(page):offsetPage(page));
     }
     private void setPageText(int page){
         pageManagerLabel.setText(getString(R.string.page_format,page,gallery.getPageCount()));
@@ -321,75 +311,14 @@ public class ZoomActivity extends AppCompatActivity {
     }
 
     private void sendImage(boolean withText){
-        Bitmap bitmap;
-        ZoomFragment page =getActualFragment();
-        File file= null;
-        String endName;
         int pageNum=mViewPager.getCurrentItem();
-        if(gallery.isLocal()){
-            LocalGallery gallery=(LocalGallery)this.gallery;
-            file =gallery.getPage(pageNum);
-            if(file==null)return;
-            endName=file.getName();
-        }else{
-            Gallery gallery=(Gallery) this.gallery;
-            endName=gallery.getFilename(pageNum);
-        }
-        try {
-            file = File.createTempFile(""+gallery.getId(),endName);
-            file.deleteOnExit();
-            LogUtility.d("TEMP: "+file.getAbsolutePath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if(file==null)return;
-        //is useless to download the vector used by the app
-        if(page!=null&&page.getDrawable() instanceof BitmapDrawable) {
-            bitmap = ((BitmapDrawable) page.getDrawable()).getBitmap();
-            saveImage(bitmap,file,true);//Here we use files because they are temp
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            if(withText)shareIntent.putExtra(Intent.EXTRA_TEXT, gallery.sharePageUrl(pageNum));
-            Uri x= FileProvider.getUriForFile(
-                    getApplicationContext(),getApplicationContext().getPackageName() + ".provider",file);
-            shareIntent.putExtra(Intent.EXTRA_STREAM, x);
-            switch (endName.substring(endName.length()-3)){
-                case "jpg":shareIntent.setType("image/jpeg");break;
-                case "png":shareIntent.setType("image/png");break;
-                case "gif":shareIntent.setType("image/gif");break;
-                default:shareIntent.setType("image/*");break;
-            }
-            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            List<ResolveInfo> resInfoList = getApplicationContext().getPackageManager().queryIntentActivities(shareIntent, PackageManager.MATCH_DEFAULT_ONLY);
-            for (ResolveInfo resolveInfo : resInfoList) {
-                String packageName = resolveInfo.activityInfo.packageName;
-                getApplicationContext().grantUriPermission(packageName, x, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            }
-            startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)));
-        }
+        Utility.sendImage(this,getActualFragment().getDrawable(),withText?gallery.sharePageUrl(pageNum):null);
     }
 
 
     private void downloadPage() {
         final File output=new File(Global.SCREENFOLDER,gallery.getId()+"-"+(mViewPager.getCurrentItem()+1)+".jpg");
-        Bitmap bitmap;
-        ZoomFragment page =getActualFragment();
-        //is useless to download the vector used by the app
-        if(page!=null&&page.getDrawable() instanceof BitmapDrawable){
-            bitmap=((BitmapDrawable)page.getDrawable()).getBitmap();
-            saveImage(bitmap,output,false);
-        }
-    }
-
-    private void saveImage(Bitmap bitmap, File output,boolean silent) {
-        try {
-            if(!output.exists())output.createNewFile();
-            FileOutputStream ostream = new FileOutputStream(output);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 95, ostream);
-            ostream.flush();
-            ostream.close();
-            if(!silent)Toast.makeText(this, R.string.download_completed, Toast.LENGTH_SHORT).show();
-        }catch (IOException e){
-            LogUtility.e(e.getLocalizedMessage(),e);}
+        Utility.saveImage(getActualFragment().getDrawable(),output);
     }
 
 

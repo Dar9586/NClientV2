@@ -28,6 +28,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.Rotate;
 import com.dar.nclientv2.CopyToClipboardActivity;
 import com.dar.nclientv2.MainActivity;
 import com.dar.nclientv2.R;
@@ -429,32 +430,41 @@ public class Global {
         Glide.with(context).load(url).preload();
 
     }
-    public static BitmapTarget loadImageOp(Context context,ImageView view,File file){
-        Drawable logo=getLogo(context.getResources());
-        BitmapTarget target=new BitmapTarget(view);
-        Glide.with(context).asBitmap().error(logo).placeholder(logo).load(file).into(target);
-        return target;
+    public static BitmapTarget loadImageOp(Context context,ImageView view,File file,int angle){
+        try {//random error of glide
+            Drawable logo=getLogo(context.getResources());
+            BitmapTarget target=new BitmapTarget(view);
+            Glide.with(context).asBitmap().transform(new Rotate(angle)).error(logo).placeholder(logo).load(file).into(target);
+            return target;
+        }catch (IllegalStateException ignore){}
+        return null;
     }
 
-
-    public static BitmapTarget loadImageOp(Context context,ImageView view,String url){
-        Drawable logo=getLogo(context.getResources());
-        BitmapTarget target=new BitmapTarget(view);
-        Glide.with(context).asBitmap().error(logo).placeholder(logo).load(url).into(target);
-        return target;
+    @Nullable
+    public static BitmapTarget loadImageOp(Context context,ImageView view,String url,int angle){
+        try {//random error of glide
+            Drawable logo=getLogo(context.getResources());
+            BitmapTarget target=new BitmapTarget(view);
+            Glide.with(context).asBitmap().transform(new Rotate(angle)).error(logo).placeholder(logo).load(url).into(target);
+            return target;
+        }catch (IllegalStateException ignore){}
+        return null;
     }
+
     public static void loadImage(Activity activity,String url, final ImageView imageView){loadImage(activity, url,imageView,false);}
     public static void loadImage(Activity activity,String url, final ImageView imageView,boolean force){
         if(activity.isFinishing()||Global.isDestroyed(activity))return;
-        try {
+        try {//random error of glide
             if (loadImages || force) Glide.with(imageView).load(url).placeholder(getLogo(imageView.getResources())).into(imageView);
             else Glide.with(imageView).load(getLogo(imageView.getResources())).into(imageView);
-        }catch (IllegalStateException ignore){}//thrown when activity is destroyed
+        }catch (IllegalStateException ignore){}
     }
     public static void loadImage(Activity activity, File file, ImageView imageView){
-        if(activity.isFinishing()||Global.isDestroyed(activity))return;
-        if(loadImages)Glide.with(imageView).load(file).placeholder(getLogo(imageView.getResources())).into(imageView);
-        else Glide.with(imageView).load(getLogo(imageView.getResources())).into(imageView);
+        try{//random error of glide
+            if(activity.isFinishing()||Global.isDestroyed(activity))return;
+            if(loadImages)Glide.with(imageView).load(file).placeholder(getLogo(imageView.getResources())).into(imageView);
+            else Glide.with(imageView).load(getLogo(imageView.getResources())).into(imageView);
+        }catch (IllegalStateException ignore){}
 
     }
     public static void loadImage(@DrawableRes int drawable, ImageView imageView){

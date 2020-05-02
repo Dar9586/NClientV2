@@ -1,9 +1,11 @@
 package com.dar.nclientv2.adapters;
 
 import android.content.Intent;
+import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,9 +27,11 @@ import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.targets.BitmapTarget;
 import com.dar.nclientv2.utility.LogUtility;
+import com.dar.nclientv2.utility.Utility;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -54,7 +58,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     private Policy policy;
     private static final int TOLERANCE=1000;
     private int colCount;
-
+    private SparseIntArray angles=new SparseIntArray();
     public Type positionToType(int pos){
         if(!gallery.isLocal()){
             if(pos == 0) return Type.TAG;
@@ -204,6 +208,15 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         final int pos=holder.getAdapterPosition()+(gallery.isLocal()?1:0);
         final ImageView imgView=holder.master.findViewById(R.id.image);
 
+        imgView.setOnClickListener(v -> startGallery(1 + holder.getAdapterPosition() - (gallery.isLocal() ? 0 : 1)));
+        imgView.setOnLongClickListener(null);
+        holder.master.setOnClickListener(v -> startGallery(1 + holder.getAdapterPosition() - (gallery.isLocal() ? 0 : 1)));
+        holder.master.setOnLongClickListener(null);
+
+        holder.pageNumber.setText(String.format(Locale.US,"%d", pos));
+
+
+
         if(policy==Policy.MAX)holder.itemView.post(() -> {//find the max size and apply proportion
             if(maxImageSize !=null)return;
             int cellWidth = holder.itemView.getWidth();// this will give you cell width dynamically
@@ -230,13 +243,64 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                 if(photoView.getScale()<=1f)
                     startGallery(1 + holder.getAdapterPosition() - (gallery.isLocal() ? 0 : 1));
             });
+            View.OnLongClickListener listener= v -> {
+                optionDialog(imgView,pos);
+                return true;
+            };
+            imgView.setOnLongClickListener(listener);
+            holder.master.setOnLongClickListener(listener);
         }
 
         loadImageOnPolicy(imgView, pos);
 
-        holder.master.setOnClickListener(v -> startGallery(1 + holder.getAdapterPosition() - (gallery.isLocal() ? 0 : 1)));
-        holder.pageNumber.setText(String.format(Locale.US,"%d", pos));
+
     }
+
+
+
+
+
+
+    private void optionDialog(ImageView imgView, final int pos){
+        ArrayAdapter<String>adapter=new ArrayAdapter<>(context,android.R.layout.select_dialog_item);
+        adapter.add(context.getString(R.string.share));
+        adapter.add(context.getString(R.string.rotate_image));
+        if(Global.hasStoragePermission(context))adapter.add(context.getString(R.string.save_page));
+        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(context);
+        builder.setTitle(R.string.settings).setIcon(R.drawable.ic_share);
+        builder.setAdapter(adapter, (dialog, which) -> {
+            switch (which){
+                case 0:
+                    openSendImageDialog(imgView,pos);
+                    break;
+                case 1:
+                    rotate(pos);
+                    break;
+                case 2:
+                    String name=String.format(Locale.US,"%d-%d.jpg",gallery.getId(),pos);
+                    Utility.saveImage(imgView.getDrawable(),new File(Global.SCREENFOLDER,name));
+                    break;
+            }
+        }).show();
+    }
+    private void openSendImageDialog(ImageView img,int pos) {
+        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(context);
+        builder.setPositiveButton(R.string.yes, (dialog, which) -> sendImage(img,pos,true))
+                .setNegativeButton(R.string.no, (dialog, which) -> sendImage(img,pos,false))
+                .setCancelable(true).setTitle(R.string.send_with_title)
+                .setMessage(R.string.caption_send_with_title)
+                .show();
+    }
+    private void sendImage(ImageView img,int pos,boolean text){
+        Utility.sendImage(context,img.getDrawable(),text?gallery.sharePageUrl(pos-1):null);
+    }
+
+    private void rotate(int pos) {
+        angles.append(pos,(angles.get(pos)+270)%360);
+        context.runOnUiThread(()->notifyItemChanged(pos));
+    }
+
+
     private void startGallery(int page){
         Intent intent = new Intent(context, ZoomActivity.class);
         intent.putExtra(context.getPackageName() + ".GALLERY", gallery);
@@ -245,14 +309,15 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     }
     private void loadImageOnPolicy(ImageView imgView, int pos) {
         final File file;
+        int angle=angles.get(pos);
         if(gallery.isLocal())file=((LocalGallery)gallery).getPage(pos);
         else file=LocalGallery.getPage(directory,pos);
         if(policy==Policy.FULL) {
             BitmapTarget target=null;
-            if (file != null && file.exists()) target=Global.loadImageOp(context, imgView, file);
+            if (file != null && file.exists()) target=Global.loadImageOp(context, imgView, file,angle);
             else if (!gallery.isLocal()){
                 final Gallery ent = ((Gallery) gallery);
-                target=Global.loadImageOp(context, imgView, Global.isHighRes() ? ent.getPage(pos - 1) : ent.getLowPage(pos - 1));
+                target=Global.loadImageOp(context, imgView, Global.isHighRes() ? ent.getPage(pos - 1) : ent.getLowPage(pos - 1),angle);
             }else Global.loadImage(R.mipmap.ic_launcher, imgView);
             if(target!=null)map.put(imgView,target);
         }else{
