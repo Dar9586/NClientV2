@@ -286,8 +286,8 @@
         <item>tr</item>
     </string-array>
     <string-array name="theme">
-        <item>Light</item>
-        <item>Dark</item>
+        <item>Beyaz</item>
+        <item>Siyah</item>
     </string-array>
     <string-array name="theme_data">
         <item>light</item>
