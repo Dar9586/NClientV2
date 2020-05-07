@@ -298,11 +298,13 @@
         <item>English</item>
         <item>Chinese(Traditional)</item>
         <item>Chinese(Simplified)</item>
+        <item>Turkish</item>
     </string-array>
     <string-array name="language_data">
         <item>en</item>
         <item>ch</item>
         <item>zh</item>
+        <item>tr</item>
     </string-array>
     <string-array name="theme">
         <item>Light</item>
