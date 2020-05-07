@@ -113,7 +113,7 @@
     <string name="prev_page">Önceki sayfa</string>
     <string name="next_page">Sıradaki sayfa</string>
 
-    <string name="downloaded_manga">İndirilmiş manga</string>
+    <string name="downloaded_manga">İndirilmiş Mangalar</string>
     <string name="download_gallery">İndirilmiş galeri</string>
     <string name="download_completed">İndirme tamamlandı</string>
 
@@ -137,7 +137,7 @@
     <string name="page_count_format" formatted="true">%d sayfa</string>
     <string name="upload_date_format" formatted="true">%s Tarihinde %s saatinde yüklendi</string>
     <string name="favorite_count_format" formatted="true">%d favoriler</string>
-    <string name="favorite_manga">Favori manga</string>
+    <string name="favorite_manga">Favoriler</string>
     <string name="key_remove_ignored" translatable="false">remove_ignored</string>
     <string name="setting_on_remove_ignored">Dikkate alınmayan etiket içeren galeriler gösterilmeyecek</string>
     <string name="setting_off_remove_ignored">Dikkate alınmayan etiket içeren galeriler bulanıklaştırılacak</string>
@@ -162,10 +162,10 @@
 
     <string name="app_version_format" formatted="true" translatable="false">NClientV2 %s</string>
     <string name="search_settings">Ayarlarda ara</string>
-    <string name="global_settings">Evrensel ayarlar</string>
+    <string name="global_settings">Uygulama ayarları</string>
     <string name="images_settings">Fotoğraf ayarları</string>
     <string name="miscellaneous">Çeşitli</string>
-    <string name="update_settings">Ayarları güncelle</string>
+    <string name="update_settings">Güncelleme ayarları</string>
     <string name="online_favorite_manga">Online favori manga</string>
     <string name="cache_size_formatted">Önbellek boyutu: %.2f MB</string>
     <string name="cache_cleared">Önbellek temizlendi</string>
@@ -229,7 +229,7 @@
     <string name="cancel_all_downloads">Tüm indirmeleri iptal et</string>
     <string name="key_disable_lock" translatable="false">disable_lock</string>
     <string name="disable_lock_title">Otomatik ekran kapanmasını okurken devre dışı bırak</string>
-    <string name="download_all_galleries_in_this_page">Bu sayfadaki tüm galerileri indir</string>
+    <string name="download_all_galleries_in_this_page">Bu sayfadaki tüm mangaları indir</string>
     <string name="download_all_galleries">Tüm galerileri indir</string>
     <string name="favorite_column_count">Favori sütun sayısını seç</string>
     <string name="download_column_count">İndirme sütun sayısını seç</string>
@@ -295,9 +295,9 @@
     </string-array>
 
     <string-array name="title_type_array">
-        <item>English</item>
-        <item>Japanese</item>
-        <item>Pretty</item>
+        <item>İngilizce</item>
+        <item>Japonca</item>
+        <item>Özel</item>
     </string-array>
     <string-array name="title_type_array_data">
         <item>english</item>
@@ -311,7 +311,7 @@
     <string name="ignore_tags">Diğer etiketleri dikkate alma</string>
     <string name="high_res_gallery">Fotoğrafı galeride en yüksek çözünürlükte yükle</string>
     <string name="password">Şifre</string>
-    <string name="invalid_credentials">Yanlış giriş bilgileri</string>
+    <string name="invalid_credentials">Yanlış giriş bilgisi. Lütfen İsminizi ve ya Şifrenizi tekrar girin</string>
     <string name="created_pdf">PDF başarıyla oluşturuldu</string>
     <string name="navigation_drawer_open">Gezinme çekmecesini aç</string>
     <string name="link_copied_to_clipboard">Link panoya kopyalandı</string>
