@@ -51,14 +51,22 @@
                 android:background="?attr/colorPrimaryVariant"
                 android:minHeight="?attr/actionBarSize"
                 android:theme="?attr/actionBarTheme" />
-
-            <include
-                layout="@layout/zoom_manager"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            <LinearLayout
+                android:id="@+id/master_layout"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                android:background="?attr/colorPrimaryVariant"
+                android:alpha="0.75"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <include
+                    layout="@layout/zoom_manager"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+            </LinearLayout>
+
             <View
                 android:id="@+id/view"
                 android:layout_width="0dp"

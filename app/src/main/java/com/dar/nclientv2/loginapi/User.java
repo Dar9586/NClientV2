@@ -25,14 +25,14 @@ public class User {
         void onCreateUser(User user);
     }
     public static void createUser(final CreateUser createUser){
-        Global.getClient().newCall(new Request.Builder().url("https://nhentai.net/").build()).enqueue(new Callback() {
+        Global.getClient().newCall(new Request.Builder().url(Utility.getBaseUrl()).build()).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {}
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 User user=null;
-                Document doc= Jsoup.parse(response.body().byteStream(),null, Utility.BASE_URL);
+                Document doc= Jsoup.parse(response.body().byteStream(),null, Utility.getBaseUrl());
                 Elements elements=doc.getElementsByClass("fa-tachometer");
                 if(elements.size()>0) {
                     Element x = elements.first().parent();

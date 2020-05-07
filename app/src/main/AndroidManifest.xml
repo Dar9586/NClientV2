@@ -49,6 +49,7 @@
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:host="nhentai.net" />
+                <data android:host="nhent.ai" />
                 <data android:path="/" />
                 <data android:pathPrefix="/search/" />
                 <data android:pathPrefix="/parody/" />
@@ -76,6 +77,9 @@
                 <data android:scheme="https" />
                 <data
                     android:host="nhentai.net"
+                    android:pathPattern="/g/.*" />
+                <data
+                    android:host="nhent.ai"
                     android:pathPattern="/g/.*" />
             </intent-filter>
 
@@ -109,6 +113,7 @@
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:host="nhentai.net" />
+                <data android:host="nhent.ai" />
                 <data android:pathPrefix="/tags" />
                 <data android:pathPrefix="/artists" />
                 <data android:pathPrefix="/characters" />
@@ -132,6 +137,8 @@
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:host="nhentai.net" />
+                <data android:host="nhent.ai" />
+
             </intent-filter>
         </activity>
         <activity
@@ -156,6 +163,8 @@
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:host="nhentai.net" />
+                <data android:host="nhent.ai" />
+
             </intent-filter>
 
             <meta-data

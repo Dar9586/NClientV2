@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:orientation="vertical"
-    android:background="?attr/colorPrimaryVariant"
-    android:alpha="0.75"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/page_switcher"
     android:layout_alignParentBottom="true"
     android:layout_alignParentStart="true"
+    android:paddingTop="8dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_alignParentLeft="true"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -55,12 +54,10 @@
 
 </LinearLayout>
     <SeekBar
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+
         android:id="@+id/seekBar"
         android:layout_width="match_parent"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
+        android:layout_margin="24dp"
         android:layout_height="wrap_content"
         />
 </LinearLayout>

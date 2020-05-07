@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.dar.nclientv2.loginapi.Login;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.utility.Utility;
 
 /**
  * A login screen that offers login via email/password.
@@ -32,11 +33,11 @@ public class LoginActivity extends AppCompatActivity {
 
         });
         findViewById(R.id.forgot).setOnClickListener(view -> {
-            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://nhentai.net/reset/"));
+            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://"+ Utility.getHost()+"/reset/"));
             startActivity(i);
         });
         findViewById(R.id.register).setOnClickListener(view -> {
-            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://nhentai.net/register/"));
+            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(Utility.getBaseUrl()+"register/"));
             startActivity(i);
         });
         invalid=findViewById(R.id.invalid);

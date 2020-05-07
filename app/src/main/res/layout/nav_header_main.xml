@@ -18,7 +18,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        android:contentDescription="@string/nav_header_desc"
+        android:contentDescription="@string/app_name"
         app:layout_constraintBottom_toTopOf="@+id/textView3"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"

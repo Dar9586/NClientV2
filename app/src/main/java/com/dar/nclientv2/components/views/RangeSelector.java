@@ -16,17 +16,15 @@ import com.dar.nclientv2.async.downloader.DownloadGalleryV2;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class RangeSelector extends MaterialAlertDialogBuilder {
-    private final View v;
-    private final LinearLayout l1,l2;
     private SeekBar s1,s2;
     private final Gallery gallery;
-    View.OnClickListener getPrevListener(SeekBar s){
+    private View.OnClickListener getPrevListener(SeekBar s){
         return v -> s.setProgress(s.getProgress()-1);
     }
-    View.OnClickListener getNextListener(SeekBar s){
+    private View.OnClickListener getNextListener(SeekBar s){
         return v -> s.setProgress(s.getProgress()+1);
     }
-    SeekBar.OnSeekBarChangeListener getSeekBarListener(TextView t){
+    private SeekBar.OnSeekBarChangeListener getSeekBarListener(TextView t){
         return new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -44,10 +42,10 @@ public class RangeSelector extends MaterialAlertDialogBuilder {
     public RangeSelector(@NonNull Context context, Gallery gallery) {
         super(context);
         this.gallery=gallery;
-        v= View.inflate(context, R.layout.range_selector, null);
+        View v = View.inflate(context, R.layout.range_selector, null);
         setView(v);
-        l1=v.findViewById(R.id.layout1);
-        l2=v.findViewById(R.id.layout2);
+        LinearLayout l1 = v.findViewById(R.id.layout1);
+        LinearLayout l2 = v.findViewById(R.id.layout2);
         applyLogic(l1,true);
         applyLogic(l2,false);
         setPositiveButton(R.string.ok, (dialog, which) -> {

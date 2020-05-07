@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--Thanks to ZerOri for the Traditional Chinese translation-->
 <resources>
-    <string name="app_name">NClientV2</string>
     <!--SUMMARY-->
     <string name="setting_on_ignore_tags">從畫廊功能表中選中一個標籤時不再查詢其它標籤（語言項除外）</string>
     <string name="setting_off_ignore_tags">從畫廊功能表中選中一個標籤時查詢其它標籤</string>
@@ -11,11 +10,7 @@
     <string name="setting_off_load">僅單頁閱讀時載入圖像</string>
     <string name="setting_on_use_account_tag">帳戶標籤用於搜查（本地標籤優先）</string>
     <string name="setting_off_use_account_tag">搜查時忽略帳戶標籤</string>
-    <string name="setting_on_infinite_scroll">到達底部時載入下一頁</string>
-    <string name="setting_off_infinite_scroll">使用底部功能表跳頁</string>
     <string name="theme_summary">選擇主題顏色</string>
-    <string name="setting_on_send_report">報告將被發送</string>
-    <string name="setting_off_send_report">報告不會被發送</string>
 
     <!--SETTINGS NAME-->
     <string name="send_crash_report">發送崩潰報告</string>
@@ -56,7 +51,6 @@
     <string name="only_chinese">僅中文</string>
     <string name="all_languages">所有語言</string>
 
-    <string name="sort_popular">按熱度排列</string>
 
     <string name="username_or_email">用戶名或郵件</string>
     <string name="password">密碼</string>
@@ -85,7 +79,6 @@
     <string name="share">分享</string>
     <string name="image">圖像</string>
     <string name="next">下一個</string>
-    <string name="hashtag">#</string>
 
     <string name="create_pdf">創建PDF</string>
     <string name="create_pdf_format" formatted="true">創建的PDF："%s"</string>
@@ -99,7 +92,6 @@
     <string name="navigation_drawer_open">打開側邊欄</string>
     <string name="navigation_drawer_close">關閉側邊欄</string>
     <string name="nav_header_subtitle">NHentai非官方用戶端</string>
-    <string name="nav_header_desc">側邊欄頁眉</string>
 
     <string name="change_page">跳頁：</string>
     <string name="prev_page">上一頁</string>
@@ -143,8 +135,6 @@
     <string name="set_minimum_count">設置最小值</string>
     <string name="sort_by_title">按標題排列</string>
     <string name="sort_by_popular">按熱度排列</string>
-    <string name="setting_on_override_volume">音量鍵換頁</string>
-    <string name="setting_off_override_volume">音量鍵調音</string>
     <string name="next_page_volume_up">音量+切換下一頁</string>
     <string name="next_page_volume_down">音量-切換下一頁</string>
     <string name="change_title_type">更改標題類型</string>
@@ -161,8 +151,6 @@
     <string name="sort_by_latest">按更新排列</string>
     <string name="edit">編輯</string>
     <string name="options">選項</string>
-    <string name="setting_on_keep_history">搜索記錄將被保留</string>
-    <string name="setting_off_keep_history">搜索記錄將不被保留</string>
     <string name="keep_history">保留搜索歷史</string>
     <string name="add">加入</string>
     <string name="insert_tag_name">插入標籤名：</string>
@@ -185,9 +173,6 @@
     <string name="setting_off_use_rtl">圖像將從左至右顯示</string>														
     <string name="volume_change_setting">音量鍵換頁</string>
     <string name="popular_tag_count">高級搜索中顯示熱門標籤數</string>
-    <string name="key_show_titles">顯示標題</string>
-    <string name="setting_on_show_titles">顯示畫廊標題</string>
-    <string name="setting_off_show_titles">隱藏畫廊標題</string>
     <string name="show_gallery_titles">顯示畫廊標題</string>
     <string name="change_language">更改語言</string>
 
@@ -224,7 +209,6 @@
     <string name="channel3_title">創建ZIP：</string>
     <string name="created_zip">成功創建ZIP</string>
     <string name="failed_zip">創建ZIP失敗: </string>
-    <string name="download_page_range">下載頁面範圍</string>
     <string name="start_page">起始頁</string>
     <string name="end_page">結束頁</string>
     <string name="invalid_range_selected">選擇的範圍無效</string>
@@ -254,13 +238,16 @@
     <string name="use_pin">使用PIN碼</string>
     <string name="wrong_pin">PIN碼錯誤</string>
     <string name="rotate_image">Rotate image</string>
+    <string name="setting_alternative">Use nhent.ai instead of nhentai.net for censored country</string>
+    <string name="use_alternative">Use nhent.ai</string>
 
 
     <string-array name="language">
         <item>英文</item>
         <item>繁體中文</item>
         <item>簡體中文</item>
-	<item>土耳其</item>
+	    <item>土耳其</item>
+        <item>義大利文</item>
     </string-array>
     <string-array name="theme">
         <item>亮色</item>

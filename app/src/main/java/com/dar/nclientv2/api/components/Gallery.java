@@ -18,6 +18,7 @@ import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.classes.Size;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.LogUtility;
+import com.dar.nclientv2.utility.Utility;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -103,20 +104,20 @@ public class Gallery extends GenericGallery{
     private boolean valid=true;
 
     public String getCover(){
-        return String.format(Locale.US,"https://t.nhentai.net/galleries/%d/cover.%s",mediaId,extToString(cover));
+        return String.format(Locale.US,"https://t."+Utility.getHost()+"/galleries/%d/cover.%s",mediaId,extToString(cover));
     }
     public ImageExt getThumb(){
         return thumbnail;
     }
     public String getThumbnail(){
-        return String.format(Locale.US,"https://t.nhentai.net/galleries/%d/thumb.%s",mediaId,extToString(thumbnail));
+        return String.format(Locale.US,"https://t."+Utility.getHost()+"/galleries/%d/thumb.%s",mediaId,extToString(thumbnail));
     }
 
     public String getPage(int page){
-        return String.format(Locale.US,"https://i.nhentai.net/galleries/%d/%d.%s",mediaId,page+1,getPageExtension(page));
+        return String.format(Locale.US,"https://i."+Utility.getHost()+"/galleries/%d/%d.%s",mediaId,page+1,getPageExtension(page));
     }
     public String getLowPage(int page){
-        return String.format(Locale.US,"https://t.nhentai.net/galleries/%d/%dt.%s",mediaId,page+1,getPageExtension(page));
+        return String.format(Locale.US,"https://t."+ Utility.getHost()+"/galleries/%d/%dt.%s",mediaId,page+1,getPageExtension(page));
     }
 
     public String getPageExtension(int page) {

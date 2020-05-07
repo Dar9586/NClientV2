@@ -24,7 +24,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.dar.nclientv2.adapters.ListAdapter;
 import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.components.Gallery;
@@ -38,6 +38,7 @@ import com.dar.nclientv2.async.ScrapeTags;
 import com.dar.nclientv2.async.VersionChecker;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.async.downloader.DownloadGalleryV2;
+import com.dar.nclientv2.components.GlideX;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
 import com.dar.nclientv2.loginapi.Login;
@@ -514,7 +515,8 @@ public class MainActivity extends BaseActivity
             inspector=inspector.cloneInspector(this,resetDataset);
             inspector.start();//restart inspector
             if(setting.theme!=Global.getTheme()||!setting.locale.equals(Global.initLanguage(this))){
-                Glide.with(getApplicationContext()).pauseAllRequestsRecursive();
+                RequestManager manager= GlideX.with(getApplicationContext());
+                if(manager!=null)manager.pauseAllRequestsRecursive();
                 recreate();
             }
             adapter.notifyDataSetChanged();//restart adapter

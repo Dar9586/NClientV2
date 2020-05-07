@@ -16,6 +16,7 @@ import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.classes.Size;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.LogUtility;
+import com.dar.nclientv2.utility.Utility;
 
 import org.jsoup.nodes.Element;
 
@@ -147,7 +148,7 @@ public class SimpleGallery extends GenericGallery {
     };
 
     public String getThumbnail(){
-        return String.format(Locale.US,"https://t.nhentai.net/galleries/%d/thumb.%s",mediaId,extToString(thumbnail));
+        return String.format(Locale.US,"https://t."+ Utility.getHost()+"/galleries/%d/thumb.%s",mediaId,extToString(thumbnail));
     }
     private static String extToString(ImageExt ext){
         switch(ext){

@@ -34,7 +34,7 @@ public class LoadTags extends Thread {
     private Elements getScripts(String url)throws IOException{
 
         Response response = Global.getClient().newCall(new Request.Builder().url(url).build()).execute();
-        Elements x = Jsoup.parse(response.body().byteStream(), null, Utility.BASE_URL).getElementsByTag("script");
+        Elements x = Jsoup.parse(response.body().byteStream(), null, Utility.getBaseUrl()).getElementsByTag("script");
         response.close();
         return x;
     }
@@ -59,7 +59,7 @@ public class LoadTags extends Thread {
     public void run() {
         super.run();
         if (Login.getUser() == null) return;
-        String url = String.format(Locale.US, "https://nhentai.net/users/%s/%s/blacklist",
+        String url = String.format(Locale.US, Utility.getBaseUrl()+"users/%s/%s/blacklist",
                 Login.getUser().getId(), Login.getUser().getCodename()
         );
         LogUtility.d(url);

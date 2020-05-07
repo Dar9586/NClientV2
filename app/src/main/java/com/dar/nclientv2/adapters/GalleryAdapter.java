@@ -12,7 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.MainActivity;
 import com.dar.nclientv2.R;
@@ -22,6 +22,7 @@ import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.local.LocalGallery;
+import com.dar.nclientv2.components.GlideX;
 import com.dar.nclientv2.components.classes.Size;
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
 import com.dar.nclientv2.settings.Global;
@@ -334,16 +335,16 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     public void onViewRecycled(@NonNull ViewHolder holder) {
         final ImageView imgView=holder.master.findViewById(R.id.image);
         toDelete.add(map.remove(imgView));
-        try {
-            for (Iterator<BitmapTarget> iterator = toDelete.iterator(); iterator.hasNext();) {
-                BitmapTarget target = iterator.next();
-                if(context.isFinishing()||Global.isDestroyed(context))
-                    break;
-                if(!map.containsValue(target))
-                    Glide.with(context).clear(target);
-                iterator.remove();
+        for (Iterator<BitmapTarget> iterator = toDelete.iterator(); iterator.hasNext();) {
+            BitmapTarget target = iterator.next();
+            if(context.isFinishing()||Global.isDestroyed(context))
+                break;
+            if(!map.containsValue(target)) {
+                RequestManager manager = GlideX.with(context);
+                if (manager != null) manager.clear(target);
             }
-        }catch (IllegalStateException ignore){}
+            iterator.remove();
+        }
         super.onViewRecycled(holder);
     }
 

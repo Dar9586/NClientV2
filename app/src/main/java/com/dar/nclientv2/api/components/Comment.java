@@ -5,6 +5,8 @@ import android.os.Parcelable;
 import android.util.JsonReader;
 import android.util.JsonToken;
 
+import com.dar.nclientv2.utility.Utility;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Date;
@@ -25,7 +27,7 @@ public class Comment implements Parcelable {
                 default:jr.skipValue();break;
             }
         }
-        if(userImageURL.equals("https://i.nhentai.net/avatars/blank.png"))userImageURL=null;
+        if(userImageURL.equals("https://i."+ Utility.getHost()+"/avatars/blank.png"))userImageURL=null;
         jr.endObject();
         if(close)jr.close();
     }
@@ -89,7 +91,7 @@ public class Comment implements Parcelable {
     }
 
     public String getUserImageURL() {
-        return "https://i.nhentai.net/avatars/"+userImageURL;
+        return "https://i."+Utility.getHost()+"/avatars/"+userImageURL;
     }
 
     public String getUsername() {

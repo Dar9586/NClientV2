@@ -19,6 +19,7 @@ import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.utility.LogUtility;
+import com.dar.nclientv2.utility.Utility;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -66,7 +67,7 @@ public class CommentActivity extends BaseActivity {
                 }
                 RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),writer.toString());
                 assert Global.getClient()!=null;
-                Global.getClient().newCall(new Request.Builder().url("https://nhentai.net/g/"+g.getId()).build()).enqueue(new Callback() {
+                Global.getClient().newCall(new Request.Builder().url(Utility.getBaseUrl()+"g/"+g.getId()).build()).enqueue(new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
 
@@ -78,7 +79,7 @@ public class CommentActivity extends BaseActivity {
                         token=token.substring(token.lastIndexOf("csrf_token"));
                         token=token.substring(token.indexOf('"')+1);
                         token=token.substring(0,token.indexOf('"'));
-                        Global.getClient().newCall(new Request.Builder().addHeader("Referer","https://nhentai.net/g/"+g.getId()).addHeader("X-Requested-With","XMLHttpRequest").addHeader("X-CSRFToken",token).post(body).url("https://nhentai.net/api/comments/submit").build()).enqueue(new Callback() {
+                        Global.getClient().newCall(new Request.Builder().addHeader("Referer","https://"+ Utility.getHost()+"/g/"+g.getId()).addHeader("X-Requested-With","XMLHttpRequest").addHeader("X-CSRFToken",token).post(body).url(Utility.getBaseUrl()+"api/comments/submit").build()).enqueue(new Callback() {
                             @Override
                             public void onFailure(Call call, IOException e) {
 

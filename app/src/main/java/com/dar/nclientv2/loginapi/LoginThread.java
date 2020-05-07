@@ -17,8 +17,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class LoginThread extends Thread {
-    private static final String LOGIN_URL = Utility.BASE_URL +"login/";
-    private static final String LOGOUT_URL = Utility.BASE_URL +"logout/";
+    private static final String LOGIN_URL = Utility.getBaseUrl() +"login/";
+    private static final String LOGOUT_URL = Utility.getBaseUrl() +"logout/";
     public interface LoginResponse{
         void responseCode(int code);
     }
@@ -47,7 +47,7 @@ public class LoginThread extends Thread {
     }
     private int makeRequest(String url) throws IOException {
         Response response = Global.getClient().newCall(new Request.Builder().url(url).build()).execute();
-        Document doc=Jsoup.parse(response.body().byteStream(),null,Utility.BASE_URL);
+        Document doc=Jsoup.parse(response.body().byteStream(),null,Utility.getBaseUrl());
         response.close();
         Element ele=doc.getElementsByAttributeValue("name","csrfmiddlewaretoken").first();
         if(ele==null)return 0;

@@ -13,6 +13,7 @@ import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
+import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.settings.Global;
@@ -92,7 +93,7 @@ public class InspectorV3 extends Thread implements Parcelable {
     public String getSearchTitle() {
         //triggered only when in searchMode
         if(query.length()>0)return query;
-        return url.replace("https://nhentai.net/search/?q=","").replace('+',' ');
+        return url.replace(Utility.getBaseUrl()+"search/?q=","").replace('+',' ');
     }
 
     public interface InspectorResponse{
@@ -206,7 +207,7 @@ public class InspectorV3 extends Thread implements Parcelable {
 
     private void createUrl() {
         Tag t=null;
-        StringBuilder builder=new StringBuilder(Utility.BASE_URL);
+        StringBuilder builder=new StringBuilder(Utility.getBaseUrl());
              if(requestType==ApiRequestType.BYALL)builder.append("?page=").append(page);
         else if(requestType==ApiRequestType.RANDOM)builder.append("random/");
         else if(requestType==ApiRequestType.RANDOM_FAVORITE)builder.append("favorites/random");
@@ -268,7 +269,7 @@ public class InspectorV3 extends Thread implements Parcelable {
 
     public void execute()throws IOException{
             Response response=Global.getClient(context.get()).newCall(new Request.Builder().url(url).build()).execute();
-            Document document= Jsoup.parse(response.body().byteStream(),"UTF-8", Utility.BASE_URL);
+            Document document= Jsoup.parse(response.body().byteStream(),"UTF-8", Utility.getBaseUrl());
             if(requestType.isSingle()) doSingle(document.body());
             else doSearch(document.body());
             response.close();
@@ -368,7 +369,11 @@ public class InspectorV3 extends Thread implements Parcelable {
 
     public Tag getTag(){
         Tag t=null;
-        for(Tag tt:tags)t=tt;
+        for(Tag tt:tags){
+            if(tt.getType()!= TagType.LANGUAGE)
+                return tt;
+            t=tt;
+        }
         return t;
     }
 }

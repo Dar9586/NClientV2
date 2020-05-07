@@ -24,7 +24,7 @@
         app:showAsAction="ifRoom|collapseActionView"/>
     <item
         android:id="@+id/by_popular"
-        android:title="@string/sort_popular"
+        android:title="@string/sort_by_popular"
         app:showAsAction="ifRoom|collapseActionView"/>
     <item
         android:id="@+id/open_browser"

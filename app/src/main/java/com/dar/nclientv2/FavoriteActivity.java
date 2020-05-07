@@ -90,7 +90,7 @@ public class FavoriteActivity extends BaseActivity {
         Intent i;
         switch (item.getItemId()) {
             case R.id.open_browser:
-                i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://nhentai.net/favorites/"));
+                i = new Intent(Intent.ACTION_VIEW, Uri.parse(Utility.getBaseUrl()+"favorites/"));
                 startActivity(i);
         }
         return super.onOptionsItemSelected(item);

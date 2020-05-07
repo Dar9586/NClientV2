@@ -26,7 +26,15 @@ import java.util.Random;
 
 public class Utility {
     public static final Random RANDOM=new Random(System.nanoTime());
-    public static final String BASE_URL="https://nhentai.net/";
+    private static final String BASE_URL="nhentai.net";
+    private static final String ALTERNATIVE_URL="nhent.ai";
+    public static String getBaseUrl(){
+        return "https://"+Utility.getHost()+"/";
+    }
+    public static String getHost(){
+        boolean x=Global.useAlternativeSite();
+        return x?ALTERNATIVE_URL:BASE_URL;
+    }
     public static void threadSleep(long millis){
         try {
             Thread.sleep(millis);

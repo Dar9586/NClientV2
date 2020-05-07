@@ -28,9 +28,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
+import com.bumptech.glide.RequestManager;
 import com.dar.nclientv2.api.components.GenericGallery;
+import com.dar.nclientv2.components.GlideX;
 import com.dar.nclientv2.components.views.ZoomFragment;
 import com.dar.nclientv2.components.widgets.CustomViewPager;
 import com.dar.nclientv2.settings.DefaultDialogs;
@@ -220,13 +221,13 @@ public class ZoomActivity extends AppCompatActivity {
         return ViewConfiguration.get(this).hasPermanentMenuKey();
     }
     private void applyMargin(boolean landscape,View view){
-        ConstraintLayout.LayoutParams lp=(ConstraintLayout.LayoutParams) view.getLayoutParams();
+        ConstraintLayout.LayoutParams lp= (ConstraintLayout.LayoutParams) view.getLayoutParams();
         lp.setMargins(0,0,landscape||hardwareKeys()?Global.getNavigationBarHeight(this):0,0);
         view.setLayoutParams(lp);
     }
     private void changeLayout(boolean landscape){
         int statusBarHeight=Global.getStatusBarHeight(this);
-        applyMargin(landscape,pageSwitcher);
+        applyMargin(landscape,findViewById(R.id.master_layout));
         applyMargin(landscape,toolbar);
         pageSwitcher.setPadding(0,0,0,landscape?0:statusBarHeight);
     }
@@ -323,7 +324,8 @@ public class ZoomActivity extends AppCompatActivity {
 
 
     public static void loadImage(AppCompatActivity activity, String url, ImageView target, boolean high){
-        Glide.with(activity).asBitmap().load(url)
+        RequestManager manager= GlideX.with(activity);
+        if(manager!=null)manager.asBitmap().load(url)
                 .placeholder(R.drawable.ic_launcher_foreground).error(R.drawable.ic_close)
                 .priority(high? Priority.HIGH: Priority.LOW)
                 .into(new BitmapTarget(target));

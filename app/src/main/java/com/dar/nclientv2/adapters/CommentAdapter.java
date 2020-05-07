@@ -18,6 +18,7 @@ import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Comment;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
+import com.dar.nclientv2.utility.Utility;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -67,7 +68,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.close.setVisibility(c.getPosterId()!=userId?View.GONE:View.VISIBLE);
         holder.close.setOnClickListener(v -> {
             Comment cr=comments.get(holder.getAdapterPosition());
-            Global.getClient(context).newCall(new Request.Builder().post(new FormBody.Builder().build()).url("https://nhentai.net/g/"+galleryId).build()).enqueue(new Callback() {
+            Global.getClient(context).newCall(new Request.Builder().post(new FormBody.Builder().build()).url(Utility.getBaseUrl()+"g/"+galleryId).build()).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
 
@@ -80,14 +81,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                     token=token.substring(token.indexOf('"')+1);
                     token=token.substring(0,token.indexOf('"'));
                     Request.Builder builder=new Request.Builder()
-                            .addHeader("Referer","https://nhentai.net/g/"+galleryId)
+                            .addHeader("Referer",Utility.getBaseUrl()+"g/"+galleryId)
                             .addHeader("X-Requested-With","XMLHttpRequest")
                             .addHeader("X-CSRFToken",token)
                             .post(new FormBody.Builder().add("x","x").build())
-                            .url("https://nhentai.net/api/comments/"+cr.getId()+"/delete");
+                            .url(Utility.getBaseUrl()+"api/comments/"+cr.getId()+"/delete");
 
                     StringBuilder builder1=new StringBuilder();
-                    for (Cookie cookie:Global.getClient(context).cookieJar().loadForRequest(HttpUrl.get("https://nhentai.net/api/comments/"+cr.getId()+"/delete"))){
+                    for (Cookie cookie:Global.getClient(context).cookieJar().loadForRequest(HttpUrl.get("https://"+ Utility.getHost()+"/api/comments/"+cr.getId()+"/delete"))){
                         builder1.append(cookie.name()).append('=').append(cookie.value()).append("; ");
                     }
                     builder.addHeader("Cookie",builder1.toString());

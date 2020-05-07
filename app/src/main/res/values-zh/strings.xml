@@ -11,11 +11,7 @@
     <string name="setting_off_load">仅单页阅读时加载图像</string>
     <string name="setting_on_use_account_tag">在搜索请求中使用账户标签（本地标签优先）</string>
     <string name="setting_off_use_account_tag">在搜索请求中忽略账户标签</string>
-    <string name="setting_on_infinite_scroll">到达底部时加载下一页</string>
-    <string name="setting_off_infinite_scroll">使用底栏菜单跳页</string>
     <string name="theme_summary">选择主题颜色</string>
-    <string name="setting_on_send_report">报告将被发送</string>
-    <string name="setting_off_send_report">报告不会被发送</string>
 
     <!--SETTINGS NAME-->
     <string name="send_crash_report">发送崩溃报告</string>
@@ -59,7 +55,6 @@
     <string name="only_chinese">仅中文</string>
     <string name="all_languages">所有语言</string>
 
-    <string name="sort_popular">按热度排列</string>
 
     <string name="username_or_email">用户名或邮件</string>
     <string name="password">密码</string>
@@ -88,7 +83,6 @@
     <string name="share">分享</string>
     <string name="image">图像</string>
     <string name="next">下一个</string>
-    <string name="hashtag">#</string>
 
     <string name="create_pdf">创建 PDF</string>
     <string name="create_pdf_format" formatted="true">创建的PDF："%s"</string>
@@ -98,11 +92,9 @@
     <string name="parsing_pages">正在解析页面</string>
     <string name="writing_pdf">正在写入PDF</string>
 
-    <string name="app_name">NClientV2</string>
     <string name="navigation_drawer_open">打开导航菜单</string>
     <string name="navigation_drawer_close">关闭导航菜单</string>
     <string name="nav_header_subtitle">NHentai非官方客户端</string>
-    <string name="nav_header_desc">导航菜单标题</string>
 
     <string name="change_page">跳转页面：</string>
     <string name="prev_page">上一页</string>
@@ -146,8 +138,6 @@
     <string name="set_minimum_count">设置最小值</string>
     <string name="sort_by_title">按标题排列</string>
     <string name="sort_by_popular">按热度排列</string>
-    <string name="setting_on_override_volume">音量键将换页</string>
-    <string name="setting_off_override_volume">音量键将更改系统音量</string>
     <string name="next_page_volume_up">音量+切换下一页</string>
     <string name="next_page_volume_down">音量-切换下一页</string>
     <string name="change_title_type">更改标题类型</string>
@@ -164,8 +154,6 @@
     <string name="sort_by_latest">按更新排列</string>
     <string name="edit">编辑</string>
     <string name="options">选项</string>
-    <string name="setting_on_keep_history">搜索记录将被保留</string>
-    <string name="setting_off_keep_history">搜索记录将不被保留</string>
     <string name="keep_history">保留搜索历史</string>
     <string name="add">添加</string>
     <string name="insert_tag_name">插入标签名：</string>
@@ -188,8 +176,6 @@
     <string name="setting_off_use_rtl">图像将从左至右显示</string>
     <string name="volume_change_setting">音量键换页</string>
     <string name="popular_tag_count">高级搜索中显示热门标签数</string>
-    <string name="setting_on_show_titles">显示画廊标题</string>
-    <string name="setting_off_show_titles">隐藏画廊标题</string>
     <string name="show_gallery_titles">显示画廊标题</string>
     <string name="use_column_port">选择竖屏每行列数</string>
     <string name="use_column_land">选择横屏每行列数</string>
@@ -223,7 +209,6 @@
     <string name="create_zip">创建ZIP</string>												   
     <string name="created_zip">成功创建ZIP</string>													   													   
     <string name="failed_zip">创建ZIP失败: </string>																					  
-    <string name="download_page_range">下载页面范围</string>
     <string name="start_page">起始页</string>
     <string name="end_page">结束页</string>
     <string name="invalid_range_selected">选择范围无效</string>
@@ -253,12 +238,15 @@
     <string name="use_pin">使用PIN码</string>
     <string name="wrong_pin">PIN码错误</string>
     <string name="rotate_image">Rotate image</string>
+    <string name="setting_alternative">Use nhent.ai instead of nhentai.net for censored country</string>
+    <string name="use_alternative">Use nhent.ai</string>
 
     <string-array name="language">
         <item>英文</item>
         <item>繁体中文</item>
         <item>简体中文</item>
         <item>土耳其</item>
+        <item>义大利文</item>
     </string-array>
     <string-array name="theme">
         <item>亮色</item>

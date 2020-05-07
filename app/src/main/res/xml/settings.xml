@@ -24,6 +24,11 @@
         android:defaultValue="pretty"/>
     <SwitchPreference
         android:defaultValue="false"
+        android:key="@string/key_alternative_site"
+        android:summary="@string/setting_alternative"
+        android:title="@string/use_alternative" />
+    <SwitchPreference
+        android:defaultValue="false"
         android:key="has_pin"
         android:summary="@string/setting_pin"
         android:title="@string/use_pin" />
@@ -43,8 +48,6 @@
         <SwitchPreference
             android:defaultValue="false"
             android:key="@string/key_infinite_scroll"
-            android:summaryOn="@string/setting_on_infinite_scroll"
-            android:summaryOff="@string/setting_off_infinite_scroll"
             android:title="@string/infinite_scroll" />
     </PreferenceCategory>
 
@@ -71,8 +74,6 @@
         <SwitchPreference
             android:defaultValue="true"
             android:key="@string/key_show_titles"
-            android:summaryOn="@string/setting_on_show_titles"
-            android:summaryOff="@string/setting_off_show_titles"
             android:title="@string/show_gallery_titles" />
         <SwitchPreference
             android:defaultValue="false"
@@ -87,8 +88,6 @@
         <SwitchPreference
             android:defaultValue="true"
             android:key="@string/key_keep_history"
-            android:summaryOn="@string/setting_on_keep_history"
-            android:summaryOff="@string/setting_off_keep_history"
             android:title="@string/keep_history" />
     <SwitchPreference
         android:defaultValue="true"
@@ -124,14 +123,10 @@
     <SwitchPreference
         android:defaultValue="true"
         android:key="@string/key_override_volume"
-        android:summaryOn="@string/setting_on_override_volume"
-        android:summaryOff="@string/setting_off_override_volume"
         android:title="@string/volume_change_setting" />
         <SwitchPreference
             android:defaultValue="true"
             android:key="@string/key_send_report"
-            android:summaryOn="@string/setting_on_send_report"
-            android:summaryOff="@string/setting_off_send_report"
             android:title="@string/send_crash_report" />
 
     </PreferenceCategory>

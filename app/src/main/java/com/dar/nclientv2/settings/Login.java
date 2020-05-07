@@ -45,7 +45,7 @@ public class Login{
     public static boolean isLogged(){
         if(Global.getClient()==null)return false;
         PersistentCookieJar p=((PersistentCookieJar)Global.getClient().cookieJar());
-        for(Cookie c:p.loadForRequest(HttpUrl.get(Utility.BASE_URL))){
+        for(Cookie c:p.loadForRequest(HttpUrl.get(Utility.getBaseUrl()))){
             if(c.name().equals("sessionid"))return true;
         }
         return false;

@@ -16,22 +16,17 @@ import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.SimpleGallery;
 import com.dar.nclientv2.api.components.GenericGallery;
-import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.Language;
-import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.local.LocalGallery;
-import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.settings.Global;
-import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.settings.TagV2;
 import com.dar.nclientv2.utility.LogUtility;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Locale;
 
 public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder> {
 
@@ -44,8 +39,6 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         this.context=cont;
         this.mDataset =new ArrayList<>();
         storagePermission=Global.hasStoragePermission(context);
-        Set<Tag>t=new HashSet<>(Queries.TagTable.getAllStatus( TagStatus.AVOIDED));
-        if(Login.useAccountTag())t.addAll(Queries.TagTable.getAllOnlineBlacklisted());
         queryString=TagV2.getAvoidedTags();
     }
 
@@ -146,9 +139,6 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         return mDataset==null?0:mDataset.size();
     }
 
-    public List<SimpleGallery> getDataset() {
-        return mDataset;
-    }
     public void addGalleries(List<GenericGallery> galleries){
         int c=mDataset.size();
         for(GenericGallery g:galleries) {
@@ -156,7 +146,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
 
             LogUtility.d("Simple: "+g);
         }
-        LogUtility.d(String.format("%s,old:%d,new:%d,len%d",this,c,mDataset.size(),galleries.size()));
+        LogUtility.d(String.format(Locale.US, "%s,old:%d,new:%d,len%d",this,c,mDataset.size(),galleries.size()));
         context.runOnUiThread(()->notifyItemRangeInserted(c,galleries.size()));
     }
 
@@ -170,7 +160,8 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         context.runOnUiThread(()->notifyItemRangeInserted(0,galleries.size()));*/
         mDataset.clear();
         for(GenericGallery g:galleries)
-            mDataset.add((SimpleGallery)g);
+            if(g instanceof SimpleGallery)
+                mDataset.add((SimpleGallery)g);
         context.runOnUiThread(this::notifyDataSetChanged);
     }
 

@@ -27,7 +27,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.resource.bitmap.Rotate;
 import com.dar.nclientv2.CopyToClipboardActivity;
 import com.dar.nclientv2.MainActivity;
@@ -35,11 +35,13 @@ import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TitleType;
+import com.dar.nclientv2.components.GlideX;
 import com.dar.nclientv2.components.classes.CustomSSLSocketFactory;
 import com.dar.nclientv2.loginapi.LoadTags;
 import com.dar.nclientv2.loginapi.User;
 import com.dar.nclientv2.targets.BitmapTarget;
 import com.dar.nclientv2.utility.LogUtility;
+import com.dar.nclientv2.utility.Utility;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
@@ -127,7 +129,7 @@ public class Global {
     public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf",CHANNEL_ID3="create_pdf";
     private static Language onlyLanguage;
     private static TitleType titleType;
-    private static boolean volumeOverride,zoomOneColumn,byPopular,keepHistory,loadImages,highRes,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
+    private static boolean alternativeSite,volumeOverride,zoomOneColumn,byPopular,keepHistory,loadImages,highRes,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
     private static ThemeScheme theme;
     private static String lastVersion;
     private static int maxHistory,notificationId,columnCount,maxId,galleryWidth=-1, galleryHeight =-1;
@@ -178,6 +180,10 @@ public class Global {
         return maxHistory;
     }
 
+    public static boolean useAlternativeSite() {
+        return alternativeSite;
+    }
+
     private static void initTitleType(@NonNull Context context){
         String s=context.getSharedPreferences("Settings", 0).getString(context.getString(R.string.key_title_type),"pretty");
         switch (s){
@@ -218,6 +224,7 @@ public class Global {
         colPortHist=shared.getInt(context.getString(R.string.key_column_port_hist),2);
         colLandHist=shared.getInt(context.getString(R.string.key_column_land_hist),4);
         zoomOneColumn=shared.getBoolean(context.getString(R.string.key_zoom_one_column),false);
+        alternativeSite=shared.getBoolean(context.getString(R.string.key_alternative_site),false);
         int x=Math.max(0,shared.getInt(context.getString(R.string.key_only_language),Language.ALL.ordinal()));
         if(Language.values()[x]==Language.UNKNOWN){
             updateOnlyLanguage(context,Language.ALL);
@@ -400,7 +407,7 @@ public class Global {
         context.startActivity(chooserIntent);
     }
     public static void shareGallery(Context context, GenericGallery gallery) {
-        shareURL(context, gallery.getTitle(),"https://nhentai.net/g/"+gallery.getId());
+        shareURL(context, gallery.getTitle(),"https://"+ Utility.getHost()+"/g/"+gallery.getId());
     }
 
     public static void setTint(Drawable drawable){
@@ -426,46 +433,45 @@ public class Global {
     }
     public static void preloadImage(Context context, String url){
         if(!isLoadImages())return;
-        //Glide.with(context).load(url).preload();
-        Glide.with(context).load(url).preload();
+        RequestManager manager= GlideX.with(context);
+        if(manager!=null)manager.load(url).preload();
 
     }
+    @Nullable
     public static BitmapTarget loadImageOp(Context context,ImageView view,File file,int angle){
-        try {//random error of glide
-            Drawable logo=getLogo(context.getResources());
-            BitmapTarget target=new BitmapTarget(view);
-            Glide.with(context).asBitmap().transform(new Rotate(angle)).error(logo).placeholder(logo).load(file).into(target);
-            return target;
-        }catch (IllegalStateException ignore){}
-        return null;
+        RequestManager glide=GlideX.with(context);
+        if(glide==null)return null;
+        Drawable logo=getLogo(context.getResources());
+        BitmapTarget target=new BitmapTarget(view);
+        glide.asBitmap().transform(new Rotate(angle)).error(logo).placeholder(logo).load(file).into(target);
+        return target;
     }
 
     @Nullable
     public static BitmapTarget loadImageOp(Context context,ImageView view,String url,int angle){
-        try {//random error of glide
-            Drawable logo=getLogo(context.getResources());
-            BitmapTarget target=new BitmapTarget(view);
-            Glide.with(context).asBitmap().transform(new Rotate(angle)).error(logo).placeholder(logo).load(url).into(target);
-            return target;
-        }catch (IllegalStateException ignore){}
-        return null;
+        RequestManager glide=GlideX.with(context);
+        if(glide==null)return null;
+        Drawable logo=getLogo(context.getResources());
+        BitmapTarget target=new BitmapTarget(view);
+        glide.asBitmap().transform(new Rotate(angle)).error(logo).placeholder(logo).load(url).into(target);
+        return target;
     }
 
     public static void loadImage(Activity activity,String url, final ImageView imageView){loadImage(activity, url,imageView,false);}
     public static void loadImage(Activity activity,String url, final ImageView imageView,boolean force){
         if(activity.isFinishing()||Global.isDestroyed(activity))return;
-        try {//random error of glide
-            if (loadImages || force) Glide.with(imageView).load(url).placeholder(getLogo(imageView.getResources())).into(imageView);
-            else Glide.with(imageView).load(getLogo(imageView.getResources())).into(imageView);
-        }catch (IllegalStateException ignore){}
+        RequestManager glide=GlideX.with(activity);
+        if(glide==null)return;
+        if (loadImages || force) glide.load(url).placeholder(getLogo(imageView.getResources())).into(imageView);
+        else glide.load(getLogo(imageView.getResources())).into(imageView);
+
     }
     public static void loadImage(Activity activity, File file, ImageView imageView){
-        try{//random error of glide
-            if(activity.isFinishing()||Global.isDestroyed(activity))return;
-            if(loadImages)Glide.with(imageView).load(file).placeholder(getLogo(imageView.getResources())).into(imageView);
-            else Glide.with(imageView).load(getLogo(imageView.getResources())).into(imageView);
-        }catch (IllegalStateException ignore){}
-
+        if(activity.isFinishing()||Global.isDestroyed(activity))return;
+        RequestManager glide=GlideX.with(activity);
+        if(glide==null)return;
+        if(loadImages)glide.load(file).placeholder(getLogo(imageView.getResources())).into(imageView);
+        else glide.load(getLogo(imageView.getResources())).into(imageView);
     }
     public static void loadImage(@DrawableRes int drawable, ImageView imageView){
         imageView.setImageResource(drawable);
@@ -495,6 +501,7 @@ public class Global {
 
     @Nullable
     public static File findGalleryFolder(int id){
+        if(DOWNLOADFOLDER==null)return null;
         DOWNLOADFOLDER.mkdirs();
         File[] tmp=DOWNLOADFOLDER.listFiles();
         if(tmp!=null)

@@ -21,7 +21,6 @@ import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.async.database.Queries;
-import com.dar.nclientv2.async.downloader.DownloadGalleryV2;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.components.views.RangeSelector;
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
@@ -194,7 +193,6 @@ public class GalleryActivity extends BaseActivity{
         menu.findItem(R.id.add_online_gallery).setVisible(isValidOnline&&Login.isLogged());
         menu.findItem(R.id.favorite_manager).setVisible(isValidOnline);
         menu.findItem(R.id.download_gallery).setVisible(isValidOnline);
-        menu.findItem(R.id.download_range).setVisible(isValidOnline);
         menu.findItem(R.id.related).setVisible(isValidOnline);
         menu.findItem(R.id.comments).setVisible(isValidOnline);
 
@@ -213,11 +211,14 @@ public class GalleryActivity extends BaseActivity{
         int id = item.getItemId();
 
         switch (id){
-            case R.id.download_range:
-                new RangeSelector(this, (Gallery) gallery).show();
+            case R.id.download_gallery:
+                if(Global.hasStoragePermission(this))
+                    new RangeSelector(this, (Gallery) gallery).show();
+                else
+                    requestStorage();
                 break;
             case R.id.add_online_gallery:
-                Global.getClient(this).newCall(new Request.Builder().url("https://nhentai.net/g/"+gallery.getId()+"/favorite").build()).enqueue(new Callback() {
+                Global.getClient(this).newCall(new Request.Builder().url(Utility.getBaseUrl()+"g/"+gallery.getId()+"/favorite").build()).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call,@NonNull IOException e) {}
 
@@ -232,8 +233,6 @@ public class GalleryActivity extends BaseActivity{
                     }
                 });
                 break;
-            case R.id.download_gallery:
-                if(Global.hasStoragePermission(this))downloadGallery();else{requestStorage();}break;
             case R.id.change_view:updateColumnCount(true); break;
             case R.id.load_internet:toInternet();break;
             case R.id.comments:
@@ -325,9 +324,6 @@ public class GalleryActivity extends BaseActivity{
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
             Global.initStorage(this);
             if(requestCode==1&&grantResults.length >0&&grantResults[0]==PackageManager.PERMISSION_GRANTED)
-                downloadGallery();
-    }
-    private void downloadGallery(){
-        DownloadGalleryV2.downloadGallery(this, gallery);
+                new RangeSelector(this, (Gallery) gallery).show();
     }
 }
