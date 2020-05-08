@@ -22,7 +22,7 @@ public class LocalGallery extends GenericGallery{
     private final String title;
     private final File directory;
     private final boolean valid;
-    private static final Pattern FILE_PATTERN=Pattern.compile("^(\\d{3,9})\\.(gif|png|jpg|jpeg)$",Pattern.CASE_INSENSITIVE);
+    private static final Pattern FILE_PATTERN=Pattern.compile("^(\\d{3,9})\\.(gif|png|jpg)$",Pattern.CASE_INSENSITIVE);
     private Size maxSize=new Size(0,0),minSize=new Size(Integer.MAX_VALUE,Integer.MAX_VALUE);
     private File[]retriveValidFiles(){
         return directory.listFiles((dir, name) -> FILE_PATTERN.matcher(name).matches());
@@ -124,6 +124,7 @@ public class LocalGallery extends GenericGallery{
         return max;
     }
     @Override
+    @NonNull
     public String getTitle() {
         return title;
     }
@@ -148,8 +149,6 @@ public class LocalGallery extends GenericGallery{
         x=new File(dir,pag+"png");
         if(x.exists())return x;
         x=new File(dir,pag+"gif");
-        if(x.exists())return x;
-        x=new File(dir,pag+"jpeg");
         if(x.exists())return x;
         return null;
     }

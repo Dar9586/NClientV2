@@ -51,7 +51,7 @@ public class Gallery extends GenericGallery{
     }
     @NonNull
     public String getPathTitle() {
-        return getSafeTitle().replace('/', '_').replaceAll("[|\\\\?*<\":>+\\[\\]/']", "_");
+        return getTitle().replace('/', '_').replaceAll("[|\\\\?*<\":>+\\[\\]/']", "_");
     }
 
     private Date uploadDate;
@@ -94,6 +94,7 @@ public class Gallery extends GenericGallery{
         complete=true;
         //The gallery is added to DB only for local favorite and download
         onlineFavorite=false;
+        LogUtility.d(toString());
     }
 
     public boolean isOnlineFavorite() {
@@ -453,9 +454,15 @@ public class Gallery extends GenericGallery{
     public String getFilename(int page){
         return String.format(Locale.US,"%03d.%s",page,getPageExtension(page));
     }
+    @NonNull
     @Override
     public String getTitle() {
-        return getTitle(Global.getTitleType());
+        String x=getTitle(Global.getTitleType());
+        if(x.length()>2)return x;
+        if((x=getTitle(TitleType.PRETTY)).length()>2)return x;
+        if((x=getTitle(TitleType.ENGLISH)).length()>2)return x;
+        if((x=getTitle(TitleType.JAPANESE)).length()>2)return x;
+        return "Unnamed";
     }
 
     public String getTitle(int x){
@@ -466,15 +473,6 @@ public class Gallery extends GenericGallery{
     }
     public String getTitle(TitleType x){
         return getTitle(x.ordinal());
-    }
-    @NonNull
-    public String getSafeTitle(){
-        String x=getTitle();
-        if(x.length()>2)return x;
-        if((x=getTitle(TitleType.ENGLISH)).length()>2)return x;
-        if((x=getTitle(TitleType.PRETTY)).length()>2)return x;
-        if((x=getTitle(TitleType.JAPANESE)).length()>2)return x;
-        return "Unnamed";
     }
 
     public Language getLanguage() {

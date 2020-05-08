@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Parcel;
 
+import androidx.annotation.NonNull;
+
 import com.dar.nclientv2.api.components.Comment;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
@@ -102,6 +104,7 @@ public class SimpleGallery extends GenericGallery {
     }
 
     @Override
+    @NonNull
     public String getTitle() {
         return title;
     }

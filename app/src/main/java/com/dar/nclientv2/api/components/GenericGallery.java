@@ -2,6 +2,8 @@ package com.dar.nclientv2.api.components;
 
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 import com.dar.nclientv2.components.classes.Size;
 import com.dar.nclientv2.utility.Utility;
 
@@ -16,6 +18,7 @@ public abstract class GenericGallery implements Parcelable{
     public abstract Type getType();
     public abstract int getPageCount();
     public abstract boolean isValid();
+    @NonNull
     public abstract String getTitle();
     public abstract List<Comment> getComments();
     public abstract Size getMaxSize();

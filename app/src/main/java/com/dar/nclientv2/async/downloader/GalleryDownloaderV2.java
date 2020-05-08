@@ -190,9 +190,11 @@ public class GalleryDownloaderV2 {
         }
     }
     private boolean isCorrupted(File file){
+        String path=file.getAbsolutePath();
+        if(path.endsWith(".jpg")&&Global.isJPEGCorrupted(path))return true;
         BitmapFactory.Options options=new BitmapFactory.Options();
         options.inSampleSize=256;
-        Bitmap bitmap=BitmapFactory.decodeFile(file.getAbsolutePath(),options);
+        Bitmap bitmap=BitmapFactory.decodeFile(path,options);
         boolean x= bitmap==null;
         if(!x)bitmap.recycle();
         bitmap = null;
@@ -206,25 +208,38 @@ public class GalleryDownloaderV2 {
             Response r = Global.getClient(context).newCall(new Request.Builder().url(page.url).build()).execute();
             if (r.code() != 200) {r.close();return false;}
             assert r.body() != null;
-            writeStreamToFile(r.body().byteStream(), filePath);
+            long expectedSize=Integer.parseInt(r.header("Content-Length","-1"));
+            long len=r.body().contentLength();
+            if(len < 0 || expectedSize != len){
+                r.close();
+                return false;
+            }
+            long written=writeStreamToFile(r.body().byteStream(), filePath);
             r.close();
+            if(written!=len){
+                filePath.delete();
+                return false;
+            }
             return true;
-        }catch (IOException e){
+        }catch (IOException|NumberFormatException e){
             LogUtility.e(e,e);
         }
         return false;
     }
 
-    private void writeStreamToFile(InputStream inputStream, File filePath)throws IOException {
+    private long writeStreamToFile(InputStream inputStream, File filePath)throws IOException {
         FileOutputStream outputStream=new FileOutputStream(filePath);
         int read;
+        long totalByte=0;
         byte[] bytes = new byte[1024];
         while ((read = inputStream.read(bytes)) != -1) {
             outputStream.write(bytes, 0, read);
+            totalByte+=read;
         }
         outputStream.flush();
         outputStream.close();
         inputStream.close();
+        return totalByte;
     }
 
     public void initDownload() {

@@ -483,7 +483,7 @@ public class Global {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||ContextCompat.checkSelfPermission(context,Manifest.permission.WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED;
     }
 
-    public static boolean isCorrupted(String path){
+    public static boolean isJPEGCorrupted(String path){
         if(!new File(path).exists())return true;
         try (RandomAccessFile fh = new RandomAccessFile(path, "r")) {
             long length = fh.length();

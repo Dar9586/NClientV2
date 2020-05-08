@@ -26,14 +26,14 @@ import java.util.Random;
 
 public class Utility {
     public static final Random RANDOM=new Random(System.nanoTime());
-    private static final String BASE_URL="nhentai.net";
+    private static final String ORIGINAL_URL ="nhentai.net";
     private static final String ALTERNATIVE_URL="nhent.ai";
     public static String getBaseUrl(){
         return "https://"+Utility.getHost()+"/";
     }
     public static String getHost(){
         boolean x=Global.useAlternativeSite();
-        return x?ALTERNATIVE_URL:BASE_URL;
+        return x?ALTERNATIVE_URL: ORIGINAL_URL;
     }
     public static void threadSleep(long millis){
         try {
@@ -49,7 +49,6 @@ public class Utility {
             LogUtility.d("Item "+i+": "+item.getItemId()+"; "+item.getTitle());
             Global.setTint(item.getIcon());
         }
-        LogUtility.d("\n\n");
     }
     @Nullable
     private static Bitmap drawableToBitmap(Drawable dra){

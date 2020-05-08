@@ -23,7 +23,7 @@
             android:backgroundTint="?attr/colorPrimaryVariant"
             android:contentDescription="@string/image"
             android:scaleType="fitCenter"
-            app:layout_constraintDimensionRatio="W,16:9"
+            app:layout_constraintDimensionRatio="3:4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

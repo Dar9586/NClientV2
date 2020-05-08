@@ -146,8 +146,12 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
     private void loadRelatedLayout(ViewHolder holder){
         LogUtility.d("Called RElated");
-        final RecyclerView recyclerView=(RecyclerView)holder.master;
+        final RecyclerView recyclerView= holder.master.findViewById(R.id.recycler);
         final Gallery gallery=(Gallery)this.gallery;
+        if(!gallery.isRelatedLoaded()||gallery.getRelated().size()==0){
+            holder.master.setVisibility(View.GONE);
+            return;
+        }else holder.master.setVisibility(View.VISIBLE);
         recyclerView.setLayoutManager(new CustomGridLayoutManager(context,1,RecyclerView.HORIZONTAL,false));
         if(gallery.isRelatedLoaded()){
             ListAdapter adapter=new ListAdapter(context);

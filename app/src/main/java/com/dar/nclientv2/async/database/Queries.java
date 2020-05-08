@@ -695,7 +695,7 @@ public class Queries{
                     GalleryBridgeTable.TABLE_NAME,
                     TagTable.IDTAG,
                     GalleryBridgeTable.ID_TAG,
-                    GalleryBridgeTable.ID_TAG,
+                    GalleryBridgeTable.ID_GALLERY,
                     id
                     );
             TagList tagList=new TagList();
