@@ -176,7 +176,7 @@
     <string name="show_gallery_titles">顯示畫廊標題</string>
     <string name="change_language">更改語言</string>
 
-    <string name="tag_artist_gallery">作家：</string>
+    <string name="tag_artist_gallery">藝術家：</string>
     <string name="tag_character_gallery">角色：</string>
     <string name="tag_parody_gallery">原作：</string>
     <string name="tag_language_gallery">語言：</string>
@@ -237,17 +237,17 @@
     <string name="setting_pin">啟用PIN碼登錄應用</string>
     <string name="use_pin">使用PIN碼</string>
     <string name="wrong_pin">PIN碼錯誤</string>
-    <string name="rotate_image">Rotate image</string>
-    <string name="setting_alternative">Use nhent.ai instead of nhentai.net for censored country</string>
-    <string name="use_alternative">Use nhent.ai</string>
+    <string name="rotate_image">旋轉圖片</string>
+    <string name="setting_alternative">在有審查制度的國家用nhent.ai替代nhentai.net</string>
+    <string name="use_alternative">使用nhent.ai</string>
 
 
     <string-array name="language">
         <item>英文</item>
         <item>繁體中文</item>
         <item>簡體中文</item>
-	    <item>土耳其</item>
-        <item>義大利文</item>
+        <item>土耳其語</item>
+        <item>義大利語</item>
     </string-array>
     <string-array name="theme">
         <item>亮色</item>
