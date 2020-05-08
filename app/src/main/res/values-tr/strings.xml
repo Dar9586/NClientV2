@@ -220,7 +220,7 @@
         <item>Çince (Geleneksel)</item>
         <item>Çince (Basitleştirilmiş)</item>
         <item>Türkçe</item>
-        <item>İtalyan</item>
+        <item>İtalyanca</item>
     </string-array>
     <string-array name="theme">
         <item>Beyaz</item>
@@ -252,6 +252,6 @@
     <string name="use_column_port">Dikey konumda satır başına öğe sayısını seçin</string>
     <string name="history_column_count">Tarihçe sütun sayısını seç</string>
     <string name="setting_pin">Uygulamaya girmek için PIN`i aktifleştir</string>
-    <string name="setting_alternative">Use nhent.ai instead of nhentai.net for censored country</string>
-    <string name="use_alternative">Use nhent.ai</string>
+    <string name="setting_alternative">nhentai.net websitesini yasaklayan ülkelerde nhentai.net yerine nhent.ai kullan</string>
+    <string name="use_alternative">nhent.ai Kullan</string>
 </resources>
