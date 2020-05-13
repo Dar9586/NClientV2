@@ -264,7 +264,7 @@ public class MainActivity extends BaseActivity
 
     private void initializeNavigationView() {
         changeNavigationImage(navigationView);
-        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back));
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         toolbar.setNavigationOnClickListener(v -> finish());
         navigationView.setNavigationItemSelectedListener(this);
         onlineFavoriteManager.setVisible(com.dar.nclientv2.settings.Login.isLogged());
