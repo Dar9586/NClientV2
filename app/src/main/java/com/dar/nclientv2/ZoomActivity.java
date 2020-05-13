@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,15 +27,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.bumptech.glide.Priority;
-import com.bumptech.glide.RequestManager;
 import com.dar.nclientv2.api.components.GenericGallery;
-import com.dar.nclientv2.components.GlideX;
 import com.dar.nclientv2.components.views.ZoomFragment;
 import com.dar.nclientv2.components.widgets.CustomViewPager;
 import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
-import com.dar.nclientv2.targets.BitmapTarget;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -320,15 +315,6 @@ public class ZoomActivity extends AppCompatActivity {
     private void downloadPage() {
         final File output=new File(Global.SCREENFOLDER,gallery.getId()+"-"+(mViewPager.getCurrentItem()+1)+".jpg");
         Utility.saveImage(getActualFragment().getDrawable(),output);
-    }
-
-
-    public static void loadImage(AppCompatActivity activity, String url, ImageView target, boolean high){
-        RequestManager manager= GlideX.with(activity);
-        if(manager!=null)manager.asBitmap().load(url)
-                .placeholder(R.drawable.ic_launcher_foreground).error(R.drawable.ic_close)
-                .priority(high? Priority.HIGH: Priority.LOW)
-                .into(new BitmapTarget(target));
     }
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
         public SectionsPagerAdapter(@NonNull FragmentManager fm) {

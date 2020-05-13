@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,6 +28,7 @@ import com.dar.nclientv2.components.classes.Size;
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.targets.BitmapTarget;
+import com.dar.nclientv2.utility.ImageDownloadUtility;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 import com.github.chrisbanes.photoview.PhotoView;
@@ -307,6 +309,12 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
 
     private void startGallery(int page){
+        if(!gallery.isLocal()&&Global.getDownloadPolicy() == Global.DataUsageType.NONE){
+            context.runOnUiThread(()->
+                    Toast.makeText(context, R.string.enable_network_to_continue, Toast.LENGTH_SHORT).show()
+            );
+            return;
+        }
         Intent intent = new Intent(context, ZoomActivity.class);
         intent.putExtra(context.getPackageName() + ".GALLERY", gallery);
         intent.putExtra(context.getPackageName() + ".PAGE",page);
@@ -319,18 +327,18 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         else file=LocalGallery.getPage(directory,pos);
         if(policy==Policy.FULL) {
             BitmapTarget target=null;
-            if (file != null && file.exists()) target=Global.loadImageOp(context, imgView, file,angle);
+            if (file != null && file.exists()) target=ImageDownloadUtility.loadImageOp(context, imgView, file,angle);
             else if (!gallery.isLocal()){
                 final Gallery ent = ((Gallery) gallery);
-                target=Global.loadImageOp(context, imgView, Global.isHighRes() ? ent.getPage(pos - 1) : ent.getLowPage(pos - 1),angle);
-            }else Global.loadImage(R.mipmap.ic_launcher, imgView);
+                target= ImageDownloadUtility.loadImageOp(context, imgView, ent,pos-1,angle);
+            }else ImageDownloadUtility.loadImage(R.mipmap.ic_launcher, imgView);
             if(target!=null)map.put(imgView,target);
         }else{
-            if (file != null && file.exists()) Global.loadImage(context, file, imgView);
+            if (file != null && file.exists()) ImageDownloadUtility.loadImage(context, file, imgView);
             else if (!gallery.isLocal()){
                 final Gallery ent = ((Gallery) gallery);
-                Global.loadImage(context, Global.isHighRes() ? ent.getPage(pos - 1) : ent.getLowPage(pos - 1),imgView);
-            }else Global.loadImage(R.mipmap.ic_launcher, imgView);
+                ImageDownloadUtility.downloadPage(context,imgView,ent,pos-1,false);
+            }else ImageDownloadUtility.loadImage(R.mipmap.ic_launcher, imgView);
         }
     }
     private HashMap<ImageView, BitmapTarget>map=new HashMap<>(5);

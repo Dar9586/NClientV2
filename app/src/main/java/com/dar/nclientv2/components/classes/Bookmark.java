@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.ApiRequestType;
+import com.dar.nclientv2.api.enums.TagStatus;
+import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.database.Queries;
 
 import java.util.Collections;
@@ -19,11 +21,15 @@ public class Bookmark {
     private final Tag tagVal;
     private final Uri uri;
     public Bookmark(String url, int page, ApiRequestType requestType, int tag) {
+        Tag tagVal1;
         this.url = url;
         this.page = page;
         this.requestType=requestType;
         this.tag=tag;
-        this.tagVal=Queries.TagTable.getTagById(this.tag);
+        tagVal1 =Queries.TagTable.getTagById(this.tag);
+        if(tagVal1 ==null)
+            tagVal1 = new Tag("english", 0, 12227, TagType.LANGUAGE, TagStatus.DEFAULT);
+        this.tagVal = tagVal1;
         this.uri=Uri.parse(url);
     }
     public InspectorV3 createInspector(Context context, InspectorV3.InspectorResponse response){

@@ -17,7 +17,7 @@ import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.async.database.Queries;
-import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.utility.ImageDownloadUtility;
 import com.dar.nclientv2.utility.LogUtility;
 
 import java.io.IOException;
@@ -58,7 +58,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
             e.printStackTrace();
             return;
         }
-        Global.loadImage(activity,ent.getThumbnail(),holder.imgView);
+        ImageDownloadUtility.loadImage(activity,ent.getThumbnail(),holder.imgView);
         holder.pages.setText(String.format(Locale.US, "%d", ent.getPageCount()));
         holder.title.setText(ent.getTitle());
         switch (ent.getLanguage()){
@@ -81,6 +81,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
             Intent intent = new Intent(activity, GalleryActivity.class);
             LogUtility.d(ent+"");
             intent.putExtra(activity.getPackageName()+ ".GALLERY",ent);
+            intent.putExtra(activity.getPackageName()+ ".UNKNOWN",true);
             activity.startActivity(intent);
         });
         holder.layout.setOnLongClickListener(v -> {

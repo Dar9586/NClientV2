@@ -254,4 +254,12 @@
     <string name="setting_pin">Uygulamaya girmek için PIN`i aktifleştir</string>
     <string name="setting_alternative">nhentai.net websitesini yasaklayan ülkelerde nhentai.net yerine nhent.ai kullan</string>
     <string name="use_alternative">nhent.ai Kullan</string>
+    <string name="toggle_online_favorite">Toggle online favorite</string>
+    <string name="data_usage_settings">Change data usage settings</string>
+    <string name="mobile_data_usage_setting">Mobile data usage settings</string>
+    <string name="wifi_data_usage_setting">Wi-Fi data usage settings</string>
+    <string name="data_usage_thumb">Always download thumbnail</string>
+    <string name="data_usage_full">Download thumbnail or full images in when necessary</string>
+    <string name="data_usage_no">Don\'t download images</string>
+    <string name="enable_network_to_continue">Enable image download or change network to open the image</string>
 </resources>

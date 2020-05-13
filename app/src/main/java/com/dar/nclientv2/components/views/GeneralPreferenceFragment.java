@@ -28,9 +28,35 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
         switch (type){
             case MAIN:mainMenu();break;
             case COLUMN:columnMenu();break;
+            case DATA:dataMenu();
         }
     }
 
+    private void dataMenu() {
+        addPreferencesFromResource(R.xml.settings_data);
+        SeekBarPreference mobile=findPreference(getString(R.string.key_mobile_usage));
+        SeekBarPreference wifi=findPreference(getString(R.string.key_wifi_usage));
+        mobile.setOnPreferenceChangeListener((preference, newValue) -> {
+            mobile.setTitle(getDataUsageString((Integer) newValue));
+            return true;
+        });
+        wifi.setOnPreferenceChangeListener((preference, newValue) -> {
+            wifi.setTitle(getDataUsageString((Integer) newValue));
+            return true;
+        });
+        mobile.setTitle(getDataUsageString(mobile.getValue()));
+        wifi.setTitle(getDataUsageString(wifi.getValue()));
+        mobile.setUpdatesContinuously(true);
+        wifi.setUpdatesContinuously(true);
+    }
+    private int getDataUsageString(int val){
+        switch (val){
+            case 0:return R.string.data_usage_no;
+            case 1:return R.string.data_usage_thumb;
+            case 2:return R.string.data_usage_full;
+        }
+        return R.string.data_usage_full;
+    }
     private void mainMenu(){
         addPreferencesFromResource(R.xml.settings);
 
@@ -40,7 +66,12 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
             act.runOnUiThread(() -> act.startActivity(i));
             return false;
         });
-
+        findPreference("data_screen").setOnPreferenceClickListener(preference -> {
+            Intent i=new Intent(act,SettingsActivity.class);
+            i.putExtra(act.getPackageName()+".TYPE", SettingsActivity.Type.DATA.ordinal());
+            act.runOnUiThread(() -> act.startActivity(i));
+            return false;
+        });
         findPreference(getString(R.string.key_use_account_tag)).setEnabled(Login.isLogged());
 
         findPreference(getString(R.string.key_theme_select)).setOnPreferenceChangeListener((preference, newValue) -> {

@@ -3,7 +3,7 @@ package com.dar.nclientv2.api;
 import com.dar.nclientv2.RandomActivity;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
-import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.utility.ImageDownloadUtility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ public class RandomLoader {
             }
             Gallery gallery=(Gallery) galleryList.get(0);
             galleries.add(gallery);
-            Global.preloadImage(activity,gallery.getCover());
+            ImageDownloadUtility.preloadImage(activity,gallery.getCover());
             if (galleryHasBeenRequested) requestGallery();//requestGallery will call loadRandomGallery
             else if(galleries.size()<MAXLOADED)loadRandomGallery();
         }

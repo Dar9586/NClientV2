@@ -10,7 +10,7 @@ import com.dar.nclientv2.components.views.GeneralPreferenceFragment;
 import com.dar.nclientv2.settings.Global;
 
 public class SettingsActivity extends AppCompatActivity {
-    public enum Type{MAIN,COLUMN}
+    public enum Type{MAIN,COLUMN,DATA}
     GeneralPreferenceFragment fragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

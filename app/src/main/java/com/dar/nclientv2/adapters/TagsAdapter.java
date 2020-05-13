@@ -24,6 +24,7 @@ import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.settings.TagV2;
+import com.dar.nclientv2.utility.ImageDownloadUtility;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -209,9 +210,9 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
     private void updateLogo(ImageView img, TagStatus s){
         context.runOnUiThread(() -> {
             switch (s){
-                case DEFAULT:img.setImageDrawable(null);break;//Global.loadImage(R.drawable.ic_void,img); break;
-                case ACCEPTED:Global.loadImage(R.drawable.ic_check,img);Global.setTint(img.getDrawable());break;
-                case AVOIDED:Global.loadImage(R.drawable.ic_close,img);Global.setTint(img.getDrawable());break;
+                case DEFAULT:img.setImageDrawable(null);break;//ImageDownloadUtility.loadImage(R.drawable.ic_void,img); break;
+                case ACCEPTED: ImageDownloadUtility.loadImage(R.drawable.ic_check,img);Global.setTint(img.getDrawable());break;
+                case AVOIDED:  ImageDownloadUtility.loadImage(R.drawable.ic_close,img);Global.setTint(img.getDrawable());break;
             }
         });
 

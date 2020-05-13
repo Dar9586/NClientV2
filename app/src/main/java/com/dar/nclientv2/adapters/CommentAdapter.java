@@ -18,6 +18,7 @@ import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Comment;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
+import com.dar.nclientv2.utility.ImageDownloadUtility;
 import com.dar.nclientv2.utility.Utility;
 
 import java.io.IOException;
@@ -124,8 +125,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.user.setText(c.getUsername());
         holder.body.setText(c.getBody());
         holder.date.setText(format.format(c.getDate()));
-        if(c.getUserImageURL()==null)Global.loadImage(R.drawable.ic_person,holder.userImage);
-        else Global.loadImage(context,c.getUserImageURL(),holder.userImage);
+        if(c.getUserImageURL()==null||Global.getDownloadPolicy() != Global.DataUsageType.FULL)
+            ImageDownloadUtility.loadImage(R.drawable.ic_person,holder.userImage);
+        else
+            ImageDownloadUtility.loadImage(context,c.getUserImageURL(),holder.userImage);
     }
 
     @Override

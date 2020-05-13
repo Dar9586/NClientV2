@@ -17,6 +17,7 @@ import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Favorites;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
+import com.dar.nclientv2.utility.network.NetworkUtil;
 
 import org.acra.ACRA;
 import org.acra.ReportField;
@@ -40,7 +41,7 @@ public class CrashApplication extends Application{
         Global.initStorage(this);
         Global.initFromShared(this);
         Favorites.countFavorite();
-
+        NetworkUtil.initConnectivity(this);
         TagV2.initMinCount(this);
         TagV2.initSortByName(this);
         String version=Global.getLastVersion(this),actualVersion=Global.getVersionName(this);

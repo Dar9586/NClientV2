@@ -17,9 +17,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.widget.ImageView;
 
-import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,21 +25,18 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.load.resource.bitmap.Rotate;
 import com.dar.nclientv2.CopyToClipboardActivity;
 import com.dar.nclientv2.MainActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TitleType;
-import com.dar.nclientv2.components.GlideX;
 import com.dar.nclientv2.components.classes.CustomSSLSocketFactory;
 import com.dar.nclientv2.loginapi.LoadTags;
 import com.dar.nclientv2.loginapi.User;
-import com.dar.nclientv2.targets.BitmapTarget;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
+import com.dar.nclientv2.utility.network.NetworkUtil;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
@@ -61,7 +56,9 @@ public class Global {
     public static long recursiveSize(File path) {
         if(path.isFile())return path.length();
         long size=0;
-        for(File f:path.listFiles())
+        File[]files=path.listFiles();
+        if(files==null)return size;
+        for(File f:files)
             size+=f.isFile()?f.length():recursiveSize(f);
 
         return size;
@@ -100,6 +97,7 @@ public class Global {
     }
 
     public enum ThemeScheme{LIGHT,DARK}
+    public enum DataUsageType{NONE,THUMBNAIL,FULL}
 
     public static OkHttpClient client=null;
     public static  File OLD_GALLERYFOLDER;
@@ -129,8 +127,9 @@ public class Global {
     public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf",CHANNEL_ID3="create_pdf";
     private static Language onlyLanguage;
     private static TitleType titleType;
-    private static boolean alternativeSite,volumeOverride,zoomOneColumn,byPopular,keepHistory,loadImages,highRes,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
+    private static boolean alternativeSite,volumeOverride,zoomOneColumn,byPopular,keepHistory,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
     private static ThemeScheme theme;
+    private static DataUsageType usageMobile, usageWifi;
     private static String lastVersion;
     private static int maxHistory,notificationId,columnCount,maxId,galleryWidth=-1, galleryHeight =-1;
     private static int colPortHist,colLandHist,colPortMain,colLandMain,colPortDownload,colLandDownload,colLandFavorite,colPortFavorite;
@@ -205,10 +204,8 @@ public class Global {
         byPopular=  shared.getBoolean(context.getString(R.string.key_by_popular),false);
         keepHistory=shared.getBoolean(context.getString(R.string.key_keep_history),true);
         infiniteScroll=shared.getBoolean(context.getString(R.string.key_infinite_scroll),false);
-        highRes=shared.getBoolean(context.getString(R.string.key_high_res_gallery),true);
         removeAvoidedGalleries =shared.getBoolean(context.getString(R.string.key_remove_ignored),true);
         onlyTag=shared.getBoolean(context.getString(R.string.key_ignore_tags),true);
-        loadImages=shared.getBoolean(context.getString(R.string.key_load_images),true);
         volumeOverride=shared.getBoolean(context.getString(R.string.key_override_volume),true);
         columnCount=shared.getInt(context.getString(R.string.key_column_count),2);
         showTitles=shared.getBoolean(context.getString(R.string.key_show_titles),true);
@@ -226,6 +223,8 @@ public class Global {
         zoomOneColumn=shared.getBoolean(context.getString(R.string.key_zoom_one_column),false);
         alternativeSite=shared.getBoolean(context.getString(R.string.key_alternative_site),false);
         int x=Math.max(0,shared.getInt(context.getString(R.string.key_only_language),Language.ALL.ordinal()));
+        usageMobile =DataUsageType.values()[shared.getInt(context.getString(R.string.key_mobile_usage),DataUsageType.FULL.ordinal())];
+        usageWifi =DataUsageType.values()[shared.getInt(context.getString(R.string.key_wifi_usage),DataUsageType.FULL.ordinal())];
         if(Language.values()[x]==Language.UNKNOWN){
             updateOnlyLanguage(context,Language.ALL);
             x=Language.ALL.ordinal();
@@ -233,7 +232,13 @@ public class Global {
         onlyLanguage=Language.values()[x];
 
     }
-
+    public static DataUsageType getDownloadPolicy(){
+        switch (NetworkUtil.getType()){
+            case WIFI:return usageWifi;
+            case CELLULAR:return usageMobile;
+        }
+        return usageWifi;
+    }
     public static boolean volumeOverride() {
         return volumeOverride;
     }
@@ -252,6 +257,7 @@ public class Global {
         client=builder.build();
         client.dispatcher().setMaxRequests(25);
         client.dispatcher().setMaxRequestsPerHost(25);
+
         if(Login.isLogged()&&Login.getUser()==null){
             User.createUser(user -> {
                 if(user!=null){
@@ -275,8 +281,12 @@ public class Global {
     public static boolean shouldCheckForUpdates(Context context){
         return context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_check_update),true);
     }
-
-    public static Drawable getLogo(Resources resources){ return ResourcesCompat.getDrawable(resources,theme==ThemeScheme.LIGHT?R.drawable.ic_logo_dark:R.drawable.ic_logo,null); }
+    public static int getLogo(){
+        return theme==ThemeScheme.LIGHT?R.drawable.ic_logo_dark:R.drawable.ic_logo;
+    }
+    public static Drawable getLogo(Resources resources){
+        return ResourcesCompat.getDrawable(resources,getLogo(),null);
+    }
     public static TitleType getTitleType() {
         return titleType;
     }
@@ -289,9 +299,6 @@ public class Global {
     public static boolean removeAvoidedGalleries(){return removeAvoidedGalleries;}
     @NonNull public static Language getOnlyLanguage() {
         return onlyLanguage;
-    }
-    public static boolean isHighRes() {
-        return highRes;
     }
     public static boolean isOnlyTag() {
         return onlyTag;
@@ -350,9 +357,6 @@ public class Global {
     public static int getMaxId() {
         return maxId;
     }
-    public static boolean isLoadImages() {
-        return loadImages;
-    }
 
     public static void initStorage(Context context){
         if(!Global.hasStoragePermission(context))return;
@@ -375,7 +379,6 @@ public class Global {
 
     public static void updateOnlyLanguage(@NonNull Context context, @Nullable Language type){ context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_only_language)),type.ordinal()).apply();onlyLanguage=type; }
     public static void  updateByPopular(@NonNull Context context,boolean popular){context.getSharedPreferences("Settings", 0).edit().putBoolean(context.getString((R.string.key_by_popular)),popular).apply();byPopular=popular;}
-    public static boolean  updateLoadImages(@NonNull Context context,boolean load){context.getSharedPreferences("Settings", 0).edit().putBoolean(context.getString((R.string.key_load_images)),load).apply();loadImages=load; return loadImages;}
     public static void updateColumnCount(@NonNull Context context, int count){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_column_count)),count).apply();columnCount=count; }
     public static void updateMaxId(@NonNull Context context, int id){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_max_id)),id).apply();maxId=id; }
 
@@ -430,51 +433,6 @@ public class Global {
                 notificationManager.createNotificationChannel(channel3);
             }
         }
-    }
-    public static void preloadImage(Context context, String url){
-        if(!isLoadImages())return;
-        RequestManager manager= GlideX.with(context);
-        if(manager!=null)manager.load(url).preload();
-
-    }
-    @Nullable
-    public static BitmapTarget loadImageOp(Context context,ImageView view,File file,int angle){
-        RequestManager glide=GlideX.with(context);
-        if(glide==null)return null;
-        Drawable logo=getLogo(context.getResources());
-        BitmapTarget target=new BitmapTarget(view);
-        glide.asBitmap().transform(new Rotate(angle)).error(logo).placeholder(logo).load(file).into(target);
-        return target;
-    }
-
-    @Nullable
-    public static BitmapTarget loadImageOp(Context context,ImageView view,String url,int angle){
-        RequestManager glide=GlideX.with(context);
-        if(glide==null)return null;
-        Drawable logo=getLogo(context.getResources());
-        BitmapTarget target=new BitmapTarget(view);
-        glide.asBitmap().transform(new Rotate(angle)).error(logo).placeholder(logo).load(url).into(target);
-        return target;
-    }
-
-    public static void loadImage(Activity activity,String url, final ImageView imageView){loadImage(activity, url,imageView,false);}
-    public static void loadImage(Activity activity,String url, final ImageView imageView,boolean force){
-        if(activity.isFinishing()||Global.isDestroyed(activity))return;
-        RequestManager glide=GlideX.with(activity);
-        if(glide==null)return;
-        if (loadImages || force) glide.load(url).placeholder(getLogo(imageView.getResources())).into(imageView);
-        else glide.load(getLogo(imageView.getResources())).into(imageView);
-
-    }
-    public static void loadImage(Activity activity, File file, ImageView imageView){
-        if(activity.isFinishing()||Global.isDestroyed(activity))return;
-        RequestManager glide=GlideX.with(activity);
-        if(glide==null)return;
-        if(loadImages)glide.load(file).placeholder(getLogo(imageView.getResources())).into(imageView);
-        else glide.load(getLogo(imageView.getResources())).into(imageView);
-    }
-    public static void loadImage(@DrawableRes int drawable, ImageView imageView){
-        imageView.setImageResource(drawable);
     }
 
 

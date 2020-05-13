@@ -27,6 +27,7 @@ import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
 import com.dar.nclientv2.settings.Favorites;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
+import com.dar.nclientv2.utility.CSRFGet;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.snackbar.Snackbar;
@@ -36,9 +37,9 @@ import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 import java.io.IOException;
 import java.util.List;
 
-import okhttp3.Call;
-import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class GalleryActivity extends BaseActivity{
@@ -123,7 +124,7 @@ public class GalleryActivity extends BaseActivity{
         adapter=new GalleryAdapter(this,gallery,Global.getColumnCount());
         recycler.setAdapter(adapter);
         lookup();
-        if(zoom>0){
+        if(zoom>0 && Global.getDownloadPolicy()!= Global.DataUsageType.NONE){
             Intent intent = new Intent(this, ZoomActivity.class);
             intent.putExtra(getPackageName()+".GALLERY",this.gallery);
             intent.putExtra(getPackageName()+".PAGE",zoom);
@@ -171,9 +172,14 @@ public class GalleryActivity extends BaseActivity{
 
     public void initFvoriteIcon(Menu menu){
         boolean onlineFavorite=!isLocal&&((Gallery)gallery).isOnlineFavorite();
-        menu.findItem(R.id.add_online_gallery).setTitle(onlineFavorite?R.string.remove_from_online_favorites:R.string.add_to_online_favorite);
-        menu.findItem(R.id.add_online_gallery).setIcon(onlineFavorite?R.drawable.ic_star:R.drawable.ic_star_border);
+        boolean unknown=getIntent().getBooleanExtra(getPackageName()+ ".UNKNOWN",false);
+        MenuItem item=menu.findItem(R.id.add_online_gallery);
 
+        item.setIcon(onlineFavorite?R.drawable.ic_star:R.drawable.ic_star_border);
+
+        if(unknown)item.setTitle(R.string.toggle_online_favorite);
+        else if(onlineFavorite)item.setTitle(R.string.remove_from_online_favorites);
+        else item.setTitle(R.string.add_to_online_favorite);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -218,20 +224,8 @@ public class GalleryActivity extends BaseActivity{
                     requestStorage();
                 break;
             case R.id.add_online_gallery:
-                Global.getClient(this).newCall(new Request.Builder().url(Utility.getBaseUrl()+"g/"+gallery.getId()+"/favorite").build()).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NonNull Call call,@NonNull IOException e) {}
+                addToFavorite(item);
 
-                    @Override
-                    public void onResponse(@NonNull Call call,@NonNull Response response) throws IOException {
-                        LogUtility.d("Called: ");
-                        final boolean removedFromFavorite=response.body().string().contains("false");
-                        GalleryActivity.this.runOnUiThread(() -> {
-                            item.setIcon(removedFromFavorite?R.drawable.ic_star_border:R.drawable.ic_star);
-                            item.setTitle(removedFromFavorite?R.string.add_to_online_favorite:R.string.remove_from_online_favorites);
-                        });
-                    }
-                });
                 break;
             case R.id.change_view:updateColumnCount(true); break;
             case R.id.load_internet:toInternet();break;
@@ -267,6 +261,44 @@ public class GalleryActivity extends BaseActivity{
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void addToFavorite(final MenuItem item) {
+        String startUrl=Utility.getBaseUrl()+"g/"+gallery.getId()+"/";
+        String url=startUrl+"favorite";
+        LogUtility.d("Calling: "+url);
+        new CSRFGet(new CSRFGet.Response() {
+            @Override
+            public void onResponse(String token)throws IOException {
+                LogUtility.d("FIND TOKEN: "+token);
+                RequestBody formBody = new FormBody.Builder()
+                        .add("WTF","OK")
+                        .build();
+                assert Global.getClient() != null;
+                Response response=Global.getClient().newCall(
+                        new Request.Builder()
+                                .addHeader("Referer",startUrl)
+                                .addHeader("X-CSRFToken",token)
+                                .addHeader("X-Requested-With","XMLHttpRequest")
+                                .url(url)
+                                .post(formBody)
+                                .build()
+                ).execute();
+
+                String resp=response.body().string();
+                LogUtility.d("Called: "+response.request().method()+response.request().url().toString()+response.code()+resp);
+                final boolean removedFromFavorite=resp.contains("false");
+                GalleryActivity.this.runOnUiThread(() -> {
+                    item.setIcon(removedFromFavorite?R.drawable.ic_star_border:R.drawable.ic_star);
+                    item.setTitle(removedFromFavorite?R.string.add_to_online_favorite:R.string.remove_from_online_favorites);
+                });
+                response.close();
+            }
+
+            @Override
+            public void onError() {}
+        },startUrl).start();
+
     }
 
     private void updateColumnCount(boolean increase) {

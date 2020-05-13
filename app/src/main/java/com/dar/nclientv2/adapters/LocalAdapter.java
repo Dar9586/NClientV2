@@ -28,6 +28,7 @@ import com.dar.nclientv2.async.downloader.DownloadObserver;
 import com.dar.nclientv2.async.downloader.DownloadQueue;
 import com.dar.nclientv2.async.downloader.GalleryDownloaderV2;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.utility.ImageDownloadUtility;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -67,10 +68,10 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
             dataset.remove(l);
             dataset.add(l);
             filter.add(l);
-            filter=new ArrayList<>(filter);
+            ArrayList<Object> copyFilter=new ArrayList<>(filter);
             LogUtility.d(l);
-            Collections.sort(filter,comparator);
-            filter=new CopyOnWriteArrayList<>(filter);
+            Collections.sort(copyFilter,comparator);
+            filter=new CopyOnWriteArrayList<>(copyFilter);
             context.runOnUiThread(()->notifyItemRangeChanged(0,getItemCount()));
         }
 
@@ -145,7 +146,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
 
     private void bindGallery(@NonNull final ViewHolder holder, int position, LocalGallery ent){
         holder.flag.setVisibility(View.GONE);
-        Global.loadImage(context, ent.getPage(ent.getMin()),holder.imgView);
+        ImageDownloadUtility.loadImage(context, ent.getPage(ent.getMin()),holder.imgView);
         holder.title.setText(ent.getTitle());
         if(colCount==1)holder.pages.setText(context.getString(R.string.page_count_format,ent.getPageCount()));
         else holder.pages.setText(String.format(Locale.US, "%d", ent.getPageCount()));
@@ -179,7 +180,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
     private void bindDownload(@NonNull final ViewHolder holder, int position, GalleryDownloaderV2 downloader){
         int percentage=downloader.getPercentage();
         if (!downloader.hasData())return;
-        Global.loadImage(context, downloader.getGallery().getCover(),holder.imgView);
+        ImageDownloadUtility.loadImage(context, downloader.getGallery().getCover(),holder.imgView);
         holder.title.setText(downloader.getPathTitle());
         holder.cancelButton.setOnClickListener(v -> removeDownloader(downloader));
         switch (downloader.getStatus()){

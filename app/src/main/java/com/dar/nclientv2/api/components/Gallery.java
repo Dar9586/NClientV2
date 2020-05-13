@@ -105,6 +105,7 @@ public class Gallery extends GenericGallery{
     private boolean valid=true;
 
     public String getCover(){
+        if(Global.getDownloadPolicy()== Global.DataUsageType.THUMBNAIL)return getThumbnail();
         return String.format(Locale.US,"https://t."+Utility.getHost()+"/galleries/%d/cover.%s",mediaId,extToString(cover));
     }
     public ImageExt getThumb(){
@@ -115,6 +116,10 @@ public class Gallery extends GenericGallery{
     }
 
     public String getPage(int page){
+        if(Global.getDownloadPolicy()== Global.DataUsageType.THUMBNAIL)return getLowPage(page);
+        return getHighPage(page);
+    }
+    public String getHighPage(int page){
         return String.format(Locale.US,"https://i."+Utility.getHost()+"/galleries/%d/%d.%s",mediaId,page+1,getPageExtension(page));
     }
     public String getLowPage(int page){

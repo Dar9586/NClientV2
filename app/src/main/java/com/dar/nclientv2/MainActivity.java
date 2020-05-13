@@ -45,6 +45,7 @@ import com.dar.nclientv2.loginapi.Login;
 import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
+import com.dar.nclientv2.utility.ImageDownloadUtility;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -425,7 +426,7 @@ public class MainActivity extends BaseActivity
         View view=navigationView.getHeaderView(0);
         ImageView imageView=view.findViewById(R.id.imageView);
         View layoutHeader=view.findViewById(R.id.layout_header);
-        Global.loadImage(light?R.drawable.ic_logo_dark :R.drawable.ic_logo,imageView);
+        ImageDownloadUtility.loadImage(light?R.drawable.ic_logo_dark :R.drawable.ic_logo,imageView);
         layoutHeader.setBackgroundResource(light?R.drawable.side_nav_bar_light:R.drawable.side_nav_bar_dark);
     }
 

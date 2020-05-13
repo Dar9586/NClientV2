@@ -21,6 +21,7 @@ import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
+import com.dar.nclientv2.utility.ImageDownloadUtility;
 import com.dar.nclientv2.utility.LogUtility;
 
 import java.io.File;
@@ -55,16 +56,18 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
                 File f = LocalGallery.getPage(Global.findGalleryFolder(ent.getId()), 1);
                 if (f != null) {
                     online = false;
-                    Global.loadImage(context, f, holder.imgView);
+                    ImageDownloadUtility.loadImage(context, f, holder.imgView);
                 }
             }
             if(Global.isDestroyed(context))return;
-            if (online) Global.loadImage(context, ent.getThumbnail(), holder.imgView);
+            if (online) ImageDownloadUtility.loadImage(context, ent.getThumbnail(), holder.imgView);
         }catch (VerifyError ignore){}
     }
     @Override
     public void onBindViewHolder(@NonNull final GenericAdapter.ViewHolder holder, int position) {
+        if(position>=mDataset.size())return;
             final SimpleGallery ent = mDataset.get(holder.getAdapterPosition());
+            if(ent==null)return;
             if(!Global.showTitles()){
                 holder.title.setAlpha(0f);
                 holder.flag.setAlpha(0f);

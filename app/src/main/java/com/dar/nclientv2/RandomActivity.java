@@ -17,6 +17,7 @@ import com.dar.nclientv2.api.RandomLoader;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.settings.Favorites;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.utility.ImageDownloadUtility;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class RandomActivity extends AppCompatActivity {
@@ -105,7 +106,7 @@ public class RandomActivity extends AppCompatActivity {
     public void loadGallery(Gallery gallery){
         loadedGallery=gallery;
         if (Global.isDestroyed(this))return;
-        Global.loadImage(this, gallery.getCover(),thumbnail);
+        ImageDownloadUtility.loadImage(this, gallery.getCover(),thumbnail);
         switch (gallery.getLanguage()){
             case CHINESE :language.setText("\uD83C\uDDE8\uD83C\uDDF3");break;
             case ENGLISH :language.setText("\uD83C\uDDEC\uD83C\uDDE7");break;
@@ -121,7 +122,7 @@ public class RandomActivity extends AppCompatActivity {
 
     private void favoriteUpdateButton() {
         runOnUiThread(()->{
-            Global.loadImage(isFavorite?R.drawable.ic_favorite:R.drawable.ic_favorite_border,favorite);
+            ImageDownloadUtility.loadImage(isFavorite?R.drawable.ic_favorite:R.drawable.ic_favorite_border,favorite);
             Global.setTint(favorite.getDrawable());
         });
     }
