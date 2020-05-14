@@ -31,10 +31,10 @@
     <string name="categories">Kategoriler</string>
     <string name="unknown">Bilinmiyor</string>
 
-    <string name="channel1_name">Galeriyi indir</string>
+    <string name="channel1_name">Mangayı indir</string>
     <string name="channel2_name">PDF oluştur</string>
     <string name="channel3_name">ZIP oluştur</string>
-    <string name="channel1_description">Galerinin indirme sürecinin ne kadar tamamlandığını gösterir</string>
+    <string name="channel1_description">Manganın indirme sürecinin ne kadar tamamlandığını gösterir</string>
     <string name="channel2_description">PDF`nin oluşturulma sürecinin ne kadar tamamlandığını gösterir</string>
     <string name="channel3_description">ZIP`in oluşturulma sürecinin ne kadar tamamlandığını gösterir</string>
     <string name="channel2_title">PDF Oluşturuluyor:</string>
@@ -90,10 +90,10 @@
     <string name="next_page">Sıradaki sayfa</string>
 
     <string name="downloaded_manga">İndirilmiş Mangalar</string>
-    <string name="download_gallery">İndirilmiş galeri</string>
+    <string name="download_gallery">Bu mangayı indir</string>
     <string name="download_completed">İndirme tamamlandı</string>
 
-    <string name="delete_gallery">Galeriyi sil</string>
+    <string name="delete_gallery">Mangayı sil</string>
     <string name="delete_gallery_format" formatted="true">Bu galeriyi silmek istiyor musunuz?  %s</string>
 
 
@@ -104,12 +104,12 @@
     <string name="tag_preference">Etiket tercihi</string>
     <string name="manage_tags">Etiketleri yönet</string>
     <string name="applied_filters">Uygulanmış filtreler</string>
-    <string name="show_related">İlgili galerileri göster</string>
-    <string name="random_manga">Rastgele manga</string>
+    <string name="show_related">İlgili mangaları göster</string>
+    <string name="random_manga">Rastgele Manga</string>
     <string name="save_page">Sayfayı kaydet</string>
     <string name="page_count_format" formatted="true">%d sayfa</string>
     <string name="upload_date_format" formatted="true">%s Tarihinde %s saatinde yüklendi</string>
-    <string name="favorite_count_format" formatted="true">%d favoriler</string>
+    <string name="favorite_count_format" formatted="true">%d favori</string>
     <string name="favorite_manga">Favoriler</string>
     <string name="setting_on_remove_ignored">Dikkate alınmayan etiket içeren galeriler gösterilmeyecek</string>
     <string name="setting_off_remove_ignored">Dikkate alınmayan etiket içeren galeriler bulanıklaştırılacak</string>
@@ -157,7 +157,7 @@
     <string name="setting_off_use_rtl">Fotoğraflar soldan sağa gösterilecek</string>
     <string name="volume_change_setting">Sayfayı ses tuşlarıyla değiştir</string>
     <string name="popular_tag_count">Popüler etiketler Ayrıntılı aramada gösterilecek</string>
-    <string name="show_gallery_titles">Galeri başlıkları göster</string>
+    <string name="show_gallery_titles">Manga başlıklarını göster</string>
     <string name="use_column_land">Yatay konumda satır başına öğe sayısını seçin</string>
     <string name="change_language">Dil değiştir</string>
 
@@ -207,7 +207,7 @@
     <string name="resume">Devam et</string>
     <string name="pause">Duraklat</string>
     <string name="title_copied_to_clipboard">Başlık panoya kopyalandı</string>
-    <string name="setting_zoom_one_column">Yakınlaştırmayı galeride tek sütun modunda aktıfleştir</string>
+    <string name="setting_zoom_one_column">Yakınlaştırmayı galeride tek sütun modunda aktifleştir</string>
     <string name="zoom_one_column">Yakınlaştırmayı etkinleştir</string>
     <string name="insert_pin">PIN gir</string>
     <string name="confirm_pin">PIN`i doğrula</string>
@@ -254,12 +254,12 @@
     <string name="setting_pin">Uygulamaya girmek için PIN`i aktifleştir</string>
     <string name="setting_alternative">nhentai.net websitesini yasaklayan ülkelerde nhentai.net yerine nhent.ai kullan</string>
     <string name="use_alternative">nhent.ai Kullan</string>
-    <string name="toggle_online_favorite">Toggle online favorite</string>
-    <string name="data_usage_settings">Change data usage settings</string>
-    <string name="mobile_data_usage_setting">Mobile data usage settings</string>
-    <string name="wifi_data_usage_setting">Wi-Fi data usage settings</string>
-    <string name="data_usage_thumb">Always download thumbnail</string>
-    <string name="data_usage_full">Download thumbnail or full images in when necessary</string>
-    <string name="data_usage_no">Don\'t download images</string>
-    <string name="enable_network_to_continue">Enable image download or change network to open the image</string>
+    <string name="toggle_online_favorite">Online favori aç/kapa</string>
+    <string name="data_usage_settings">Veri kullanım ayarları</string>
+    <string name="mobile_data_usage_setting">Mobil veri kullanım ayarları</string>
+    <string name="wifi_data_usage_setting">Wi-Fi kullanım ayarları</string>
+    <string name="data_usage_thumb">Kapak fotoğraflarını her zaman indir</string>
+    <string name="data_usage_full">Kapak fotoğraflarını ve ya sayfaları lazım olduğunda indir</string>
+    <string name="data_usage_no">Sayfaları indirme</string>
+    <string name="enable_network_to_continue">Sayfayı açmak için veri kullanım ayarlarını değiştirin ve ya bağlı olduğunuz ağı değiştirin</string>
 </resources>
