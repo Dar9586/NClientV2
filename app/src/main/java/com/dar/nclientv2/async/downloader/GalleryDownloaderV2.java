@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import androidx.annotation.NonNull;
+
 import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.local.LocalGallery;
@@ -141,7 +143,7 @@ public class GalleryDownloaderV2 {
     public int getEnd() {
         return end;
     }
-
+    @NonNull
     public String getPathTitle(){
         if(gallery==null)return "";
         return gallery.getPathTitle();
@@ -201,6 +203,7 @@ public class GalleryDownloaderV2 {
         return x;
     }
     private boolean savePage(PageContainer page) {
+        if(page==null)return true;
         File filePath=new File(folder,page.getPageName());
         LogUtility.d("Saving into: "+filePath+","+page.url);
         if(filePath.exists()&&!isCorrupted(filePath))return true;

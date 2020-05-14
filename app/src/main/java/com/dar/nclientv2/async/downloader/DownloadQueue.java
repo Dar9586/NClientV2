@@ -32,11 +32,11 @@ public class DownloadQueue {
             downloadQueue.clear();
     }
 
-    public static List<GalleryDownloaderV2> getDownloaders() {
-            List<GalleryDownloaderV2> downloaders = new CopyOnWriteArrayList<>();
-            for (GalleryDownloaderManager manager : downloadQueue)
-                downloaders.add(manager.downloader());
-            return downloaders;
+    public static CopyOnWriteArrayList<GalleryDownloaderV2> getDownloaders() {
+        CopyOnWriteArrayList<GalleryDownloaderV2> downloaders = new CopyOnWriteArrayList<>();
+        for (GalleryDownloaderManager manager : downloadQueue)
+            downloaders.add(manager.downloader());
+        return downloaders;
     }
 
     public static void addObserver(DownloadObserver observer) {

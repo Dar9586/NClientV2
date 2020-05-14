@@ -90,9 +90,12 @@ public class VersionChecker{
                         }
                         jr.beginObject();
                         while(jr.peek()!=JsonToken.END_OBJECT){
-                            switch (jr.nextName()){
-                                case "browser_download_url":vars[2]=jr.nextString();break;
-                                default:jr.skipValue();break;
+                            if ("browser_download_url".equals(jr.nextName())) {
+                                String url=jr.nextString();
+                                if(url.contains("Release"))
+                                    vars[2] = url;
+                            } else {
+                                jr.skipValue();
                             }
                         }
                         jr.endObject();

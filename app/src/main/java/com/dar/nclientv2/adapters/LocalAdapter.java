@@ -36,6 +36,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -64,14 +65,10 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         public void triggerEndDownload(GalleryDownloaderV2 downloader) {
             LocalGallery l=downloader.localGallery();
             galleryDownloaders.remove(downloader);
-            filter.remove(downloader);
             dataset.remove(l);
             dataset.add(l);
-            filter.add(l);
-            ArrayList<Object> copyFilter=new ArrayList<>(filter);
             LogUtility.d(l);
-            Collections.sort(copyFilter,comparator);
-            filter=new CopyOnWriteArrayList<>(copyFilter);
+            filter=createHash(galleryDownloaders,dataset);
             context.runOnUiThread(()->notifyItemRangeChanged(0,getItemCount()));
         }
 
@@ -85,28 +82,25 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
             context.runOnUiThread(()->notifyItemChanged(filter.indexOf(downloader)));
         }
     };
+    private CopyOnWriteArrayList<Object> createHash(List<GalleryDownloaderV2> galleryDownloaders, List<LocalGallery> dataset) {
+        HashMap<String,Object>hashMap=new HashMap<>(dataset.size()+galleryDownloaders.size());
+        for(LocalGallery gall:dataset)
+            hashMap.put(gall.getTitle(),gall);
+        for(GalleryDownloaderV2 gall:galleryDownloaders)
+            hashMap.put(gall.getPathTitle(),gall);
+        ArrayList<Object> arr=new ArrayList<>(hashMap.values());
+        Collections.sort(arr,comparator);
+        return new CopyOnWriteArrayList<>(arr);
+    }
+
     private Comparator<Object>comparator= (o1, o2) -> {
+        if(o1==o2)return 0;
         boolean b1=o1 instanceof LocalGallery;
         boolean b2=o2 instanceof LocalGallery;
-        String s1=b1?((LocalGallery) o1).getTitle():((GalleryDownloaderV2)o1).getPathTitle();
-        String s2=b2?((LocalGallery) o2).getTitle():((GalleryDownloaderV2)o2).getPathTitle();
-        if(s1==null)s1="";
-        if(s2==null)s2="";
-        int c=s1.compareTo(s2);
-        if(c!=0)return c;
-        if(b1==b2)return 0;
-        if(b1)return -1;
-        return 1;
+        String s1=b1?((LocalGallery)o1).getTitle():((GalleryDownloaderV2)o1).getPathTitle();
+        String s2=b2?((LocalGallery)o2).getTitle():((GalleryDownloaderV2)o2).getPathTitle();
+        return s1.compareTo(s2);
     };
-    private void shrinkFilter(List<Object> filter){
-        Collections.sort(filter,comparator);
-        for(int i=0;i<filter.size()-1;i++){
-            if(filter.get(i) instanceof LocalGallery && filter.get(i+1) instanceof GalleryDownloaderV2){
-                if(((LocalGallery) filter.get(i)).getTitle().equals(((GalleryDownloaderV2) filter.get(i+1)).getPathTitle()))
-                    filter.remove(i--);
-            }
-        }
-    }
     private String lastQuery="";
     private int colCount;
 
@@ -124,8 +118,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         filter.addAll(galleryDownloaders);
 
         DownloadQueue.addObserver(observer);
-        shrinkFilter(filter);
-        filter=new CopyOnWriteArrayList<>(filter);
+        filter=createHash(galleryDownloaders,dataset);
     }
 
     @NonNull
@@ -286,24 +279,23 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
                 String query=constraint.toString().toLowerCase(Locale.US);
                 if(lastQuery.equals(query))return null;
                 FilterResults results=new FilterResults();
-                results.count=filter.size();
+
                 lastQuery=query;
-                List<Object>filter=new ArrayList<>();
-                for(LocalGallery gallery:dataset)if(gallery.getTitle().toLowerCase(Locale.US).contains(query))filter.add(gallery);
-                for(GalleryDownloaderV2 gallery:galleryDownloaders)if(gallery.getPathTitle().toLowerCase(Locale.US).contains(query))filter.add(gallery);
-                shrinkFilter(filter);
-                results.values=filter;
+                List<LocalGallery>d1=new ArrayList<>();
+                List<GalleryDownloaderV2>g1=new ArrayList<>();
+                for(LocalGallery gallery:dataset)
+                    if(gallery.getTitle().toLowerCase(Locale.US).contains(query))d1.add(gallery);
+                for(GalleryDownloaderV2 gallery:galleryDownloaders)
+                    if(gallery.getPathTitle().toLowerCase(Locale.US).contains(query))g1.add(gallery);
+                results.values=createHash(g1,d1);
                 return results;
             }
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 if(results!=null){
-                    filter= new CopyOnWriteArrayList<>((List<Object>)results.values);
-                    if(filter.size()>results.count)notifyItemRangeInserted(results.count,filter.size()-results.count);
-                    else if(filter.size()<results.count)notifyItemRangeRemoved(filter.size(),results.count-filter.size());
-                    notifyItemRangeRemoved(filter.size(),results.count);
-                    notifyItemRangeChanged(0,filter.size()-1);
+                    filter= (CopyOnWriteArrayList<Object>)results.values;
+                    context.runOnUiThread(()->notifyDataSetChanged());
                 }
             }
         };

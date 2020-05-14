@@ -47,10 +47,10 @@ public class CrashApplication extends Application{
         String version=Global.getLastVersion(this),actualVersion=Global.getVersionName(this);
         SharedPreferences preferences=getSharedPreferences("Settings", 0);
         if(!actualVersion.equals(version))afterUpdateChecks(preferences);
-        Global.setLastVersion(this);
         DownloadGalleryV2.loadDownloads(this);
     }
     private void afterUpdateChecks(SharedPreferences preferences){
+        removeOldUpdates();
         //update tags
         ScrapeTags.startWork(this);
         //add ALL type for languages and replace null
@@ -58,7 +58,15 @@ public class CrashApplication extends Application{
         if (val == -1) val = Language.ALL.ordinal();
         preferences.edit().putInt(getString((R.string.key_only_language)), val).apply();
         Global.initFromShared(this);
+        Global.setLastVersion(this);
     }
+
+    private void removeOldUpdates() {
+        if(!Global.hasStoragePermission(this))return;
+        Global.recursiveDelete(Global.UPDATEFOLDER);
+        Global.UPDATEFOLDER.mkdir();
+    }
+
     @Override
     protected void attachBaseContext(Context newBase){
         super.attachBaseContext(newBase);
