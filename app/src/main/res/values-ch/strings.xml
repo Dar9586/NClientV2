@@ -240,21 +240,21 @@
     <string name="rotate_image">旋轉圖片</string>
     <string name="setting_alternative">在有審查制度的國家用nhent.ai替代nhentai.net</string>
     <string name="use_alternative">使用nhent.ai</string>
-    <string name="toggle_online_favorite">Toggle online favorite</string>
-    <string name="data_usage_settings">Change data usage settings</string>
-    <string name="mobile_data_usage_setting">Mobile data usage settings</string>
-    <string name="wifi_data_usage_setting">Wi-Fi data usage settings</string>
-    <string name="data_usage_thumb">Always download thumbnail</string>
-    <string name="data_usage_full">Download thumbnail or full images in when necessary</string>
-    <string name="data_usage_no">Don\'t download images</string>
-    <string name="enable_network_to_continue">Enable image download or change network to open the image</string>
+    <string name="toggle_online_favorite">切換線上收藏</string>
+    <string name="data_usage_settings">修改資料使用設置</string>
+    <string name="mobile_data_usage_setting">流量使用設置</string>
+    <string name="wifi_data_usage_setting">Wi-Fi使用設置</string>
+    <string name="data_usage_thumb">總是下載縮略圖</string>
+    <string name="data_usage_full">按需下載縮略圖或完整圖片</string>
+    <string name="data_usage_no">不下載圖片</string>
+    <string name="enable_network_to_continue">允許下載圖片或切換網路以打開圖片</string>
 
     <string-array name="language">
         <item>英文</item>
         <item>繁體中文</item>
         <item>簡體中文</item>
-        <item>土耳其語</item>
-        <item>義大利語</item>
+        <item>土耳其文</item>
+        <item>義大利文</item>
     </string-array>
     <string-array name="theme">
         <item>亮色</item>
