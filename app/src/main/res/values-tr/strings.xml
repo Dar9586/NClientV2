@@ -2,8 +2,8 @@
 <!--Thanks to hmaltr for the Turkish translation-->
 <resources>
     <!--SUMMARY-->
-    <string name="setting_on_ignore_tags">Diğer etiketler galeri menüsünden bir etiket seçildiğinde listelenmeyecek (dil hariç)</string>
-    <string name="setting_off_ignore_tags">Diğer etiketler galeri menüsünden bir etiket seçildiğinde listelenecek</string>
+    <string name="setting_on_ignore_tags">Diğer etiketler manga menüsünden bir etiket seçildiğinde listelenmeyecek (dil hariç)</string>
+    <string name="setting_off_ignore_tags">Diğer etiketler manga menüsünden bir etiket seçildiğinde listelenecek</string>
     <string name="setting_on_high_res">Kullanılabilen en yüksek çözünürlük yüklenecek (daha fazla veri gerektirir)</string>
     <string name="setting_off_load">Fotoğraflar sadece tek sayfa görünümünde yüklenecek</string>
     <string name="setting_off_use_account_tag">Hesap etiketleri aramada dikkate alınmayacak</string>
@@ -17,7 +17,7 @@
     <string name="infinite_scroll">Sonsuz kaydırma</string>
     <string name="use_account_tag">Hesaptan etiketleri kullan</string>
 
-    <string name="title_activity_gallery">Galeri</string>
+    <string name="title_activity_gallery">Manga</string>
     <string name="title_activity_zoom">Yakınlaştırma aktivitesi</string>
     <string name="title_activity_tag_filter">Etiket filtresi</string>
     <string name="title_activity_login">Giriş yap</string>
@@ -93,8 +93,8 @@
     <string name="download_gallery">Bu mangayı indir</string>
     <string name="download_completed">İndirme tamamlandı</string>
 
-    <string name="delete_gallery_size_format" formatted="true">Mangayı sil (%.2fMB)</string>
-    <string name="delete_gallery_format" formatted="true">Bu galeriyi silmek istiyor musunuz?  %s</string>
+    <string name="delete_gallery_size_format" formatted="true">Mangayı sil %.2fMB boyutunda</string> <!--Delete manga? Its xMB-->
+    <string name="delete_gallery_format" formatted="true">Bu mangayı silmek istiyor musunuz? %s</string> 
 
 
     <string name="share_with">Şununla paylaş</string>
@@ -111,13 +111,13 @@
     <string name="upload_date_format" formatted="true">%s Tarihinde %s saatinde yüklendi</string>
     <string name="favorite_count_format" formatted="true">%d favori</string>
     <string name="favorite_manga">Favoriler</string>
-    <string name="setting_on_remove_ignored">Dikkate alınmayan etiket içeren galeriler gösterilmeyecek</string>
-    <string name="setting_off_remove_ignored">Dikkate alınmayan etiket içeren galeriler bulanıklaştırılacak</string>
-    <string name="remove_ignored_galleries">Dikkate alınmayan galerileri kaldır</string>
+    <string name="setting_on_remove_ignored">Dikkate alınmayan etiket içeren mangalar gösterilmeyecek</string>
+    <string name="setting_off_remove_ignored">Dikkate alınmayan etiket içeren mangalar bulanıklaştırılacak</string>
+    <string name="remove_ignored_galleries">Dikkate alınmayan mangaları kaldır</string>
     <string name="clear_tag_preferences">Etiket tercihlerini temizle</string>
     <string name="check_for_update_on_startup">Açılışta güncellemeleri denetle</string>
     <string name="check_for_updates">Güncellemeleri denetle</string>
-    <string name="error_retrieving">En güncel sürüm bilgisi alınırken hata oluştu</string>
+    <string name="error_retrieving">Güncelleme bilgileri alınırken bir sorun oluştu</string>
     <string name="new_version_found">Yeni sürüm bulundu</string>
     <string name="update_version_format" formatted="true">%s bu sürümden %s bu sürüme güncellensin mi?  Değişim kaydı: %s</string>
     <string name="set_minimum_count">Minimum sayıyı ayarla</string>
@@ -125,7 +125,7 @@
     <string name="sort_by_popular">Popülerliğe göre sırala</string>
     <string name="next_page_volume_down">Ses azaltma tuşuyla sıradaki sayfaya geç</string>
     <string name="change_title_type">Başlık türünü değiştir</string>
-    <string name="title_type_summary">Tüm galeriler için varsayılan başlığı seç</string>
+    <string name="title_type_summary">Tüm mangalar için varsayılan başlığı seç</string>
 
     <string name="search_settings">Ayarlarda ara</string>
     <string name="global_settings">Uygulama ayarları</string>
@@ -152,7 +152,7 @@
     <string name="add_bookmark">Yer imi ekle</string>
     <string name="manage_bookmarks">Yer imlerini yönet</string>
     <string name="bookmark_page_format">Sayfa %d</string>
-    <string name="enable_right_to_left">Sağdan sola etkinleştir</string>
+    <string name="enable_right_to_left">Sağdan sola okumayı etkinleştir</string>
     <string name="setting_on_use_rtl">Fotoğraflar sağdan sola gösterilecek</string>
     <string name="setting_off_use_rtl">Fotoğraflar soldan sağa gösterilecek</string>
     <string name="volume_change_setting">Sayfayı ses tuşlarıyla değiştir</string>
@@ -177,7 +177,7 @@
     <string name="cancel_all_downloads">Tüm indirmeleri iptal et</string>
     <string name="disable_lock_title">Otomatik ekran kapanmasını okurken devre dışı bırak</string>
     <string name="download_all_galleries_in_this_page">Bu sayfadaki tüm mangaları indir</string>
-    <string name="download_all_galleries">Tüm galerileri indir</string>
+    <string name="download_all_galleries">Tüm mangaları indir</string>
     <string name="favorite_column_count">Favori sütun sayısını seç</string>
     <string name="download_column_count">İndirme sütun sayısını seç</string>
     <string name="main_column_count">Ana sütun sayısını seç</string>
@@ -200,14 +200,14 @@
     <string name="history">Geçmiş</string>
     <string name="clear_history">Geçmişi temizle</string>
     <string name="cancelled_format">İptal edildi: %s</string>
-    <string name="completed_format">Tamamlandı: %s</string>
+    <string name="completed_format">İndirme tamamlandı: %s</string> <!--Download complete:-->
     <string name="stop">Dur</string>
     <string name="downloading_format">İndiriliyor: %s</string>
     <string name="toggle_favorite">Favorilere ekle/çıkar</string>
     <string name="resume">Devam et</string>
     <string name="pause">Duraklat</string>
     <string name="title_copied_to_clipboard">Başlık panoya kopyalandı</string>
-    <string name="setting_zoom_one_column">Yakınlaştırmayı galeride tek sütun modunda aktifleştir</string>
+    <string name="setting_zoom_one_column">Yakınlaştırmayı mangada tek sütun modunda aktifleştir</string>
     <string name="zoom_one_column">Yakınlaştırmayı etkinleştir</string>
     <string name="insert_pin">PIN gir</string>
     <string name="confirm_pin">PIN`i doğrula</string>
@@ -236,14 +236,14 @@
     <string name="setting_on_load">Fotoğraflar tüm aktivitelerde yüklenecek</string>
     <string name="setting_on_use_account_tag">Hesap etiketlerini aramada kullan (Yerel etiketler daha önceliklidir)</string>
     <string name="ignore_tags">Diğer etiketleri dikkate alma</string>
-    <string name="high_res_gallery">Fotoğrafı galeride en yüksek çözünürlükte yükle</string>
+    <string name="high_res_gallery">Fotoğrafı mangada en yüksek çözünürlükte yükle</string>
     <string name="password">Şifre</string>
     <string name="invalid_credentials">Yanlış giriş bilgisi. Lütfen İsminizi ve ya Şifrenizi tekrar girin</string>
     <string name="created_pdf">PDF başarıyla oluşturuldu</string>
     <string name="navigation_drawer_open">Gezinme çekmecesini aç</string>
     <string name="link_copied_to_clipboard">Link panoya kopyalandı</string>
     <string name="go_online">Online görüntüle</string>
-    <string name="no_updates_found">Güncelleme bulunamadı</string>
+    <string name="no_updates_found">Zaten en son sürümü kullanıyorsunuz!</string> <!--You are already using the latest version-->
     <string name="clear_this_list">Bu listeyi temizle?</string>
     <string name="next_page_volume_up">Ses arttırma tuşuyla sıradaki sayfaya geç</string>
     <string name="comments">Yorumlar</string>
@@ -262,5 +262,5 @@
     <string name="data_usage_full">Kapak fotoğraflarını ve ya sayfaları lazım olduğunda indir</string>
     <string name="data_usage_no">Sayfaları indirme</string>
     <string name="enable_network_to_continue">Sayfayı açmak için veri kullanım ayarlarını değiştirin ve ya bağlı olduğunuz ağı değiştirin</string>
-    <string name="donate">Bağışlamak</string>
+    <string name="donate">Geliştiriciyi destekle</string>
 </resources>
