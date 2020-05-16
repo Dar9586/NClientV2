@@ -245,7 +245,7 @@
     <string name="data_usage_full">Alterna tra immagini complete o anteprime</string>
     <string name="data_usage_no">Non scaricare le immagini</string>
     <string name="enable_network_to_continue">Abilita il download delle immagini o cambia tipo di rete per aprire l\'immagine</string>
-    <string name="donate">Dona</string>
+    <string name="donate">Supporta lo sviluppatore</string>
 
     <string-array name="language">
         <item>Inglese</item>

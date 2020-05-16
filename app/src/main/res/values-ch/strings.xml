@@ -248,7 +248,7 @@
     <string name="data_usage_full">按需下載縮略圖或完整圖片</string>
     <string name="data_usage_no">不下載圖片</string>
     <string name="enable_network_to_continue">允許下載圖片或切換網路以打開圖片</string>
-    <string name="donate">捐</string>
+    <string name="donate">Support the developer</string>
 
     <string-array name="language">
         <item>英文</item>

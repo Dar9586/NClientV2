@@ -292,7 +292,7 @@
     <string name="data_usage_full">Download thumbnail or full images in when necessary</string>
     <string name="data_usage_no">Don\'t download images</string>
     <string name="enable_network_to_continue">Enable image download or change network to open the image</string>
-    <string name="donate">Donate</string>
+    <string name="donate">Support the developer</string>
     <string-array name="language">
         <item>English</item>
         <item>Chinese (Traditional)</item>
