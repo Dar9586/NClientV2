@@ -101,7 +101,7 @@
     <string name="download_gallery">下載畫廊</string>
     <string name="download_completed">下載完成</string>
 
-    <string name="delete_gallery">刪除畫廊</string>
+    <string name="delete_gallery_size_format" formatted="true">刪除畫廊 (%.2fMB)</string>
     <string name="delete_gallery_format" formatted="true">是否刪除畫廊：\n%s</string>
 
 
@@ -248,6 +248,7 @@
     <string name="data_usage_full">按需下載縮略圖或完整圖片</string>
     <string name="data_usage_no">不下載圖片</string>
     <string name="enable_network_to_continue">允許下載圖片或切換網路以打開圖片</string>
+    <string name="donate">捐</string>
 
     <string-array name="language">
         <item>英文</item>

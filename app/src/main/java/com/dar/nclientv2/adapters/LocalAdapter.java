@@ -157,7 +157,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
             startGallery(ent);
         });
         holder.layout.setOnLongClickListener(v -> {
-            createPDF(holder.getAdapterPosition());
+            createContextualMenu(holder.getAdapterPosition());
             return true;
         });
     }
@@ -223,7 +223,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
     private void showDialogDelete(final int pos){
         final LocalGallery gallery=(LocalGallery)filter.get(pos);
         MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(context);
-        builder.setTitle(R.string.delete_gallery).setMessage(context.getString(R.string.delete_gallery_format,gallery.getTitle()));
+        builder.setTitle(R.string.delete_gallery_size_format).setMessage(context.getString(R.string.delete_gallery_format,gallery.getTitle()));
         builder.setPositiveButton(R.string.yes, (dialog, which) -> {
             filter.remove(gallery);
             dataset.remove(gallery);
@@ -241,9 +241,11 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         }).setNegativeButton(R.string.no,null).setCancelable(true);
         builder.show();
     }
-    private void createPDF(final int pos){
+    private void createContextualMenu(final int pos){
+        double size=Global.recursiveSize(((LocalGallery) filter.get(pos)).getDirectory());
+        size/=2<<20;
         ArrayAdapter<String>adapter=new ArrayAdapter<>(context,android.R.layout.select_dialog_item);
-        adapter.add(context.getString(R.string.delete_gallery));
+        adapter.add(context.getString(R.string.delete_gallery_size_format,size));
         adapter.add(context.getString(R.string.create_zip));
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT)adapter.add(context.getString(R.string.create_pdf));//api 19
         MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(context);

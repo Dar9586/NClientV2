@@ -51,7 +51,6 @@ import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -160,7 +159,6 @@ public class MainActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         Global.initActivity(this);
         setContentView(R.layout.activity_main);
-        deleteAPKAfterUpdate();
         //load inspector
         selectStartMode(getIntent(),getPackageName());
         LogUtility.d("Main started with mode "+ modeType);
@@ -289,14 +287,6 @@ public class MainActivity extends BaseActivity
                 new VersionChecker(this,true);
             ScrapeTags.startWork(this);
             firstTime=false;
-    }
-
-    private void deleteAPKAfterUpdate() {
-        if(Global.hasStoragePermission(this)){//delete older APK
-            final File f=new File(Global.UPDATEFOLDER,"NClientV2_"+Global.getVersionName(this)+".apk");
-            LogUtility.d(f.getAbsolutePath());
-            if(f.exists())f.delete();
-        }
     }
 
     private void selectStartMode(Intent intent, String packageName) {

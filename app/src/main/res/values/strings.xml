@@ -120,7 +120,7 @@
     <string name="download_gallery">Download gallery</string>
     <string name="download_completed">Download completed</string>
 
-    <string name="delete_gallery">Delete gallery</string>
+    <string name="delete_gallery_size_format" formatted="true">Delete gallery (%.2fMB)</string>
     <string name="delete_gallery_format" formatted="true">Do you want to delete the gallery:\n%s</string>
 
     <string name="page_switcher_placeholder" translatable="false">0/0</string>
@@ -292,6 +292,7 @@
     <string name="data_usage_full">Download thumbnail or full images in when necessary</string>
     <string name="data_usage_no">Don\'t download images</string>
     <string name="enable_network_to_continue">Enable image download or change network to open the image</string>
+    <string name="donate">Donate</string>
     <string-array name="language">
         <item>English</item>
         <item>Chinese (Traditional)</item>

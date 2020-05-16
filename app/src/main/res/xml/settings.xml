@@ -137,6 +137,7 @@
         android:key="@string/key_cache"
         />
         <Preference android:title="@string/send_bug_on_github" android:key="bug"/>
+        <Preference android:title="@string/donate" android:key="donate"/>
     <Preference
         android:key="version"
         android:enabled="false"/>

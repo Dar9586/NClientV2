@@ -501,7 +501,7 @@ public class Global {
         file.delete();
     }
 
-    @Nullable
+    @NonNull
     public static String getVersionName(Context context){
         try {
             PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
@@ -509,7 +509,7 @@ public class Global {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        return null;
+        return "0.0.0";
     }
 
 

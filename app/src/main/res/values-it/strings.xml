@@ -103,7 +103,7 @@
     <string name="download_gallery">Scarica galleria</string>
     <string name="download_completed">Download completato</string>
 
-    <string name="delete_gallery">Cancella galleria</string>
+    <string name="delete_gallery_size_format" formatted="true">Cancella galleria (%.2fMB)</string>
     <string name="delete_gallery_format" formatted="true">Vuoi cancellare la gallerria:\n%s</string>
 
     <string name="share_with">Condividi con…</string>
@@ -245,6 +245,7 @@
     <string name="data_usage_full">Alterna tra immagini complete o anteprime</string>
     <string name="data_usage_no">Non scaricare le immagini</string>
     <string name="enable_network_to_continue">Abilita il download delle immagini o cambia tipo di rete per aprire l\'immagine</string>
+    <string name="donate">Dona</string>
 
     <string-array name="language">
         <item>Inglese</item>

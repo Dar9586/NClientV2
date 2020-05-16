@@ -1,34 +1,63 @@
 # NClientV2
+
+[![Github](https://img.shields.io/github/v/release/Dar9586/NClientV2.svg?logo=github)](https://github.com/Dar9586/NClientV2/releases/latest) [![F-Droid](https://img.shields.io/f-droid/v/com.dar.nclientv2)](https://f-droid.org/en/packages/com.dar.nclientv2/) ![Bitrise](https://img.shields.io/bitrise/0a79e29cfda80c5f?token=BrSKdUUfKb97MHigL9nA1w)
+
 An unofficial NHentai Android Client.
 This app  works for devices from API 14 (Android 4.0) and above.
-Releases: https://github.com/Dar9586/NClientV2/releases
-# API Features:
-  - Browse main page
-  - Search by query or tags
-  - Include or exclude tags
-  - Blur or hide excluded tags
-  - Download manga
-  - Favorite galleries
-# Custom feature
-  - Share galleries
-  - Open in browser
-  - Login / Logout from your account
-  - Manage user blacklist
-  - Add / Remove favorite from account
-  - Bookmark
-# App Screen
-<p>
-  <img src="https://raw.githubusercontent.com/Dar9586/NClientV2/master/fastlane\metadata\android\en-US\images\phoneScreenshots/img1.jpg" alt="Main page" width="360" height="650">
-  <img src="https://raw.githubusercontent.com/Dar9586/NClientV2/master/fastlane\metadata\android\en-US\images\phoneScreenshots/img2.jpg" alt="Lateral menu" width="360" height="650">
-</p>
-<p>
-  <img src="https://raw.githubusercontent.com/Dar9586/NClientV2/master/fastlane\metadata\android\en-US\images\phoneScreenshots/img3.jpg" alt="Search" width="360" height="650">
-  <img src="https://raw.githubusercontent.com/Dar9586/NClientV2/master/fastlane\metadata\android\en-US\images\phoneScreenshots/img4.jpg" alt="Random manga" width="360" height="650">
-</p>
+Releases: <https://github.com/Dar9586/NClientV2/releases>
+
+## API Features
+
+- Browse main page
+- Search by query or tags
+- Include or exclude tags
+- Blur or hide excluded tags
+- Download manga
+- Favorite galleries
+- Enable PIN to access the app
+
+## Custom feature
+
+- Share galleries
+- Open in browser
+- Login / Logout from your account
+- Manage user blacklist
+- Add / Remove favorite from account
+- Bookmark
+
+## App Screen
+
+Main page|Lateral menu
+:-:|:-:
+![Main page](https://raw.githubusercontent.com/Dar9586/NClientV2/master/fastlane/metadata/android/en-US/images/phoneScreenshots/img1.jpg)|![Lateral menu](https://raw.githubusercontent.com/Dar9586/NClientV2/master/fastlane/metadata/android/en-US/images/phoneScreenshots/img2.jpg)
+Search|Random manga
+![Search](https://raw.githubusercontent.com/Dar9586/NClientV2/master/fastlane/metadata/android/en-US/images/phoneScreenshots/img2.jpg)|![Random manga](https://raw.githubusercontent.com/Dar9586/NClientV2/master/fastlane/metadata/android/en-US/images/phoneScreenshots/img4.jpg)
+
+## Contributors
+
+- [ZerOri](https://github.com/ZerOri) and [linsui](https://github.com/linsui) for Chinese translation
+- [hmaltr](https://github.com/hmaltr) for Turkish translation
+
+## Libraries
+
+- PersistentCookieJar ([License](https://github.com/franmontiel/PersistentCookieJar/blob/master/LICENSE.txt))
+- OKHttp ([License](https://github.com/square/okhttp/blob/master/LICENSE.txt))
+- multiline-collapsingtoolbar ([License](https://github.com/opacapp/multiline-collapsingtoolbar/blob/master/LICENSE))
+- PhotoView ([License](https://github.com/chrisbanes/PhotoView/blob/master/LICENSE))
+- JSoup ([License](https://github.com/jhy/jsoup/blob/master/LICENSE))
+- ACRA ([License](https://github.com/ACRA/acra/blob/master/LICENSE))
+- Glide ([License](https://github.com/bumptech/glide/blob/master/LICENSE))
+
+## Donation
+
+Paypal|Liberapay|Bitcoin
+:-:|:-:|:-:
+[![Paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CVMR2STUSVE6U)|[![Donate using Liberapay](https://liberapay.com/assets/widgets/donate.svg)](https://liberapay.com/Dar9586/donate)|[113U1W3BxrAzyFWgP7HXqMfB3nF6MpHj6p](https://www.blockchain.com/btc/address/113U1W3BxrAzyFWgP7HXqMfB3nF6MpHj6p)
 
 ## License
-```
-   Copyright 2019-2020 Dar9586
+
+```text
+   Copyright 2020 Dar9586
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -42,4 +71,3 @@ Releases: https://github.com/Dar9586/NClientV2/releases
    See the License for the specific language governing permissions and
    limitations under the License.
 ```
-

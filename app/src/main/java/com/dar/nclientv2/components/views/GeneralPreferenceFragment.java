@@ -125,6 +125,11 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
             startActivity(i);
             return true;
         });
+        findPreference("donate").setOnPreferenceClickListener(preference -> {
+            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Dar9586/NClientV2#donation"));
+            startActivity(i);
+            return true;
+        });
         ((SeekBarPreference)findPreference(getString(R.string.key_max_history_size))).setShowSeekBarValue(true);
         ((SeekBarPreference)findPreference(getString(R.string.key_favorite_limit))).setShowSeekBarValue(true);
     }

@@ -93,7 +93,7 @@
     <string name="download_gallery">Bu mangayı indir</string>
     <string name="download_completed">İndirme tamamlandı</string>
 
-    <string name="delete_gallery">Mangayı sil</string>
+    <string name="delete_gallery_size_format" formatted="true">Mangayı sil (%.2fMB)</string>
     <string name="delete_gallery_format" formatted="true">Bu galeriyi silmek istiyor musunuz?  %s</string>
 
 
@@ -262,4 +262,5 @@
     <string name="data_usage_full">Kapak fotoğraflarını ve ya sayfaları lazım olduğunda indir</string>
     <string name="data_usage_no">Sayfaları indirme</string>
     <string name="enable_network_to_continue">Sayfayı açmak için veri kullanım ayarlarını değiştirin ve ya bağlı olduğunuz ağı değiştirin</string>
+    <string name="donate">Bağışlamak</string>
 </resources>

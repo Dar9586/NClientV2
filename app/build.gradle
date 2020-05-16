@@ -10,8 +10,8 @@ android {
         applicationId "com.dar.nclientv2"
         minSdkVersion 14
         targetSdkVersion 29
-        versionCode 229
-        versionName "2.2.9"
+        versionCode 230
+        versionName "2.3.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
 
@@ -40,7 +40,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:1.1.0"
     implementation "androidx.viewpager:viewpager:1.0.0"
     implementation "androidx.fragment:fragment:1.2.4"
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta6'
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.12.6'//Because of minium SDK
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
 
