@@ -4,6 +4,33 @@
     android:layout_height="wrap_content"
     android:id="@+id/master"
     >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/TextAppearance.MaterialComponents.Headline5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:minWidth="80dp"
+            android:text="@string/id_tag" />
+
+        <TextView
+            style="@style/TextAppearance.MaterialComponents.Headline5"
+            android:id="@+id/id_num"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+             />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/tag_master"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <include layout="@layout/sub_tag_layout"/>
     <include layout="@layout/sub_tag_layout"/>
     <include layout="@layout/sub_tag_layout"/>
@@ -13,4 +40,5 @@
     <include layout="@layout/sub_tag_layout"/>
     <include layout="@layout/sub_tag_layout"/>
     <include layout="@layout/info_layout"/>
+    </LinearLayout>
 </LinearLayout>

@@ -249,6 +249,9 @@
     <string name="data_usage_no">不下載圖片</string>
     <string name="enable_network_to_continue">允許下載圖片或切換網路以打開圖片</string>
     <string name="donate">Support the developer</string>
+    <string name="id_tag">ID:</string>
+    <string name="id_copied_to_clipboard">ID copied to clipboard</string>
+    <string name="copied_to_clipboard">Copied to clipboard</string>
 
     <string-array name="language">
         <item>英文</item>

@@ -8,7 +8,9 @@ import androidx.annotation.NonNull;
 
 import com.dar.nclientv2.api.components.Comment;
 import com.dar.nclientv2.api.components.Gallery;
+import com.dar.nclientv2.api.components.GalleryData;
 import com.dar.nclientv2.api.components.GenericGallery;
+import com.dar.nclientv2.api.components.Page;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.components.TagList;
 import com.dar.nclientv2.api.enums.ImageExt;
@@ -58,7 +60,7 @@ public class SimpleGallery extends GenericGallery {
         a=e.getElementsByTag("img").first();
         temp=a.hasAttr("data-src")?a.attr("data-src"):a.attr("src");
         mediaId=Integer.parseInt(temp.substring(temp.indexOf("galleries")+10,temp.lastIndexOf('/')));
-        thumbnail=Gallery.charToExt(temp.charAt(temp.length()-3));
+        thumbnail= Page.charToExt(temp.charAt(temp.length() - 3));
         title=e.getElementsByTag("div").first().text();
         if(context!=null&&id>Global.getMaxId())Global.updateMaxId(context,id);
     }
@@ -178,5 +180,15 @@ public class SimpleGallery extends GenericGallery {
                 ", id=" + id +
                 ", mediaId=" + mediaId +
                 '}';
+    }
+
+    @Override
+    public boolean hasGalleryData() {
+        return false;
+    }
+
+    @Override
+    public GalleryData getGalleryData() {
+        return null;
     }
 }

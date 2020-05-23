@@ -34,7 +34,7 @@ public class ImageDownloadUtility {
         return target;
     }
     private static String getUrlForGallery(Gallery gallery, int page, boolean shouldFull){
-        return shouldFull? gallery.getPage(page):gallery.getLowPage(page);
+        return shouldFull? gallery.getPageUrl(page):gallery.getLowPage(page);
     }
     @Nullable
     public static BitmapTarget loadImageOp(Context context,ImageView view,Gallery gallery,int page,int angle){

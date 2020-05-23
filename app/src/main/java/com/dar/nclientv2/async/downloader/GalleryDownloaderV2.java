@@ -102,7 +102,7 @@ public class GalleryDownloaderV2 {
     }
     public LocalGallery localGallery(){
         if(status!=Status.FINISHED)return null;
-        return new LocalGallery(folder,id);
+        return new LocalGallery(folder);
     }
     public void setStatus(Status status) {
         if(this.status==status)return;
@@ -281,8 +281,7 @@ public class GalleryDownloaderV2 {
         File nomedia=new File(folder,".nomedia");
         LogUtility.d("NOMEDIA: "+nomedia+" for id "+id);
         FileWriter writer=new FileWriter(nomedia);
-        writer.write(Integer.toString(id));
-        writer.flush();
+        gallery.jsonWrite(writer);
         writer.close();
     }
 

@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.JsonReader;
 import android.util.JsonToken;
+import android.util.JsonWriter;
 
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
@@ -38,11 +39,11 @@ public class Tag implements Parcelable{
         jr.beginObject();
         while(jr.peek()!= JsonToken.END_OBJECT){
             switch (jr.nextName()){
-                case "url":jr.skipValue();break;
                 case "count":count=jr.nextInt();break;
                 case "type":type=TagType.typeByName(jr.nextString());break;
                 case "id":id=jr.nextInt();break;
                 case "name":name=jr.nextString();break;
+                default:jr.skipValue();break;
             }
         }
         jr.endObject();
@@ -113,6 +114,15 @@ public class Tag implements Parcelable{
             case ACCEPTED:return status=TagStatus.AVOIDED;
         }
         return null;
+    }
+
+    void writeJson(JsonWriter writer)throws IOException{
+        writer.beginObject();
+        writer.name("count").value(count);
+        writer.name("type").value(getTypeSingleName());
+        writer.name("id").value(id);
+        writer.name("name").value(name);
+        writer.endObject();
     }
 
     public TagType getType() {

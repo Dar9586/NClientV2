@@ -29,4 +29,8 @@ public abstract class GenericGallery implements Parcelable{
     public boolean isLocal(){
         return getType()==Type.LOCAL;
     }
+
+    public abstract boolean hasGalleryData();
+    public abstract GalleryData getGalleryData();
+
 }

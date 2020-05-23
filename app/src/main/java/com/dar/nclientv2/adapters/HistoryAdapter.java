@@ -34,7 +34,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new HistoryAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.entry_history, parent, false));
     }
-    int remove=-1;
+    private int remove=-1;
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ImageDownloadUtility.loadImage(remove==holder.getAdapterPosition()?R.drawable.ic_close:R.drawable.ic_mode_edit,holder.imageButton);

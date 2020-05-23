@@ -527,7 +527,6 @@ public class Queries{
 
         public static void addGallery(GalleryDownloaderV2 downloader){
             Gallery gallery=downloader.getGallery();
-            if(!gallery.isComplete())return;
             Queries.GalleryTable.insert(gallery);
             ContentValues values=new ContentValues(3);
             values.put(ID_GALLERY,gallery.getId());

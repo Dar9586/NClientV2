@@ -12,6 +12,7 @@ import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.api.enums.Language;
+import com.dar.nclientv2.api.enums.SpecialTagIds;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.local.LocalGallery;
@@ -256,15 +257,9 @@ public class InspectorV3 extends Thread implements Parcelable {
         Set<Tag>tags=new HashSet<>();
         if(onlyLanguage==null)return tags;
         switch (onlyLanguage){
-            case ENGLISH:tags.add(Queries.TagTable.getTagById(12227));break;
-            case JAPANESE:tags.add(Queries.TagTable.getTagById(6346));break;
-            case CHINESE:tags.add(Queries.TagTable.getTagById(29963));break;
-            case UNKNOWN:
-                tags.add(Queries.TagTable.getTagById(12227));
-                tags.add(Queries.TagTable.getTagById(6346));
-                tags.add(Queries.TagTable.getTagById(29963));
-                for(Tag t:tags)t.setStatus(TagStatus.AVOIDED);
-                break;
+            case ENGLISH:tags.add(Queries.TagTable.getTagById(SpecialTagIds.LANGUAGE_ENGLISH));break;
+            case JAPANESE:tags.add(Queries.TagTable.getTagById(SpecialTagIds.LANGUAGE_JAPANESE));break;
+            case CHINESE:tags.add(Queries.TagTable.getTagById(SpecialTagIds.LANGUAGE_CHINESE));break;
         }
         return tags;
     }

@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.Tag;
+import com.dar.nclientv2.api.enums.SpecialTagIds;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.settings.Database;
@@ -55,9 +56,9 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     }
     private void insertLanguageTags(){
         Tag[] languages = {
-            new Tag("english", 0, 12227, TagType.LANGUAGE, TagStatus.DEFAULT),
-            new Tag("japanese", 0, 6346, TagType.LANGUAGE, TagStatus.DEFAULT),
-            new Tag("chinese", 0, 29963, TagType.LANGUAGE, TagStatus.DEFAULT),
+            new Tag("english", 0, SpecialTagIds.LANGUAGE_ENGLISH, TagType.LANGUAGE, TagStatus.DEFAULT),
+            new Tag("japanese", 0, SpecialTagIds.LANGUAGE_JAPANESE, TagType.LANGUAGE, TagStatus.DEFAULT),
+            new Tag("chinese", 0, SpecialTagIds.LANGUAGE_CHINESE, TagType.LANGUAGE, TagStatus.DEFAULT),
         };
         for(Tag t:languages)Queries.TagTable.insert(t);
     }

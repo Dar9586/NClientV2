@@ -170,7 +170,7 @@ public class GalleryActivity extends BaseActivity{
     }
 
 
-    public void initFvoriteIcon(Menu menu){
+    public void initFavoriteIcon(Menu menu){
         boolean onlineFavorite=!isLocal&&((Gallery)gallery).isOnlineFavorite();
         boolean unknown=getIntent().getBooleanExtra(getPackageName()+ ".UNKNOWN",false);
         MenuItem item=menu.findItem(R.id.add_online_gallery);
@@ -188,7 +188,7 @@ public class GalleryActivity extends BaseActivity{
 
         menu.findItem(R.id.favorite_manager).setIcon(isLocalFavorite?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
         menuItemsVisible(menu);
-        initFvoriteIcon(menu);
+        initFavoriteIcon(menu);
         Utility.tintMenu(menu);
         updateColumnCount(false);
         return true;

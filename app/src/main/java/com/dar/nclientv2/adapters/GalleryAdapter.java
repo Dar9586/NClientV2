@@ -14,13 +14,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
+import com.dar.nclientv2.CopyToClipboardActivity;
 import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.MainActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.ZoomActivity;
 import com.dar.nclientv2.api.components.Gallery;
+import com.dar.nclientv2.api.components.GalleryData;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.components.Tag;
+import com.dar.nclientv2.api.components.TagList;
+import com.dar.nclientv2.api.enums.SpecialTagIds;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.components.GlideX;
@@ -63,10 +67,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     private int colCount;
     private SparseIntArray angles=new SparseIntArray();
     public Type positionToType(int pos){
-        if(!gallery.isLocal()){
-            if(pos == 0) return Type.TAG;
-            if(pos > gallery.getPageCount()) return Type.RELATED;
-        }
+        if(pos == 0) return Type.TAG;
+        if(pos > gallery.getPageCount()) return Type.RELATED;
         return Type.PAGE;
     }
 
@@ -149,8 +151,12 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     private void loadRelatedLayout(ViewHolder holder){
         LogUtility.d("Called RElated");
         final RecyclerView recyclerView= holder.master.findViewById(R.id.recycler);
+        if(gallery.isLocal()){
+            holder.master.setVisibility(View.GONE);
+            return;
+        }
         final Gallery gallery=(Gallery)this.gallery;
-        if(!gallery.isRelatedLoaded()||gallery.getRelated().size()==0){
+        if(!gallery.isRelatedLoaded() || gallery.getRelated().size() == 0){
             holder.master.setVisibility(View.GONE);
             return;
         }else holder.master.setVisibility(View.VISIBLE);
@@ -163,23 +169,32 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     }
 
     private void loadTagLayout(ViewHolder holder){
+        final ViewGroup vg= holder.master.findViewById(R.id.tag_master);
+        final TextView idContainer=holder.master.findViewById(R.id.id_num);
+        initializeIdContainer(idContainer);
+        if(!hasTags()){
+            ViewGroup.LayoutParams layoutParams= vg.getLayoutParams();
+            layoutParams.height=0;
+            vg.setLayoutParams(layoutParams);
+            return;
+        }
+        final LayoutInflater inflater=context.getLayoutInflater();
 
-        final ViewGroup vg=(ViewGroup)holder.master;
-        int i=0,len,j=0,y;
+        int tagCount,idStringTagName;
         ViewGroup lay;
         ChipGroup cg;
-        Gallery gallery=(Gallery)this.gallery;
-        for(TagType type:TagType.values){
-            y=TAG_NAMES[j++];
-            len=gallery.getTagCount(type);
-            lay=(ViewGroup)vg.getChildAt(i++);
-            cg=lay.findViewById(R.id.chip_group);
-            if(cg.getChildCount()!=0)continue;
-            lay.setVisibility(len==0?View.GONE:View.VISIBLE);
-            ((TextView)lay.findViewById(R.id.title)).setText(y);
-            for(int a=0;a<len;a++){
-                final Tag tag=gallery.getTag(type,a);
-                Chip c=(Chip)context.getLayoutInflater().inflate(R.layout.chip_layout,cg,false);
+        TagList tagList=this.gallery.getGalleryData().getTags();
+        for (TagType type : TagType.values) {
+            idStringTagName = TAG_NAMES[type.getId()];
+            tagCount = tagList.getCount(type);
+            lay = (ViewGroup) vg.getChildAt(type.getId());
+            cg = lay.findViewById(R.id.chip_group);
+            if (cg.getChildCount() != 0) continue;
+            lay.setVisibility(tagCount == 0 ? View.GONE : View.VISIBLE);
+            ((TextView) lay.findViewById(R.id.title)).setText(idStringTagName);
+            for (int a = 0; a < tagCount; a++) {
+                final Tag tag = tagList.getTag(type, a);
+                Chip c = (Chip) inflater.inflate(R.layout.chip_layout, cg, false);
                 c.setText(tag.getName());
                 c.setOnClickListener(v -> {
                     Intent intent = new Intent(context, MainActivity.class);
@@ -189,11 +204,27 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                 });
                 cg.addView(c);
             }
-            addInfoLayout(holder,gallery);
+            addInfoLayout(holder,gallery.getGalleryData());
         }
     }
 
-    private void addInfoLayout(ViewHolder holder, Gallery gallery) {
+    private void initializeIdContainer(TextView idContainer) {
+        if(gallery.getId()<=0){
+            idContainer.setVisibility(View.GONE);
+            return;
+        }
+        String id= Integer.toString(gallery.getId());
+        idContainer.setText(id);
+        idContainer.setVisibility(gallery.getId()!= SpecialTagIds.INVALID_ID?View.VISIBLE:View.GONE);
+        idContainer.setOnClickListener(v -> {
+            CopyToClipboardActivity.copyTextToClipboard(context,id);
+            context.runOnUiThread(() ->
+                    Toast.makeText(context, R.string.id_copied_to_clipboard, Toast.LENGTH_SHORT).show()
+            );
+        });
+    }
+
+    private void addInfoLayout(ViewHolder holder, GalleryData gallery) {
         TextView text=holder.master.findViewById(R.id.page_count);
         text.setText(context.getString(R.string.page_count_format, gallery.getPageCount()));
         text=holder.master.findViewById(R.id.upload_date);
@@ -204,23 +235,27 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                 ));
         text=holder.master.findViewById(R.id.favorite_count);
         text.setText(context.getString(R.string.favorite_count_format, gallery.getFavoriteCount()));
+
     }
 
     public void setMaxImageSize(Size maxImageSize) {
         this.maxImageSize = maxImageSize;
         context.runOnUiThread(()->notifyItemRangeChanged(0,getItemCount()));
     }
-
+    private int offsetTags(){
+        return 0;
+    }
     private void loadPageLayout(ViewHolder holder){
-        final int pos=holder.getAdapterPosition()+(gallery.isLocal()?1:0);
+        final int offset=offsetTags();
+        final int pos=holder.getAdapterPosition()+offset;
         final ImageView imgView=holder.master.findViewById(R.id.image);
 
-        imgView.setOnClickListener(v -> startGallery(1 + holder.getAdapterPosition() - (gallery.isLocal() ? 0 : 1)));
+        imgView.setOnClickListener(v -> startGallery(1 + holder.getAdapterPosition() - offset));
         imgView.setOnLongClickListener(null);
-        holder.master.setOnClickListener(v -> startGallery(1 + holder.getAdapterPosition() - (gallery.isLocal() ? 0 : 1)));
+        holder.master.setOnClickListener(v -> startGallery(1 + holder.getAdapterPosition() - offset));
         holder.master.setOnLongClickListener(null);
 
-        holder.pageNumber.setText(String.format(Locale.US,"%d", pos));
+        holder.pageNumber.setText(String.format(Locale.US,"%d",pos));
 
 
 
@@ -248,7 +283,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             photoView.setOnMatrixChangeListener(rect -> photoView.setAllowParentInterceptOnEdge(photoView.getScale()<=1f));
             photoView.setOnClickListener(v -> {
                 if(photoView.getScale()<=1f)
-                    startGallery(1 + holder.getAdapterPosition() - (gallery.isLocal() ? 0 : 1));
+                    startGallery(1 + holder.getAdapterPosition() - offset);
             });
             View.OnLongClickListener listener= v -> {
                 optionDialog(imgView,pos);
@@ -360,6 +395,10 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         super.onViewRecycled(holder);
     }
 
+    private boolean hasTags(){
+        return gallery.hasGalleryData();
+    }
+
     @Override
     public int getItemViewType(int position){
         return positionToType(position).ordinal();
@@ -367,7 +406,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        return gallery.getPageCount()+(gallery.isLocal()?0:2);
+        return gallery.getPageCount()+2;
     }
 
 }

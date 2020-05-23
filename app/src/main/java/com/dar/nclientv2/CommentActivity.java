@@ -98,7 +98,7 @@ public class CommentActivity extends BaseActivity {
                                     switch (reader.nextName()){
                                         case "success":success=reader.nextBoolean();break;
                                         case "comment":c=new Comment(reader,false);break;
-                                        default:reader.skipValue();
+                                        default:reader.skipValue();break;
                                     }
                                 }
                                 reader.close();

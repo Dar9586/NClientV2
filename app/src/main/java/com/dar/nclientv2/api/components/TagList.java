@@ -1,5 +1,8 @@
 package com.dar.nclientv2.api.components;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 
 import com.dar.nclientv2.api.enums.TagType;
@@ -12,7 +15,36 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class TagList{
+public class TagList implements Parcelable {
+
+    protected TagList(Parcel in) {
+        this();
+        ArrayList<Tag> list=new ArrayList<>();
+        in.readTypedList(list,Tag.CREATOR);
+        addTags(list);
+    }
+
+    public static final Creator<TagList> CREATOR = new Creator<TagList>() {
+        @Override
+        public TagList createFromParcel(Parcel in) {
+            return new TagList(in);
+        }
+
+        @Override
+        public TagList[] newArray(int size) {
+            return new TagList[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(getAllTagsList());
+    }
 
     public static class Tags extends ArrayList<Tag> {
         public Tags(int initialCapacity) {

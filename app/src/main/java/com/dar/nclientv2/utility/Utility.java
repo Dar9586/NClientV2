@@ -35,6 +35,19 @@ public class Utility {
         boolean x=Global.useAlternativeSite();
         return x?ALTERNATIVE_URL: ORIGINAL_URL;
     }
+    @NonNull
+    public static String unescapeUnicodeString(@Nullable String t){
+        if(t==null)return "";
+        StringBuilder s=new StringBuilder();
+        int l=t.length();
+        for(int a=0;a<l;a++){
+            if(t.charAt(a)=='\\'&&t.charAt(a+1)=='u'){
+                s.append((char) Integer.parseInt( t.substring(a+2,a+6), 16 ));
+                a+=5;
+            }else s.append(t.charAt(a));
+        }
+        return s.toString();
+    }
     public static void threadSleep(long millis){
         try {
             Thread.sleep(millis);

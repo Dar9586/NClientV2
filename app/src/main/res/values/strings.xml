@@ -293,6 +293,9 @@
     <string name="data_usage_no">Don\'t download images</string>
     <string name="enable_network_to_continue">Enable image download or change network to open the image</string>
     <string name="donate">Support the developer</string>
+    <string name="id_tag">ID:</string>
+    <string name="id_copied_to_clipboard">ID copied to clipboard</string>
+    <string name="copied_to_clipboard">Copied to clipboard</string>
     <string-array name="language">
         <item>English</item>
         <item>Chinese (Traditional)</item>

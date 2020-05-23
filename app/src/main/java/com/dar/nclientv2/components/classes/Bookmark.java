@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.ApiRequestType;
+import com.dar.nclientv2.api.enums.SpecialTagIds;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.database.Queries;
@@ -28,7 +29,7 @@ public class Bookmark {
         this.tag=tag;
         tagVal1 =Queries.TagTable.getTagById(this.tag);
         if(tagVal1 ==null)
-            tagVal1 = new Tag("english", 0, 12227, TagType.LANGUAGE, TagStatus.DEFAULT);
+            tagVal1 = new Tag("english", 0, SpecialTagIds.LANGUAGE_ENGLISH, TagType.LANGUAGE, TagStatus.DEFAULT);
         this.tagVal = tagVal1;
         this.uri=Uri.parse(url);
     }

@@ -7,9 +7,7 @@ import com.dar.nclientv2.adapters.LocalAdapter;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.LogUtility;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 
 public class FakeInspector extends AsyncTask<LocalActivity,LocalActivity,LocalActivity>{
@@ -45,28 +43,12 @@ public class FakeInspector extends AsyncTask<LocalActivity,LocalActivity,LocalAc
     }
 
     private void createGallery(final File file) {
-        File nomedia=new File(file,".nomedia");
-        String h="-1";
-        try {//ID check with nomedia
-            if(nomedia.exists()) {
-                BufferedReader br = new BufferedReader(new FileReader(new File(file, ".nomedia")));
-                h = br.readLine();
-                br.close();
-            }
-            LocalGallery lg=new LocalGallery(file,Integer.parseInt(h));
-            if(lg.isValid()) galleries.add(lg);
-            else {
-                LogUtility.e(lg);
-                invalidPaths.add(file.getAbsolutePath());
-            }
-        } catch (Exception e) {
-            LocalGallery lg=new LocalGallery(file,-1);
-            if(lg.isValid()) galleries.add(lg);
-            else if(lg.getPageCount()>0){
-                LogUtility.e(lg);
-                invalidPaths.add(file.getAbsolutePath());
-            }
-            LogUtility.e("WTF: "+e.getLocalizedMessage(),e);
+        LocalGallery lg=new LocalGallery(file);
+        if(lg.isValid()) {
+            galleries.add(lg);
+        } else {
+            LogUtility.e(lg);
+            invalidPaths.add(file.getAbsolutePath());
         }
     }
 }

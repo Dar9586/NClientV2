@@ -32,6 +32,7 @@ import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.api.enums.Language;
+import com.dar.nclientv2.api.enums.SpecialTagIds;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.ScrapeTags;
@@ -399,7 +400,7 @@ public class MainActivity extends BaseActivity
         String query=datas.get(1);
         boolean byPop=datas.size()==3;
         Tag tag=Queries.TagTable.getTagFromTagName(query);
-        if(tag==null) tag=new Tag(query,-1,-1 ,type,TagStatus.DEFAULT);
+        if(tag==null) tag=new Tag(query,-1, SpecialTagIds.INVALID_ID,type,TagStatus.DEFAULT);
         inspector=InspectorV3.searchInspector(this,null,new HashSet<>(Collections.singleton(tag)),1,byPop,resetDataset);
         modeType=ModeType.TAG;
     }

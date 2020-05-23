@@ -108,7 +108,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                             while(reader.peek()!= JsonToken.END_OBJECT){
                                 switch (reader.nextName()){
                                     case "success":success=reader.nextBoolean();break;
-                                    default:reader.skipValue();
+                                    default:reader.skipValue();break;
                                 }
                             }
                             reader.close();

@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dar.nclientv2.adapters.HistoryAdapter;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.Language;
+import com.dar.nclientv2.api.enums.SpecialTagIds;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.database.Queries;
@@ -45,7 +46,6 @@ public class SearchActivity extends AppCompatActivity {
     private ChipGroup[] groups;
     private Chip[] addChip =new Chip[TagType.values.length];
     private SearchView searchView;
-    private RecyclerView recyclerView;
     private AppCompatAutoCompleteTextView autoComplete;
     private TagType loadedTag=null;
     private HistoryAdapter adapter;
@@ -63,6 +63,7 @@ public class SearchActivity extends AppCompatActivity {
         //init toolbar
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        assert getSupportActionBar()!=null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -70,7 +71,7 @@ public class SearchActivity extends AppCompatActivity {
 
         //find IDs
         searchView=findViewById(R.id.search);
-        recyclerView=findViewById(R.id.recycler);
+        RecyclerView recyclerView = findViewById(R.id.recycler);
 
         groups=new ChipGroup[]{
                 null,
@@ -143,9 +144,9 @@ public class SearchActivity extends AppCompatActivity {
         for(Tag t:Queries.TagTable.getTrueAllType(TagType.CATEGORY)) addChipTag(t,false,false);
         //add languages
         for(Tag t:Queries.TagTable.getTrueAllType(TagType.LANGUAGE)){
-            if(t.getId()==12227&&Global.getOnlyLanguage()==Language.ENGLISH) t.setStatus(TagStatus.ACCEPTED);
-            if(t.getId()==6346 &&Global.getOnlyLanguage()==Language.JAPANESE)t.setStatus(TagStatus.ACCEPTED);
-            if(t.getId()==29963&&Global.getOnlyLanguage()==Language.CHINESE) t.setStatus(TagStatus.ACCEPTED);
+            if(t.getId()==SpecialTagIds.LANGUAGE_ENGLISH&&Global.getOnlyLanguage()==Language.ENGLISH) t.setStatus(TagStatus.ACCEPTED);
+            else if(t.getId()== SpecialTagIds.LANGUAGE_JAPANESE &&Global.getOnlyLanguage()==Language.JAPANESE)t.setStatus(TagStatus.ACCEPTED);
+            else if(t.getId()==SpecialTagIds.LANGUAGE_CHINESE&&Global.getOnlyLanguage()==Language.CHINESE) t.setStatus(TagStatus.ACCEPTED);
             addChipTag(t,false,false);
         }
         //add online tags
@@ -219,9 +220,7 @@ public class SearchActivity extends AppCompatActivity {
         MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(this);
         builder.setView(autoComplete);
         autoComplete.setText("");
-        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
-            createChip();
-        });
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> createChip());
         builder.setCancelable(true).setNegativeButton(R.string.cancel,null);
         builder.setTitle(R.string.insert_tag_name);
         try{

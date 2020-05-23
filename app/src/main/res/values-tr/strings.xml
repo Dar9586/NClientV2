@@ -263,4 +263,7 @@
     <string name="data_usage_no">Sayfaları indirme</string>
     <string name="enable_network_to_continue">Sayfayı açmak için veri kullanım ayarlarını değiştirin ve ya bağlı olduğunuz ağı değiştirin</string>
     <string name="donate">Geliştiriciyi destekle</string>
+    <string name="id_tag">ID:</string>
+    <string name="id_copied_to_clipboard">ID copied to clipboard</string>
+    <string name="copied_to_clipboard">Copied to clipboard</string>
 </resources>

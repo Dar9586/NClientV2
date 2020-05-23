@@ -50,7 +50,7 @@ public class ZoomFragment extends Fragment {
         if(Global.useRtl())page=gallery.getPageCount()-1-page;
         args.putInt("PAGE",page);
         args.putInt("ID",gallery.getId());
-        args.putString("URL",gallery.isLocal()?null:((Gallery)gallery).getPage(page));
+        args.putString("URL",gallery.isLocal()?null:((Gallery)gallery).getPageUrl(page));
         ZoomFragment fragment = new ZoomFragment();
         fragment.setArguments(args);
         return fragment;
