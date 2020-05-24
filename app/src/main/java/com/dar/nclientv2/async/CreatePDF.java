@@ -14,12 +14,12 @@ import android.net.Uri;
 import androidx.annotation.Nullable;
 import androidx.core.app.JobIntentService;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.FileProvider;
 
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.settings.NotificationSettings;
 import com.dar.nclientv2.utility.LogUtility;
 
 import java.io.File;
@@ -30,7 +30,6 @@ import java.util.List;
 public class CreatePDF extends JobIntentService {
     private int notId;
     private int totalPage;
-    private NotificationManagerCompat notificationManager;
     private NotificationCompat.Builder notification;
     public CreatePDF() {
     }
@@ -41,7 +40,7 @@ public class CreatePDF extends JobIntentService {
     }
     @Override
     protected void onHandleWork(@Nullable Intent intent) {
-        notId=Global.getNotificationId();
+        notId= NotificationSettings.getNotificationId();
         System.gc();
         LocalGallery gallery=intent.getParcelableExtra(getPackageName()+".GALLERY");
         totalPage=gallery.getPageCount();
@@ -62,12 +61,12 @@ public class CreatePDF extends JobIntentService {
                 bitmap.recycle();
             }
             notification.setProgress(totalPage-1,a+1,false);
-            notificationManager.notify(getString(R.string.channel2_name),notId,notification.build());
+            NotificationSettings.notify(getString(R.string.channel2_name),notId,notification.build());
 
         }
         notification.setContentText(getString(R.string.writing_pdf));
         notification.setProgress(totalPage,0,true);
-        notificationManager.notify(getString(R.string.channel2_name),notId,notification.build());
+        NotificationSettings.notify(getString(R.string.channel2_name),notId,notification.build());
         try {
 
             File finalPath=Global.PDFFOLDER;
@@ -95,14 +94,14 @@ public class CreatePDF extends JobIntentService {
             }
 
             notification.setContentIntent(PendingIntent.getActivity(getApplicationContext(),0,i,0));
-            notificationManager.notify(getString(R.string.channel2_name),notId,notification.build());
+            NotificationSettings.notify(getString(R.string.channel2_name),notId,notification.build());
             LogUtility.d(finalPath.getAbsolutePath());
             LogUtility.d(apkURI.toString());
         }catch(IOException e){
             notification.setContentTitle(getString(R.string.error_pdf));
             notification.setContentText(getString(R.string.failed));
             notification.setProgress(0,0,false);
-            notificationManager.notify(getString(R.string.channel2_name),notId,notification.build());
+            NotificationSettings.notify(getString(R.string.channel2_name),notId,notification.build());
             throw new RuntimeException("Error generating file", e);
         }finally {
             document.close();
@@ -112,7 +111,6 @@ public class CreatePDF extends JobIntentService {
     }
 
     private void preExecute(File file) {
-        notificationManager=NotificationManagerCompat.from(getApplicationContext());
         notification=new NotificationCompat.Builder(getApplicationContext(), Global.CHANNEL_ID2);
         notification.setSmallIcon(R.drawable.ic_image)
                 .setOnlyAlertOnce(true)
@@ -122,7 +120,7 @@ public class CreatePDF extends JobIntentService {
                 .setProgress(totalPage-1,0,false)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setCategory(NotificationCompat.CATEGORY_STATUS);
-        notificationManager.notify(getString(R.string.channel2_name),notId,notification.build());
+        NotificationSettings.notify(getString(R.string.channel2_name),notId,notification.build());
     }
 
 }

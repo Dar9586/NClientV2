@@ -68,7 +68,7 @@ public class GalleryDownloaderV2 {
         return gallery;
     }
     private int getTotalPage(){
-        return end-start+1;
+        return Math.max(1, end-start+1);
     }
     public int getPercentage(){
         if(gallery==null)return 0;

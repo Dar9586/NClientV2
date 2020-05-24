@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
     <PreferenceCategory
         android:title="@string/main_column_count">
         <SeekBarPreference
             android:title="@string/use_column_port"
             android:key="@string/key_column_port_main"
             android:defaultValue="2"
+            app:min="1"
+            app:showSeekBarValue="true"
             android:max="4"/>
         <SeekBarPreference
             android:title="@string/use_column_land"
             android:key="@string/key_column_land_main"
             android:defaultValue="4"
+            app:min="1"
+            app:showSeekBarValue="true"
             android:max="4"/>
     </PreferenceCategory>
     <PreferenceCategory
@@ -19,11 +26,15 @@
             android:title="@string/use_column_port"
             android:key="@string/key_column_port_down"
             android:defaultValue="2"
+            app:min="1"
+            app:showSeekBarValue="true"
             android:max="4"/>
         <SeekBarPreference
             android:title="@string/use_column_land"
             android:key="@string/key_column_land_down"
             android:defaultValue="4"
+            app:min="1"
+            app:showSeekBarValue="true"
             android:max="4"/>
     </PreferenceCategory>
     <PreferenceCategory
@@ -32,11 +43,15 @@
             android:title="@string/use_column_port"
             android:key="@string/key_column_port_favo"
             android:defaultValue="2"
+            app:min="1"
+            app:showSeekBarValue="true"
             android:max="4"/>
         <SeekBarPreference
             android:title="@string/use_column_land"
             android:key="@string/key_column_land_favo"
             android:defaultValue="4"
+            app:min="1"
+            app:showSeekBarValue="true"
             android:max="4"/>
     </PreferenceCategory>
     <PreferenceCategory
@@ -45,11 +60,15 @@
             android:title="@string/use_column_port"
             android:key="@string/key_column_port_hist"
             android:defaultValue="2"
+            app:min="1"
+            app:showSeekBarValue="true"
             android:max="4"/>
         <SeekBarPreference
             android:title="@string/use_column_land"
             android:key="@string/key_column_land_hist"
             android:defaultValue="4"
+            app:min="1"
+            app:showSeekBarValue="true"
             android:max="4"/>
     </PreferenceCategory>
 

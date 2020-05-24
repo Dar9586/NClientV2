@@ -130,8 +130,6 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
             startActivity(i);
             return true;
         });
-        ((SeekBarPreference)findPreference(getString(R.string.key_max_history_size))).setShowSeekBarValue(true);
-        ((SeekBarPreference)findPreference(getString(R.string.key_favorite_limit))).setShowSeekBarValue(true);
     }
 
 
@@ -143,33 +141,6 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
 
     private void columnMenu() {
         addPreferencesFromResource(R.xml.settings_column);
-        /*findPreference("col_main").setOnPreferenceClickListener(preferenceClickListener(1));
-        findPreference("col_download").setOnPreferenceClickListener(preferenceClickListener(2));
-        findPreference("col_favorite").setOnPreferenceClickListener(preferenceClickListener(4));
-        findPreference("col_history").setOnPreferenceClickListener(preferenceClickListener(3));*/
-        ((SeekBarPreference)findPreference(getString(R.string.key_column_port_down))).setShowSeekBarValue(true);
-        ((SeekBarPreference)findPreference(getString(R.string.key_column_port_favo))).setShowSeekBarValue(true);
-        ((SeekBarPreference)findPreference(getString(R.string.key_column_port_main))).setShowSeekBarValue(true);
-        ((SeekBarPreference)findPreference(getString(R.string.key_column_port_hist))).setShowSeekBarValue(true);
-        ((SeekBarPreference)findPreference(getString(R.string.key_column_land_down))).setShowSeekBarValue(true);
-        ((SeekBarPreference)findPreference(getString(R.string.key_column_land_favo))).setShowSeekBarValue(true);
-        ((SeekBarPreference)findPreference(getString(R.string.key_column_land_main))).setShowSeekBarValue(true);
-        ((SeekBarPreference)findPreference(getString(R.string.key_column_land_hist))).setShowSeekBarValue(true);
-        findPreference(getString(R.string.key_column_port_down)).setOnPreferenceChangeListener(changeListener);
-        findPreference(getString(R.string.key_column_port_favo)).setOnPreferenceChangeListener(changeListener);
-        findPreference(getString(R.string.key_column_port_main)).setOnPreferenceChangeListener(changeListener);
-        findPreference(getString(R.string.key_column_port_hist)).setOnPreferenceChangeListener(changeListener);
-        findPreference(getString(R.string.key_column_land_down)).setOnPreferenceChangeListener(changeListener);
-        findPreference(getString(R.string.key_column_land_favo)).setOnPreferenceChangeListener(changeListener);
-        findPreference(getString(R.string.key_column_land_main)).setOnPreferenceChangeListener(changeListener);
-        findPreference(getString(R.string.key_column_land_hist)).setOnPreferenceChangeListener(changeListener);
     }
-    private SeekBarPreference.OnPreferenceChangeListener changeListener= (preference, newValue) -> {
-        int p= Integer.parseInt(String.valueOf(newValue));
-        if(p==0){
-            ((SeekBarPreference)preference).setValue(1);
-            return false;
-        }
-        return true;
-    };
+
 }

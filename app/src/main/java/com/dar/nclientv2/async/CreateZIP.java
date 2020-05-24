@@ -6,11 +6,11 @@ import android.content.Intent;
 import androidx.annotation.Nullable;
 import androidx.core.app.JobIntentService;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.settings.NotificationSettings;
 import com.dar.nclientv2.utility.LogUtility;
 
 import java.io.File;
@@ -24,7 +24,6 @@ public class CreateZIP extends JobIntentService {
     // TODO: 11/04/20 REFACTOR CREATE ZIP AND PDF
 
     private int notId;
-    private NotificationManagerCompat notificationManager;
     private NotificationCompat.Builder notification;
     private byte[]buffer=new byte[1024];
     public CreateZIP() {
@@ -60,7 +59,7 @@ public class CreateZIP extends JobIntentService {
                 in.close();
                 out.closeEntry();
                 notification.setProgress(gallery.getPageCount(),i,false);
-                notificationManager.notify(getString(R.string.channel3_name),notId,notification.build());
+                NotificationSettings.notify(getString(R.string.channel3_name),notId,notification.build());
             }
             out.flush();
             out.close();
@@ -80,13 +79,12 @@ public class CreateZIP extends JobIntentService {
                     .bigText(gallery.getTitle())
                     .setSummaryText(localizedMessage));
         }
-        notificationManager.notify(getString(R.string.channel3_name),notId,notification.build());
+        NotificationSettings.notify(getString(R.string.channel3_name),notId,notification.build());
 
     }
 
     private void preExecute(File file) {
-        notId = Global.getNotificationId();
-        notificationManager=NotificationManagerCompat.from(getApplicationContext());
+        notId = NotificationSettings.getNotificationId();
         notification=new NotificationCompat.Builder(getApplicationContext(), Global.CHANNEL_ID3);
         notification.setSmallIcon(R.drawable.ic_archive)
                 .setOnlyAlertOnce(true)
@@ -95,6 +93,6 @@ public class CreateZIP extends JobIntentService {
                 .setProgress(1,0,false)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setCategory(NotificationCompat.CATEGORY_STATUS);
-        notificationManager.notify(getString(R.string.channel3_name),notId,notification.build());
+        NotificationSettings.notify(getString(R.string.channel3_name),notId,notification.build());
     }
 }

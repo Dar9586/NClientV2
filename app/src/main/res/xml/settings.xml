@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 <PreferenceCategory
     android:title="@string/global_settings">
     <ListPreference
@@ -32,6 +34,13 @@
         android:key="has_pin"
         android:summary="@string/setting_pin"
         android:title="@string/use_pin" />
+    <SeekBarPreference
+        android:key="@string/key_maximum_notification"
+        android:defaultValue="25"
+        android:max="50"
+        app:showSeekBarValue="true"
+        android:title="@string/maximum_notification_count"
+        />
 </PreferenceCategory>
     <PreferenceCategory
         android:title="@string/navigation_settings">
@@ -39,6 +48,7 @@
             android:key="@string/key_max_history_size"
             android:defaultValue="25"
             android:max="100"
+            app:showSeekBarValue="true"
             android:title="@string/history_size"
             android:summary="@string/history_size_summary"
             />
@@ -102,6 +112,7 @@
         <SeekBarPreference android:title="@string/favorite_count"
             android:key="@string/key_favorite_limit"
             android:defaultValue="10"
+            app:showSeekBarValue="true"
             android:summary="@string/popular_tag_count"
             android:max="20"
             />

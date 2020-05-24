@@ -6,22 +6,22 @@ import android.content.Context;
 import android.content.Intent;
 
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 
 import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.settings.NotificationSettings;
 
 import java.util.Locale;
 
 public class GalleryDownloaderManager {
-    private final int notificationId=Global.getNotificationId();
+    private final int notificationId= NotificationSettings.getNotificationId();
     private NotificationCompat.Builder notification;
     private GalleryDownloaderV2 downloaderV2;
     private Context context;
     private Gallery gallery;
-    private final NotificationManagerCompat notificationManager;
+
     private DownloadObserver observer=new DownloadObserver() {
         @Override
         public void triggerStartDownload(GalleryDownloaderV2 downloader) {
@@ -59,7 +59,7 @@ public class GalleryDownloaderManager {
     };
 
     private void cancelNotification() {
-        notificationManager.cancel(context.getString(R.string.channel1_name),notificationId);
+        NotificationSettings.cancel(context.getString(R.string.channel1_name),notificationId);
     }
 
     private void addClickListener() {
@@ -78,14 +78,12 @@ public class GalleryDownloaderManager {
     }
 
     public GalleryDownloaderManager(Context context, Gallery gallery,int start,int end) {
-        this.notificationManager= NotificationManagerCompat.from(context);
         this.context = context;
         this.gallery = gallery;
         this.downloaderV2=new GalleryDownloaderV2(context,gallery,start,end);
         this.downloaderV2.addObserver(observer);
     }
     public GalleryDownloaderManager(Context context,int id){
-        this.notificationManager= NotificationManagerCompat.from(context);
         this.context=context;
         this.downloaderV2=new GalleryDownloaderV2(context,id);
         this.downloaderV2.addObserver(observer);
@@ -115,6 +113,7 @@ public class GalleryDownloaderManager {
     private void prepareNotification() {
         notification=new NotificationCompat.Builder(context.getApplicationContext(), Global.CHANNEL_ID1);
         notification.setOnlyAlertOnce(true)
+
                 .setContentTitle(String.format(Locale.US,context.getString(R.string.downloading_format),gallery.getTitle()))
                 .setProgress(gallery.getPageCount(),0,false)
                 .setSmallIcon(R.drawable.ic_file);
@@ -153,7 +152,7 @@ public class GalleryDownloaderManager {
 
 
     private void notificationUpdate() {
-        notificationManager.notify(context.getString(R.string.channel1_name),notificationId,notification.build());
+        NotificationSettings.notify(context.getString(R.string.channel1_name),notificationId,notification.build());
     }
 
 }

@@ -242,17 +242,13 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         this.maxImageSize = maxImageSize;
         context.runOnUiThread(()->notifyItemRangeChanged(0,getItemCount()));
     }
-    private int offsetTags(){
-        return 0;
-    }
     private void loadPageLayout(ViewHolder holder){
-        final int offset=offsetTags();
-        final int pos=holder.getAdapterPosition()+offset;
+        final int pos=holder.getAdapterPosition();
         final ImageView imgView=holder.master.findViewById(R.id.image);
 
-        imgView.setOnClickListener(v -> startGallery(1 + holder.getAdapterPosition() - offset));
+        imgView.setOnClickListener(v -> startGallery( holder.getAdapterPosition()));
         imgView.setOnLongClickListener(null);
-        holder.master.setOnClickListener(v -> startGallery(1 + holder.getAdapterPosition() - offset));
+        holder.master.setOnClickListener(v -> startGallery(holder.getAdapterPosition()));
         holder.master.setOnLongClickListener(null);
 
         holder.pageNumber.setText(String.format(Locale.US,"%d",pos));
@@ -283,7 +279,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             photoView.setOnMatrixChangeListener(rect -> photoView.setAllowParentInterceptOnEdge(photoView.getScale()<=1f));
             photoView.setOnClickListener(v -> {
                 if(photoView.getScale()<=1f)
-                    startGallery(1 + holder.getAdapterPosition() - offset);
+                    startGallery( holder.getAdapterPosition());
             });
             View.OnLongClickListener listener= v -> {
                 optionDialog(imgView,pos);

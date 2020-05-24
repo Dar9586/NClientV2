@@ -53,6 +53,9 @@ import java.util.Locale;
 import okhttp3.OkHttpClient;
 
 public class Global {
+
+
+
     public static long recursiveSize(File path) {
         if(path.isFile())return path.length();
         long size=0;
@@ -124,14 +127,14 @@ public class Global {
 
 
     public static final String LOGTAG="NCLIENTLOG";
-    public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf",CHANNEL_ID3="create_pdf";
+    public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf",CHANNEL_ID3="create_zip";
     private static Language onlyLanguage;
     private static TitleType titleType;
     private static boolean alternativeSite,volumeOverride,zoomOneColumn,byPopular,keepHistory,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
     private static ThemeScheme theme;
     private static DataUsageType usageMobile, usageWifi;
     private static String lastVersion;
-    private static int maxHistory,notificationId,columnCount,maxId,galleryWidth=-1, galleryHeight =-1;
+    private static int maxHistory,columnCount,maxId,galleryWidth=-1, galleryHeight =-1;
     private static int colPortHist,colLandHist,colPortMain,colLandMain,colPortDownload,colLandDownload,colLandFavorite,colPortFavorite;
     private static Point screenSize;
     @Nullable
@@ -198,6 +201,7 @@ public class Global {
         initTitleType(context);
         initTheme(context);
         loadNotificationChannel(context);
+        NotificationSettings.initializeNotificationManager(context);
         Login.initUseAccountTag(context);
 
         useRtl=     shared.getBoolean(context.getString(R.string.key_use_rtl),false);
@@ -290,9 +294,7 @@ public class Global {
     public static TitleType getTitleType() {
         return titleType;
     }
-    public static int getNotificationId() {
-        return notificationId++;
-    }
+
     public static ThemeScheme getTheme() {
         return theme;
     }

@@ -252,6 +252,7 @@
     <string name="id_tag">ID:</string>
     <string name="id_copied_to_clipboard">ID copied to clipboard</string>
     <string name="copied_to_clipboard">Copied to clipboard</string>
+    <string name="maximum_notification_count">Maximum notification count</string>
     <string-array name="language">
         <item>英文</item>
         <item>繁体中文</item>

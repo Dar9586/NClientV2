@@ -29,7 +29,6 @@ import com.github.chrisbanes.photoview.PhotoView;
 import java.io.File;
 
 public class ZoomFragment extends Fragment {
-    // TODO: 25/04/20 java.lang.VerifyError: com/bumptech/glide/load/data/ParcelFileDescriptorRewinder at com.bumptech.glide.Glide
     private int page,galleryId;
     private PhotoView photoView=null;
     private ImageButton retryButton;
@@ -55,7 +54,9 @@ public class ZoomFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
+    private float calculateScaleFactor(int width,int height){
+        return width*4<height?4f:1f;
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -68,18 +69,16 @@ public class ZoomFragment extends Fragment {
         page=getArguments().getInt("PAGE",0);
         galleryId=getArguments().getInt("ID",0);
         url=getArguments().getString("URL");
-
         LogUtility.d("Requested: "+page);
         if(Global.hasStoragePermission(photoView.getContext()))
             galleryFolder=Global.findGalleryFolder(galleryId);
-
         photoView.setOnClickListener(v -> {
             if(clickListener!=null)clickListener.onClick(v);
         });
+        photoView.setMaximumScale(4f);
         retryButton.setOnClickListener(v -> loadImage());
         createTarget();
         loadImage();
-
         return rootView;
     }
 
@@ -89,6 +88,8 @@ public class ZoomFragment extends Fragment {
                 toShow.setVisibility(View.VISIBLE);
                 toHide.setVisibility(View.GONE);
                 toShow.setImageDrawable(drawable);
+                if(toShow instanceof PhotoView)
+                    scalePhoto(drawable);
             }
 
             @Override
@@ -113,6 +114,13 @@ public class ZoomFragment extends Fragment {
                 applyDrawable(photoView,retryButton,placeholder);
             }
         };
+    }
+
+    private void scalePhoto(Drawable drawable) {
+        photoView.setScale(calculateScaleFactor(
+                drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight()
+        ),0,0,false);
     }
 
     private void loadImage(){
