@@ -266,5 +266,5 @@
     <string name="id_tag">ID:</string>
     <string name="id_copied_to_clipboard">Manga ID`si panoya kopyalandı</string>
     <string name="copied_to_clipboard">Panoya kopyalandı</string>
-    <string name="maximum_notification_count">Maximum bildirim sayısı</string>
+    <string name="maximum_notification_count">Maksimum bildirim sayısı</string>
 </resources>
