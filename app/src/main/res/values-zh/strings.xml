@@ -248,11 +248,11 @@
     <string name="data_usage_full">按需下载缩略图或完整图片</string>
     <string name="data_usage_no">不下载图片</string>
     <string name="enable_network_to_continue">允许下载图片或切换网络以打开图片</string>
-    <string name="donate">Support the developer</string>
+    <string name="donate">支持开发者</string>
     <string name="id_tag">ID:</string>
-    <string name="id_copied_to_clipboard">ID copied to clipboard</string>
-    <string name="copied_to_clipboard">Copied to clipboard</string>
-    <string name="maximum_notification_count">Maximum notification count</string>
+    <string name="id_copied_to_clipboard">ID已复制至剪贴板</string>
+    <string name="copied_to_clipboard">复制至剪贴板</string>
+    <string name="maximum_notification_count">最大通知数</string>
     <string-array name="language">
         <item>英文</item>
         <item>繁体中文</item>
