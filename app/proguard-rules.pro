@@ -31,4 +31,11 @@
   **[] $VALUES;
   public *;
 }
+
+-assumenosideeffects class com.dar.nclientv2.utility.LogUtility {
+    public static void d(...);
+    public static void i(...);
+    public static void e(...);
+}
+
 -dontwarn com.bumptech.glide.load.resource.bitmap.VideoDecoder

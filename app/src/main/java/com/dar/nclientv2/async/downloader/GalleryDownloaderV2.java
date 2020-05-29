@@ -193,7 +193,9 @@ public class GalleryDownloaderV2 {
     }
     private boolean isCorrupted(File file){
         String path=file.getAbsolutePath();
-        if(path.endsWith(".jpg")&&Global.isJPEGCorrupted(path))return true;
+        if(path.endsWith(".jpg")||path.endsWith(".jpeg")){
+            return Global.isJPEGCorrupted(path);
+        }
         BitmapFactory.Options options=new BitmapFactory.Options();
         options.inSampleSize=256;
         Bitmap bitmap=BitmapFactory.decodeFile(path,options);

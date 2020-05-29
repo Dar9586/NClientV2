@@ -30,14 +30,14 @@ public class LocalGallery extends GenericGallery{
     @NonNull private GalleryData galleryData;
     private final int min;
     private final String title;
-    private final File directory;
+    @NonNull private final File directory;
     private final boolean valid;
     private boolean hasAdvancedData=true;
     @NonNull
     private Size maxSize=new Size(0,0),minSize=new Size(Integer.MAX_VALUE,Integer.MAX_VALUE);
 
     @NonNull
-    private File[]retriveValidFiles(){
+    private File[] retrieveValidImages(){
         File[] files=directory.listFiles((dir, name) -> FILE_PATTERN.matcher(name).matches());
         return files==null?new File[0]:files;
     }
@@ -56,7 +56,7 @@ public class LocalGallery extends GenericGallery{
     }
 
 
-    public LocalGallery(File file){
+    public LocalGallery(@NonNull File file){
         directory=file;
         title=file.getName();
         galleryData=readGalleryData();
@@ -65,7 +65,7 @@ public class LocalGallery extends GenericGallery{
 
         int max=0,min=Integer.MAX_VALUE;
         //Inizio ricerca pagine
-        File[] files=retriveValidFiles();
+        File[] files= retrieveValidImages();
         //Find page with max number
         if(files.length >= 1) {
             Arrays.sort(files, (o1, o2) -> getPageFromFile(o1)-getPageFromFile(o2));
@@ -87,7 +87,7 @@ public class LocalGallery extends GenericGallery{
     }
 
     public void calculateSizes(){
-        for(File f:retriveValidFiles())
+        for(File f: retrieveValidImages())
             checkSize(f);
     }
     private void checkSize(File f){
@@ -182,7 +182,7 @@ public class LocalGallery extends GenericGallery{
     }
 
 
-
+    @NonNull
     public File getDirectory() {
         return directory;
     }
@@ -225,17 +225,13 @@ public class LocalGallery extends GenericGallery{
         if (o == null || getClass() != o.getClass()) return false;
 
         LocalGallery gallery = (LocalGallery) o;
-        if (getId() != gallery.getId()) return false;
-        if (!title.equals(gallery.title)) return false;
+
         return directory.equals(gallery.directory);
     }
 
     @Override
     public int hashCode() {
-        int result = galleryData.getId();
-        result = 31 * result + title.hashCode();
-        result = 31 * result + directory.hashCode();
-        return result;
+        return directory.hashCode();
     }
 
     @NonNull

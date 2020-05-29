@@ -176,8 +176,8 @@
     <string name="popular_tag_count">Il numero di tag popolari da mostrare mentre in modalità di ricerca avanzata</string>
     <string name="show_gallery_titles">Mostra titoli gallerie</string>
 
-    <string name="use_column_port">Selezione numeri di elementi mentre in modalità verticale</string>
-    <string name="use_column_land">Selezione numeri di elementi mentre in modalità orizzontale</string>
+    <string name="use_column_port">Numero colonne mentre in modalità verticale</string>
+    <string name="use_column_land">Numero colonne mentre in modalità orizzontale</string>
     <string name="change_language">Cambia lingua</string>
 
     <string name="tag_artist_gallery">Artista:</string>
@@ -242,7 +242,7 @@
     <string name="mobile_data_usage_setting">Utilizzo dati con connessione dati</string>
     <string name="wifi_data_usage_setting">Utilizzo dati con Wi-Fi</string>
     <string name="data_usage_thumb">Scarica solo anteprime</string>
-    <string name="data_usage_full">Alterna tra immagini complete o anteprime</string>
+    <string name="data_usage_full">Scarica immagini complete o anteprime</string>
     <string name="data_usage_no">Non scaricare le immagini</string>
     <string name="enable_network_to_continue">Abilita il download delle immagini o cambia tipo di rete per aprire l\'immagine</string>
     <string name="donate">Supporta lo sviluppatore</string>

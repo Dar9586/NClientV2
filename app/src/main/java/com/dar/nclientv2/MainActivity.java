@@ -77,7 +77,7 @@ public class MainActivity extends BaseActivity
     private static boolean firstTime=true;//true only when app starting
     private ModeType modeType = ModeType.UNKNOWN;
     private int actualPage=1,totalPage;
-    private boolean inspecting=false;
+    private boolean inspecting=false,filteringTag=false;
     public ListAdapter adapter;
 
 
@@ -301,7 +301,7 @@ public class MainActivity extends BaseActivity
     }
 
     private void useNormalMode() {
-        inspector=InspectorV3.searchInspector(this,null,null,1,Global.isByPopular(),resetDataset);
+        inspector=InspectorV3.basicInspector(this,1,resetDataset);
         modeType = ModeType.NORMAL;
     }
 
@@ -515,6 +515,10 @@ public class MainActivity extends BaseActivity
             showPageSwitcher(inspector.getPage(),inspector.getPageCount());//restart page switcher
             changeLayout(getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE);
             setting=null;
+        }else if(filteringTag){
+            inspector=InspectorV3.basicInspector(this,1,resetDataset);
+            inspector.start();
+            filteringTag=false;
         }
         invalidateOptionsMenu();
     }
@@ -625,8 +629,7 @@ public class MainActivity extends BaseActivity
                 break;
             case R.id.download_page:
                 if(inspector.getGalleries()!=null)
-                    for(GenericGallery g:inspector.getGalleries())
-                        DownloadGalleryV2.downloadGallery(this, g);
+                    showDialogDownloadAll();
                 break;
             case R.id.add_bookmark:
                 Queries.BookmarkTable.addBookmark(inspector);
@@ -640,6 +643,19 @@ public class MainActivity extends BaseActivity
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showDialogDownloadAll() {
+        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(this);
+        builder
+                .setTitle(R.string.download_all_galleries_in_this_page)
+                .setIcon(R.drawable.ic_file)
+                .setNegativeButton(R.string.cancel,null)
+                .setPositiveButton(R.string.ok, (dialog, which) -> {
+                    for(GenericGallery g:inspector.getGalleries())
+                        DownloadGalleryV2.downloadGallery(MainActivity.this, g);
+                });
+        builder.show();
     }
 
     private void updateTagStatus(MenuItem item, TagStatus ts) {
@@ -705,6 +721,7 @@ public class MainActivity extends BaseActivity
                 break;
             case R.id.tag_manager:
                 intent=new Intent(this, TagFilterActivity.class);
+                filteringTag=true;
                 startActivity(intent);
                 break;
         }

@@ -10,8 +10,8 @@ android {
         applicationId "com.dar.nclientv2"
         minSdkVersion 14
         targetSdkVersion 29
-        versionCode 232
-        versionName "2.3.2"
+        versionCode 233
+        versionName "2.3.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
 
@@ -41,7 +41,7 @@ dependencies {
     implementation "androidx.viewpager:viewpager:1.0.0"
     implementation "androidx.fragment:fragment:1.2.4"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta6'
-    implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.12.6'//Because of minium SDK
+    implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.12.6'//Because of min SDK
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
 
     implementation 'net.opacapp:multiline-collapsingtoolbar:27.1.1'

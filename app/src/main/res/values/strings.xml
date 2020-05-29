@@ -214,8 +214,8 @@
     <string name="key_column_land_down" translatable="false">column_land_down</string>
     <string name="key_column_port_favo" translatable="false">column_port_favo</string>
     <string name="key_column_land_favo" translatable="false">column_land_favo</string>
-    <string name="use_column_port">Select item count per row while in portrait</string>
-    <string name="use_column_land">Select item count per row while in landscape</string>
+    <string name="use_column_port">Column count while in portrait</string>
+    <string name="use_column_land">Column count while in landscape</string>
     <string name="key_language" translatable="false">key_language</string>
     <string name="change_language">Change language</string>
 
@@ -289,7 +289,7 @@
     <string name="key_mobile_usage" translatable="false">mobile_usage</string>
     <string name="key_wifi_usage" translatable="false">wifi_usage</string>
     <string name="data_usage_thumb">Always download thumbnail</string>
-    <string name="data_usage_full">Download thumbnail or full images in when necessary</string>
+    <string name="data_usage_full">Download thumbnail or full images</string>
     <string name="data_usage_no">Don\'t download images</string>
     <string name="enable_network_to_continue">Enable image download or change network to open the image</string>
     <string name="donate">Support the developer</string>

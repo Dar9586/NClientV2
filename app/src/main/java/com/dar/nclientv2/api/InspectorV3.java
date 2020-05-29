@@ -171,7 +171,9 @@ public class InspectorV3 extends Thread implements Parcelable {
         inspector.createUrl();
         return inspector;
     }
-
+    public static InspectorV3 basicInspector(Context context,int page,InspectorResponse response){
+        return searchInspector(context,null,null,page,Global.isByPopular(),response);
+    }
     public static InspectorV3 searchInspector(Context context, String query, Collection<Tag> tags, int page, boolean byPopular, InspectorResponse response){
         InspectorV3 inspector=new InspectorV3(context,response);
         inspector.custom=tags!=null;
@@ -220,15 +222,15 @@ public class InspectorV3 extends Thread implements Parcelable {
                  if(query!=null&&query.length()>0)builder.append("?q=").append(query).append('&');
                  else builder.append('?');
                  builder.append("page=").append(page);
-        }else if(requestType==ApiRequestType.BYTAG){
+        }/*else if(requestType==ApiRequestType.BYTAG){
                  for(Tag tt:tags)t=tt;
                  assert t!=null;
                  builder.append(t.getTypeSingleName()).append('/')
-                         .append(t.getName().replace(' ','-'));
+                         .append(t.getName().replace(' ','-').replace(".",""));
                  if(byPopular)builder.append("/popular");
                  else builder.append('/');
                  builder.append("?page=").append(page);
-        }else if(requestType==ApiRequestType.BYSEARCH){
+        }*/else if(requestType==ApiRequestType.BYSEARCH||requestType==ApiRequestType.BYTAG){
                  builder.append("search/?q=").append(query);
                  for(Tag tt:tags){
                      if(builder.toString().contains(tt.toQueryTag(TagStatus.ACCEPTED)))continue;

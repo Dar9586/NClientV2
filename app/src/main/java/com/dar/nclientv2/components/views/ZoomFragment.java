@@ -55,7 +55,18 @@ public class ZoomFragment extends Fragment {
         return fragment;
     }
     private float calculateScaleFactor(int width,int height){
-        return width*4<height?4f:1f;
+        if(height<width*2)return 1f;
+        //width:1=dWidth:x
+        //float size=((float) Global.getDeviceHeight(getActivity()))/height;//the image has been resized size times
+        //float widthTrueSize=width*size;//so also the width has been resized
+        //float finalSize=((float)Global.getDeviceWidth(getActivity())/widthTrueSize);//scale the width
+        float finalSize=
+                ((float) Global.getDeviceWidth (getActivity())*height) /
+                ((float) Global.getDeviceHeight(getActivity())*width);
+        finalSize=Math.max(finalSize,1f);
+        finalSize=Math.min(finalSize,4f);
+        LogUtility.d("Final scale: "+finalSize);
+        return (float)Math.floor(finalSize);
     }
     @Nullable
     @Override

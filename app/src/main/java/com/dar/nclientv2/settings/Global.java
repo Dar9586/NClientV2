@@ -17,6 +17,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.util.DisplayMetrics;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -125,7 +126,6 @@ public class Global {
         ZIPFOLDER =new File(MAINFOLDER,"ZIP");
     }
 
-
     public static final String LOGTAG="NCLIENTLOG";
     public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf",CHANNEL_ID3="create_zip";
     private static Language onlyLanguage;
@@ -137,6 +137,7 @@ public class Global {
     private static int maxHistory,columnCount,maxId,galleryWidth=-1, galleryHeight =-1;
     private static int colPortHist,colLandHist,colPortMain,colLandMain,colPortDownload,colLandDownload,colLandFavorite,colPortFavorite;
     private static Point screenSize;
+    private static DisplayMetrics lastDisplay=new DisplayMetrics();
     @Nullable
     public static OkHttpClient getClient(){
         return client;
@@ -194,7 +195,16 @@ public class Global {
             case "japanese":titleType=  TitleType.JAPANESE;break;
         }
     }
-
+    public static int getDeviceWidth(@Nullable Activity activity){
+        if (activity != null)
+            activity.getWindowManager().getDefaultDisplay().getMetrics(lastDisplay);
+        return lastDisplay.widthPixels;
+    }
+    public static int getDeviceHeight(@Nullable Activity activity){
+        if (activity != null)
+            activity.getWindowManager().getDefaultDisplay().getMetrics(lastDisplay);
+        return lastDisplay.heightPixels;
+    }
     public static void initFromShared(@NonNull Context context){
         SharedPreferences shared=context.getSharedPreferences("Settings", 0);
         initHttpClient(context);
@@ -498,8 +508,11 @@ public class Global {
 
     public static void recursiveDelete(File file){
         if(file==null||!file.exists())return;
-        if(file.isFile()){file.delete();return;}
-        for(File x:file.listFiles())recursiveDelete(x);
+        if(file.isDirectory()){
+            File[] files = file.listFiles();
+            if(files==null)return;
+            for(File x:files)recursiveDelete(x);
+        }
         file.delete();
     }
 

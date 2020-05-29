@@ -75,13 +75,14 @@ public class Tag implements Parcelable{
 
     public String toQueryTag(TagStatus status){
         StringBuilder builder=new StringBuilder();
-        boolean hasSpace=name.contains(" ");
         String escapedName=name.replace(' ','-');
         if(status==TagStatus.AVOIDED)builder.append('-');
-        builder.append(type.getSingle()).append(':');
-        if(hasSpace)builder.append('"');
-        builder.append(escapedName);
-        if(hasSpace)builder.append('"');
+        builder
+            .append(type.getSingle())
+            .append(':')
+            .append('"')
+            .append(escapedName)
+            .append('"');
         return builder.toString();
     }
     public String toQueryTag(){

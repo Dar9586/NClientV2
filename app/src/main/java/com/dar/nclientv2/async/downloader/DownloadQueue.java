@@ -66,8 +66,9 @@ public class DownloadQueue {
     public static void remove(GalleryDownloaderV2 downloader,boolean cancel) {
         GalleryDownloaderManager manager=findManagerFromDownloader(downloader);
         if(manager==null)return;
-        if(cancel) downloader.setStatus(GalleryDownloaderV2.Status.CANCELED);
-            downloadQueue.remove(manager);
+        if(cancel)
+            downloader.setStatus(GalleryDownloaderV2.Status.CANCELED);
+        downloadQueue.remove(manager);
     }
 
     public static void givePriority(GalleryDownloaderV2 downloader) {

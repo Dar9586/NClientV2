@@ -1,14 +1,12 @@
 package com.dar.nclientv2.loginapi;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.utility.CSRFGet;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 
@@ -17,6 +15,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class LoginThread extends Thread {
+    private static final Object lock=new Object();
     private static final String LOGIN_URL = Utility.getBaseUrl() +"login/";
     private static final String LOGOUT_URL = Utility.getBaseUrl() +"logout/";
     public interface LoginResponse{
@@ -25,6 +24,7 @@ public class LoginThread extends Thread {
     private final FormBody.Builder requestBody=new FormBody.Builder();
     private final boolean login;
     private final LoginResponse loginResponse;
+    @Nullable private String token=null;
     public LoginThread(boolean login,@NonNull LoginResponse loginResponse) {
         this.login = login;
         this.loginResponse=loginResponse;
@@ -45,17 +45,50 @@ public class LoginThread extends Thread {
         }
         loginResponse.responseCode(code);
     }
+
+    private void lockWait(){
+        synchronized (lock){
+            try {
+                lock.wait(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    private void lockNotify(){
+        synchronized (lock){
+            lock.notify();
+        }
+    }
+
+    private void getToken(String url){
+        new CSRFGet(new CSRFGet.Response() {
+            @Override
+            public void onResponse(String token) {
+                LoginThread.this.token=token;
+                lockNotify();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                LoginThread.this.token=null;
+                lockNotify();
+            }
+        },url,"csrfmiddlewaretoken").start();
+    }
+
     private int makeRequest(String url) throws IOException {
-        Response response = Global.getClient().newCall(new Request.Builder().url(url).build()).execute();
-        Document doc=Jsoup.parse(response.body().byteStream(),null,Utility.getBaseUrl());
-        response.close();
-        Element ele=doc.getElementsByAttributeValue("name","csrfmiddlewaretoken").first();
-        if(ele==null)return 0;
-        String token=ele.attr("value");
+        getToken(url);
+        lockWait();
+        if(token==null)return 0;
         requestBody.add("csrfmiddlewaretoken",token);
         LogUtility.d("Found token: "+token);
         LogUtility.d(requestBody);
-        response=Global.getClient().newCall(
+        return makeEffectiveRequest(url);
+    }
+
+    private int makeEffectiveRequest(String url) throws IOException {
+        Response response=Global.getClient().newCall(
                 new Request.Builder()
                         .addHeader("Referer", url)
                         .url(url)
@@ -66,6 +99,7 @@ public class LoginThread extends Thread {
         response.close();
         return responseCode;
     }
+
     private int login() throws IOException {
         return makeRequest(LOGIN_URL);
     }

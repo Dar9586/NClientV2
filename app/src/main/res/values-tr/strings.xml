@@ -158,7 +158,6 @@
     <string name="volume_change_setting">Sayfayı ses tuşlarıyla değiştir</string>
     <string name="popular_tag_count">Popüler etiketler Ayrıntılı aramada gösterilecek</string>
     <string name="show_gallery_titles">Manga başlıklarını göster</string>
-    <string name="use_column_land">Yatay konumda satır başına öğe sayısını seçin</string>
     <string name="change_language">Dil değiştir</string>
 
     <string name="tag_artist_gallery">Sanatçı:</string>
@@ -249,7 +248,6 @@
     <string name="comments">Yorumlar</string>
     <string name="install">Yükle</string>
     <string name="bookmark_description">Yer imi açıklaması</string>
-    <string name="use_column_port">Dikey konumda satır başına öğe sayısını seçin</string>
     <string name="history_column_count">Tarihçe sütun sayısını seç</string>
     <string name="setting_pin">Uygulamaya girmek için PIN`i aktifleştir</string>
     <string name="setting_alternative">nhentai.net websitesini yasaklayan ülkelerde nhentai.net yerine nhent.ai kullan</string>
@@ -259,7 +257,6 @@
     <string name="mobile_data_usage_setting">Mobil veri kullanım ayarları</string>
     <string name="wifi_data_usage_setting">Wi-Fi kullanım ayarları</string>
     <string name="data_usage_thumb">Kapak fotoğraflarını her zaman indir</string>
-    <string name="data_usage_full">Kapak fotoğraflarını ve ya sayfaları lazım olduğunda indir</string>
     <string name="data_usage_no">Sayfaları indirme</string>
     <string name="enable_network_to_continue">Sayfayı açmak için veri kullanım ayarlarını değiştirin ve ya bağlı olduğunuz ağı değiştirin</string>
     <string name="donate">Geliştiriciyi destekle</string>
@@ -267,4 +264,9 @@
     <string name="id_copied_to_clipboard">Manga ID`si panoya kopyalandı</string>
     <string name="copied_to_clipboard">Panoya kopyalandı</string>
     <string name="maximum_notification_count">Maksimum bildirim sayısı</string>
+
+    <string name="data_usage_full">Kapak fotoğraflarını veya sayfaları indir</string>
+    <string name="use_column_port">Dikey konumda satır başına öğe sayısını seçin</string>
+    <string name="use_column_land">Yatay konumda satır başına öğe sayısını seçin</string>
+
 </resources>

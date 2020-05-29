@@ -294,10 +294,7 @@ public class GalleryActivity extends BaseActivity{
                 });
                 response.close();
             }
-
-            @Override
-            public void onError() {}
-        },startUrl).start();
+        },startUrl,"csrfmiddlewaretoken").start();
 
     }
 
