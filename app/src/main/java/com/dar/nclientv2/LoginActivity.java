@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.widget.Button;
@@ -59,6 +60,13 @@ public class LoginActivity extends AppCompatActivity {
                     password.setInputType(password.getInputType()^InputType.TYPE_TEXT_VARIATION_PASSWORD);
                     return true;
                 }
+            }
+            return false;
+        });
+        password.setOnKeyListener((v, keyCode, event) -> {
+            if(event.getAction()==KeyEvent.ACTION_DOWN&&keyCode==KeyEvent.KEYCODE_ENTER){
+                Login.login(LoginActivity.this,username.getText().toString(),password.getText().toString());
+                return true;
             }
             return false;
         });

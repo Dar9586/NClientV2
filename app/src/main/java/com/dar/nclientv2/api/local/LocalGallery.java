@@ -180,7 +180,12 @@ public class LocalGallery extends GenericGallery{
     public int getMin() {
         return min;
     }
-
+    @Nullable
+    @Override
+    public String getPageURI(int page) {
+        File p=getPage(page);
+        return p==null?null:p.getAbsolutePath();
+    }
 
     @NonNull
     public File getDirectory() {

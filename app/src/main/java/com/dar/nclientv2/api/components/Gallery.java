@@ -121,6 +121,11 @@ public class Gallery extends GenericGallery{
     private Page getPage(int index){
         return galleryData.getPage(index);
     }
+    @NonNull
+    @Override
+    public String getPageURI(int page) {
+        return getPageUrl(page);
+    }
 
     public SimpleGallery toSimpleGallery() {
         return new SimpleGallery(this);

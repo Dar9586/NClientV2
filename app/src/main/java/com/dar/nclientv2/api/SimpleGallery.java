@@ -41,6 +41,11 @@ public class SimpleGallery extends GenericGallery {
         thumbnail=ImageExt.values()[in.readByte()];
         language=Language.values()[in.readByte()];
     }
+    @NonNull
+    @Override
+    public String getPageURI(int page) {
+        return getThumbnail();
+    }
 
     public SimpleGallery(Cursor c) {
         title=c.getString(c.getColumnIndex(Queries.HistoryTable.TITLE));

@@ -32,6 +32,7 @@ import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TitleType;
+import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.components.classes.CustomSSLSocketFactory;
 import com.dar.nclientv2.loginapi.LoadTags;
 import com.dar.nclientv2.loginapi.User;
@@ -44,9 +45,7 @@ import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersisto
 
 import org.acra.ACRA;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Locale;
@@ -476,16 +475,9 @@ public class Global {
         File[] tmp=DOWNLOADFOLDER.listFiles();
         if(tmp!=null)
         for (File tmp2 : tmp) {
-            if (tmp2.isDirectory() && (tmp2 = new File(tmp2, ".nomedia")).exists()) {
-                try {
-                    BufferedReader br = new BufferedReader(new FileReader(tmp2));
-                    String h = br.readLine();
-                    br.close();
-                    if (h!=null&&h.equals("" + id))return tmp2.getParentFile();
-
-                } catch (IOException e) {
-                    LogUtility.e(e.getLocalizedMessage(),e);
-                }
+            if (tmp2.isDirectory()) {
+                LocalGallery gallery=new LocalGallery(tmp2);
+                if(gallery.getId()==id)return gallery.getDirectory();
             }
         }
         return null;

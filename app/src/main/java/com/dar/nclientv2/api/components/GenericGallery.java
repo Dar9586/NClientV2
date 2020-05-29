@@ -3,6 +3,7 @@ package com.dar.nclientv2.api.components;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.dar.nclientv2.components.classes.Size;
 import com.dar.nclientv2.utility.Utility;
@@ -23,6 +24,8 @@ public abstract class GenericGallery implements Parcelable{
     public abstract List<Comment> getComments();
     public abstract Size getMaxSize();
     public abstract Size getMinSize();
+    @Nullable
+    public abstract String getPageURI(int page);
     public String sharePageUrl(int i) {
         return String.format(Locale.US,"https://"+ Utility.getHost()+"/g/%d/%d/",getId(),i+1);
     }
