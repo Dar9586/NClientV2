@@ -57,6 +57,7 @@ public class GalleryData implements Parcelable {
         titles[2]=cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.TITLE_ENG));
         uploadDate=new Date(cursor.getLong(Queries.getColumnFromName(cursor,Queries.GalleryTable.UPLOAD)));
         readPagePath(cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.PAGES)));
+        pageCount=pages.size();
         this.tags=tagList;
     }
 
