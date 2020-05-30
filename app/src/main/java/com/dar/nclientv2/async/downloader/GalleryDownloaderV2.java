@@ -59,8 +59,8 @@ public class GalleryDownloaderV2 {
     private final int id;
     private int start=-1,end=-1;
     private Gallery gallery;
-    private CopyOnWriteArraySet<DownloadObserver> observers= new CopyOnWriteArraySet<>();
-    private List<PageContainer> urls=new ArrayList<>();
+    private final CopyOnWriteArraySet<DownloadObserver> observers= new CopyOnWriteArraySet<>();
+    private final List<PageContainer> urls=new ArrayList<>();
     private File folder;
     private boolean initialized=false;
 

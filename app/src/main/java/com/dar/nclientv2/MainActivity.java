@@ -53,7 +53,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -81,7 +80,7 @@ public class MainActivity extends BaseActivity
     public ListAdapter adapter;
 
 
-    private InspectorV3.InspectorResponse
+    private final InspectorV3.InspectorResponse
             resetDataset=new InspectorV3.DefaultInspectorResponse() {
         @Override
         public void onSuccess(List<GenericGallery> galleries) {
@@ -99,8 +98,8 @@ public class MainActivity extends BaseActivity
         public void onEnd() {
             runOnUiThread(()->refresher.setRefreshing(false));
         }
-    },
-            addDataset=new InspectorV3.DefaultInspectorResponse() {
+    };
+    private final InspectorV3.InspectorResponse addDataset=new InspectorV3.DefaultInspectorResponse() {
         @Override
         public void onSuccess(List<GenericGallery> galleries) {
             adapter.addGalleries(galleries);
@@ -115,8 +114,8 @@ public class MainActivity extends BaseActivity
             runOnUiThread(()->refresher.setRefreshing(false));
             inspecting=false;
         }
-    },
-            startGallery=new InspectorV3.DefaultInspectorResponse() {
+    };
+    private final InspectorV3.InspectorResponse startGallery=new InspectorV3.DefaultInspectorResponse() {
         @Override
         public void onSuccess(List<GenericGallery> galleries) {
             Gallery g=galleries.size()==1?(Gallery) galleries.get(0):Gallery.emptyGallery();
@@ -148,8 +147,8 @@ public class MainActivity extends BaseActivity
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
 
-    private Handler changeLanguageTimeHandler=new Handler();
-    Runnable changeLanguageRunnable=() -> {
+    private final Handler changeLanguageTimeHandler=new Handler();
+    final Runnable changeLanguageRunnable=() -> {
         useNormalMode();
         inspector.start();
     };
@@ -307,6 +306,7 @@ public class MainActivity extends BaseActivity
 
     private void useBookmarkMode(Intent intent, String packageName) {
         inspector=intent.getParcelableExtra(packageName+".INSPECTOR");
+        assert inspector != null;
         inspector.initialize(this,resetDataset);
         modeType = ModeType.BOOKMARK;
         ApiRequestType type=inspector.getRequestType();
@@ -353,7 +353,7 @@ public class MainActivity extends BaseActivity
 
     private void useTagMode(Intent intent, String packageName) {
         Tag t=intent.getParcelableExtra(packageName+".TAG");
-        inspector=InspectorV3.searchInspector(this,null,new HashSet<>(Collections.singleton(t)),1,Global.isByPopular(),resetDataset);
+        inspector=InspectorV3.tagInspector(this,t,1,Global.isByPopular(),resetDataset);
         modeType = ModeType.TAG;
     }
 
@@ -401,7 +401,7 @@ public class MainActivity extends BaseActivity
         boolean byPop=datas.size()==3;
         Tag tag=Queries.TagTable.getTagFromTagName(query);
         if(tag==null) tag=new Tag(query,-1, SpecialTagIds.INVALID_ID,type,TagStatus.DEFAULT);
-        inspector=InspectorV3.searchInspector(this,null,new HashSet<>(Collections.singleton(tag)),1,byPop,resetDataset);
+        inspector=InspectorV3.tagInspector(this,tag,1,byPop,resetDataset);
         modeType=ModeType.TAG;
     }
 

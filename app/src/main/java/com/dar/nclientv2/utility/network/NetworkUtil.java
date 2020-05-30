@@ -15,7 +15,6 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 
 import com.dar.nclientv2.utility.LogUtility;
-@SuppressWarnings("deprecation")
 public class NetworkUtil {
     public enum ConnectionType{WIFI,CELLULAR}
     private volatile static ConnectionType type=ConnectionType.CELLULAR;

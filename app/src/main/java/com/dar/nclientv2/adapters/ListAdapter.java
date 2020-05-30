@@ -31,7 +31,7 @@ import java.util.Locale;
 
 public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder> {
 
-    private List<SimpleGallery> mDataset;
+    private final List<SimpleGallery> mDataset;
     private final BaseActivity context;
     private final boolean storagePermission;
     private final String queryString;

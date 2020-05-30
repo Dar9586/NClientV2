@@ -60,12 +60,13 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             R.string.tag_language_gallery,
             R.string.tag_category_gallery,
     };
-    private Size maxSize,minSize;
+    private final Size maxSize;
+    private final Size minSize;
     private Size maxImageSize =null;
     private Policy policy;
     private static final int TOLERANCE=1000;
     private int colCount;
-    private SparseIntArray angles=new SparseIntArray();
+    private final SparseIntArray angles=new SparseIntArray();
     public Type positionToType(int pos){
         if(pos == 0) return Type.TAG;
         if(pos > gallery.getPageCount()) return Type.RELATED;
@@ -144,9 +145,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         }
     }
 
-    public GenericGallery getGallery(){
-        return gallery;
-    }
 
     private void loadRelatedLayout(ViewHolder holder){
         LogUtility.d("Called RElated");
@@ -372,8 +370,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             }else ImageDownloadUtility.loadImage(R.mipmap.ic_launcher, imgView);
         }
     }
-    private HashMap<ImageView, BitmapTarget>map=new HashMap<>(5);
-    private HashSet<BitmapTarget>toDelete=new HashSet<>();
+    private final HashMap<ImageView, BitmapTarget>map=new HashMap<>(5);
+    private final HashSet<BitmapTarget>toDelete=new HashSet<>();
     @Override
     public void onViewRecycled(@NonNull ViewHolder holder) {
         final ImageView imgView=holder.master.findViewById(R.id.image);

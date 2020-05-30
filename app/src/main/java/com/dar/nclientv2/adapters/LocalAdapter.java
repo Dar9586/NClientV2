@@ -44,9 +44,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> implements Filterable {
     private final LocalActivity context;
     private List<Object> filter;
-    private List<LocalGallery> dataset;
-    private List<GalleryDownloaderV2> galleryDownloaders;
-    private DownloadObserver observer=new DownloadObserver() {
+    private final List<LocalGallery> dataset;
+    private final List<GalleryDownloaderV2> galleryDownloaders;
+    private final DownloadObserver observer=new DownloadObserver() {
         private void updatePosition(GalleryDownloaderV2 downloader){
             final int id=filter.indexOf(downloader);
             if(id>=0)context.runOnUiThread(() -> notifyItemChanged(id));
@@ -93,7 +93,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         return new CopyOnWriteArrayList<>(arr);
     }
 
-    private Comparator<Object>comparator= (o1, o2) -> {
+    private final Comparator<Object>comparator= (o1, o2) -> {
         if(o1==o2)return 0;
         boolean b1=o1 instanceof LocalGallery;
         boolean b2=o2 instanceof LocalGallery;
@@ -153,9 +153,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
                 else holder.layout.performClick();
             }else holder.layout.performClick();
         });
-        holder.layout.setOnClickListener(v -> {
-            startGallery(ent);
-        });
+        holder.layout.setOnClickListener(v -> startGallery(ent));
         holder.layout.setOnLongClickListener(v -> {
             createContextualMenu(holder.getAdapterPosition());
             return true;
@@ -240,9 +238,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         final LocalGallery gallery=(LocalGallery)filter.get(pos);
         MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(context);
         builder.setTitle(R.string.create_pdf).setMessage(context.getString(R.string.create_pdf_format,gallery.getTitle()));
-        builder.setPositiveButton(R.string.yes, (dialog, which) -> {
-            CreatePDF.startWork(context,gallery);
-        }).setNegativeButton(R.string.no,null).setCancelable(true);
+        builder.setPositiveButton(R.string.yes, (dialog, which) -> CreatePDF.startWork(context,gallery)).setNegativeButton(R.string.no,null).setCancelable(true);
         builder.show();
     }
     private void createContextualMenu(final int pos){
@@ -265,9 +261,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         final LocalGallery gallery=(LocalGallery)filter.get(pos);
         MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(context);
         builder.setTitle(R.string.create_zip).setMessage(context.getString(R.string.create_zip_format,gallery.getTitle()));
-        builder.setPositiveButton(R.string.yes, (dialog, which) -> {
-            CreateZIP.startWork(context,gallery);
-        }).setNegativeButton(R.string.no,null).setCancelable(true);
+        builder.setPositiveButton(R.string.yes, (dialog, which) -> CreateZIP.startWork(context,gallery)).setNegativeButton(R.string.no,null).setCancelable(true);
         builder.show();
 
     }

@@ -34,7 +34,7 @@ public class CSRFGet extends Thread {
             okhttp3.Response response=Global.getClient().newCall(new Request.Builder().url(url).build()).execute();
             if(response.body()==null)throw new NullPointerException("Error retrieving url");
             Elements csrfContainers= Jsoup.parse(response.body().byteStream(), "UTF-8", Utility.getBaseUrl())
-                    .getElementsByAttributeValue("name","csrfmiddlewaretoken");
+                    .getElementsByAttributeValue("name",csrfName);
             response.close();
             if(csrfContainers==null)throw new NullPointerException("Element not found");
             String token=csrfContainers.attr("value");

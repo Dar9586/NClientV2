@@ -25,12 +25,11 @@ import java.util.Locale;
 
 public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder> implements Filterable{
     private final FavoriteActivity activity;
-    private final boolean online;
     private CharSequence lastQuery;
     private Cursor cursor;
     private boolean force=false;
     public FavoriteAdapter(FavoriteActivity activity) {
-        this.online=false;
+        boolean online = false;
         this.activity=activity;
         this.lastQuery="";
         setHasStableIds(true);

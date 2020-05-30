@@ -7,7 +7,7 @@ import androidx.appcompat.widget.SearchView;
 
 public class CustomSearchView extends SearchView {
     private SearchView.SearchAutoComplete mSearchSrcTextView;
-    private OnQueryTextListener listener;
+
     public CustomSearchView(Context context) {
         super(context);
     }
@@ -23,7 +23,6 @@ public class CustomSearchView extends SearchView {
     @Override
     public void setOnQueryTextListener(OnQueryTextListener listener) {
         super.setOnQueryTextListener(listener);
-        this.listener = listener;
         mSearchSrcTextView = this.findViewById(androidx.appcompat.R.id.search_src_text);
         mSearchSrcTextView.setOnEditorActionListener((textView, i, keyEvent) -> {
             if (listener != null) {

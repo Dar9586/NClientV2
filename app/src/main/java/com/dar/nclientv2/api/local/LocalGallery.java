@@ -7,7 +7,6 @@ import android.util.JsonReader;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.dar.nclientv2.api.components.Comment;
 import com.dar.nclientv2.api.components.GalleryData;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.enums.SpecialTagIds;
@@ -19,7 +18,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -27,7 +25,7 @@ import java.util.regex.Pattern;
 public class LocalGallery extends GenericGallery{
     private static final Pattern FILE_PATTERN=Pattern.compile("^(\\d{3,9})\\.(gif|png|jpg)$",Pattern.CASE_INSENSITIVE);
 
-    @NonNull private GalleryData galleryData;
+    @NonNull private final GalleryData galleryData;
     private final int min;
     private final String title;
     @NonNull private final File directory;
@@ -100,10 +98,6 @@ public class LocalGallery extends GenericGallery{
         if(options.outHeight>maxSize.getHeight())maxSize.setHeight(options.outHeight);
         if(options.outHeight<minSize.getHeight())minSize.setHeight(options.outHeight);
     }
-    @Override
-    public List<Comment> getComments() {
-        return null;
-    }
     @NonNull
     @Override
     public Size getMaxSize() {
@@ -148,11 +142,6 @@ public class LocalGallery extends GenericGallery{
             return new LocalGallery[size];
         }
     };
-
-    @Override
-    public String getThumbnail() {
-        return null;
-    }
 
     @Override
     public Type getType() {

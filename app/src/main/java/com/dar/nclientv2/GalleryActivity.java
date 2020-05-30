@@ -34,7 +34,6 @@ import com.google.android.material.snackbar.Snackbar;
 
 import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 
-import java.io.IOException;
 import java.util.List;
 
 import okhttp3.FormBody;
@@ -267,33 +266,30 @@ public class GalleryActivity extends BaseActivity{
         String startUrl=Utility.getBaseUrl()+"g/"+gallery.getId()+"/";
         String url=startUrl+"favorite";
         LogUtility.d("Calling: "+url);
-        new CSRFGet(new CSRFGet.Response() {
-            @Override
-            public void onResponse(String token)throws IOException {
-                LogUtility.d("FIND TOKEN: "+token);
-                RequestBody formBody = new FormBody.Builder()
-                        .add("WTF","OK")
-                        .build();
-                assert Global.getClient() != null;
-                Response response=Global.getClient().newCall(
-                        new Request.Builder()
-                                .addHeader("Referer",startUrl)
-                                .addHeader("X-CSRFToken",token)
-                                .addHeader("X-Requested-With","XMLHttpRequest")
-                                .url(url)
-                                .post(formBody)
-                                .build()
-                ).execute();
+        new CSRFGet(token -> {
+            LogUtility.d("FIND TOKEN: "+token);
+            RequestBody formBody = new FormBody.Builder()
+                    .add("WTF","OK")
+                    .build();
+            assert Global.getClient() != null;
+            Response response=Global.getClient().newCall(
+                    new Request.Builder()
+                            .addHeader("Referer",startUrl)
+                            .addHeader("X-CSRFToken",token)
+                            .addHeader("X-Requested-With","XMLHttpRequest")
+                            .url(url)
+                            .post(formBody)
+                            .build()
+            ).execute();
 
-                String resp=response.body().string();
-                LogUtility.d("Called: "+response.request().method()+response.request().url().toString()+response.code()+resp);
-                final boolean removedFromFavorite=resp.contains("false");
-                GalleryActivity.this.runOnUiThread(() -> {
-                    item.setIcon(removedFromFavorite?R.drawable.ic_star_border:R.drawable.ic_star);
-                    item.setTitle(removedFromFavorite?R.string.add_to_online_favorite:R.string.remove_from_online_favorites);
-                });
-                response.close();
-            }
+            String resp=response.body().string();
+            LogUtility.d("Called: "+response.request().method()+response.request().url().toString()+response.code()+resp);
+            final boolean removedFromFavorite=resp.contains("false");
+            GalleryActivity.this.runOnUiThread(() -> {
+                item.setIcon(removedFromFavorite?R.drawable.ic_star_border:R.drawable.ic_star);
+                item.setTitle(removedFromFavorite?R.string.add_to_online_favorite:R.string.remove_from_online_favorites);
+            });
+            response.close();
         },startUrl,"csrfmiddlewaretoken").start();
 
     }

@@ -6,7 +6,6 @@ import android.os.Parcel;
 
 import androidx.annotation.NonNull;
 
-import com.dar.nclientv2.api.components.Comment;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GalleryData;
 import com.dar.nclientv2.api.components.GenericGallery;
@@ -24,7 +23,6 @@ import com.dar.nclientv2.utility.Utility;
 
 import org.jsoup.nodes.Element;
 
-import java.util.List;
 import java.util.Locale;
 
 public class SimpleGallery extends GenericGallery {
@@ -114,11 +112,6 @@ public class SimpleGallery extends GenericGallery {
     @NonNull
     public String getTitle() {
         return title;
-    }
-
-    @Override
-    public List<Comment> getComments() {
-        return null;
     }
 
     @Override

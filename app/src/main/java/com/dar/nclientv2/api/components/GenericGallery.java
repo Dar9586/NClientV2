@@ -8,11 +8,9 @@ import androidx.annotation.Nullable;
 import com.dar.nclientv2.components.classes.Size;
 import com.dar.nclientv2.utility.Utility;
 
-import java.util.List;
 import java.util.Locale;
 
 public abstract class GenericGallery implements Parcelable{
-    public abstract String getThumbnail();
 
     public enum Type{COMPLETE,LOCAL,SIMPLE}
     public abstract int getId();
@@ -21,7 +19,6 @@ public abstract class GenericGallery implements Parcelable{
     public abstract boolean isValid();
     @NonNull
     public abstract String getTitle();
-    public abstract List<Comment> getComments();
     public abstract Size getMaxSize();
     public abstract Size getMinSize();
     @Nullable

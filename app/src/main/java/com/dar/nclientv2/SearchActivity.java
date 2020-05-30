@@ -42,9 +42,9 @@ import java.util.Locale;
 
 public class SearchActivity extends AppCompatActivity {
     public static final int CUSTOM_ID_START=100000000;
-    private ArrayList<ChipTag>tags=new ArrayList<>();
+    private final ArrayList<ChipTag>tags=new ArrayList<>();
     private ChipGroup[] groups;
-    private Chip[] addChip =new Chip[TagType.values.length];
+    private final Chip[] addChip =new Chip[TagType.values.length];
     private SearchView searchView;
     private AppCompatAutoCompleteTextView autoComplete;
     private TagType loadedTag=null;

@@ -79,9 +79,10 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        AppCompatImageButton deleteButton;
-        TextView queryText, pageLabel;
-        ConstraintLayout rootLayout;
+        final AppCompatImageButton deleteButton;
+        final TextView queryText;
+        final TextView pageLabel;
+        final ConstraintLayout rootLayout;
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             deleteButton = itemView.findViewById(R.id.remove_button);

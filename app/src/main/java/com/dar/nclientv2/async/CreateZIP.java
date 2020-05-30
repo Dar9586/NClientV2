@@ -25,7 +25,7 @@ public class CreateZIP extends JobIntentService {
 
     private int notId;
     private NotificationCompat.Builder notification;
-    private byte[]buffer=new byte[1024];
+    private final byte[]buffer=new byte[1024];
     public CreateZIP() {
     }
     public static void startWork(Context context,LocalGallery gallery){

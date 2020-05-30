@@ -53,7 +53,26 @@ import java.util.Locale;
 import okhttp3.OkHttpClient;
 
 public class Global {
+    public static OkHttpClient client=null;
+    public static  File OLD_GALLERYFOLDER;
+    public static  File MAINFOLDER;
+    public static  File DOWNLOADFOLDER;
+    public static  File SCREENFOLDER;
+    public static  File PDFFOLDER;
+    public static  File UPDATEFOLDER;
+    public static  File ZIPFOLDER;
+    public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf",CHANNEL_ID3="create_zip";
 
+    private static Language onlyLanguage;
+    private static TitleType titleType;
+    private static boolean alternativeSite,volumeOverride,zoomOneColumn,byPopular,keepHistory,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
+    private static ThemeScheme theme;
+    private static DataUsageType usageMobile, usageWifi;
+    private static String lastVersion;
+    private static int maxHistory,columnCount,maxId,galleryWidth=-1, galleryHeight =-1;
+    private static int colPortHist,colLandHist,colPortMain,colLandMain,colPortDownload,colLandDownload,colLandFavorite,colPortFavorite;
+    private static Point screenSize;
+    private static final DisplayMetrics lastDisplay=new DisplayMetrics();
 
 
     public static long recursiveSize(File path) {
@@ -102,14 +121,7 @@ public class Global {
     public enum ThemeScheme{LIGHT,DARK}
     public enum DataUsageType{NONE,THUMBNAIL,FULL}
 
-    public static OkHttpClient client=null;
-    public static  File OLD_GALLERYFOLDER;
-    public static  File MAINFOLDER;
-    public static  File DOWNLOADFOLDER;
-    public static  File SCREENFOLDER;
-    public static  File PDFFOLDER;
-    public static  File UPDATEFOLDER;
-    public static  File ZIPFOLDER;
+
 
     private static void initFilesTree(Context context){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
@@ -125,18 +137,7 @@ public class Global {
         ZIPFOLDER =new File(MAINFOLDER,"ZIP");
     }
 
-    public static final String LOGTAG="NCLIENTLOG";
-    public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf",CHANNEL_ID3="create_zip";
-    private static Language onlyLanguage;
-    private static TitleType titleType;
-    private static boolean alternativeSite,volumeOverride,zoomOneColumn,byPopular,keepHistory,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
-    private static ThemeScheme theme;
-    private static DataUsageType usageMobile, usageWifi;
-    private static String lastVersion;
-    private static int maxHistory,columnCount,maxId,galleryWidth=-1, galleryHeight =-1;
-    private static int colPortHist,colLandHist,colPortMain,colLandMain,colPortDownload,colLandDownload,colLandFavorite,colPortFavorite;
-    private static Point screenSize;
-    private static DisplayMetrics lastDisplay=new DisplayMetrics();
+
     @Nullable
     public static OkHttpClient getClient(){
         return client;
@@ -166,16 +167,8 @@ public class Global {
         return screenSize.x;
     }
 
-    public static void setGalleryWidth(int galleryWidth){
-        Global.galleryWidth = galleryWidth;
-    }
-
     public static int getGalleryHeight(){
         return galleryHeight;
-    }
-
-    public static void setGalleryHeigth(int galleryHeight){
-        Global.galleryHeight = galleryHeight;
     }
 
     public static int getMaxHistory() {
@@ -195,14 +188,16 @@ public class Global {
         }
     }
     public static int getDeviceWidth(@Nullable Activity activity){
-        if (activity != null)
-            activity.getWindowManager().getDefaultDisplay().getMetrics(lastDisplay);
+        getDeviceMetrics(activity);
         return lastDisplay.widthPixels;
     }
     public static int getDeviceHeight(@Nullable Activity activity){
+        getDeviceMetrics(activity);
+        return lastDisplay.heightPixels;
+    }
+    private static void getDeviceMetrics(Activity activity){
         if (activity != null)
             activity.getWindowManager().getDefaultDisplay().getMetrics(lastDisplay);
-        return lastDisplay.heightPixels;
     }
     public static void initFromShared(@NonNull Context context){
         SharedPreferences shared=context.getSharedPreferences("Settings", 0);
@@ -429,7 +424,7 @@ public class Global {
         DrawableCompat.setTint(drawable,theme== ThemeScheme.LIGHT?Color.BLACK:Color.WHITE);
     }
 
-    private static void loadNotificationChannel(@NonNull Context context){
+    private static void loadNotificationChannel(@NonNull Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel1 = new NotificationChannel(CHANNEL_ID1, context.getString(R.string.channel1_name), NotificationManager.IMPORTANCE_DEFAULT);
             NotificationChannel channel2 = new NotificationChannel(CHANNEL_ID2, context.getString(R.string.channel2_name), NotificationManager.IMPORTANCE_DEFAULT);
@@ -438,7 +433,7 @@ public class Global {
             channel2.setDescription(context.getString(R.string.channel2_description));
             channel3.setDescription(context.getString(R.string.channel3_description));
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
-            if (notificationManager != null){
+            if (notificationManager != null) {
                 notificationManager.createNotificationChannel(channel1);
                 notificationManager.createNotificationChannel(channel2);
                 notificationManager.createNotificationChannel(channel3);

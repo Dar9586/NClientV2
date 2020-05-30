@@ -253,6 +253,7 @@
     <string name="id_copied_to_clipboard">ID已複製至剪貼板</string>
     <string name="copied_to_clipboard">複製至剪貼板</string>
     <string name="maximum_notification_count">最大通知數</string>
+    <string name="copy_settings_to_clipboard">Copy settings to clipboard</string>
 
 
     <string-array name="language">

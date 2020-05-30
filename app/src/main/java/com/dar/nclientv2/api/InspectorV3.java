@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,6 +40,16 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class InspectorV3 extends Thread implements Parcelable {
+
+    private boolean byPopular,custom;
+    private int page,pageCount=-1,id;
+    private String query,url;
+    private ApiRequestType requestType;
+    private Set<Tag> tags;
+    private List<GenericGallery> galleries=null;
+    private InspectorResponse response;
+    private WeakReference<Context> context;
+
     protected InspectorV3(Parcel in) {
         byPopular = in.readByte() != 0;
         custom = in.readByte() != 0;
@@ -84,7 +95,7 @@ public class InspectorV3 extends Thread implements Parcelable {
         dest.writeInt(id);
         dest.writeString(query);
         dest.writeString(url);
-        dest.writeByte((byte) requestType.ordinal());
+        dest.writeByte(requestType.ordinal());
         if(galleries==null||galleries.size()==0)dest.writeByte((byte)GenericGallery.Type.SIMPLE.ordinal());
         else dest.writeByte((byte)galleries.get(0).getType().ordinal());
         dest.writeTypedList(galleries);
@@ -112,14 +123,7 @@ public class InspectorV3 extends Thread implements Parcelable {
         }
     }
 
-    private boolean byPopular,custom;
-    private int page,pageCount=-1,id;
-    private String query,url;
-    private ApiRequestType requestType;
-    private Set<Tag> tags;
-    private List<GenericGallery> galleries=null;
-    private InspectorResponse response;
-    private WeakReference<Context> context;
+
 
     private InspectorV3(Context context,InspectorResponse response){
         initialize(context, response);
@@ -174,6 +178,16 @@ public class InspectorV3 extends Thread implements Parcelable {
     public static InspectorV3 basicInspector(Context context,int page,InspectorResponse response){
         return searchInspector(context,null,null,page,Global.isByPopular(),response);
     }
+    public static InspectorV3 tagInspector(Context context,Tag tag,int page,boolean byPopular,InspectorResponse response){
+        Collection<Tag>tags;
+        if(!Global.isOnlyTag()){
+            tags=getDefaultTags();
+            tags.add(tag);
+        }else {
+            tags = Collections.singleton(tag);
+        }
+        return searchInspector(context,null,tags,page,byPopular,response);
+    }
     public static InspectorV3 searchInspector(Context context, String query, Collection<Tag> tags, int page, boolean byPopular, InspectorResponse response){
         InspectorV3 inspector=new InspectorV3(context,response);
         inspector.custom=tags!=null;
@@ -183,7 +197,7 @@ public class InspectorV3 extends Thread implements Parcelable {
         inspector.pageCount=0;
         inspector.query=query==null?"":query;
         inspector.byPopular=byPopular;
-        if(query==null||query.equals("")) {
+        if(inspector.query.isEmpty()) {
             switch (inspector.tags.size()) {
                 case 0:
                     inspector.requestType = ApiRequestType.BYALL;
@@ -248,8 +262,8 @@ public class InspectorV3 extends Thread implements Parcelable {
     }
 
     @NonNull
-    private static Set<Tag> getDefaultTags(){
-        Set<Tag> tags = new HashSet<>(Queries.TagTable.getAllStatus( TagStatus.ACCEPTED));
+    private static HashSet<Tag> getDefaultTags(){
+        HashSet<Tag> tags = new HashSet<>(Queries.TagTable.getAllStatus( TagStatus.ACCEPTED));
         tags.addAll(getLanguageTags(Global.getOnlyLanguage()));
         if(Global.removeAvoidedGalleries()) tags.addAll(Queries.TagTable.getAllStatus(TagStatus.AVOIDED));
         if(Login.isLogged())tags.addAll(Queries.TagTable.getAllOnlineBlacklisted());

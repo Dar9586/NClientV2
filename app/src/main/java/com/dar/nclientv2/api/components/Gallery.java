@@ -26,7 +26,6 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Date;
@@ -131,8 +130,6 @@ public class Gallery extends GenericGallery{
         return new SimpleGallery(this);
     }
 
-
-    @Override
     public List<Comment> getComments() {
         return comments;
     }
@@ -171,10 +168,6 @@ public class Gallery extends GenericGallery{
         return minSize;
     }
 
-
-    public String getFilename(int page){
-        return String.format(Locale.US,"%03d.%s",page,getPageExtension(page));
-    }
     @NonNull
     @Override
     public String getTitle() {
@@ -186,9 +179,6 @@ public class Gallery extends GenericGallery{
         return "Unnamed";
     }
 
-    public String getTitle(int x){
-        return galleryData.getTitle(x);
-    }
     public String getTitle(TitleType x){
         return galleryData.getTitle(x);
     }
@@ -268,13 +258,6 @@ public class Gallery extends GenericGallery{
         return galleryData;
     }
 
-    public String toJsonString()throws IOException{
-        StringWriter ww=new StringWriter();
-        jsonWrite(ww);
-        String json=ww.toString();
-        ww.close();
-        return json;
-    }
 
     public void jsonWrite(Writer ww)throws IOException{
         //images aren't saved

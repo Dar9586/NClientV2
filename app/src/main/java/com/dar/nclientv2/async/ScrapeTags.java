@@ -2,6 +2,7 @@ package com.dar.nclientv2.async;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.JsonReader;
 
 import androidx.annotation.Nullable;
@@ -17,48 +18,86 @@ import com.dar.nclientv2.utility.LogUtility;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Scanner;
 
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class ScrapeTags extends JobIntentService {
-    private static final int DAYS_UNTIL_SCRAPE=15;
-    private static final String URL="https://raw.githubusercontent.com/Dar9586/NClientV2/master/data/tags.json";
+    private static final int DAYS_UNTIL_SCRAPE=7;
+    private static final String DATA_FOLDER="https://raw.githubusercontent.com/Dar9586/NClientV2/master/data/";
+    private static final String TAGS =DATA_FOLDER+"tags.json";
+    private static final String VERSION=DATA_FOLDER+"tagsVersion";
     public ScrapeTags() {
     }
     public static void startWork(Context context){
         enqueueWork(context,ScrapeTags.class,2000,new Intent());
     }
 
+    private int getNewVersionCode() throws IOException {
+        Response x=Global.getClient(this).newCall(new Request.Builder().url(VERSION).build()).execute();
+        ResponseBody body=x.body();
+        if(body==null){
+            x.close();
+            return -1;
+        }
+        Scanner sc=new Scanner(body.byteStream());
+        int k=sc.nextInt();
+        LogUtility.d("Found version: "+k);
+        sc.close();
+        x.close();
+        return k;
+    }
+
     @Override
     protected void onHandleWork(@Nullable Intent intent) {
+        SharedPreferences preferences = getApplicationContext().getSharedPreferences("Settings", 0);
         Date nowTime=new Date();
-        Date lastTime=new Date(getApplicationContext().getSharedPreferences("Settings",0).getLong("lastSync",nowTime.getTime()));
+        Date lastTime=new Date(preferences.getLong("lastSync",nowTime.getTime()));
+        int lastVersion= preferences.getInt("lastTagsVersion",-1),newVersion=-1;
         if(!enoughDayPassed(nowTime,lastTime))return;
+
         LogUtility.d("Scraping tags");
         try {
-            Response x=Global.getClient(this).newCall(new Request.Builder().url(URL).build()).execute();
-            if(x.code()!=200){x.close();return;}
-            JsonReader reader=new JsonReader(x.body().charStream());
-            reader.beginArray();
-
-            while (reader.hasNext()) {
-                reader.beginArray();
-                int id=reader.nextInt();
-                String name=reader.nextString();
-                int count=reader.nextInt();
-                TagType type=TagType.values[reader.nextInt()];
-                Tag tag=new Tag(name,count,id,type,TagStatus.DEFAULT);
-                Queries.TagTable.insert(tag,true);
-                reader.endArray();
-            }
-            reader.close();
-            x.close();
-            getApplicationContext().getSharedPreferences("Settings",0).edit().putLong("lastSync",nowTime.getTime()).apply();
-            LogUtility.d("End scraping");
+            newVersion=getNewVersionCode();
+            if(newVersion==lastVersion)return;
+            fetchTags();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        LogUtility.d("End scraping");
+        preferences.edit()
+                .putLong("lastSync",nowTime.getTime())
+                .putInt("lastTagsVersion",newVersion)
+                .apply();
+    }
+
+    private void fetchTags()throws IOException {
+        Response x=Global.getClient(this).newCall(new Request.Builder().url(TAGS).build()).execute();
+        ResponseBody body=x.body();
+        if(body==null){
+            x.close();
+            return;
+        }
+        JsonReader reader=new JsonReader(body.charStream());
+        reader.beginArray();
+        while (reader.hasNext()) {
+            Tag tag=readTag(reader);
+            Queries.TagTable.insert(tag,true);
+        }
+        reader.close();
+        x.close();
+    }
+
+    private Tag readTag(JsonReader reader) throws IOException {
+        reader.beginArray();
+        int id=reader.nextInt();
+        String name=reader.nextString();
+        int count=reader.nextInt();
+        TagType type=TagType.values[reader.nextInt()];
+        reader.endArray();
+        return new Tag(name,count,id,type,TagStatus.DEFAULT);
     }
 
     private boolean enoughDayPassed(Date nowTime, Date lastTime) {
@@ -71,8 +110,10 @@ public class ScrapeTags extends JobIntentService {
         while (last.before(now)) {
             last.add(Calendar.DAY_OF_MONTH, 1);
             daysBetween++;
+            if(daysBetween>DAYS_UNTIL_SCRAPE)
+                return true;
         }
-        LogUtility.d("Passed "+daysBetween+" days since last scrape: "+(daysBetween>DAYS_UNTIL_SCRAPE));
-        return daysBetween>DAYS_UNTIL_SCRAPE;
+        LogUtility.d("Passed " + daysBetween + " days since last scrape");
+        return false;
     }
 }

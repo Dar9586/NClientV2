@@ -18,11 +18,11 @@ import java.util.Locale;
 public class GalleryDownloaderManager {
     private final int notificationId= NotificationSettings.getNotificationId();
     private NotificationCompat.Builder notification;
-    private GalleryDownloaderV2 downloaderV2;
-    private Context context;
+    private final GalleryDownloaderV2 downloaderV2;
+    private final Context context;
     private Gallery gallery;
 
-    private DownloadObserver observer=new DownloadObserver() {
+    private final DownloadObserver observer=new DownloadObserver() {
         @Override
         public void triggerStartDownload(GalleryDownloaderV2 downloader) {
             gallery=downloader.getGallery();

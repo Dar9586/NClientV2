@@ -40,12 +40,12 @@ public class TagType implements Parcelable {
 
     public static final TagType UNKNOWN  =new TagType(0,"",null);
     public static final TagType PARODY   =new TagType(1,"parody","parodies");
-    public static final TagType CHARACTER=new TagType(2,"character","characters");;
-    public static final TagType TAG      =new TagType(3,"tag","tags");;
-    public static final TagType ARTIST   =new TagType(4,"artist","artists");;
-    public static final TagType GROUP    =new TagType(5,"group","groups");;
-    public static final TagType LANGUAGE =new TagType(6,"language",null);;
-    public static final TagType CATEGORY =new TagType(7,"category",null);;
+    public static final TagType CHARACTER=new TagType(2,"character","characters");
+    public static final TagType TAG      =new TagType(3,"tag","tags");
+    public static final TagType ARTIST   =new TagType(4,"artist","artists");
+    public static final TagType GROUP    =new TagType(5,"group","groups");
+    public static final TagType LANGUAGE =new TagType(6,"language",null);
+    public static final TagType CATEGORY =new TagType(7,"category",null);
     public static final TagType[] values=new TagType[]{UNKNOWN,PARODY,CHARACTER,TAG,ARTIST,GROUP,LANGUAGE,CATEGORY};
 
     public static TagType typeByName(String name){

@@ -13,9 +13,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class NotificationSettings {
 
-    private NotificationManagerCompat notificationManager;
+    private final NotificationManagerCompat notificationManager;
 
-    private static List<Integer> notificationArray= new CopyOnWriteArrayList<>();
+    private static final List<Integer> notificationArray= new CopyOnWriteArrayList<>();
     private static NotificationSettings notificationSettings;
     private static int notificationId=999,maximumNotification;
 

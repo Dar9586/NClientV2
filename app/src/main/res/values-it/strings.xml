@@ -250,6 +250,7 @@
     <string name="id_copied_to_clipboard">ID copiato nella clipboard</string>
     <string name="copied_to_clipboard">Copiato nella clipboard</string>
     <string name="maximum_notification_count">Numero massimo notifiche</string>
+    <string name="copy_settings_to_clipboard">Copy settings to clipboard</string>
 
     <string-array name="language">
         <item>Inglese</item>

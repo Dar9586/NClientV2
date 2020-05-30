@@ -1,5 +1,6 @@
 package com.dar.nclientv2.components.widgets;
 
+import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -66,18 +67,16 @@ public class TagTypePage extends Fragment {
         loadTags();
         return rootView;
     }
-    public void loadTags(){
 
+    public void loadTags(){
         recyclerView.setLayoutManager(new CustomGridLayoutManager(activity, getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE?4:2));
-        TagsAdapter adapter;
         if(type.equals(TagType.UNKNOWN))adapter=new TagsAdapter(activity,query,false);
         else if (type.equals(TagType.CATEGORY))adapter=new TagsAdapter(activity,query,true);
         else adapter=new TagsAdapter(activity,query,type);
-
         recyclerView.setAdapter(adapter);
     }
     public void refilter(String newText){
-        if(activity!=null)activity.runOnUiThread(() -> ((TagsAdapter)recyclerView.getAdapter()).getFilter().filter(newText));
+        if(activity!=null)activity.runOnUiThread(() -> adapter.getFilter().filter(newText));
     }
 
     public void reset(){
@@ -85,6 +84,10 @@ public class TagTypePage extends Fragment {
         else if (!type.equals(TagType.CATEGORY)){
                 ScrapeTags.startWork(activity);
         }
+        Activity activity=getActivity();
+        if(activity==null||adapter==null)return;
+        activity.runOnUiThread(adapter::notifyDataSetChanged);
+
     }
 
     public void changeSize() {

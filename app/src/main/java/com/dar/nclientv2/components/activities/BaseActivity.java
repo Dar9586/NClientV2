@@ -14,9 +14,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public SwipeRefreshLayout getRefresher() {
         return refresher;
     }
-    public RecyclerView getRecycler() {
-        return recycler;
-    }
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);

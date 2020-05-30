@@ -159,10 +159,6 @@ public class GalleryData implements Parcelable {
         return titles[type.ordinal()];
     }
 
-    public String[] getTitles() {
-        return titles;
-    }
-
     public TagList getTags() {
         return tags;
     }
@@ -185,48 +181,12 @@ public class GalleryData implements Parcelable {
         return valid;
     }
 
-    public void setUploadDate(@NonNull Date uploadDate) {
-        this.uploadDate = uploadDate;
-    }
-
-    public void setFavoriteCount(int favoriteCount) {
-        this.favoriteCount = favoriteCount;
-    }
-
     public void setId(int id) {
         this.id = id;
     }
 
     public void setPageCount(int pageCount) {
         this.pageCount = pageCount;
-    }
-
-    public void setMediaId(int mediaId) {
-        this.mediaId = mediaId;
-    }
-
-    public void setTitles(@NonNull String[] titles) {
-        this.titles = titles;
-    }
-
-    public void setTags(@NonNull TagList tags) {
-        this.tags = tags;
-    }
-
-    public void setCover(@NonNull Page cover) {
-        this.cover = cover;
-    }
-
-    public void setThumbnail(@NonNull Page thumbnail) {
-        this.thumbnail = thumbnail;
-    }
-
-    public void setPages(@NonNull ArrayList<Page> pages) {
-        this.pages = pages;
-    }
-
-    public void setValid(boolean valid) {
-        this.valid = valid;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.dar.nclientv2.components.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -61,6 +62,7 @@ public class CrashApplication extends Application{
 
     private boolean signatureCheck(){
         try {
+            @SuppressLint("PackageManagerGetSignatures")
             PackageInfo packageInfo = getPackageManager().getPackageInfo(
                     getPackageName(), PackageManager.GET_SIGNATURES);
             //note sample just checks the first signature

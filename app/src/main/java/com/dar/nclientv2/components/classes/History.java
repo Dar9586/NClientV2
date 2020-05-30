@@ -2,7 +2,6 @@ package com.dar.nclientv2.components.classes;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -25,13 +24,10 @@ public class History{
     public static List<History> setToList(Set<String> set){
         List<History>h=new ArrayList<>(set.size());
         for(String s:set)h.add(new History(s,true));
-        Collections.sort(h, new Comparator<History>() {
-            @Override
-            public int compare(History o2, History o1) {
-                int o=o1.date.compareTo(o2.date);
-                if(o==0)o=o1.value.compareTo(o2.value);
-                return o;
-            }
+        Collections.sort(h, (o2, o1) -> {
+            int o=o1.date.compareTo(o2.date);
+            if(o==0)o=o1.value.compareTo(o2.value);
+            return o;
         });
 
         return h;

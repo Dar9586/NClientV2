@@ -36,9 +36,10 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHolder> {
-    private List<Comment>comments;
-    private DateFormat format;
-    private int userId,galleryId;
+    private final List<Comment>comments;
+    private final DateFormat format;
+    private final int userId;
+    private final int galleryId;
     private final AppCompatActivity context;
     public CommentAdapter(AppCompatActivity context, List<Comment> comments, int galleryId) {
         this.context=context;
@@ -53,7 +54,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     @NonNull
     @Override
     public CommentAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new CommentAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_layout, parent, false));
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_layout, parent, false));
     }
 
     @Override
@@ -61,9 +62,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         Comment c=comments.get(holder.getAdapterPosition());
         holder.layout.setOnClickListener(v1 -> {
             if(Build.VERSION.SDK_INT>Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1){
-                context.runOnUiThread(() -> {
-                    holder.body.setMaxLines(holder.body.getMaxLines()==7?999:7);
-                });
+                context.runOnUiThread(() -> holder.body.setMaxLines(holder.body.getMaxLines()==7?999:7));
             }
         });
         holder.close.setVisibility(c.getPosterId()!=userId?View.GONE:View.VISIBLE);
@@ -140,10 +139,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         comments.add(0,c);
         context.runOnUiThread(()->notifyItemInserted(0));
     }
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageButton userImage,close;
-        TextView user,body,date;
-        ConstraintLayout layout;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        final ImageButton userImage;
+        final ImageButton close;
+        final TextView user;
+        final TextView body;
+        final TextView date;
+        final ConstraintLayout layout;
         public ViewHolder(@NonNull View v) {
             super(v);
             layout=v.findViewById(R.id.master_layout);

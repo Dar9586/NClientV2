@@ -20,8 +20,8 @@ import java.util.HashSet;
 import java.util.List;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
-    private List<History> history;
-    private SearchActivity context;
+    private final List<History> history;
+    private final SearchActivity context;
 
     public HistoryAdapter(SearchActivity context) {
         this.context = context;
@@ -32,7 +32,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new HistoryAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.entry_history, parent, false));
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.entry_history, parent, false));
     }
     private int remove=-1;
     @Override
@@ -73,10 +73,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         return history==null?0:history.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        ConstraintLayout master;
-        TextView text;
-        ImageButton imageButton;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        final ConstraintLayout master;
+        final TextView text;
+        final ImageButton imageButton;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             this.master=itemView.findViewById(R.id.master_layout);

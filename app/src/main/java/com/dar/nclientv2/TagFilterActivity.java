@@ -87,10 +87,6 @@ public class TagFilterActivity extends AppCompatActivity{
         mViewPager.setCurrentItem(getPage());
     }
 
-    @Override
-    protected void onDestroy(){
-        super.onDestroy();
-    }
 
     private int getPage(){
         Uri data = getIntent().getData();

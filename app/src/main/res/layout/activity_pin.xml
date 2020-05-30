@@ -22,6 +22,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="HardcodedText"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
         <LinearLayout
@@ -42,7 +43,8 @@
                 android:text="1"
                 android:textColor="?android:attr/colorForeground"
                 android:tint="?android:attr/colorForeground"
-                app:backgroundTint="@android:color/transparent" />
+                app:backgroundTint="@android:color/transparent"
+                />
 
             <Button
                 android:id="@+id/btn2"
@@ -261,6 +263,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/app_name"
         app:srcCompat="@drawable/ic_logo" />
 
     <TextView

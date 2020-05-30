@@ -120,24 +120,22 @@ public class ZoomActivity extends AppCompatActivity {
             @Override
             public void onPageScrollStateChanged(int state) { }
         });
-        pageManagerLabel.setOnClickListener(v -> {
-            DefaultDialogs.pageChangerDialog(
-                    new DefaultDialogs.Builder(this)
-                            .setActual(offsetPage(actualPage)+1)
-                            .setMin(1)
-                            .setMax(gallery.getPageCount())
-                            .setTitle(R.string.change_page)
-                            .setDrawable(R.drawable.ic_find_in_page)
-                            .setDialogs(new DefaultDialogs.DialogResults() {
-                                @Override
-                                public void positive(int actual) {
-                                    changePage(offsetPage(actual-1));
-                                }
-                                @Override
-                                public void negative() {}
-                            })
-            );
-        });
+        pageManagerLabel.setOnClickListener(v -> DefaultDialogs.pageChangerDialog(
+                new DefaultDialogs.Builder(this)
+                        .setActual(offsetPage(actualPage)+1)
+                        .setMin(1)
+                        .setMax(gallery.getPageCount())
+                        .setTitle(R.string.change_page)
+                        .setDrawable(R.drawable.ic_find_in_page)
+                        .setDialogs(new DefaultDialogs.DialogResults() {
+                            @Override
+                            public void positive(int actual) {
+                                changePage(offsetPage(actual-1));
+                            }
+                            @Override
+                            public void negative() {}
+                        })
+        ));
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

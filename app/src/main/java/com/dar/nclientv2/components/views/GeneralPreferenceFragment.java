@@ -1,21 +1,30 @@
 package com.dar.nclientv2.components.views;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.JsonWriter;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SeekBarPreference;
 
+import com.dar.nclientv2.CopyToClipboardActivity;
 import com.dar.nclientv2.PINActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.SettingsActivity;
 import com.dar.nclientv2.async.VersionChecker;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
+import com.dar.nclientv2.utility.LogUtility;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Map;
 
 public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
     private AppCompatActivity act;
@@ -130,9 +139,50 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
             startActivity(i);
             return true;
         });
+        findPreference("copy_settings").setOnPreferenceClickListener(preference -> {
+            try {
+                CopyToClipboardActivity.copyTextToClipboard(getContext(),getDataSettings(getContext()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return true;
+        });
     }
 
+    private String getDataSettings(Context context)throws IOException{
+        String[]names=new String[]{"Settings","ScrapedTags"};
+        StringWriter sw=new StringWriter();
+        JsonWriter writer=new JsonWriter(sw);
+        writer.setIndent("\t");
 
+        writer.beginObject();
+        for(String name:names)
+            processSharedFromName(writer,context,name);
+        writer.endObject();
+
+        writer.flush();
+        String settings=sw.toString();
+        writer.close();
+
+        LogUtility.d(settings);
+        return settings;
+    }
+    private void processSharedFromName(JsonWriter writer, Context context, String name)throws IOException{
+        writer.name(name);
+        writer.beginObject();
+        SharedPreferences preferences=context.getSharedPreferences(name,0);
+        for(Map.Entry<String,?> entry: preferences.getAll().entrySet()){
+            writeEntry(writer,entry);
+        }
+        writer.endObject();
+    }
+    private void writeEntry(JsonWriter writer, Map.Entry<String,?> entry)throws IOException {
+        writer.name(entry.getKey());
+             if(entry.getValue() instanceof Integer) writer.value((Integer)entry.getValue());
+        else if(entry.getValue() instanceof Boolean) writer.value((Boolean)entry.getValue());
+        else if(entry.getValue() instanceof String ) writer.value((String) entry.getValue());
+        else if(entry.getValue() instanceof Long   ) writer.value((Long)   entry.getValue());
+    }
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey){
