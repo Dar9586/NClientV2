@@ -80,14 +80,21 @@ public class GalleryActivity extends BaseActivity{
         if(data != null && data.getPathSegments().size() >= 2){//if using an URL
             List<String> params = data.getPathSegments();
             LogUtility.d(params.size()+": "+params);
-            if(params.size()>2){
+            int id;
+            try{//if not an id return
+                id=Integer.parseInt(params.get(1));
+            }catch (NumberFormatException ignore){
+                return false;
+            }
+            if(params.size()>2){//check if it has a specific page
                 try{
                     zoom=Integer.parseInt(params.get(2));
                 }catch (NumberFormatException e){
                     LogUtility.e(e.getLocalizedMessage(),e);
+                    zoom=0;
                 }
             }
-            InspectorV3.galleryInspector(this,Integer.parseInt(params.get(1)),new InspectorV3.DefaultInspectorResponse(){
+            InspectorV3.galleryInspector(this,id,new InspectorV3.DefaultInspectorResponse(){
 
                 @Override
                 public void onSuccess(List<GenericGallery> galleries) {

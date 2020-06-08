@@ -49,7 +49,7 @@ public class LocalGallery extends GenericGallery{
         if(!nomedia.exists())return SpecialTagIds.INVALID_ID;
         try (BufferedReader br = new BufferedReader(new FileReader(nomedia))){//ID check with nomedia
             return Integer.parseInt(br.readLine());
-        }catch (IOException ignore){}
+        }catch (IOException|NumberFormatException ignore){}
         return SpecialTagIds.INVALID_ID;
     }
 

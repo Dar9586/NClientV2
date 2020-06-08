@@ -164,6 +164,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         }).setNegativeButton(R.string.no,null).show();
     }
     private void onlineTagUpdate(final Tag tag, final boolean add,final ImageView imgView) throws IOException{
+        if(!Login.isLogged()&&Login.getUser()!=null)return;
         StringWriter sw=new StringWriter();
         JsonWriter jw=new JsonWriter(sw);
         jw.beginObject().name("added").beginArray();
@@ -171,6 +172,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         jw.endArray().name("removed").beginArray();
         if(!add)writeTag(jw,tag);
         jw.endArray().endObject();
+
         final String url=String.format(Locale.US,"https://"+ Utility.getHost()+"/users/%d/%s/blacklist",Login.getUser().getId(),Login.getUser().getCodename());
         final RequestBody ss=RequestBody.create(MediaType.get("application/json"),sw.toString());
         Global.getClient(context).newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {

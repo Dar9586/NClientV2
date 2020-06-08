@@ -41,7 +41,7 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int pos) {
-        int position=holder.getAdapterPosition();
+        final int position=holder.getAdapterPosition();
         Bookmark bookmark=bookmarks.get(position);
 
         holder.queryText.setText(bookmark.toString());
@@ -67,6 +67,7 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
      * @param position index to delete
      * */
     private void removeBookmarkAtPosition(int position) {
+        if(position>=bookmarks.size())return;
         Bookmark bookmark=bookmarks.get(position);
         bookmark.deleteBookmark();
         bookmarks.remove(bookmark);

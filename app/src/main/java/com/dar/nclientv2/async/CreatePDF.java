@@ -81,22 +81,9 @@ public class CreatePDF extends JobIntentService {
             notification.setProgress(0,0,false);
             notification.setContentTitle(getString(R.string.created_pdf));
             notification.setContentText(gallery.getTitle());
-            Intent i = new Intent(Intent.ACTION_VIEW);
-            Uri apkURI = FileProvider.getUriForFile(
-                    getApplicationContext(),getApplicationContext().getPackageName() + ".provider", finalPath);
-            i.setDataAndType(apkURI, "application/pdf");
-            i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            i.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            List<ResolveInfo> resInfoList = getApplicationContext().getPackageManager().queryIntentActivities(i, PackageManager.MATCH_DEFAULT_ONLY);
-            for (ResolveInfo resolveInfo : resInfoList) {
-                String packageName = resolveInfo.activityInfo.packageName;
-                getApplicationContext().grantUriPermission(packageName, apkURI, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            }
-
-            notification.setContentIntent(PendingIntent.getActivity(getApplicationContext(),0,i,0));
+            createIntentOpen(finalPath);
             NotificationSettings.notify(getString(R.string.channel2_name),notId,notification.build());
             LogUtility.d(finalPath.getAbsolutePath());
-            LogUtility.d(apkURI.toString());
         }catch(IOException e){
             notification.setContentTitle(getString(R.string.error_pdf));
             notification.setContentText(getString(R.string.failed));
@@ -107,6 +94,24 @@ public class CreatePDF extends JobIntentService {
             document.close();
         }
 
+
+    }
+
+    private void createIntentOpen(File finalPath) {
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        Uri apkURI = FileProvider.getUriForFile(
+                getApplicationContext(),getApplicationContext().getPackageName() + ".provider", finalPath);
+        i.setDataAndType(apkURI, "application/pdf");
+        i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        i.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        List<ResolveInfo> resInfoList = getApplicationContext().getPackageManager().queryIntentActivities(i, PackageManager.MATCH_DEFAULT_ONLY);
+        for (ResolveInfo resolveInfo : resInfoList) {
+            String packageName = resolveInfo.activityInfo.packageName;
+            getApplicationContext().grantUriPermission(packageName, apkURI, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
+
+        notification.setContentIntent(PendingIntent.getActivity(getApplicationContext(),0,i,0));
+        LogUtility.d(apkURI.toString());
 
     }
 
