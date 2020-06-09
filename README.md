@@ -20,9 +20,6 @@ Releases: <https://github.com/Dar9586/NClientV2/releases>
 
 - Share galleries
 - Open in browser
-- Login / Logout from your account
-- Manage user blacklist
-- Add / Remove favorite from account
 - Bookmark
 
 ## App Screen

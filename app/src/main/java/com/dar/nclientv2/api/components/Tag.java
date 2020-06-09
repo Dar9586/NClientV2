@@ -9,6 +9,7 @@ import android.util.JsonWriter;
 
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
+import com.dar.nclientv2.utility.LogUtility;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -43,6 +44,7 @@ public class Tag implements Parcelable{
                 case "type":type=TagType.typeByName(jr.nextString());break;
                 case "id":id=jr.nextInt();break;
                 case "name":name=jr.nextString();break;
+                case "url": LogUtility.d("Tag URL: "+jr.nextString());break;
                 default:jr.skipValue();break;
             }
         }

@@ -6,6 +6,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
@@ -305,11 +306,8 @@ public class InspectorV3 extends Thread implements Parcelable {
         galleries=new ArrayList<>(1);
         Elements scripts=document.getElementsByTag("script");
         if(scripts.size()==0 )return;
-        String x=scripts.last().html();
-        int s=x.indexOf("new N.gallery(");
-        if(s<0)return;
-        s+=14;
-        x=x.substring(s,x.indexOf('\n',s)-2);
+        String json=trimScriptTag(scripts.last().html());
+        if(json==null)return;
         Elements com=document.getElementById("comments").getElementsByClass("comment");
         Elements rel=document.getElementById("related-container").getElementsByClass("gallery");
         boolean isFavorite;
@@ -319,7 +317,16 @@ public class InspectorV3 extends Thread implements Parcelable {
             isFavorite=false;
         }
         LogUtility.d("is favorite? "+isFavorite);
-        galleries.add(new Gallery(context.get(), x,com,rel,isFavorite));
+        galleries.add(new Gallery(context.get(), json,com,rel,isFavorite));
+    }
+    @Nullable
+    private String trimScriptTag(String scriptHtml) {
+        int s=scriptHtml.indexOf("parse");
+        if(s<0)return null;
+        s+=7;
+        scriptHtml=scriptHtml.substring(s,scriptHtml.lastIndexOf(");")-1);
+        scriptHtml=scriptHtml.replace("\\u0022","\"");
+        return scriptHtml;
     }
 
     private void doSearch(Element document) {

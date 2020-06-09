@@ -46,6 +46,7 @@ public class Gallery extends GenericGallery{
 
 
     public Gallery(Context context, String json, Elements comments, Elements related, boolean isFavorite) throws IOException{
+        LogUtility.d("Found JSON: "+json);
         JsonReader reader=new JsonReader(new StringReader(json));
         this.comments =new ArrayList<>(comments.size());
         this.related =new ArrayList<>(related.size());

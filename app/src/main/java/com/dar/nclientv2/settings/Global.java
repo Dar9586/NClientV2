@@ -27,15 +27,12 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.dar.nclientv2.CopyToClipboardActivity;
-import com.dar.nclientv2.MainActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.components.classes.CustomSSLSocketFactory;
-import com.dar.nclientv2.loginapi.LoadTags;
-import com.dar.nclientv2.loginapi.User;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 import com.dar.nclientv2.utility.network.NetworkUtil;
@@ -265,17 +262,6 @@ public class Global {
         client=builder.build();
         client.dispatcher().setMaxRequests(25);
         client.dispatcher().setMaxRequestsPerHost(25);
-
-        if(Login.isLogged()&&Login.getUser()==null){
-            User.createUser(user -> {
-                if(user!=null){
-                    new LoadTags(null).start();
-                    if(context instanceof MainActivity){
-                        ((MainActivity) context).runOnUiThread(() -> ((MainActivity)context).loginItem.setTitle(context.getString(R.string.login_formatted,user.getUsername())));
-                    }
-                }
-            });
-        }
     }
     public static Locale initLanguage(Context context){
         String x=context.getSharedPreferences("Settings",0).getString(context.getString(R.string.key_language),"en");

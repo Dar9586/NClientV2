@@ -42,7 +42,6 @@ import com.dar.nclientv2.async.downloader.DownloadGalleryV2;
 import com.dar.nclientv2.components.GlideX;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
-import com.dar.nclientv2.loginapi.Login;
 import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
@@ -140,7 +139,6 @@ public class MainActivity extends BaseActivity
     };
 
     //views
-    public MenuItem loginItem,onlineFavoriteManager;
     private ImageButton prevPageButton,nextPageButton;
     private EditText pageIndexText;
     private View pageSwitcher;
@@ -168,7 +166,6 @@ public class MainActivity extends BaseActivity
         initializeNavigationView();
         initializeRecyclerView();
         initializePageSwitcherActions();
-        loadStringLogin();
 
         refresher.setOnRefreshListener(() -> {
             inspector = inspector.cloneInspector(MainActivity.this,resetDataset);
@@ -265,7 +262,6 @@ public class MainActivity extends BaseActivity
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         toolbar.setNavigationOnClickListener(v -> finish());
         navigationView.setNavigationItemSelectedListener(this);
-        onlineFavoriteManager.setVisible(com.dar.nclientv2.settings.Login.isLogged());
     }
 
     private void findUsefulViews() {
@@ -278,8 +274,6 @@ public class MainActivity extends BaseActivity
         pageIndexText=findViewById(R.id.page_index);
         pageSwitcher=findViewById(R.id.page_switcher);
         drawerLayout = findViewById(R.id.drawer_layout);
-        loginItem=navigationView.getMenu().findItem(R.id.action_login);
-        onlineFavoriteManager=navigationView.getMenu().findItem(R.id.online_favorite_manager);
     }
 
     private void checkUpdate() {
@@ -405,12 +399,6 @@ public class MainActivity extends BaseActivity
         modeType=ModeType.TAG;
     }
 
-    private void loadStringLogin() {
-        if(loginItem==null)return;
-        if(com.dar.nclientv2.settings.Login.getUser()!=null)loginItem.setTitle(getString(R.string.login_formatted, com.dar.nclientv2.settings.Login.getUser().getUsername()));
-        else loginItem.setTitle(com.dar.nclientv2.settings.Login.isLogged()?R.string.logout :R.string.login);
-
-    }
 
     private void changeNavigationImage(NavigationView navigationView) {
         boolean light=Global.getTheme()== Global.ThemeScheme.LIGHT;
@@ -499,8 +487,6 @@ public class MainActivity extends BaseActivity
         super.onResume();
         Global.updateACRAReportStatus(this);
         com.dar.nclientv2.settings.Login.initUseAccountTag(this);
-        loadStringLogin();
-        onlineFavoriteManager.setVisible(com.dar.nclientv2.settings.Login.isLogged());
 
         if(setting!=null){
             Global.initFromShared(this);//restart all settings
@@ -666,16 +652,6 @@ public class MainActivity extends BaseActivity
         }
         Global.setTint(item.getIcon());
     }
-
-    private void showLogoutForm() {
-        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(this);
-        builder.setIcon(R.drawable.ic_exit_to_app).setTitle(R.string.logout).setMessage(R.string.are_you_sure);
-        builder.setPositiveButton(R.string.yes, (dialogInterface, i) -> {
-            Login.logout();
-            onlineFavoriteManager.setVisible(false);
-            loginItem.setTitle(R.string.login);
-        }).setNegativeButton(R.string.no,null).show();
-    }
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent;
@@ -684,14 +660,6 @@ public class MainActivity extends BaseActivity
             case R.id.downloaded:
                 if(Global.hasStoragePermission(this))startLocalActivity();
                 else requestStorage();
-                break;
-            case R.id.action_login:
-                if(com.dar.nclientv2.settings.Login.isLogged())
-                    showLogoutForm();
-                else {
-                    intent = new Intent(this, LoginActivity.class);
-                    startActivity(intent);
-                }
                 break;
             case R.id.bookmarks:
                 intent=new Intent(this,BookmarkActivity.class);
@@ -708,11 +676,6 @@ public class MainActivity extends BaseActivity
             case R.id.action_settings:
                 setting=new Setting();
                 intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.online_favorite_manager:
-                intent=new Intent(this,MainActivity.class);
-                intent.putExtra(getPackageName()+".FAVORITE",true);
                 startActivity(intent);
                 break;
             case R.id.random:
