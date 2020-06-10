@@ -77,11 +77,11 @@ public class Tag implements Parcelable{
 
     public String toQueryTag(TagStatus status){
         StringBuilder builder=new StringBuilder();
-        String escapedName=name.replace(' ','-');
+        String escapedName=name/*.replace(' ','-')*/;
         if(status==TagStatus.AVOIDED)builder.append('-');
         builder
-            .append(type.getSingle())
-            .append(':')
+            /*.append(type.getSingle())
+            .append(':')*/
             .append('"')
             .append(escapedName)
             .append('"');

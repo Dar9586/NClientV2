@@ -325,9 +325,11 @@ public class InspectorV3 extends Thread implements Parcelable {
         if(s<0)return null;
         s+=7;
         scriptHtml=scriptHtml.substring(s,scriptHtml.lastIndexOf(");")-1);
-        scriptHtml=scriptHtml.replace("\\u0022","\"");
+        scriptHtml=Utility.unescapeUnicodeString(scriptHtml);
+        if(scriptHtml.isEmpty())return null;
         return scriptHtml;
     }
+
 
     private void doSearch(Element document) {
         Elements gal=document.getElementsByClass("gallery");

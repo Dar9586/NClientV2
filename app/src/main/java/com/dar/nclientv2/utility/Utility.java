@@ -21,6 +21,10 @@ import com.dar.nclientv2.settings.Global;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.List;
 import java.util.Random;
 
@@ -35,19 +39,46 @@ public class Utility {
         boolean x=Global.useAlternativeSite();
         return x?ALTERNATIVE_URL: ORIGINAL_URL;
     }
-    @NonNull
-    public static String unescapeUnicodeString(@Nullable String t){
-        if(t==null)return "";
-        StringBuilder s=new StringBuilder();
-        int l=t.length();
-        for(int a=0;a<l;a++){
-            if(t.charAt(a)=='\\'&&t.charAt(a+1)=='u'){
-                s.append((char) Integer.parseInt( t.substring(a+2,a+6), 16 ));
-                a+=5;
-            }else s.append(t.charAt(a));
+    private static void parseEscapedCharacter(Reader reader, Writer writer)throws IOException{
+        int toCreate,read;
+        switch (read=reader.read()){
+            case 'u':
+                toCreate=0;
+                for(int i=0;i<4;i++){
+                    toCreate*=16;
+                    toCreate+=Character.digit(reader.read(),16);
+                }
+                writer.write(toCreate);
+                break;
+            case 'n':
+                writer.write('\n');
+                break;
+            case 't':
+                writer.write('\t');
+                break;
+            default:
+                writer.write('\\');
+                writer.write(read);
+                break;
         }
-        return s.toString();
     }
+    @NonNull
+    public static String unescapeUnicodeString(@Nullable String scriptHtml) {
+        if(scriptHtml==null)return "";
+        StringReader reader=new StringReader(scriptHtml);
+        StringWriter writer=new StringWriter();
+        int actualChar;
+        try {
+            while ((actualChar = reader.read()) != -1) {
+                if(actualChar!='\\')writer.write(actualChar);
+                else parseEscapedCharacter(reader,writer);
+            }
+        }catch (IOException ignore){
+            return "";
+        }
+        return writer.toString();
+    }
+
     public static void threadSleep(long millis){
         try {
             Thread.sleep(millis);
