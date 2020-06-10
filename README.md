@@ -26,9 +26,9 @@ Releases: <https://github.com/Dar9586/NClientV2/releases>
 
 Main page|Lateral menu
 :-:|:-:
-![Main page](https://raw.githubusercontent.com/Dar9586/NClientV2/master/fastlane/metadata/android/en-US/images/phoneScreenshots/img1.jpg)|![Lateral menu](https://raw.githubusercontent.com/Dar9586/NClientV2/master/fastlane/metadata/android/en-US/images/phoneScreenshots/img2.jpg)
+![Main page](https://raw.githubusercontent.com/Dar9586/NClientV2/master/fastlane/metadata/android/en-US/images/phoneScreenshots/img1.jpg)|![Lateral menu](https://media.discordapp.net/attachments/608725424092086280/720369411030253578/Screenshot_20200610-230229_NClientV2.jpg?width=360&height=658)
 Search|Random manga
-![Search](https://raw.githubusercontent.com/Dar9586/NClientV2/master/fastlane/metadata/android/en-US/images/phoneScreenshots/img2.jpg)|![Random manga](https://raw.githubusercontent.com/Dar9586/NClientV2/master/fastlane/metadata/android/en-US/images/phoneScreenshots/img4.jpg)
+![Search](https://media.discordapp.net/attachments/608725424092086280/720369411030253578/Screenshot_20200610-230229_NClientV2.jpg?width=360&height=658)|![Random manga](https://raw.githubusercontent.com/Dar9586/NClientV2/master/fastlane/metadata/android/en-US/images/phoneScreenshots/img4.jpg)
 
 ## Contributors
 
