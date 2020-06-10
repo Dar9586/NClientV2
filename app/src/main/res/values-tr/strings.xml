@@ -10,12 +10,12 @@
     <string name="theme_summary">Tema renklerini seç</string>
 
     <!--SETTINGS NAME-->
-    <string name="send_crash_report">Çökme raporu gönder</string>
+    <string name="send_crash_report">Otomatik çökme raporu gönder</string>
     <string name="change_theme">Tema değiştir</string>
     <string name="clear_cache">Önbelleği temizle</string>
     <string name="load_images">Fotoğrafları yükle</string>
     <string name="infinite_scroll">Sonsuz kaydırma</string>
-    <string name="use_account_tag">Hesaptan etiketleri kullan</string>
+    <string name="use_account_tag">Hesaptan etiketleri kullan</string> <!-- DEPRECATED-->
 
     <string name="title_activity_gallery">Manga</string>
     <string name="title_activity_zoom">Yakınlaştırma aktivitesi</string>
@@ -124,7 +124,7 @@
     <string name="sort_by_title">Başlığa göre sırala</string>
     <string name="sort_by_popular">Popülerliğe göre sırala</string>
     <string name="next_page_volume_down">Ses azaltma tuşuyla sıradaki sayfaya geç</string>
-    <string name="change_title_type">Başlık türünü değiştir</string>
+    <string name="change_title_type">Başlık dilini değiştir</string>
     <string name="title_type_summary">Tüm mangalar için varsayılan başlığı seç</string>
 
     <string name="search_settings">Ayarlarda ara</string>
@@ -256,7 +256,7 @@
     <string name="data_usage_settings">Veri kullanım ayarları</string>
     <string name="mobile_data_usage_setting">Mobil veri kullanım ayarları</string>
     <string name="wifi_data_usage_setting">Wi-Fi kullanım ayarları</string>
-    <string name="data_usage_thumb">Kapak fotoğraflarını her zaman indir</string>
+    <string name="data_usage_thumb">Sadece kapak fotoğraflarını indir</string>
     <string name="data_usage_no">Sayfaları indirme</string>
     <string name="enable_network_to_continue">Sayfayı açmak için veri kullanım ayarlarını değiştirin ve ya bağlı olduğunuz ağı değiştirin</string>
     <string name="donate">Geliştiriciyi destekle</string>
@@ -265,7 +265,7 @@
     <string name="copied_to_clipboard">Panoya kopyalandı</string>
     <string name="maximum_notification_count">Maksimum bildirim sayısı</string>
 
-    <string name="data_usage_full">Kapak fotoğraflarını veya sayfaları indir</string>
+    <string name="data_usage_full">Her şeyi indir (Yüksek veri kullanımı)</string> <!--Download & View everything (high data usage)-->
     <string name="use_column_port">Dikey konumda satır başına öğe sayısını seçin</string>
     <string name="use_column_land">Yatay konumda satır başına öğe sayısını seçin</string>
     <string name="copy_settings_to_clipboard">Ayarları panoya kopyala</string>
