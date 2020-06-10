@@ -21,7 +21,6 @@ import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
 import com.dar.nclientv2.components.widgets.TagTypePage;
 import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
-import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.settings.TagV2;
 import com.dar.nclientv2.utility.LogUtility;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -60,7 +59,6 @@ public class TagFilterActivity extends AppCompatActivity{
         mViewPager.setOffscreenPageLimit(1);
 
         TabLayout tabLayout = findViewById(R.id.tabs);
-        if(Login.isLogged())tabLayout.addTab(tabLayout.newTab().setText(R.string.online_tags));
 
         LogUtility.d("ISNULL?"+(tabLayout==null));
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -241,7 +239,7 @@ public class TagFilterActivity extends AppCompatActivity{
 
         @Override
         public int getCount() {
-            return Login.isLogged()?7:6;
+            return 6;
         }
     }
 }

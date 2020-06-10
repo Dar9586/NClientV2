@@ -11,7 +11,6 @@
     <string name="key_infinite_scroll" translatable="false">infinite_scroll</string>
     <string name="key_cache" translatable="false">cache</string>
     <string name="key_ignore_tags" translatable="false">ignore_tags</string>
-    <string name="key_use_account_tag" translatable="false">use_account_tags</string>
     <string name="key_send_report" translatable="false">send_report</string>
     <string name="key_use_rtl" translatable="false">use_rtl</string>
     <string name="key_show_titles" translatable="false">show_titles</string>
@@ -54,8 +53,6 @@
     <string name="setting_off_high_res">Thumbnails images will be loaded (less data)</string>
     <string name="setting_on_load">Images will be loaded in all activities</string>
     <string name="setting_off_load">Images will be loaded only in single page viewer</string>
-    <string name="setting_on_use_account_tag">Use the account tags into the search query (Local tags will have priority)</string>
-    <string name="setting_off_use_account_tag">Account tags will be ignored for the query</string>
     <string name="theme_summary">Select theme colors</string>
     <string name="send_crash_report">Send crash report</string>
     <string name="change_theme">Change theme</string>
@@ -64,11 +61,9 @@
     <string name="infinite_scroll">Infinite scroll</string>
     <string name="ignore_tags">Ignore other tags</string>
     <string name="high_res_gallery">Load image in best resolution into gallery</string>
-    <string name="use_account_tag">Use tags from account</string>
     <string name="title_activity_gallery">Gallery</string>
     <string name="title_activity_zoom">Zoom Activity</string>
     <string name="title_activity_tag_filter">Tag Filter</string>
-    <string name="title_activity_login">Log in</string>
     <string name="parodies">Parodies</string>
     <string name="characters">Characters</string>
     <string name="tags">Tags</string>
@@ -91,20 +86,6 @@
     <string name="only_japanese">Only japanese</string>
     <string name="only_chinese">Only chinese</string>
     <string name="all_languages">All languages</string>
-    <string name="username_or_email">Username or Email</string>
-    <string name="password">Password</string>
-    <string name="login">Log in</string>
-    <string name="login_formatted" formatted="true">Logged as %s</string>
-    <string name="logout">Logout</string>
-    <string name="forgot_password">Forgot your password? <b>Reset it</b></string>
-    <string name="register">Don\'t have an account? <b>Register</b></string>
-    <string name="invalid_credentials">Invalid credentials</string>
-    <string name="favorite_online_manga">Favorite online manga</string>
-    <string name="online_tags">Online tags</string>
-    <string name="add_to_online_favorite">Add to online favorites</string>
-    <string name="remove_from_online_favorites">Remove from online favorites</string>
-    <string name="add_to_online_blacklist">Add to online blacklist?</string>
-    <string name="tag_already_in_blacklist">Tag already in blacklist</string>
     <string name="are_you_sure">Are you sure?</string>
     <string name="thumbnail">Thumbnail</string>
     <string name="settings">Settings</string>
@@ -183,8 +164,6 @@
     <string name="insert_tag_name">Insert tag name:</string>
     <string name="favorite_count">Favorite count</string>
     <string name="comments">Comments</string>
-    <string name="send">Send</string>
-    <string name="send_comment">Send comment…</string>
     <string name="profile_picture">Profile picture</string>
     <string name="send_bug_on_github">Send bug on Github</string>
     <string name="github">Github</string>

@@ -18,7 +18,6 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -67,7 +66,7 @@ public class MainActivity extends BaseActivity
      * BOOKMARK when loaded a bookmark
      * ID when searched for an ID
      * */
-    private enum ModeType {UNKNOWN,NORMAL,TAG,FAVORITE,SEARCH,BOOKMARK,ID}
+    private enum ModeType {UNKNOWN,NORMAL,TAG,SEARCH,BOOKMARK,ID}
     private static final int CHANGE_LANGUAGE_DELAY=1000;
 
     private InspectorV3 inspector=null;
@@ -194,7 +193,6 @@ public class MainActivity extends BaseActivity
     }
     private void setActivityTitle() {
         switch (modeType){
-            case FAVORITE:  getSupportActionBar().setTitle(R.string.favorite_online_manga);break;
             case SEARCH:    getSupportActionBar().setTitle(inspector.getSearchTitle());break;
             case TAG:       getSupportActionBar().setTitle(inspector.getTag().getName());break;
             case NORMAL:    getSupportActionBar().setTitle(R.string.app_name);break;
@@ -287,7 +285,6 @@ public class MainActivity extends BaseActivity
         Uri data=intent.getData();
              if(intent.getBooleanExtra(packageName+".ISBYTAG"    ,false))useTagMode(intent,packageName);
         else if(intent.getBooleanExtra(packageName+".SEARCHMODE" ,false))useSearchMode(intent,packageName);
-        else if(intent.getBooleanExtra(packageName+".FAVORITE"   ,false))useFavoriteMode(1);
         else if(intent.getBooleanExtra(packageName+".BYBOOKMARK" ,false))useBookmarkMode(intent,packageName);
         else if(data!=null)manageDataStart(data);
         else useNormalMode();
@@ -307,14 +304,9 @@ public class MainActivity extends BaseActivity
              if(type==ApiRequestType.BYTAG)modeType = ModeType.TAG;
         else if(type==ApiRequestType.BYALL)modeType = ModeType.NORMAL;
         else if(type==ApiRequestType.BYSEARCH)modeType = ModeType.SEARCH;
-        else if(type==ApiRequestType.FAVORITE)modeType = ModeType.FAVORITE;
 
     }
 
-    private void useFavoriteMode(int page) {
-        inspector=InspectorV3.favoriteInspector(this,null,page,resetDataset);
-        modeType = ModeType.FAVORITE;
-    }
 
     private void useSearchMode(Intent intent, String packageName) {
         String query=intent.getStringExtra(packageName+".QUERY");
@@ -378,12 +370,9 @@ public class MainActivity extends BaseActivity
         if(pageParam!=null)page=Integer.parseInt(pageParam);
 
         if(favorite){
-            if(com.dar.nclientv2.settings.Login.isLogged())useFavoriteMode(page);
-            else{
-                Intent intent=new Intent(this,FavoriteActivity.class);
-                startActivity(intent);
-                finish();
-            }
+            Intent intent=new Intent(this,FavoriteActivity.class);
+            startActivity(intent);
+            finish();
             return;
         }
 
@@ -486,7 +475,6 @@ public class MainActivity extends BaseActivity
     protected void onResume() {
         super.onResume();
         Global.updateACRAReportStatus(this);
-        com.dar.nclientv2.settings.Login.initUseAccountTag(this);
 
         if(setting!=null){
             Global.initFromShared(this);//restart all settings
@@ -519,7 +507,6 @@ public class MainActivity extends BaseActivity
         showLanguageIcon(menu.findItem(R.id.only_language));
 
         menu.findItem(R.id.only_language).setVisible(modeType == ModeType.NORMAL);
-        menu.findItem(R.id.random_favorite).setVisible(modeType == ModeType.FAVORITE);
 
         initializeSearchItem(menu.findItem(R.id.search));
 
@@ -535,24 +522,7 @@ public class MainActivity extends BaseActivity
     }
 
     private void initializeSearchItem(MenuItem item) {
-        if(modeType != ModeType.FAVORITE)
-            item.setActionView(null);
-        else{
-            ((SearchView) item.getActionView()).setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    inspector=InspectorV3.favoriteInspector(MainActivity.this,query,1,resetDataset);
-                    inspector.start();
-                    getSupportActionBar().setTitle(query);
-                    return true;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    return false;
-                }
-            });
-        }
+        item.setActionView(null);
     }
 
     private void popularItemDispay(MenuItem item) {
@@ -598,10 +568,9 @@ public class MainActivity extends BaseActivity
                 showLanguageIcon(item);
                 break;
             case R.id.search:
-                if(modeType != ModeType.FAVORITE) {//show textbox or start search activity
-                    i = new Intent(this, SearchActivity.class);
-                    startActivity(i);
-                }
+                //show textbox or start search activity
+                i = new Intent(this, SearchActivity.class);
+                startActivity(i);
                 break;
             case R.id.open_browser:
                 if(inspector!=null) {

@@ -160,12 +160,15 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         });
     }
 
+
     private void startGallery(LocalGallery ent) {
         ent.calculateSizes();
-        Intent intent = new Intent(context, GalleryActivity.class);
-        intent.putExtra(context.getPackageName()+ ".GALLERY",ent);
-        intent.putExtra(context.getPackageName()+ ".ISLOCAL",true);
-        context.runOnUiThread(()->context.startActivity(intent));
+        new Thread(() -> {
+            Intent intent = new Intent(context, GalleryActivity.class);
+            intent.putExtra(context.getPackageName()+ ".GALLERY",new LocalGallery(ent.getDirectory()));
+            intent.putExtra(context.getPackageName()+ ".ISLOCAL",true);
+            context.runOnUiThread(()->context.startActivity(intent));
+        }).start();
     }
 
     private void bindDownload(@NonNull final ViewHolder holder, int position, GalleryDownloaderV2 downloader){
@@ -213,8 +216,10 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        if(filter.get(position) instanceof LocalGallery)bindGallery(holder,position, (LocalGallery) filter.get(position));
-        else bindDownload(holder,position, (GalleryDownloaderV2) filter.get(position));
+        if(filter.get(position) instanceof LocalGallery)
+            bindGallery(holder,position, (LocalGallery) filter.get(position));
+        else
+            bindDownload(holder,position, (GalleryDownloaderV2) filter.get(position));
     }
     private double sizeForGallery(LocalGallery gallery){
         double size=Global.recursiveSize(gallery.getDirectory());

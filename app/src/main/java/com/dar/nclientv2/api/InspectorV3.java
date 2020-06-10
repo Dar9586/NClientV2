@@ -19,7 +19,6 @@ import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.settings.Global;
-import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 
@@ -147,17 +146,6 @@ public class InspectorV3 extends Thread implements Parcelable {
         inspectorV3.custom=custom;
         return inspectorV3;
     }
-
-    public static InspectorV3 favoriteInspector(Context context,String query, int page, InspectorResponse response){
-        InspectorV3 inspector=new InspectorV3(context,response);
-        inspector.page=page;
-        inspector.pageCount=0;
-        inspector.query=query==null?"":query;
-        inspector.requestType=ApiRequestType.FAVORITE;
-        inspector.tags=new HashSet<>(1);
-        inspector.createUrl();
-        return inspector;
-    }
     /**
      * @param favorite true if random online favorite, false for general random manga
      * */
@@ -267,7 +255,6 @@ public class InspectorV3 extends Thread implements Parcelable {
         HashSet<Tag> tags = new HashSet<>(Queries.TagTable.getAllStatus( TagStatus.ACCEPTED));
         tags.addAll(getLanguageTags(Global.getOnlyLanguage()));
         if(Global.removeAvoidedGalleries()) tags.addAll(Queries.TagTable.getAllStatus(TagStatus.AVOIDED));
-        if(Login.isLogged())tags.addAll(Queries.TagTable.getAllOnlineBlacklisted());
         return tags;
     }
     private static Set<Tag> getLanguageTags(Language onlyLanguage) {
@@ -310,14 +297,8 @@ public class InspectorV3 extends Thread implements Parcelable {
         if(json==null)return;
         Elements com=document.getElementById("comments").getElementsByClass("comment");
         Elements rel=document.getElementById("related-container").getElementsByClass("gallery");
-        boolean isFavorite;
-        try {
-             isFavorite = document.getElementById("favorite").getElementsByTag("span").get(0).text().equals("Unfavorite");
-        }catch (Exception e){
-            isFavorite=false;
-        }
-        LogUtility.d("is favorite? "+isFavorite);
-        galleries.add(new Gallery(context.get(), json,com,rel,isFavorite));
+
+        galleries.add(new Gallery(context.get(), json,rel));
     }
     @Nullable
     private String trimScriptTag(String scriptHtml) {

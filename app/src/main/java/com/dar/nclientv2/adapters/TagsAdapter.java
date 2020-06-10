@@ -1,7 +1,6 @@
 package com.dar.nclientv2.adapters;
 
 import android.database.Cursor;
-import android.util.JsonWriter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,37 +21,24 @@ import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.settings.Global;
-import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.settings.TagV2;
 import com.dar.nclientv2.utility.ImageDownloadUtility;
 import com.dar.nclientv2.utility.LogUtility;
-import com.dar.nclientv2.utility.Utility;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.Locale;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-
 public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> implements Filterable{
-    private enum TagMode{ONLINE,OFFLINE,TYPE}
+    private enum TagMode{OFFLINE,TYPE}
     private final TagFilterActivity context;
-    private final boolean logged=Login.isLogged();
     private String lastQuery=null;
     private final TagType type;
     private final TagMode tagMode;
     private boolean wasSortedByName;
     private Cursor cursor=null;
-    public TagsAdapter(TagFilterActivity cont,String query,boolean online){
+    public TagsAdapter(TagFilterActivity cont,String query){
         this.context=cont;
         this.type=null;
-        this.tagMode=online?TagMode.ONLINE:TagMode.OFFLINE;
+        this.tagMode=TagMode.OFFLINE;
         getFilter().filter(query);
     }
     public TagsAdapter(TagFilterActivity cont, String query,TagType type){
@@ -73,7 +59,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
                 wasSortedByName=TagV2.isSortedByName();
 
                 lastQuery = constraint.toString();
-                Cursor tags = Queries.TagTable.getFilterCursor( lastQuery, type, tagMode==TagMode.ONLINE, TagV2.isSortedByName());
+                Cursor tags = Queries.TagTable.getFilterCursor( lastQuery, type, TagV2.isSortedByName());
                 results.count = tags.getCount();
                 results.values = tags;
 
@@ -129,22 +115,11 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
                         updateLogo(holder.imgView, ent.getStatus());
                     }
                     break;
-                case ONLINE:
-                    try {
-                        onlineTagUpdate(ent,!Login.isOnlineTags(ent),holder.imgView);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    break;
             }
 
         });
-        if(tagMode!=TagMode.ONLINE&&logged)holder.master.setOnLongClickListener(view -> {
-            if(!Login.isOnlineTags(ent)) showBlacklistDialog(ent,holder.imgView);
-            else Toast.makeText(context, R.string.tag_already_in_blacklist, Toast.LENGTH_SHORT).show();
-            return true;
-        });
-        updateLogo(holder.imgView,tagMode==TagMode.ONLINE?TagStatus.AVOIDED:ent.getStatus());
+
+        updateLogo(holder.imgView,ent.getStatus());
     }
 
     @Override
@@ -152,63 +127,6 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         return cursor==null?0:cursor.getCount();
     }
 
-    private void showBlacklistDialog(final Tag tag,final ImageView imgView) {
-        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(context);
-        builder.setIcon(R.drawable.ic_star_border).setTitle(R.string.add_to_online_blacklist).setMessage(R.string.are_you_sure);
-        builder.setPositiveButton(R.string.yes, (dialogInterface, i) -> {
-            try {
-                onlineTagUpdate(tag,true,imgView);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).setNegativeButton(R.string.no,null).show();
-    }
-    private void onlineTagUpdate(final Tag tag, final boolean add,final ImageView imgView) throws IOException{
-        if(!Login.isLogged()&&Login.getUser()!=null)return;
-        StringWriter sw=new StringWriter();
-        JsonWriter jw=new JsonWriter(sw);
-        jw.beginObject().name("added").beginArray();
-        if(add)writeTag(jw,tag);
-        jw.endArray().name("removed").beginArray();
-        if(!add)writeTag(jw,tag);
-        jw.endArray().endObject();
-
-        final String url=String.format(Locale.US,"https://"+ Utility.getHost()+"/users/%d/%s/blacklist",Login.getUser().getId(),Login.getUser().getCodename());
-        final RequestBody ss=RequestBody.create(MediaType.get("application/json"),sw.toString());
-        Global.getClient(context).newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {}
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                String token=response.body().string();
-                token=token.substring(token.lastIndexOf("csrf_token"));
-                token=token.substring(token.indexOf('"')+1);
-                token=token.substring(0,token.indexOf('"'));
-                Global.getClient(context).newCall(new Request.Builder().addHeader("Referer",url).addHeader("X-CSRFToken",token).url(url).post(ss).build()).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NonNull Call call, @NonNull IOException e) {}
-
-                    @Override
-                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                        String s=response.body().string();
-                        if(s.equals("{\"status\": \"ok\"}")) {
-                            if (add) Login.addOnlineTag(tag);
-                            else Login.removeOnlineTag(tag);
-                            if(tagMode==TagMode.ONLINE)updateLogo(imgView, add ? TagStatus.AVOIDED : TagStatus.DEFAULT);
-                        }
-                    }
-                });
-            }
-        });
-    }
-    private static void writeTag(JsonWriter jw, Tag tag) throws IOException{
-        jw.beginObject();
-        jw.name("id").value(tag.getId());
-        jw.name("name").value(tag.getName());
-        jw.name("type").value(tag.getTypeSingleName());
-        jw.endObject();
-    }
     private void updateLogo(ImageView img, TagStatus s){
         context.runOnUiThread(() -> {
             switch (s){

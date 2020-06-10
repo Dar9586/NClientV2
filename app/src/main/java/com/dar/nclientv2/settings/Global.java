@@ -31,7 +31,6 @@ import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TitleType;
-import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.components.classes.CustomSSLSocketFactory;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
@@ -203,7 +202,6 @@ public class Global {
         initTheme(context);
         loadNotificationChannel(context);
         NotificationSettings.initializeNotificationManager(context);
-        Login.initUseAccountTag(context);
 
         useRtl=     shared.getBoolean(context.getString(R.string.key_use_rtl),false);
         byPopular=  shared.getBoolean(context.getString(R.string.key_by_popular),false);
@@ -453,12 +451,12 @@ public class Global {
     public static File findGalleryFolder(int id){
         if(DOWNLOADFOLDER==null)return null;
         DOWNLOADFOLDER.mkdirs();
+        String fileName="."+id;
         File[] tmp=DOWNLOADFOLDER.listFiles();
-        if(tmp!=null)
+        if(tmp==null)return null;
         for (File tmp2 : tmp) {
-            if (tmp2.isDirectory()) {
-                LocalGallery gallery=new LocalGallery(tmp2);
-                if(gallery.getId()==id)return gallery.getDirectory();
+            if (tmp2.isDirectory()&&new File(tmp2,fileName).exists()) {
+                return tmp2;
             }
         }
         return null;

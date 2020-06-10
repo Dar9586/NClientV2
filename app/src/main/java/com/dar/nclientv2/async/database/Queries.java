@@ -280,18 +280,16 @@ public class Queries{
          * Return a cursor which points to a list of {@link Tag} which have certain properties
          * @param query Retrieve only tags which contains a certain string
          * @param type If not null only tags which are of a specific {@link TagType}
-         * @param online Retrieve only tags which have been blacklisted from the main site
          * @param sortByName sort by name or by count
          * */
-        public static Cursor getFilterCursor(@NonNull String query, TagType type, boolean online,boolean sortByName){
+        public static Cursor getFilterCursor(@NonNull String query, TagType type,boolean sortByName){
             //create query
             StringBuilder sql=new StringBuilder("SELECT * FROM ").append(TABLE_NAME);
             sql.append(" WHERE ");
             sql.append(COUNT).append(">=? ");                                        //min tag count
             if(query.length()>0) sql.append("AND ").append(NAME).append(" LIKE ?");  //query if is used
             if(type!=null) sql.append("AND ").append(TYPE).append("=? ");            //type if is used
-            if(online) sql.append("AND ").append(ONLINE).append("=1 ");              //retrieve only online tags
-            if(!online&&type==null) sql.append("AND ").append(STATUS).append("!=0 ");//retrieve only used tags
+            if(type==null) sql.append("AND ").append(STATUS).append("!=0 ");//retrieve only used tags
 
             sql.append("ORDER BY ");                                                 //sort first by name if provided, the for count
             if(!sortByName)sql.append(COUNT).append(" DESC,");
@@ -627,6 +625,9 @@ public class Queries{
         }
         public static void deleteBookmark(String url){
             LogUtility.d("Deleted: "+ db.delete(TABLE_NAME,URL+"=?",new String[]{url}));
+        }
+        public static void removeFavorite(){
+            db.delete(TABLE_NAME,TYPE+"=?",new String[]{""+ApiRequestType.FAVORITE.ordinal()});
         }
         public static void addBookmark( InspectorV3 inspector){
             Tag tag=inspector.getTag();

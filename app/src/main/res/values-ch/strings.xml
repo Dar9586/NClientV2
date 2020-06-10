@@ -8,8 +8,6 @@
     <string name="setting_off_high_res">載入縮略圖（較少資料量）</string>
     <string name="setting_on_load">所有活動均載入圖像</string>
     <string name="setting_off_load">僅單頁閱讀時載入圖像</string>
-    <string name="setting_on_use_account_tag">帳戶標籤用於搜查（本地標籤優先）</string>
-    <string name="setting_off_use_account_tag">搜查時忽略帳戶標籤</string>
     <string name="theme_summary">選擇主題顏色</string>
 
     <!--SETTINGS NAME-->
@@ -20,12 +18,10 @@
     <string name="infinite_scroll">無限滾動</string>
     <string name="ignore_tags">忽略其它標籤</string>
     <string name="high_res_gallery">以最佳解析度載入畫廊圖像</string>
-    <string name="use_account_tag">使用帳戶標籤</string>
 
     <string name="title_activity_gallery">畫廊</string>
     <string name="title_activity_zoom">啟用放大</string>
     <string name="title_activity_tag_filter">標籤篩選</string>
-    <string name="title_activity_login">登錄</string>
 
     <string name="parodies">原作</string>
     <string name="characters">角色</string>
@@ -50,24 +46,6 @@
     <string name="only_japanese">僅日文</string>
     <string name="only_chinese">僅中文</string>
     <string name="all_languages">所有語言</string>
-
-
-    <string name="username_or_email">用戶名或郵件</string>
-    <string name="password">密碼</string>
-    <string name="login">登錄</string>
-    <string name="login_formatted" formatted="true">以 %s 身份登錄</string>
-    <string name="logout">登出</string>
-    <string name="forgot_password">忘記密碼？<b>重置密碼</b></string>
-    <string name="register">沒有帳戶？<b>註冊帳號</b></string>
-    <string name="invalid_credentials">無效憑證</string>
-
-    <string name="favorite_online_manga">線上收藏漫畫</string>
-    <string name="online_tags">線上標籤</string>
-
-    <string name="add_to_online_favorite">添加至線上收藏</string>
-    <string name="remove_from_online_favorites">從線上收藏移除</string>
-    <string name="add_to_online_blacklist">列入線上黑名單？</string>
-    <string name="tag_already_in_blacklist">標籤已列入黑名單</string>
 
     <string name="are_you_sure">你確定？</string>
     <string name="thumbnail">預覽</string>
@@ -156,8 +134,6 @@
     <string name="insert_tag_name">插入標籤名：</string>
     <string name="favorite_count">收藏數</string>
     <string name="comments">評論</string>
-    <string name="send">發送</string>
-    <string name="send_comment">發送評論…</string>
     <string name="profile_picture">頭像</string>
     <string name="send_bug_on_github">在Github上回饋bug</string>
     <string name="github">Github</string>

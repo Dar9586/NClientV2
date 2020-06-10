@@ -18,7 +18,6 @@ import com.dar.nclientv2.R;
 import com.dar.nclientv2.SettingsActivity;
 import com.dar.nclientv2.async.VersionChecker;
 import com.dar.nclientv2.settings.Global;
-import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.utility.LogUtility;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -81,7 +80,6 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
             act.runOnUiThread(() -> act.startActivity(i));
             return false;
         });
-        findPreference(getString(R.string.key_use_account_tag)).setEnabled(Login.isLogged());
 
         findPreference(getString(R.string.key_theme_select)).setOnPreferenceChangeListener((preference, newValue) -> {
             act.recreate();

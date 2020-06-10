@@ -26,8 +26,6 @@ import com.dar.nclientv2.components.views.RangeSelector;
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
 import com.dar.nclientv2.settings.Favorites;
 import com.dar.nclientv2.settings.Global;
-import com.dar.nclientv2.settings.Login;
-import com.dar.nclientv2.utility.CSRFGet;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.snackbar.Snackbar;
@@ -35,11 +33,6 @@ import com.google.android.material.snackbar.Snackbar;
 import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 
 import java.util.List;
-
-import okhttp3.FormBody;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class GalleryActivity extends BaseActivity{
     @NonNull private GenericGallery gallery=Gallery.emptyGallery();
@@ -175,18 +168,6 @@ public class GalleryActivity extends BaseActivity{
         return 0;
     }
 
-
-    public void initFavoriteIcon(Menu menu){
-        boolean onlineFavorite=!isLocal&&((Gallery)gallery).isOnlineFavorite();
-        boolean unknown=getIntent().getBooleanExtra(getPackageName()+ ".UNKNOWN",false);
-        MenuItem item=menu.findItem(R.id.add_online_gallery);
-
-        item.setIcon(onlineFavorite?R.drawable.ic_star:R.drawable.ic_star_border);
-
-        if(unknown)item.setTitle(R.string.toggle_online_favorite);
-        else if(onlineFavorite)item.setTitle(R.string.remove_from_online_favorites);
-        else item.setTitle(R.string.add_to_online_favorite);
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.gallery, menu);
@@ -194,7 +175,6 @@ public class GalleryActivity extends BaseActivity{
 
         menu.findItem(R.id.favorite_manager).setIcon(isLocalFavorite?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
         menuItemsVisible(menu);
-        initFavoriteIcon(menu);
         Utility.tintMenu(menu);
         updateColumnCount(false);
         return true;
@@ -202,11 +182,10 @@ public class GalleryActivity extends BaseActivity{
 
     private void menuItemsVisible(Menu menu) {
         boolean isValidOnline=gallery.isValid()&&!isLocal;
-        menu.findItem(R.id.add_online_gallery).setVisible(isValidOnline&&Login.isLogged());
         menu.findItem(R.id.favorite_manager).setVisible(isValidOnline);
         menu.findItem(R.id.download_gallery).setVisible(isValidOnline);
         menu.findItem(R.id.related).setVisible(isValidOnline);
-        menu.findItem(R.id.comments).setVisible(isValidOnline);
+        menu.findItem(R.id.comments).setVisible(false);// TODO: 10/06/20 fix this
 
         menu.findItem(R.id.share).setVisible(gallery.isValid());
         menu.findItem(R.id.load_internet).setVisible(isLocal&&gallery.isValid());
@@ -228,10 +207,6 @@ public class GalleryActivity extends BaseActivity{
                     new RangeSelector(this, (Gallery) gallery).show();
                 else
                     requestStorage();
-                break;
-            case R.id.add_online_gallery:
-                addToFavorite(item);
-
                 break;
             case R.id.change_view:updateColumnCount(true); break;
             case R.id.load_internet:toInternet();break;
@@ -267,38 +242,6 @@ public class GalleryActivity extends BaseActivity{
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void addToFavorite(final MenuItem item) {
-        String startUrl=Utility.getBaseUrl()+"g/"+gallery.getId()+"/";
-        String url=startUrl+"favorite";
-        LogUtility.d("Calling: "+url);
-        new CSRFGet(token -> {
-            LogUtility.d("FIND TOKEN: "+token);
-            RequestBody formBody = new FormBody.Builder()
-                    .add("WTF","OK")
-                    .build();
-            assert Global.getClient() != null;
-            Response response=Global.getClient().newCall(
-                    new Request.Builder()
-                            .addHeader("Referer",startUrl)
-                            .addHeader("X-CSRFToken",token)
-                            .addHeader("X-Requested-With","XMLHttpRequest")
-                            .url(url)
-                            .post(formBody)
-                            .build()
-            ).execute();
-
-            String resp=response.body().string();
-            LogUtility.d("Called: "+response.request().method()+response.request().url().toString()+response.code()+resp);
-            final boolean removedFromFavorite=resp.contains("false");
-            GalleryActivity.this.runOnUiThread(() -> {
-                item.setIcon(removedFromFavorite?R.drawable.ic_star_border:R.drawable.ic_star);
-                item.setTitle(removedFromFavorite?R.string.add_to_online_favorite:R.string.remove_from_online_favorites);
-            });
-            response.close();
-        },startUrl,"csrfmiddlewaretoken").start();
-
     }
 
     private void updateColumnCount(boolean increase) {

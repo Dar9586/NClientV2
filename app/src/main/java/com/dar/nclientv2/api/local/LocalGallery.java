@@ -52,17 +52,18 @@ public class LocalGallery extends GenericGallery{
         }catch (IOException|NumberFormatException ignore){}
         return SpecialTagIds.INVALID_ID;
     }
-
-
-    public LocalGallery(@NonNull File file){
+    public LocalGallery(@NonNull File file,boolean jumpDataRetrieve){
         directory=file;
         title=file.getName();
-        galleryData=readGalleryData();
-        if(galleryData.getId()==SpecialTagIds.INVALID_ID)
-            galleryData.setId(oldReadId());
-
+        if(jumpDataRetrieve){
+            galleryData=GalleryData.fakeData();
+        }else {
+            galleryData = readGalleryData();
+            if (galleryData.getId() == SpecialTagIds.INVALID_ID)
+                galleryData.setId(oldReadId());
+        }
         int max=0,min=Integer.MAX_VALUE;
-        //Inizio ricerca pagine
+        //Start search pages
         File[] files= retrieveValidImages();
         //Find page with max number
         if(files.length >= 1) {
@@ -73,6 +74,10 @@ public class LocalGallery extends GenericGallery{
         galleryData.setPageCount(max);
         this.min=min;
         valid=files.length>0;
+    }
+
+    public LocalGallery(@NonNull File file){
+        this(file,false);
     }
     @NonNull
     private GalleryData readGalleryData(){
@@ -180,6 +185,9 @@ public class LocalGallery extends GenericGallery{
     public File getDirectory() {
         return directory;
     }
+    /**
+     * @return null if not found or the file if found
+     * */
     public static File getPage(File dir,int page){
         if(dir==null||!dir.exists())return null;
         String pag=String.format(Locale.US,"%03d.",page);
@@ -211,6 +219,11 @@ public class LocalGallery extends GenericGallery{
         dest.writeString(title);
         dest.writeString(directory.getAbsolutePath());
         dest.writeByte((byte) (hasAdvancedData?1:0));
+    }
+
+    @Override
+    public String getUri(File directory, int page) {
+        return super.getUri(directory, page);
     }
 
     @Override

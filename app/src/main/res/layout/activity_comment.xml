@@ -8,53 +8,9 @@
         layout="@layout/app_bar_main"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/card"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="20"
-        >
-
-        <EditText
-            android:id="@+id/commentText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_weight="17"
-            android:ems="10"
-            android:maxLength="1000"
-            android:inputType="textMultiLine"
-            android:maxHeight="250dp"
-            android:hint="@string/send_comment"
-            android:text=""
-            android:importantForAutofill="no" />
-
-        <ImageButton
-            android:id="@+id/sendButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="3"
-            android:clickable="true"
-            android:contentDescription="@string/send"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:tint="?android:attr/colorForeground"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
-            app:srcCompat="@android:drawable/ic_menu_send" />
-    </LinearLayout>
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

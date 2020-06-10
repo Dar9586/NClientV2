@@ -8,8 +8,6 @@
     <string name="setting_off_high_res">Verrà usata la miniatura per le immagini (meno dati)</string>
     <string name="setting_on_load">Le immagini verranno caricate ovunque</string>
     <string name="setting_off_load">Le immagini verranno caricate solo nella visualizzazione a singola pagina</string>
-    <string name="setting_on_use_account_tag">Usa i tag online per la ricerca (i tag locali avranno priorità)</string>
-    <string name="setting_off_use_account_tag">I tag online verranno ignorati</string>
     <string name="theme_summary">Seleziona schema colori</string>
 
     <!--SETTINGS NAME-->
@@ -20,12 +18,10 @@
     <string name="infinite_scroll">Scorrimento infinito</string>
     <string name="ignore_tags">Ignora altri tag</string>
     <string name="high_res_gallery">Carica immagini ad alta risoluzione</string>
-    <string name="use_account_tag">Usa i tag dall\'account</string>
 
     <string name="title_activity_gallery">Galleria</string>
     <string name="title_activity_zoom">Zoom</string>
     <string name="title_activity_tag_filter">Filtro tag</string>
-    <string name="title_activity_login">Accedi</string>
 
     <string name="parodies">Parodie</string>
     <string name="characters">Personaggi</string>
@@ -54,23 +50,6 @@
     <string name="only_chinese">Solo cinese</string>
     <string name="all_languages">Tutte le lingue</string>
 
-
-    <string name="username_or_email">Username o Email</string>
-    <string name="password">Password</string>
-    <string name="login">Accedi</string>
-    <string name="login_formatted" formatted="true">Entrato come %s</string>
-    <string name="logout">Logout</string>
-    <string name="forgot_password">Password dimenticata? <b>Reimpostala</b></string>
-    <string name="register">Non hai un account? <b>Registrati</b></string>
-    <string name="invalid_credentials">Credenziali invalide</string>
-
-    <string name="favorite_online_manga">Manga online preferiti</string>
-    <string name="online_tags">Online tag</string>
-
-    <string name="add_to_online_favorite">Aggiungi ai preferiti online</string>
-    <string name="remove_from_online_favorites">Rimuovi dai preferiti online</string>
-    <string name="add_to_online_blacklist">Aggiungere alla blacklist online?</string>
-    <string name="tag_already_in_blacklist">Tag già in blacklist</string>
 
     <string name="are_you_sure">Sei sicuro?</string>
     <string name="thumbnail">Miniatura</string>
@@ -157,8 +136,6 @@
     <string name="insert_tag_name">Inserisci nome tag:</string>
     <string name="favorite_count">Conteggio preferiti</string>
     <string name="comments">Commenti</string>
-    <string name="send">Invia</string>
-    <string name="send_comment">Invia commento…</string>
     <string name="profile_picture">Foto profilo</string>
     <string name="send_bug_on_github">Invia bug su Github</string>
     <string name="github">Github</string>

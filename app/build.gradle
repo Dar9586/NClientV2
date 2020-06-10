@@ -10,8 +10,8 @@ android {
         applicationId "com.dar.nclientv2"
         minSdkVersion 14
         targetSdkVersion 29
-        versionCode 238
-        versionName "2.3.8"
+        versionCode 239
+        versionName "2.3.9"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
 
@@ -27,7 +27,7 @@ android {
         checkReleaseBuilds false
         abortOnError false
     }
-    buildToolsVersion = '29.0.2'
+    buildToolsVersion = '29.0.3'
 }
 
 dependencies {
