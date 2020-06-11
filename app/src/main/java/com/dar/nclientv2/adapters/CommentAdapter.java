@@ -1,6 +1,8 @@
 package com.dar.nclientv2.adapters;
 
 import android.os.Build;
+import android.util.JsonReader;
+import android.util.JsonToken;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,20 +17,38 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Comment;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.utility.ImageDownloadUtility;
+import com.dar.nclientv2.utility.Utility;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Cookie;
+import okhttp3.FormBody;
+import okhttp3.HttpUrl;
+import okhttp3.Request;
+import okhttp3.Response;
+
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHolder> {
     private final List<Comment>comments;
     private final DateFormat format;
+    private final int userId;
+    private final int galleryId;
     private final AppCompatActivity context;
-    public CommentAdapter(AppCompatActivity context, List<Comment> comments) {
+    public CommentAdapter(AppCompatActivity context, List<Comment> comments, int galleryId) {
         this.context=context;
         format=android.text.format.DateFormat.getDateFormat(context);
+        this.galleryId=galleryId;
         this.comments =comments==null?new ArrayList<>():comments;
+        if(Login.isLogged()&&Login.getUser()!=null){
+            userId=Login.getUser().getId();
+        }else userId=-1;
     }
 
     @NonNull
@@ -45,7 +65,62 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                 context.runOnUiThread(() -> holder.body.setMaxLines(holder.body.getMaxLines()==7?999:7));
             }
         });
+        holder.close.setVisibility(c.getPosterId()!=userId?View.GONE:View.VISIBLE);
+        holder.close.setOnClickListener(v -> {
+            Comment cr=comments.get(holder.getAdapterPosition());
+            Global.getClient(context).newCall(new Request.Builder().post(new FormBody.Builder().build()).url(Utility.getBaseUrl()+"g/"+galleryId).build()).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
 
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    String token=response.body().string();
+                    token=token.substring(token.lastIndexOf("csrf_token"));
+                    token=token.substring(token.indexOf('"')+1);
+                    token=token.substring(0,token.indexOf('"'));
+                    Request.Builder builder=new Request.Builder()
+                            .addHeader("Referer",Utility.getBaseUrl()+"g/"+galleryId)
+                            .addHeader("X-Requested-With","XMLHttpRequest")
+                            .addHeader("X-CSRFToken",token)
+                            .post(new FormBody.Builder().add("x","x").build())
+                            .url(Utility.getBaseUrl()+"api/comments/"+cr.getId()+"/delete");
+
+                    StringBuilder builder1=new StringBuilder();
+                    for (Cookie cookie:Global.getClient(context).cookieJar().loadForRequest(HttpUrl.get("https://"+ Utility.getHost()+"/api/comments/"+cr.getId()+"/delete"))){
+                        builder1.append(cookie.name()).append('=').append(cookie.value()).append("; ");
+                    }
+                    builder.addHeader("Cookie",builder1.toString());
+                    Global.getClient(context).newCall(builder.build()).enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+
+                        }
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            String xxx=response.body().string();
+                            //JsonReader reader =new JsonReader(response.body().charStream());
+                            JsonReader reader =new JsonReader(new StringReader(xxx));
+                            boolean success=false;
+                            reader.beginObject();
+                            while(reader.peek()!= JsonToken.END_OBJECT){
+                                switch (reader.nextName()){
+                                    case "success":success=reader.nextBoolean();break;
+                                    default:reader.skipValue();break;
+                                }
+                            }
+                            reader.close();
+                            if(success){
+                                comments.remove(holder.getAdapterPosition());
+                                context.runOnUiThread(()->notifyItemRemoved(holder.getAdapterPosition()));
+                            }
+                        }
+                    });
+                }
+            });
+
+        });
         holder.user.setText(c.getUsername());
         holder.body.setText(c.getBody());
         holder.date.setText(format.format(c.getDate()));
@@ -60,8 +135,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         return comments.size();
     }
 
+    public void addComment(Comment c) {
+        comments.add(0,c);
+        context.runOnUiThread(()->notifyItemInserted(0));
+    }
     public static class ViewHolder extends RecyclerView.ViewHolder {
         final ImageButton userImage;
+        final ImageButton close;
         final TextView user;
         final TextView body;
         final TextView date;
@@ -70,6 +150,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             super(v);
             layout=v.findViewById(R.id.master_layout);
             userImage=v.findViewById(R.id.propic);
+            close=v.findViewById(R.id.close);
             user=v.findViewById(R.id.username);
             body=v.findViewById(R.id.body);
             date=v.findViewById(R.id.date);

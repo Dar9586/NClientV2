@@ -29,6 +29,7 @@ import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.widgets.ChipTag;
 import com.dar.nclientv2.components.widgets.CustomLinearLayoutManager;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.chip.Chip;
@@ -148,6 +149,9 @@ public class SearchActivity extends AppCompatActivity {
             else if(t.getId()==SpecialTagIds.LANGUAGE_CHINESE&&Global.getOnlyLanguage()==Language.CHINESE) t.setStatus(TagStatus.ACCEPTED);
             addChipTag(t,false,false);
         }
+        //add online tags
+        if(Login.useAccountTag())for(Tag t:Queries.TagTable.getAllOnlineBlacklisted())if(!tagAlreadyExist(t))
+            addChipTag(t,true,true);
         //add + button
         for(TagType type:TagType.values){
             //ignore these tags

@@ -25,16 +25,33 @@ public class ImageDownloadUtility {
 
     }
     @Nullable
-    public static BitmapTarget loadImageOp(Context context, ImageView view, String uri, int angle){
+    public static BitmapTarget loadImageOp(Context context, ImageView view, File file, int angle){
         RequestManager glide=GlideX.with(context);
         if(glide==null)return null;
         Drawable logo=Global.getLogo(context.getResources());
         BitmapTarget target=new BitmapTarget(view);
-        glide.asBitmap().transform(new Rotate(angle)).error(logo).placeholder(logo).load(uri).into(target);
+        glide.asBitmap().transform(new Rotate(angle)).error(logo).placeholder(logo).load(file).into(target);
         return target;
     }
     private static String getUrlForGallery(Gallery gallery, int page, boolean shouldFull){
         return shouldFull? gallery.getPageUrl(page):gallery.getLowPage(page);
+    }
+    @Nullable
+    public static BitmapTarget loadImageOp(Context context,ImageView view,Gallery gallery,int page,int angle){
+        String url=getUrlForGallery(gallery, page, true);
+        LogUtility.d("Requested url glide: "+ url);
+        if(Global.getDownloadPolicy()== Global.DataUsageType.NONE){loadLogo(view);return null;}
+        RequestManager glide=GlideX.with(context);
+        if(glide==null)return null;
+        Drawable logo=Global.getLogo(context.getResources());
+        BitmapTarget target=new BitmapTarget(view);
+        glide.asBitmap()
+                .transform(new Rotate(angle))
+                .error(logo)
+                .placeholder(logo)
+                .load(url)
+                .into(target);
+        return target;
     }
 
     public static void downloadPage(Activity activity, ImageView imageView, Gallery gallery, int page, boolean shouldFull){

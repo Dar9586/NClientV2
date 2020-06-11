@@ -26,6 +26,7 @@ import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.components.TagList;
 import com.dar.nclientv2.api.enums.SpecialTagIds;
 import com.dar.nclientv2.api.enums.TagType;
+import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.components.GlideX;
 import com.dar.nclientv2.components.classes.Size;
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
@@ -348,30 +349,26 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         intent.putExtra(context.getPackageName() + ".PAGE",page);
         context.startActivity(intent);
     }
-
-    private void loadFullImage(ImageView imgView, int pos,int angle){
-        String uri=gallery.getUri(directory,pos);
-
-        if (uri != null){
-            BitmapTarget target=ImageDownloadUtility.loadImageOp(context, imgView, uri,angle);
-            map.put(imgView,target);
-        } else {
-            ImageDownloadUtility.loadImage(R.mipmap.ic_launcher, imgView);
-        }
-    }
-    private void loadImage(ImageView imgView, int pos){
-        String uri=gallery.getUri(directory,pos);
-        if (uri != null)
-            ImageDownloadUtility.loadImage(context, uri, imgView);
-        else
-            ImageDownloadUtility.loadImage(R.mipmap.ic_launcher, imgView);
-    }
     private void loadImageOnPolicy(ImageView imgView, int pos) {
+        final File file;
         int angle=angles.get(pos);
-        if(policy==Policy.FULL)
-            loadFullImage(imgView,pos,angle);
-        else
-            loadFullImage(imgView,pos,0);
+        if(gallery.isLocal())file=((LocalGallery)gallery).getPage(pos);
+        else file=LocalGallery.getPage(directory,pos);
+        if(policy==Policy.FULL) {
+            BitmapTarget target=null;
+            if (file != null && file.exists()) target=ImageDownloadUtility.loadImageOp(context, imgView, file,angle);
+            else if (!gallery.isLocal()){
+                final Gallery ent = ((Gallery) gallery);
+                target= ImageDownloadUtility.loadImageOp(context, imgView, ent,pos-1,angle);
+            }else ImageDownloadUtility.loadImage(R.mipmap.ic_launcher, imgView);
+            if(target!=null)map.put(imgView,target);
+        }else{
+            if (file != null && file.exists()) ImageDownloadUtility.loadImage(context, file, imgView);
+            else if (!gallery.isLocal()){
+                final Gallery ent = ((Gallery) gallery);
+                ImageDownloadUtility.downloadPage(context,imgView,ent,pos-1,false);
+            }else ImageDownloadUtility.loadImage(R.mipmap.ic_launcher, imgView);
+        }
     }
     private final HashMap<ImageView, BitmapTarget>map=new HashMap<>(5);
     private final HashSet<BitmapTarget>toDelete=new HashSet<>();

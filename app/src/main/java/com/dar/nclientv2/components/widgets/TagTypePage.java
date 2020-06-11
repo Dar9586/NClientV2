@@ -15,6 +15,7 @@ import com.dar.nclientv2.R;
 import com.dar.nclientv2.TagFilterActivity;
 import com.dar.nclientv2.adapters.TagsAdapter;
 import com.dar.nclientv2.api.enums.TagType;
+import com.dar.nclientv2.async.ScrapeTags;
 import com.dar.nclientv2.settings.TagV2;
 
 public class TagTypePage extends Fragment {
@@ -38,6 +39,7 @@ public class TagTypePage extends Fragment {
             case 3:return TagType.CHARACTER.getId();
             case 4:return TagType.PARODY.getId();
             case 5:return TagType.GROUP.getId();
+            case 6:return TagType.CATEGORY.getId();//online blacklisted tags
         }
         return -1;
     }
@@ -68,8 +70,9 @@ public class TagTypePage extends Fragment {
 
     public void loadTags(){
         recyclerView.setLayoutManager(new CustomGridLayoutManager(activity, getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE?4:2));
-        if(type.equals(TagType.UNKNOWN))adapter=new TagsAdapter(activity,query);
-        else adapter=new TagsAdapter(activity,query);
+        if(type.equals(TagType.UNKNOWN))adapter=new TagsAdapter(activity,query,false);
+        else if (type.equals(TagType.CATEGORY))adapter=new TagsAdapter(activity,query,true);
+        else adapter=new TagsAdapter(activity,query,type);
         recyclerView.setAdapter(adapter);
     }
     public void refilter(String newText){
@@ -78,6 +81,9 @@ public class TagTypePage extends Fragment {
 
     public void reset(){
         if(type.equals(TagType.UNKNOWN))TagV2.resetAllStatus();
+        else if (!type.equals(TagType.CATEGORY)){
+                ScrapeTags.startWork(activity);
+        }
         Activity activity=getActivity();
         if(activity==null||adapter==null)return;
         activity.runOnUiThread(adapter::notifyDataSetChanged);

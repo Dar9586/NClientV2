@@ -36,6 +36,7 @@ public class Bookmark {
     public InspectorV3 createInspector(Context context, InspectorV3.InspectorResponse response){
         String query=uri.getQueryParameter("q");
         boolean popular="popular".equals(uri.getQueryParameter("sort"));
+        if(requestType==ApiRequestType.FAVORITE)return InspectorV3.favoriteInspector(context,query,page,response);
         if(requestType==ApiRequestType.BYSEARCH)return InspectorV3.searchInspector(context,query,null,page,popular,response);
         if(requestType==ApiRequestType.BYALL)return InspectorV3.searchInspector(context,"",null,page,false,response);
         if(requestType==ApiRequestType.BYTAG)return InspectorV3.searchInspector(context,"",

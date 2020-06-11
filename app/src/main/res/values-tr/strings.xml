@@ -6,6 +6,7 @@
     <string name="setting_off_ignore_tags">Diğer etiketler manga menüsünden bir etiket seçildiğinde listelenecek</string>
     <string name="setting_on_high_res">Kullanılabilen en yüksek çözünürlük yüklenecek (daha fazla veri gerektirir)</string>
     <string name="setting_off_load">Fotoğraflar sadece tek sayfa görünümünde yüklenecek</string>
+    <string name="setting_off_use_account_tag">Hesap etiketleri aramada dikkate alınmayacak</string>
     <string name="theme_summary">Tema renklerini seç</string>
 
     <!--SETTINGS NAME-->
@@ -14,10 +15,12 @@
     <string name="clear_cache">Önbelleği temizle</string>
     <string name="load_images">Fotoğrafları yükle</string>
     <string name="infinite_scroll">Sonsuz kaydırma</string>
+    <string name="use_account_tag">Hesaptan etiketleri kullan</string> <!-- DEPRECATED-->
 
     <string name="title_activity_gallery">Manga</string>
     <string name="title_activity_zoom">Yakınlaştırma aktivitesi</string>
     <string name="title_activity_tag_filter">Etiket filtresi</string>
+    <string name="title_activity_login">Giriş yap</string>
 
     <string name="parodies">Parodiler</string>
     <string name="characters">Karakterler</string>
@@ -45,6 +48,21 @@
     <string name="only_japanese">Sadece Japonca</string>
     <string name="only_chinese">Sadece Çince</string>
     <string name="all_languages">Tüm Diller</string>
+
+    <string name="username_or_email">Kullanıcı adı ve ya Email</string>
+    <string name="login">Giriş yap</string>
+    <string name="login_formatted" formatted="true">%s olarak giriş yapıldı</string>
+    <string name="logout">Çıkış yap</string>
+    <string name="forgot_password">Şifrenizi mi unuttunuz? <b>Sıfırlayın</b></string>
+    <string name="register">Hesabınız yok mu? <b>Kaydol</b></string>
+
+    <string name="favorite_online_manga">Favori online manga</string>
+    <string name="online_tags">Online etiketler</string>
+
+    <string name="add_to_online_favorite">Online favorilere ekle</string>
+    <string name="remove_from_online_favorites">Online favorilerden kaldır</string>
+    <string name="add_to_online_blacklist">Online kara listeye ekle?</string>
+    <string name="tag_already_in_blacklist">Etiket zaten karalistede</string>
 
     <string name="are_you_sure">Eminmisin?</string>
     <string name="thumbnail">Önizleme</string>
@@ -124,6 +142,8 @@
     <string name="add">Ekle</string>
     <string name="insert_tag_name">Etiket adı ekle</string>
     <string name="favorite_count">Favori sayısı</string>
+    <string name="send">Gönder</string>
+    <string name="send_comment">Yorumu gönder…</string>
     <string name="profile_picture">Profil fotoğrafı</string>
     <string name="send_bug_on_github">Github üzerinden hata gönder</string>
     <string name="github">Github</string>
@@ -213,8 +233,11 @@
     </string-array>
     <string name="setting_off_high_res">Önizlemeler yüklenecek (az veri kullanır)</string>
     <string name="setting_on_load">Fotoğraflar tüm aktivitelerde yüklenecek</string>
+    <string name="setting_on_use_account_tag">Hesap etiketlerini aramada kullan (Yerel etiketler daha önceliklidir)</string>
     <string name="ignore_tags">Diğer etiketleri dikkate alma</string>
     <string name="high_res_gallery">Fotoğrafı mangada en yüksek çözünürlükte yükle</string>
+    <string name="password">Şifre</string>
+    <string name="invalid_credentials">Yanlış giriş bilgisi. Lütfen İsminizi ve ya Şifrenizi tekrar girin</string>
     <string name="created_pdf">PDF başarıyla oluşturuldu</string>
     <string name="navigation_drawer_open">Gezinme çekmecesini aç</string>
     <string name="link_copied_to_clipboard">Link panoya kopyalandı</string>
