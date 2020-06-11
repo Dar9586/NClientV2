@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.dar.nclientv2.BuildConfig;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.enums.Language;
+import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.ScrapeTags;
 import com.dar.nclientv2.async.database.DatabaseHelper;
 import com.dar.nclientv2.async.downloader.DownloadGalleryV2;
@@ -28,6 +29,8 @@ import org.acra.ACRA;
 import org.acra.ReportField;
 import org.acra.annotation.AcraCore;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -56,7 +59,7 @@ public class CrashApplication extends Application{
         TagV2.initSortByName(this);
         String version=Global.getLastVersion(this),actualVersion=Global.getVersionName(this);
         SharedPreferences preferences=getSharedPreferences("Settings", 0);
-        if(!actualVersion.equals(version))afterUpdateChecks(preferences,version);
+        if(!actualVersion.equals(version))afterUpdateChecks(preferences,version,actualVersion);
         DownloadGalleryV2.loadDownloads(this);
     }
 
@@ -80,7 +83,7 @@ public class CrashApplication extends Application{
         }
         return false;
     }
-    private void afterUpdateChecks(SharedPreferences preferences, String version){
+    private void afterUpdateChecks(SharedPreferences preferences, String oldVersion, String actualVersion){
         SharedPreferences.Editor editor=preferences.edit();
         removeOldUpdates();
         //update tags
@@ -89,11 +92,33 @@ public class CrashApplication extends Application{
         int val = preferences.getInt(getString(R.string.key_only_language), Language.ALL.ordinal());
         if (val == -1) val = Language.ALL.ordinal();
         editor.putInt(getString((R.string.key_only_language)), val);
-        if("0.0.0".equals(version))
+        if("0.0.0".equals(oldVersion))
             editor.putBoolean(getString(R.string.key_check_update),signatureCheck());
         editor.apply();
+        createIdHiddenFiles();
         Global.initFromShared(this);
         Global.setLastVersion(this);
+    }
+
+    private void createIdHiddenFile(File folder){
+        LocalGallery gallery=new LocalGallery(folder);
+        if(gallery.getId()<0)return;
+        File hiddenFile=new File(folder,"."+gallery.getId());
+        try {
+            hiddenFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createIdHiddenFiles() {
+        if(!Global.hasStoragePermission(this))return;
+        File[]files=Global.DOWNLOADFOLDER.listFiles();
+        if(files==null)return;
+        for(File f:files){
+            if(f.isDirectory())
+                createIdHiddenFile(f);
+        }
     }
 
     private void removeOldUpdates() {

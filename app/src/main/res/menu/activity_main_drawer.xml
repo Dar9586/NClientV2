@@ -17,6 +17,10 @@
             android:icon="@drawable/ic_favorite"
             android:title="@string/favorite_manga" />
         <item
+            android:id="@+id/online_favorite_manager"
+            android:icon="@drawable/ic_star"
+            android:title="@string/online_favorite_manga" />
+        <item
             android:id="@+id/tag_manager"
             android:icon="@drawable/ic_hashtag"
             android:title="@string/manage_tags" />
@@ -35,6 +39,10 @@
                 <item android:title="@string/settings"
                 android:icon="@drawable/ic_settings"
                 android:id="@+id/action_settings"/>
+                <item android:title="@string/login"
+                    android:visible="false"
+                    android:icon="@drawable/ic_person"
+                    android:id="@+id/action_login"/>
             </group>
         </menu>
     </item>

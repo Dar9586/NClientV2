@@ -4,23 +4,30 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.loginapi.User;
+import com.dar.nclientv2.utility.Utility;
+
+import java.util.Collections;
+
+import okhttp3.HttpUrl;
 
 public class Login{
     private static User user;
     private static boolean accountTag;
 
     public static void  initUseAccountTag(@NonNull Context context){
-
+        accountTag=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_use_account_tag),false);
     }
 
     public static boolean useAccountTag(){
-        return false;
+        return accountTag;
     }
 
     public static void logout(){
+        Global.getClient().cookieJar().saveFromResponse(HttpUrl.get(Utility.getBaseUrl()), Collections.emptyList());
         updateUser(null);
         clearOnlineTags();
     }
@@ -37,13 +44,18 @@ public class Login{
     }
 
     public static boolean isLogged(){
+        /*if(Global.getClient()==null)return false;
+        PersistentCookieJar p=((PersistentCookieJar)Global.getClient().cookieJar());
+        for(Cookie c:p.loadForRequest(HttpUrl.get(Utility.getBaseUrl()))){
+            if(c.name().equals("sessionid"))return true;
+        }*/
         return false;
     }
 
 
 
     public static User getUser() {
-        return null;
+        return user;
     }
 
     public static void updateUser(User user) {

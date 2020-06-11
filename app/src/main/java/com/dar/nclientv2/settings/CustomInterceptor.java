@@ -14,7 +14,7 @@ public class CustomInterceptor implements Interceptor {
         Request request=chain.request();
         LogUtility.d("Requested url: "+request.url());
         Request.Builder r=request.newBuilder();
-        r.addHeader("User-Agent","NClientV2 "+Global.getLastVersion(null));
+        r.addHeader("User-Agent",Global.getUserAgent());
 
         return chain.proceed(r.build());
     }

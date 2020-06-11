@@ -27,12 +27,14 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.dar.nclientv2.CopyToClipboardActivity;
+import com.dar.nclientv2.MainActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TitleType;
-import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.components.classes.CustomSSLSocketFactory;
+import com.dar.nclientv2.loginapi.LoadTags;
+import com.dar.nclientv2.loginapi.User;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 import com.dar.nclientv2.utility.network.NetworkUtil;
@@ -113,6 +115,10 @@ public class Global {
 
     public static boolean isDestroyed(Activity activity) {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && activity.isDestroyed();
+    }
+
+    public static String getUserAgent() {
+        return "NClientV2 "+Global.getLastVersion(null);
     }
 
     public enum ThemeScheme{LIGHT,DARK}
@@ -204,7 +210,6 @@ public class Global {
         loadNotificationChannel(context);
         NotificationSettings.initializeNotificationManager(context);
         Login.initUseAccountTag(context);
-
         useRtl=     shared.getBoolean(context.getString(R.string.key_use_rtl),false);
         byPopular=  shared.getBoolean(context.getString(R.string.key_by_popular),false);
         keepHistory=shared.getBoolean(context.getString(R.string.key_keep_history),true);
@@ -251,17 +256,34 @@ public class Global {
     public static boolean isZoomOneColumn() {
         return zoomOneColumn;
     }
-
-    private static void initHttpClient(@NonNull Context context){
-        if(client!=null)return;
+    public static void reloadHttpClient(@NonNull Context context){
         OkHttpClient.Builder builder=new OkHttpClient.Builder()
-                .cookieJar(new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context.getSharedPreferences("Login",0))));
+                .cookieJar(
+                        new PersistentCookieJar(
+                                new SetCookieCache(),
+                                new SharedPrefsCookiePersistor(context.getSharedPreferences("Login",0))
+                        )
+                );
 
         CustomSSLSocketFactory.enableTls12OnPreLollipop(builder);
         builder.addInterceptor(new CustomInterceptor());
         client=builder.build();
         client.dispatcher().setMaxRequests(25);
         client.dispatcher().setMaxRequestsPerHost(25);
+        if(Login.isLogged()&&Login.getUser()==null){
+            User.createUser(user -> {
+                if(user!=null){
+                    new LoadTags(null).start();
+                    if(context instanceof MainActivity){
+                        ((MainActivity) context).runOnUiThread(() -> ((MainActivity)context).loginItem.setTitle(context.getString(R.string.login_formatted,user.getUsername())));
+                    }
+                }
+            });
+        }
+    }
+    private static void initHttpClient(@NonNull Context context){
+        if(client!=null)return;
+        reloadHttpClient(context);
     }
     public static Locale initLanguage(Context context){
         String x=context.getSharedPreferences("Settings",0).getString(context.getString(R.string.key_language),"en");
@@ -355,12 +377,12 @@ public class Global {
         Global.initFilesTree(context);
         LogUtility.d(
                 "0:"+context.getFilesDir()+'\n'+
-                "1:"+Global.MAINFOLDER+Global.MAINFOLDER.mkdirs()+'\n'+
-                "2:"+Global.DOWNLOADFOLDER+Global.DOWNLOADFOLDER.mkdir()+'\n'+
-                "3:"+Global.PDFFOLDER+Global.PDFFOLDER.mkdir()+'\n'+
-                "4:"+Global.UPDATEFOLDER+Global.UPDATEFOLDER.mkdir()+'\n'+
-                "5:"+Global.SCREENFOLDER+Global.SCREENFOLDER.mkdir()+'\n'+
-                "5:"+Global.ZIPFOLDER+Global.ZIPFOLDER.mkdir()+'\n'
+                        "1:"+Global.MAINFOLDER+Global.MAINFOLDER.mkdirs()+'\n'+
+                        "2:"+Global.DOWNLOADFOLDER+Global.DOWNLOADFOLDER.mkdir()+'\n'+
+                        "3:"+Global.PDFFOLDER+Global.PDFFOLDER.mkdir()+'\n'+
+                        "4:"+Global.UPDATEFOLDER+Global.UPDATEFOLDER.mkdir()+'\n'+
+                        "5:"+Global.SCREENFOLDER+Global.SCREENFOLDER.mkdir()+'\n'+
+                        "5:"+Global.ZIPFOLDER+Global.ZIPFOLDER.mkdir()+'\n'
         );
 
         try {
@@ -453,12 +475,12 @@ public class Global {
     public static File findGalleryFolder(int id){
         if(DOWNLOADFOLDER==null)return null;
         DOWNLOADFOLDER.mkdirs();
+        String fileName="."+id;
         File[] tmp=DOWNLOADFOLDER.listFiles();
-        if(tmp!=null)
+        if(tmp==null)return null;
         for (File tmp2 : tmp) {
-            if (tmp2.isDirectory()) {
-                LocalGallery gallery=new LocalGallery(tmp2);
-                if(gallery.getId()==id)return gallery.getDirectory();
+            if (tmp2.isDirectory()&&new File(tmp2,fileName).exists()) {
+                return tmp2;
             }
         }
         return null;

@@ -7,6 +7,7 @@ import android.util.JsonReader;
 import android.util.JsonWriter;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.dar.nclientv2.api.SimpleGallery;
 import com.dar.nclientv2.api.enums.ImageExt;
@@ -121,10 +122,12 @@ public class Gallery extends GenericGallery{
     private Page getPage(int index){
         return galleryData.getPage(index);
     }
-    @NonNull
+    @Nullable
     @Override
     public String getPageURI(int page) {
-        return getPageUrl(page);
+        if(page<1||page>getPageCount())
+            return null;
+        return getPageUrl(page-1);
     }
 
     public SimpleGallery toSimpleGallery() {

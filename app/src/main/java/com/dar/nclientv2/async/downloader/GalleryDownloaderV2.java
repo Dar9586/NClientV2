@@ -274,9 +274,15 @@ public class GalleryDownloaderV2 {
         folder.mkdirs();
         try {
             writeNoMedia();
+            createIdFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void createIdFile()throws IOException {
+        File idFile=new File(folder,"."+id);
+        idFile.createNewFile();
     }
 
     private void writeNoMedia()throws IOException {
