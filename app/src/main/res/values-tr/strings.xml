@@ -269,10 +269,10 @@
     <string name="use_column_port">Dikey konumda satır başına öğe sayısını seçin</string>
     <string name="use_column_land">Yatay konumda satır başına öğe sayısını seçin</string>
     <string name="copy_settings_to_clipboard">Ayarları panoya kopyala</string>
-    <string name="sort_popular_all_time">Popular</string>
-    <string name="sort_recent">Recent</string>
-    <string name="sort_popular_day">Daily popular</string>
-    <string name="sort_popular_week">Weekly popular</string>
-    <string name="sort_select_type">Choose sort type:</string>
+    <string name="sort_popular_all_time">Popüler</string>
+    <string name="sort_recent">Yeni</string>
+    <string name="sort_popular_day">Günlük popülerlik<string>
+    <string name="sort_popular_week">Haftalık popülerlik</string>
+    <string name="sort_select_type">Sıralama tipi seç:</string>
 
 </resources>
