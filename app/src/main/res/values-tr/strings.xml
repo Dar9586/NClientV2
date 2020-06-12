@@ -271,7 +271,7 @@
     <string name="copy_settings_to_clipboard">Ayarları panoya kopyala</string>
     <string name="sort_popular_all_time">Popüler</string>
     <string name="sort_recent">Yeni</string>
-    <string name="sort_popular_day">Günlük popülerlik<string>
+    <string name="sort_popular_day">Günlük popülerlik</string>
     <string name="sort_popular_week">Haftalık popülerlik</string>
     <string name="sort_select_type">Sıralama tipi seç:</string>
 
