@@ -11,6 +11,8 @@ import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -32,6 +34,7 @@ import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.api.enums.Language;
+import com.dar.nclientv2.api.enums.SortType;
 import com.dar.nclientv2.api.enums.SpecialTagIds;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
@@ -64,7 +67,7 @@ public class MainActivity extends BaseActivity
      * NORMAL when in main page
      * TAG when searching for a specific tag
      * FAVORITE when using online favorite button
-     * SEARCH when used SeaarchActivity
+     * SEARCH when used SearchActivity
      * BOOKMARK when loaded a bookmark
      * ID when searched for an ID
      * */
@@ -78,7 +81,7 @@ public class MainActivity extends BaseActivity
     private int actualPage=1,totalPage;
     private boolean inspecting=false,filteringTag=false;
     public ListAdapter adapter;
-
+    private SortType temporaryType;
 
     private final InspectorV3.InspectorResponse
             resetDataset=new InspectorV3.DefaultInspectorResponse() {
@@ -341,7 +344,7 @@ public class MainActivity extends BaseActivity
             assert tagArrayList != null;//tags is always not null when advanced is set
             tags = new HashSet<>(tagArrayList);
         }
-        inspector = InspectorV3.searchInspector(this, query, tags, 1, Global.isByPopular(), resetDataset);
+        inspector = InspectorV3.searchInspector(this, query, tags, 1, Global.getSortType(), resetDataset);
         modeType=ModeType.SEARCH;
     }
 
@@ -357,7 +360,7 @@ public class MainActivity extends BaseActivity
 
     private void useTagMode(Intent intent, String packageName) {
         Tag t=intent.getParcelableExtra(packageName+".TAG");
-        inspector=InspectorV3.tagInspector(this,t,1,Global.isByPopular(),resetDataset);
+        inspector=InspectorV3.tagInspector(this,t,1,Global.getSortType(),resetDataset);
         modeType = ModeType.TAG;
     }
 
@@ -382,7 +385,7 @@ public class MainActivity extends BaseActivity
         String query=data.getQueryParameter("q");
         String pageParam=data.getQueryParameter("page");
         boolean favorite="favorites".equals(datas.get(0));
-        boolean byPop="popular".equals(data.getQueryParameter("sort"));
+        SortType type=SortType.findFromAddition(data.getQueryParameter("sort"));
         int page=1;
 
         if(pageParam!=null)page=Integer.parseInt(pageParam);
@@ -397,15 +400,18 @@ public class MainActivity extends BaseActivity
             return;
         }
 
-        inspector=InspectorV3.searchInspector(this,query,null,page,byPop,resetDataset);
+        inspector=InspectorV3.searchInspector(this,query,null,page,type,resetDataset);
         modeType= ModeType.SEARCH;
     }
     private void useDataTagMode(List<String> datas,TagType type) {
         String query=datas.get(1);
-        boolean byPop=datas.size()==3;
         Tag tag=Queries.TagTable.getTagFromTagName(query);
         if(tag==null) tag=new Tag(query,-1, SpecialTagIds.INVALID_ID,type,TagStatus.DEFAULT);
-        inspector=InspectorV3.tagInspector(this,tag,1,byPop,resetDataset);
+        SortType sortType=SortType.RECENT_ALL_TIME;
+        if(datas.size()==3) {
+            sortType=SortType.findFromAddition(datas.get(2));
+        }
+        inspector=InspectorV3.tagInspector(this,tag,1,sortType,resetDataset);
         modeType=ModeType.TAG;
     }
 
@@ -576,8 +582,7 @@ public class MainActivity extends BaseActivity
     }
 
     private void popularItemDispay(MenuItem item) {
-        item.setIcon (Global.isByPopular()?R.drawable.ic_star_border:R.drawable.ic_access_time);
-        item.setTitle(Global.isByPopular()?R.string.sort_by_latest  :R.string.sort_by_popular);
+        item.setTitle(getString(R.string.sort_type_title,getString(Global.getSortType().getNameId())));
         Global.setTint(item.getIcon());
     }
 
@@ -607,11 +612,7 @@ public class MainActivity extends BaseActivity
         LogUtility.d("Pressed item: "+item.getItemId());
         switch (item.getItemId()){
             case R.id.by_popular:
-                Global.updateByPopular(this,!Global.isByPopular());
-                popularItemDispay(item);
-                inspector=inspector.cloneInspector(this,resetDataset);
-                inspector.setByPopular(Global.isByPopular());
-                inspector.start();
+                updateSortType(item);
                 break;
             case R.id.only_language:
                 changeUsedLanguage(item);
@@ -649,6 +650,34 @@ public class MainActivity extends BaseActivity
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateSortType(MenuItem item) {
+        ArrayAdapter<String> adapter=new ArrayAdapter<>(this,android.R.layout.select_dialog_singlechoice);
+        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(this);
+        for(SortType type:SortType.values())
+            adapter.add(getString(type.getNameId()));
+        temporaryType=Global.getSortType();
+        builder.setIcon(R.drawable.ic_sort).setTitle(R.string.sort_select_type);
+        builder.setSingleChoiceItems(adapter, temporaryType.ordinal(), (dialog, which) -> temporaryType=SortType.values()[which]);
+        builder.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                temporaryType=SortType.values()[position];
+                parent.setSelection(position);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
+            Global.updateSortType(MainActivity.this,temporaryType);
+            popularItemDispay(item);
+            inspector=inspector.cloneInspector(MainActivity.this,resetDataset);
+            inspector.setSortType(temporaryType);
+            inspector.start();
+        });
+        builder.setNegativeButton(R.string.cancel,null);
+        builder.show();
     }
 
     private void showDialogDownloadAll() {

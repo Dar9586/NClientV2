@@ -153,19 +153,6 @@
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
             android:parentActivityName=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:pathPrefix="/login" />
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-                <data android:host="nhentai.net" />
-                <data android:host="nhent.ai" />
-
-            </intent-filter>
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

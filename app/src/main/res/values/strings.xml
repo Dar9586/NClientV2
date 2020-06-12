@@ -276,6 +276,13 @@
     <string name="maximum_notification_count">Maximum notification count</string>
     <string name="copy_settings_to_clipboard">Copy settings to clipboard</string>
 
+    <string name="sort_popular_all_time">Popular</string>
+    <string name="sort_recent">Recent</string>
+    <string name="sort_popular_day">Daily popular</string>
+    <string name="sort_popular_week">Weekly popular</string>
+    <string name="sort_type_title" formatted="true">Choose sort type (%s)</string>
+    <string name="sort_select_type">Choose sort type:</string>
+
     <string-array name="language">
         <item>English</item>
         <item>Chinese (Traditional)</item>

@@ -251,7 +251,12 @@
     <string name="copied_to_clipboard">Copiato nella clipboard</string>
     <string name="maximum_notification_count">Numero massimo notifiche</string>
     <string name="copy_settings_to_clipboard">Copy settings to clipboard</string>
-
+    <string name="sort_popular_all_time">Popolarità</string>
+    <string name="sort_recent">Nuovi</string>
+    <string name="sort_popular_day">Popolarità giornaliera</string>
+    <string name="sort_popular_week">Popolarità settimanale</string>
+    <string name="sort_type_title" formatted="true">Scegli tipo ordinamento (%s)</string>
+    <string name="sort_select_type">Choose sort type:</string>
     <string-array name="language">
         <item>Inglese</item>
         <item>Cinese (Tradizionale)</item>

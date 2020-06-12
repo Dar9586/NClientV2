@@ -67,12 +67,15 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 cookies=CookieManager.getInstance().getCookie(Utility.getBaseUrl());
             }
-            String session=addCookie(cookies);
-            applyCookie(session);
+            LogUtility.d("Cookie string: "+cookies);
+            String session= fetchCookie("sessionid",cookies);
+            String cloudflare= fetchCookie("__cfduid",cookies);
+            applyCookie("sessionid",session);
+            applyCookie("__cfduid",cloudflare);
             runOnUiThread(LoginActivity.this::finish);
         }
 
-        private void applyCookie(String session) {
+        private void applyCookie(String name,String session) {
             HttpUrl url=HttpUrl.parse(Utility.getBaseUrl());
             Calendar expire=Calendar.getInstance();
             expire.add(Calendar.DAY_OF_MONTH,14);
@@ -83,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
                     .httpOnly()
                     .path("/")
                     .expiresAt(expire.getTimeInMillis())
-                    .name("sessionid")
+                    .name(name)
                     .domain(Utility.getHost())
                     .build();
             LogUtility.d("Created cookie: "+newCookie);
@@ -91,8 +94,8 @@ public class LoginActivity extends AppCompatActivity {
             Global.getClient().cookieJar().saveFromResponse(url,cookies);
         }
 
-        String addCookie(String cookies){
-            int start=cookies.indexOf("sessionid");
+        String fetchCookie(String cookieName, String cookies){
+            int start=cookies.indexOf(cookieName);
             start=cookies.indexOf('=',start)+1;
             int end=cookies.indexOf(';',start);
             return cookies.substring(start,end==-1?cookies.length()-1:end);

@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.ApiRequestType;
+import com.dar.nclientv2.api.enums.SortType;
 import com.dar.nclientv2.api.enums.SpecialTagIds;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
@@ -35,12 +36,12 @@ public class Bookmark {
     }
     public InspectorV3 createInspector(Context context, InspectorV3.InspectorResponse response){
         String query=uri.getQueryParameter("q");
-        boolean popular="popular".equals(uri.getQueryParameter("sort"));
+        SortType popular=SortType.findFromAddition(uri.getQueryParameter("sort"));
         if(requestType==ApiRequestType.FAVORITE)return InspectorV3.favoriteInspector(context,query,page,response);
         if(requestType==ApiRequestType.BYSEARCH)return InspectorV3.searchInspector(context,query,null,page,popular,response);
-        if(requestType==ApiRequestType.BYALL)return InspectorV3.searchInspector(context,"",null,page,false,response);
+        if(requestType==ApiRequestType.BYALL)return InspectorV3.searchInspector(context,"",null,page,SortType.RECENT_ALL_TIME,response);
         if(requestType==ApiRequestType.BYTAG)return InspectorV3.searchInspector(context,"",
-                Collections.singleton(tagVal),page,this.url.contains("/popular"),response);
+                Collections.singleton(tagVal),page, SortType.findFromAddition(this.url),response);
         return null;
     }
     public void deleteBookmark(){

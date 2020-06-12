@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.dar.nclientv2.BuildConfig;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.enums.Language;
+import com.dar.nclientv2.api.enums.SortType;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.ScrapeTags;
 import com.dar.nclientv2.async.database.DatabaseHelper;
@@ -50,16 +51,19 @@ public class CrashApplication extends Application{
     public void onCreate(){
         super.onCreate();
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        Database.setDatabase(new DatabaseHelper(getApplicationContext()).getWritableDatabase());
         Global.initStorage(this);
+        Database.setDatabase(new DatabaseHelper(getApplicationContext()).getWritableDatabase());
+        String version=Global.getLastVersion(this),actualVersion=Global.getVersionName(this);
+        SharedPreferences preferences=getSharedPreferences("Settings", 0);
+        if(!actualVersion.equals(version))
+            afterUpdateChecks(preferences,version,actualVersion);
+
         Global.initFromShared(this);
         Favorites.countFavorite();
         NetworkUtil.initConnectivity(this);
         TagV2.initMinCount(this);
         TagV2.initSortByName(this);
-        String version=Global.getLastVersion(this),actualVersion=Global.getVersionName(this);
-        SharedPreferences preferences=getSharedPreferences("Settings", 0);
-        if(!actualVersion.equals(version))afterUpdateChecks(preferences,version,actualVersion);
+
         DownloadGalleryV2.loadDownloads(this);
     }
 
@@ -94,10 +98,19 @@ public class CrashApplication extends Application{
         editor.putInt(getString((R.string.key_only_language)), val);
         if("0.0.0".equals(oldVersion))
             editor.putBoolean(getString(R.string.key_check_update),signatureCheck());
+        changeByPopularType(preferences,editor);
         editor.apply();
         createIdHiddenFiles();
-        Global.initFromShared(this);
         Global.setLastVersion(this);
+    }
+
+    private void changeByPopularType(SharedPreferences preferences, SharedPreferences.Editor editor) {
+        String key=getString(R.string.key_by_popular);
+        try{
+            boolean x=preferences.getBoolean(key,false);
+            editor.remove(key);
+            editor.putInt(key,x? SortType.POPULAR_ALL_TIME.ordinal():SortType.RECENT_ALL_TIME.ordinal());
+        }catch (ClassCastException ignore){}
     }
 
     private void createIdHiddenFile(File folder){

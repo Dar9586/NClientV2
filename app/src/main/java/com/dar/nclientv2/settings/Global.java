@@ -31,6 +31,7 @@ import com.dar.nclientv2.MainActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.enums.Language;
+import com.dar.nclientv2.api.enums.SortType;
 import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.components.classes.CustomSSLSocketFactory;
 import com.dar.nclientv2.loginapi.LoadTags;
@@ -49,6 +50,8 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Locale;
 
+import okhttp3.Cookie;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 
 public class Global {
@@ -64,7 +67,8 @@ public class Global {
 
     private static Language onlyLanguage;
     private static TitleType titleType;
-    private static boolean alternativeSite,volumeOverride,zoomOneColumn,byPopular,keepHistory,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
+    private static SortType sortType;
+    private static boolean alternativeSite,volumeOverride,zoomOneColumn,keepHistory,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
     private static ThemeScheme theme;
     private static DataUsageType usageMobile, usageWifi;
     private static String lastVersion;
@@ -211,7 +215,6 @@ public class Global {
         NotificationSettings.initializeNotificationManager(context);
         Login.initUseAccountTag(context);
         useRtl=     shared.getBoolean(context.getString(R.string.key_use_rtl),false);
-        byPopular=  shared.getBoolean(context.getString(R.string.key_by_popular),false);
         keepHistory=shared.getBoolean(context.getString(R.string.key_keep_history),true);
         infiniteScroll=shared.getBoolean(context.getString(R.string.key_infinite_scroll),false);
         removeAvoidedGalleries =shared.getBoolean(context.getString(R.string.key_remove_ignored),true);
@@ -233,6 +236,7 @@ public class Global {
         zoomOneColumn=shared.getBoolean(context.getString(R.string.key_zoom_one_column),false);
         alternativeSite=shared.getBoolean(context.getString(R.string.key_alternative_site),false);
         int x=Math.max(0,shared.getInt(context.getString(R.string.key_only_language),Language.ALL.ordinal()));
+        sortType = SortType.values()[shared.getInt(context.getString(R.string.key_by_popular),SortType.RECENT_ALL_TIME.ordinal())];
         usageMobile =DataUsageType.values()[shared.getInt(context.getString(R.string.key_mobile_usage),DataUsageType.FULL.ordinal())];
         usageWifi =DataUsageType.values()[shared.getInt(context.getString(R.string.key_wifi_usage),DataUsageType.FULL.ordinal())];
         if(Language.values()[x]==Language.UNKNOWN){
@@ -264,12 +268,14 @@ public class Global {
                                 new SharedPrefsCookiePersistor(context.getSharedPreferences("Login",0))
                         )
                 );
-
         CustomSSLSocketFactory.enableTls12OnPreLollipop(builder);
         builder.addInterceptor(new CustomInterceptor());
         client=builder.build();
         client.dispatcher().setMaxRequests(25);
         client.dispatcher().setMaxRequestsPerHost(25);
+        for(Cookie cookie:client.cookieJar().loadForRequest(HttpUrl.get(Utility.getBaseUrl()))){
+            LogUtility.d("Cookie: "+cookie);
+        }
         if(Login.isLogged()&&Login.getUser()==null){
             User.createUser(user -> {
                 if(user!=null){
@@ -359,8 +365,8 @@ public class Global {
         return showTitles;
     }
 
-    public static boolean isByPopular() {
-        return byPopular;
+    public static SortType getSortType() {
+        return sortType;
     }
     public static boolean isInfiniteScroll(){
         return infiniteScroll;
@@ -375,14 +381,22 @@ public class Global {
     public static void initStorage(Context context){
         if(!Global.hasStoragePermission(context))return;
         Global.initFilesTree(context);
+        boolean[] bools=new boolean[]{
+                Global.MAINFOLDER.mkdirs(),
+                Global.DOWNLOADFOLDER.mkdir(),
+                Global.PDFFOLDER.mkdir(),
+                Global.UPDATEFOLDER.mkdir(),
+                Global.SCREENFOLDER.mkdir(),
+                Global.ZIPFOLDER.mkdir(),
+        };
         LogUtility.d(
                 "0:"+context.getFilesDir()+'\n'+
-                        "1:"+Global.MAINFOLDER+Global.MAINFOLDER.mkdirs()+'\n'+
-                        "2:"+Global.DOWNLOADFOLDER+Global.DOWNLOADFOLDER.mkdir()+'\n'+
-                        "3:"+Global.PDFFOLDER+Global.PDFFOLDER.mkdir()+'\n'+
-                        "4:"+Global.UPDATEFOLDER+Global.UPDATEFOLDER.mkdir()+'\n'+
-                        "5:"+Global.SCREENFOLDER+Global.SCREENFOLDER.mkdir()+'\n'+
-                        "5:"+Global.ZIPFOLDER+Global.ZIPFOLDER.mkdir()+'\n'
+                        "1:"+Global.MAINFOLDER+bools[0]+'\n'+
+                        "2:"+Global.DOWNLOADFOLDER+bools[1]+'\n'+
+                        "3:"+Global.PDFFOLDER+bools[2]+'\n'+
+                        "4:"+Global.UPDATEFOLDER+bools[3]+'\n'+
+                        "5:"+Global.SCREENFOLDER+bools[4]+'\n'+
+                        "5:"+Global.ZIPFOLDER+bools[5]+'\n'
         );
 
         try {
@@ -392,7 +406,10 @@ public class Global {
 
 
     public static void updateOnlyLanguage(@NonNull Context context, @Nullable Language type){ context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_only_language)),type.ordinal()).apply();onlyLanguage=type; }
-    public static void  updateByPopular(@NonNull Context context,boolean popular){context.getSharedPreferences("Settings", 0).edit().putBoolean(context.getString((R.string.key_by_popular)),popular).apply();byPopular=popular;}
+    public static void updateSortType(@NonNull Context context, @NonNull SortType sortType){
+        context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_by_popular)),sortType.ordinal()).apply();
+        Global.sortType =sortType;
+    }
     public static void updateColumnCount(@NonNull Context context, int count){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_column_count)),count).apply();columnCount=count; }
     public static void updateMaxId(@NonNull Context context, int id){context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_max_id)),id).apply();maxId=id; }
 

@@ -254,6 +254,11 @@
     <string name="copied_to_clipboard">复制至剪贴板</string>
     <string name="maximum_notification_count">最大通知数</string>
     <string name="copy_settings_to_clipboard">复制设置到剪贴板</string>
+    <string name="sort_popular_all_time">Popular</string>
+    <string name="sort_recent">Recent</string>
+    <string name="sort_popular_day">Daily popular</string>
+    <string name="sort_popular_week">Weekly popular</string>
+    <string name="sort_select_type">Choose sort type:</string>
     <string-array name="language">
         <item>英文</item>
         <item>繁体中文</item>

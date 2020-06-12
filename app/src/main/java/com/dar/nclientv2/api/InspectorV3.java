@@ -13,6 +13,7 @@ import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.api.enums.Language;
+import com.dar.nclientv2.api.enums.SortType;
 import com.dar.nclientv2.api.enums.SpecialTagIds;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
@@ -41,8 +42,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class InspectorV3 extends Thread implements Parcelable {
-
-    private boolean byPopular,custom;
+    private SortType sortType;
+    private boolean custom;
     private int page,pageCount=-1,id;
     private String query,url;
     private ApiRequestType requestType;
@@ -52,7 +53,7 @@ public class InspectorV3 extends Thread implements Parcelable {
     private WeakReference<Context> context;
 
     protected InspectorV3(Parcel in) {
-        byPopular = in.readByte() != 0;
+        sortType = SortType.values()[in.readByte()];
         custom = in.readByte() != 0;
         page = in.readInt();
         pageCount = in.readInt();
@@ -89,7 +90,7 @@ public class InspectorV3 extends Thread implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte((byte) (byPopular ? 1 : 0));
+        dest.writeByte((byte) (sortType.ordinal()));
         dest.writeByte((byte) (custom ? 1 : 0));
         dest.writeInt(page);
         dest.writeInt(pageCount);
@@ -140,7 +141,7 @@ public class InspectorV3 extends Thread implements Parcelable {
         inspectorV3.url=url;
         inspectorV3.tags=tags;
         inspectorV3.requestType=requestType;
-        inspectorV3.byPopular=byPopular;
+        inspectorV3.sortType = sortType;
         inspectorV3.pageCount=pageCount;
         inspectorV3.page=page;
         inspectorV3.id=id;
@@ -177,9 +178,9 @@ public class InspectorV3 extends Thread implements Parcelable {
         return inspector;
     }
     public static InspectorV3 basicInspector(Context context,int page,InspectorResponse response){
-        return searchInspector(context,null,null,page,Global.isByPopular(),response);
+        return searchInspector(context,null,null,page,Global.getSortType(),response);
     }
-    public static InspectorV3 tagInspector(Context context,Tag tag,int page,boolean byPopular,InspectorResponse response){
+    public static InspectorV3 tagInspector(Context context,Tag tag,int page,SortType sortType,InspectorResponse response){
         Collection<Tag>tags;
         if(!Global.isOnlyTag()){
             tags=getDefaultTags();
@@ -187,9 +188,9 @@ public class InspectorV3 extends Thread implements Parcelable {
         }else {
             tags = Collections.singleton(tag);
         }
-        return searchInspector(context,null,tags,page,byPopular,response);
+        return searchInspector(context,null,tags,page,sortType,response);
     }
-    public static InspectorV3 searchInspector(Context context, String query, Collection<Tag> tags, int page, boolean byPopular, InspectorResponse response){
+    public static InspectorV3 searchInspector(Context context, String query, Collection<Tag> tags, int page, SortType sortType, InspectorResponse response){
         InspectorV3 inspector=new InspectorV3(context,response);
         inspector.custom=tags!=null;
         inspector.tags=inspector.custom?new HashSet<>(tags):getDefaultTags();
@@ -197,7 +198,7 @@ public class InspectorV3 extends Thread implements Parcelable {
         inspector.page=page;
         inspector.pageCount=0;
         inspector.query=query==null?"":query;
-        inspector.byPopular=byPopular;
+        inspector.sortType =sortType;
         if(inspector.query.isEmpty()) {
             switch (inspector.tags.size()) {
                 case 0:
@@ -219,14 +220,13 @@ public class InspectorV3 extends Thread implements Parcelable {
     }
 
     private void tryByAllPopular() {
-        if(byPopular){
+        if(sortType !=SortType.RECENT_ALL_TIME){
             requestType=ApiRequestType.BYSEARCH;
             query="-nclientv2";
         }
     }
 
     private void createUrl() {
-        Tag t=null;
         StringBuilder builder=new StringBuilder(Utility.getBaseUrl());
              if(requestType==ApiRequestType.BYALL)builder.append("?page=").append(page);
         else if(requestType==ApiRequestType.RANDOM)builder.append("random/");
@@ -252,7 +252,9 @@ public class InspectorV3 extends Thread implements Parcelable {
                      builder.append('+').append(tt.toQueryTag());
                  }
                  builder.append("&page=").append(page);
-                 if(byPopular)builder.append("&sort=popular");
+                 if(sortType.getUrlAddition()!=null){
+                     builder.append("&sort=").append(sortType.getUrlAddition());
+                 }
         }
         url=builder.toString().replace(' ','+');
         LogUtility.d("WWW: "+getBookmarkURL());
@@ -347,8 +349,8 @@ public class InspectorV3 extends Thread implements Parcelable {
     }
 
 
-    public void setByPopular(boolean byPopular) {
-        this.byPopular = byPopular;
+    public void setSortType(SortType sortType) {
+        this.sortType = sortType;
         createUrl();
     }
 
@@ -359,10 +361,6 @@ public class InspectorV3 extends Thread implements Parcelable {
 
     public int getPage() {
         return page;
-    }
-
-    public boolean isByPopular() {
-        return byPopular;
     }
 
     public List<GenericGallery> getGalleries() {
