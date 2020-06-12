@@ -274,5 +274,5 @@
     <string name="sort_popular_day">Günlük popülerlik</string>
     <string name="sort_popular_week">Haftalık popülerlik</string>
     <string name="sort_select_type">Sıralama tipi seç:</string>
-
+    <string name="sort_type_title" formatted="true">Sıralama tipi seç (%s)</string>
 </resources>
