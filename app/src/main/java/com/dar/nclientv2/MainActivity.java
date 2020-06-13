@@ -44,6 +44,7 @@ import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.async.downloader.DownloadGalleryV2;
 import com.dar.nclientv2.components.GlideX;
 import com.dar.nclientv2.components.activities.BaseActivity;
+import com.dar.nclientv2.components.views.CustomWebView;
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
 import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
@@ -54,6 +55,8 @@ import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
+
+import org.jsoup.Jsoup;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -86,6 +89,13 @@ public class MainActivity extends BaseActivity
     private final InspectorV3.InspectorResponse
             resetDataset=new InspectorV3.DefaultInspectorResponse() {
         @Override
+        public boolean shouldStart(InspectorV3 inspector) {
+            if(modeType!=ModeType.FAVORITE)return true;
+            loadWebVewUrl(inspector.getUrl());
+            return inspector.canParseDocument();
+        }
+
+        @Override
         public void onSuccess(List<GenericGallery> galleries) {
             adapter.restartDataset(galleries);
             showPageSwitcher(inspector.getPage(),inspector.getPageCount());
@@ -104,6 +114,12 @@ public class MainActivity extends BaseActivity
     };
     private final InspectorV3.InspectorResponse addDataset=new InspectorV3.DefaultInspectorResponse() {
         @Override
+        public boolean shouldStart(InspectorV3 inspector) {
+            if(modeType!=ModeType.FAVORITE)return true;
+            loadWebVewUrl(inspector.getUrl());
+            return inspector.canParseDocument();
+        }
+        @Override
         public void onSuccess(List<GenericGallery> galleries) {
             adapter.addGalleries(galleries);
         }
@@ -119,6 +135,12 @@ public class MainActivity extends BaseActivity
         }
     };
     private final InspectorV3.InspectorResponse startGallery=new InspectorV3.DefaultInspectorResponse() {
+        @Override
+        public boolean shouldStart(InspectorV3 inspector) {
+            if(modeType!=ModeType.FAVORITE)return true;
+            loadWebVewUrl(inspector.getUrl());
+            return inspector.canParseDocument();
+        }
         @Override
         public void onSuccess(List<GenericGallery> galleries) {
             Gallery g=galleries.size()==1?(Gallery) galleries.get(0):Gallery.emptyGallery();
@@ -149,6 +171,7 @@ public class MainActivity extends BaseActivity
     private View pageSwitcher;
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
+    private CustomWebView webView=null;
 
     private final Handler changeLanguageTimeHandler=new Handler();
     final Runnable changeLanguageRunnable=() -> {
@@ -267,7 +290,7 @@ public class MainActivity extends BaseActivity
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         toolbar.setNavigationOnClickListener(v -> finish());
         navigationView.setNavigationItemSelectedListener(this);
-        onlineFavoriteManager.setVisible(com.dar.nclientv2.settings.Login.isLogged());
+        onlineFavoriteManager.setVisible(com.dar.nclientv2.settings.Login.isLogged(true));
     }
 
     private void findUsefulViews() {
@@ -286,7 +309,7 @@ public class MainActivity extends BaseActivity
     private void loadStringLogin() {
         if(loginItem==null)return;
         if(com.dar.nclientv2.settings.Login.getUser()!=null)loginItem.setTitle(getString(R.string.login_formatted, com.dar.nclientv2.settings.Login.getUser().getUsername()));
-        else loginItem.setTitle(com.dar.nclientv2.settings.Login.isLogged()?R.string.logout :R.string.login);
+        else loginItem.setTitle(com.dar.nclientv2.settings.Login.isLogged(true)?R.string.logout :R.string.login);
 
     }
     private void checkUpdate() {
@@ -325,8 +348,21 @@ public class MainActivity extends BaseActivity
     }
 
     private void useFavoriteMode(int page) {
+        instantiateWebView();
         inspector=InspectorV3.favoriteInspector(this,null,page,resetDataset);
         modeType = ModeType.FAVORITE;
+    }
+    private void loadWebVewUrl(String url){
+        if(webView==null)return;
+        webView.loadUrl(url);
+    }
+    private void instantiateWebView() {
+        if(webView!=null)return;
+        webView=(CustomWebView) getLayoutInflater().inflate(R.layout.custom_webview,toolbar,false);
+        webView.addFetcher((url, html) -> {
+            inspector.setHtmlDocument(Jsoup.parse(html, Utility.getBaseUrl()));
+            inspector.forceStart();
+        });
     }
 
     private void useSearchMode(Intent intent, String packageName) {
@@ -391,7 +427,7 @@ public class MainActivity extends BaseActivity
         if(pageParam!=null)page=Integer.parseInt(pageParam);
 
         if(favorite){
-            if(com.dar.nclientv2.settings.Login.isLogged())useFavoriteMode(page);
+            if(com.dar.nclientv2.settings.Login.isLogged(true))useFavoriteMode(page);
             else{
                 Intent intent=new Intent(this,FavoriteActivity.class);
                 startActivity(intent);
@@ -501,7 +537,7 @@ public class MainActivity extends BaseActivity
         MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(this);
         builder.setIcon(R.drawable.ic_exit_to_app).setTitle(R.string.logout).setMessage(R.string.are_you_sure);
         builder.setPositiveButton(R.string.yes, (dialogInterface, i) -> {
-            Login.logout();
+            Login.logout(this);
             onlineFavoriteManager.setVisible(false);
             loginItem.setTitle(R.string.login);
         }).setNegativeButton(R.string.no,null).show();
@@ -513,7 +549,7 @@ public class MainActivity extends BaseActivity
         com.dar.nclientv2.settings.Login.initUseAccountTag(this);
 
         loadStringLogin();
-        onlineFavoriteManager.setVisible(com.dar.nclientv2.settings.Login.isLogged());
+        onlineFavoriteManager.setVisible(com.dar.nclientv2.settings.Login.isLogged(true));
         if(setting!=null){
             Global.initFromShared(this);//restart all settings
             inspector=inspector.cloneInspector(this,resetDataset);
@@ -733,7 +769,7 @@ public class MainActivity extends BaseActivity
                 startActivity(intent);
                 break;
             case R.id.action_login:
-                if(com.dar.nclientv2.settings.Login.isLogged())
+                if(com.dar.nclientv2.settings.Login.isLogged(true))
                     showLogoutForm();
                 else {
                     intent = new Intent(this, LoginActivity.class);

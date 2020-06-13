@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.util.DisplayMetrics;
+import android.webkit.CookieSyncManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -208,6 +209,7 @@ public class Global {
     }
     public static void initFromShared(@NonNull Context context){
         SharedPreferences shared=context.getSharedPreferences("Settings", 0);
+        CookieSyncManager.createInstance(context);
         initHttpClient(context);
         initTitleType(context);
         initTheme(context);

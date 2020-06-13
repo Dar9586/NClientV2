@@ -40,21 +40,15 @@ public class Gallery extends GenericGallery{
     @NonNull
     private final GalleryData galleryData;
     private List<SimpleGallery>related=new ArrayList<>();
-    private List<Comment>comments=new ArrayList<>();
     private Language language= Language.UNKNOWN;
     private Size maxSize=new Size(0,0),minSize=new Size(Integer.MAX_VALUE,Integer.MAX_VALUE);
     private boolean onlineFavorite;
 
 
-    public Gallery(Context context, String json, Elements comments, Elements related, boolean isFavorite) throws IOException{
+    public Gallery(Context context, String json, Elements related, boolean isFavorite) throws IOException{
         LogUtility.d("Found JSON: "+json);
         JsonReader reader=new JsonReader(new StringReader(json));
-        this.comments =new ArrayList<>(comments.size());
         this.related =new ArrayList<>(related.size());
-        for(Element e:comments){
-            this.comments.add(new Comment(e.attr("data-state")));
-            if(this.comments.size()==MAX_COMMENT)break;
-        }
         for(Element e:related) this.related.add(new SimpleGallery(context,e));
         galleryData=new GalleryData(reader);
         calculateSizes(galleryData);
@@ -77,7 +71,6 @@ public class Gallery extends GenericGallery{
         maxSize.setHeight(cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.MAX_HEIGHT)));
         minSize.setWidth (cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.MIN_WIDTH)));
         minSize.setHeight(cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.MIN_HEIGHT)));
-        comments=null;
         galleryData=new GalleryData(cursor,tags);
         this.language=loadLanguage(tags);
         onlineFavorite=false;
@@ -134,9 +127,6 @@ public class Gallery extends GenericGallery{
         return new SimpleGallery(this);
     }
 
-    public List<Comment> getComments() {
-        return comments;
-    }
 
     public boolean isRelatedLoaded(){return related!=null;}
 
@@ -248,7 +238,6 @@ public class Gallery extends GenericGallery{
     }
     public static Gallery emptyGallery(){
         Gallery g=new Gallery();
-        g.comments=null;
         return g;
     }
 
@@ -323,7 +312,6 @@ public class Gallery extends GenericGallery{
         dest.writeParcelable(maxSize,flags);
         dest.writeParcelable(minSize,flags);
         dest.writeParcelable(galleryData,flags);
-        dest.writeTypedList(comments);
         dest.writeTypedList(related);
         dest.writeByte((byte)(onlineFavorite?1:0));
     }
@@ -331,7 +319,6 @@ public class Gallery extends GenericGallery{
         maxSize=in.readParcelable(Size.class.getClassLoader());
         minSize=in.readParcelable(Size.class.getClassLoader());
         galleryData=in.readParcelable(GalleryData.class.getClassLoader());
-        in.readTypedList(comments,Comment.CREATOR);
         in.readTypedList(related,SimpleGallery.CREATOR);
         onlineFavorite=in.readByte()==1;
         language=loadLanguage(getTags());

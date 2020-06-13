@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.dar.nclientv2.adapters.GalleryAdapter;
 import com.dar.nclientv2.api.InspectorV3;
@@ -22,6 +23,7 @@ import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.activities.BaseActivity;
+import com.dar.nclientv2.components.views.CustomWebView;
 import com.dar.nclientv2.components.views.RangeSelector;
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
 import com.dar.nclientv2.settings.Favorites;
@@ -35,6 +37,7 @@ import com.google.android.material.snackbar.Snackbar;
 import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 
 import java.util.List;
+import java.util.Locale;
 
 import okhttp3.FormBody;
 import okhttp3.Request;
@@ -43,17 +46,20 @@ import okhttp3.Response;
 
 public class GalleryActivity extends BaseActivity{
     @NonNull private GenericGallery gallery=Gallery.emptyGallery();
+    private CustomWebView webView;
     private boolean isLocal;
     private GalleryAdapter adapter;
     private int zoom;
     private boolean isLocalFavorite;
+    private Toolbar toolbar;
+    private MenuItem onlineFavoriteItem;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.initActivity(this);
         setContentView(R.layout.activity_gallery);
         if(Global.isLockScreen())getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -95,7 +101,6 @@ public class GalleryActivity extends BaseActivity{
                 }
             }
             InspectorV3.galleryInspector(this,id,new InspectorV3.DefaultInspectorResponse(){
-
                 @Override
                 public void onSuccess(List<GenericGallery> galleries) {
                     if(galleries.size()>0) {
@@ -201,8 +206,10 @@ public class GalleryActivity extends BaseActivity{
     }
 
     private void menuItemsVisible(Menu menu) {
+        boolean isLogged=Login.isLogged();
         boolean isValidOnline=gallery.isValid()&&!isLocal;
-        menu.findItem(R.id.add_online_gallery).setVisible(isValidOnline&&Login.isLogged());
+        onlineFavoriteItem=menu.findItem(R.id.add_online_gallery);
+        onlineFavoriteItem.setVisible(isValidOnline&&isLogged);
         menu.findItem(R.id.favorite_manager).setVisible(isValidOnline);
         menu.findItem(R.id.download_gallery).setVisible(isValidOnline);
         menu.findItem(R.id.related).setVisible(isValidOnline);
@@ -210,6 +217,45 @@ public class GalleryActivity extends BaseActivity{
 
         menu.findItem(R.id.share).setVisible(gallery.isValid());
         menu.findItem(R.id.load_internet).setVisible(isLocal&&gallery.isValid());
+
+        if(isValidOnline&&isLogged)
+            instantiateWebView();
+
+    }
+
+    private void instantiateWebView() {
+        if(webView!=null)return;
+        ConstraintLayout master=findViewById(R.id.master_layout);
+        webView=(CustomWebView)getLayoutInflater().inflate(R.layout.custom_webview,master,false);
+        webView.addFetcher((url, html) -> {
+            /*Map<String,String> headers=new HashMap<>();
+            headers.put("X-CSRFToken",fetchCSRF(html));
+            headers.put("X-Requested-With", "XMLHttpRequest");
+            if(html.contains("Unfavorite")){
+                webView.loadUrl("https://nhentai.net/api/gallery/"+gallery.getId()+"/favorite",headers);
+                updateIcon(true);
+            }else{
+                webView.loadUrl("https://nhentai.net/api/gallery/"+gallery.getId()+"/unfavorite",headers);
+                updateIcon(false);
+            }*/
+        });
+
+        ConstraintLayout.LayoutParams params=new ConstraintLayout.LayoutParams(webView.getLayoutParams());
+        params.topToBottom=R.id.parent;
+        params.bottomToBottom=R.id.parent;
+        params.startToStart=R.id.parent;
+        params.endToEnd=R.id.parent;
+        params.width= ConstraintLayout.LayoutParams.MATCH_PARENT;
+        params.height= ConstraintLayout.LayoutParams.MATCH_PARENT;
+        webView.setLayoutParams(params);
+        master.addView(webView);
+    }
+
+    private String fetchCSRF(String html) {
+        html=html.substring(html.lastIndexOf("csrf_token"));
+        html=html.substring(html.indexOf('"')+1);
+        html=html.substring(0,html.indexOf('"'));
+        return html;
     }
 
     @Override
@@ -231,13 +277,12 @@ public class GalleryActivity extends BaseActivity{
                 break;
             case R.id.add_online_gallery:
                 addToFavorite(item);
-
                 break;
             case R.id.change_view:updateColumnCount(true); break;
             case R.id.load_internet:toInternet();break;
             case R.id.comments:
                 Intent i=new Intent(this, CommentActivity.class);
-                i.putExtra(getPackageName()+".GALLERY",gallery);
+                i.putExtra(getPackageName()+".GALLERYID",gallery.getId());
                 startActivity(i);
                 break;
 
@@ -268,11 +313,21 @@ public class GalleryActivity extends BaseActivity{
 
         return super.onOptionsItemSelected(item);
     }
-
+    private void updateIcon(boolean nowIsFavorite){
+        GalleryActivity.this.runOnUiThread(() -> {
+            onlineFavoriteItem.setIcon(!nowIsFavorite?R.drawable.ic_star_border:R.drawable.ic_star);
+            onlineFavoriteItem.setTitle(!nowIsFavorite?R.string.add_to_online_favorite:R.string.remove_from_online_favorites);
+        });
+    }
     private void addToFavorite(final MenuItem item) {
-        String startUrl=Utility.getBaseUrl()+"g/"+gallery.getId()+"/";
-        String url=startUrl+"favorite";
+        if(webView==null)return;
+        boolean beforeIsFavorite=((Gallery)gallery).isOnlineFavorite();
+        String url=String.format(Locale.US,"https://nhentai.net/g/%d/#favorite",gallery.getId());
         LogUtility.d("Calling: "+url);
+        webView.loadUrl(url);
+        webView.setVisibility(View.VISIBLE);
+
+        if(true)return;
         new CSRFGet(token -> {
             LogUtility.d("FIND TOKEN: "+token);
             RequestBody formBody = new FormBody.Builder()
@@ -281,7 +336,7 @@ public class GalleryActivity extends BaseActivity{
             assert Global.getClient() != null;
             Response response=Global.getClient().newCall(
                     new Request.Builder()
-                            .addHeader("Referer",startUrl)
+                            .addHeader("Referer","URL_TEST")
                             .addHeader("X-CSRFToken",token)
                             .addHeader("X-Requested-With","XMLHttpRequest")
                             .url(url)
@@ -297,7 +352,7 @@ public class GalleryActivity extends BaseActivity{
                 item.setTitle(removedFromFavorite?R.string.add_to_online_favorite:R.string.remove_from_online_favorites);
             });
             response.close();
-        },startUrl,"csrfmiddlewaretoken").start();
+        },"URL_TEST","csrfmiddlewaretoken").start();
 
     }
 

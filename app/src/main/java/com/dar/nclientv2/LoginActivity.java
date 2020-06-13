@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 
@@ -27,6 +28,7 @@ import okhttp3.HttpUrl;
  */
 public class LoginActivity extends AppCompatActivity {
     CookieWaiter waiter;
+    WebView webView;
     public TextView invalid;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
         Global.initActivity(this);
         setContentView(R.layout.activity_login);
         final Toolbar toolbar=findViewById(R.id.toolbar);
-        final WebView webView=findViewById(R.id.webView);
+        webView=findViewById(R.id.webView);
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.title_activity_login);
         assert getSupportActionBar()!=null;
@@ -58,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
     class CookieWaiter extends Thread{
         @Override
         public void run() {
+            CookieManager manager=CookieManager.getInstance();
             String cookies="";
             while (cookies==null||!cookies.contains("sessionid")) {
                 try {
@@ -65,13 +68,16 @@ public class LoginActivity extends AppCompatActivity {
                 } catch (InterruptedException ignore) {
 
                 }
-                cookies=CookieManager.getInstance().getCookie(Utility.getBaseUrl());
+                if(isInterrupted())return;
+                cookies=manager.getCookie(Utility.getBaseUrl());
             }
-            LogUtility.d("Cookie string: "+cookies);
+            /*LogUtility.d("Cookie string: "+cookies);
             String session= fetchCookie("sessionid",cookies);
             String cloudflare= fetchCookie("__cfduid",cookies);
             applyCookie("sessionid",session);
             applyCookie("__cfduid",cloudflare);
+            runOnUiThread(LoginActivity.this::finish);*/
+            Login.hasLogged(webView);
             runOnUiThread(LoginActivity.this::finish);
         }
 

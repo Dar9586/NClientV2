@@ -16,7 +16,4 @@ public class Login {
             }
         }).setCredential(username,password).start();
     }
-    public static void logout() {
-        new LoginThread(false, code -> com.dar.nclientv2.settings.Login.logout()).start();
-    }
 }

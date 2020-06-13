@@ -1,6 +1,10 @@
 package com.dar.nclientv2.settings;
 
 import android.content.Context;
+import android.os.Build;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
+import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 
@@ -26,10 +30,27 @@ public class Login{
         return accountTag;
     }
 
-    public static void logout(){
+    public static void logout(Context context){
         Global.getClient().cookieJar().saveFromResponse(HttpUrl.get(Utility.getBaseUrl()), Collections.emptyList());
         updateUser(null);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            CookieManager.getInstance().removeAllCookies(null);
+        }else{
+            clearCookies(context,Utility.getBaseUrl());
+        }
         clearOnlineTags();
+
+    }
+    public static void clearCookies(Context context,String domain) {
+        CookieSyncManager.createInstance(context);
+        CookieManager cookieManager = CookieManager.getInstance();
+        String cookiestring = cookieManager.getCookie(domain);
+        String[] cookies =  cookiestring.split(";");
+        for (String cookie : cookies) {
+            String[] cookieparts = cookie.split("=");
+            cookieManager.setCookie(domain, cookieparts[0].trim() + "=; Expires=Tue, 31 Dec 2019 23:59:59 GMT");
+        }
+        CookieSyncManager.getInstance().sync();
     }
 
     public static void clearOnlineTags(){
@@ -42,13 +63,11 @@ public class Login{
     public static void removeOnlineTag(Tag tag){
         Queries.TagTable.updateBlacklistedTag(tag,false);
     }
-
+    public static boolean isLogged(boolean x){
+        String cookies=CookieManager.getInstance().getCookie(Utility.getBaseUrl());
+        return cookies!=null&&cookies.contains("sessionid");
+    }
     public static boolean isLogged(){
-        /*if(Global.getClient()==null)return false;
-        PersistentCookieJar p=((PersistentCookieJar)Global.getClient().cookieJar());
-        for(Cookie c:p.loadForRequest(HttpUrl.get(Utility.getBaseUrl()))){
-            if(c.name().equals("sessionid"))return true;
-        }*/
         return false;
     }
 
@@ -60,10 +79,14 @@ public class Login{
 
     public static void updateUser(User user) {
         Login.user = user;
+        Login.user = null;//to delete
     }
 
 
     public static boolean isOnlineTags(Tag tag){
         return Queries.TagTable.isBlackListed(tag);
+    }
+
+    public static void hasLogged(WebView webView) {
     }
 }

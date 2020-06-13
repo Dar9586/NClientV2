@@ -43,7 +43,7 @@ import okhttp3.Response;
 
 public class InspectorV3 extends Thread implements Parcelable {
     private SortType sortType;
-    private boolean custom;
+    private boolean custom,forceStart=false;
     private int page,pageCount=-1,id;
     private String query,url;
     private ApiRequestType requestType;
@@ -51,7 +51,7 @@ public class InspectorV3 extends Thread implements Parcelable {
     private List<GenericGallery> galleries=null;
     private InspectorResponse response;
     private WeakReference<Context> context;
-
+    private Document htmlDocument;
     protected InspectorV3(Parcel in) {
         sortType = SortType.values()[in.readByte()];
         custom = in.readByte() != 0;
@@ -111,12 +111,14 @@ public class InspectorV3 extends Thread implements Parcelable {
     }
 
     public interface InspectorResponse{
+        boolean shouldStart(InspectorV3 inspector);
         void onSuccess(List<GenericGallery>galleries);
         void onFailure(Exception e);
         void onStart();
         void onEnd();
     }
     public static abstract class DefaultInspectorResponse implements InspectorResponse{
+        @Override public boolean shouldStart(InspectorV3 inspector) { return true; }
         @Override public void onStart() {}
         @Override public void onEnd() {}
         @Override public void onSuccess(List<GenericGallery> galleries) {}
@@ -148,7 +150,9 @@ public class InspectorV3 extends Thread implements Parcelable {
         inspectorV3.custom=custom;
         return inspectorV3;
     }
-
+    /**
+     * This method will not run, but a WebView inside MainActivity will do it in its place
+     * */
     public static InspectorV3 favoriteInspector(Context context,String query, int page, InspectorResponse response){
         InspectorV3 inspector=new InspectorV3(context,response);
         inspector.page=page;
@@ -259,6 +263,10 @@ public class InspectorV3 extends Thread implements Parcelable {
         url=builder.toString().replace(' ','+');
         LogUtility.d("WWW: "+getBookmarkURL());
     }
+    public void forceStart(){
+        forceStart=true;
+        start();
+    }
     private String getBookmarkURL(){
         if(page<2)return url;
         else return url.substring(0,url.lastIndexOf('=')+1);
@@ -283,12 +291,29 @@ public class InspectorV3 extends Thread implements Parcelable {
         return tags;
     }
 
-    public void execute()throws IOException{
-            Response response=Global.getClient(context.get()).newCall(new Request.Builder().url(url).build()).execute();
-            Document document= Jsoup.parse(response.body().byteStream(),"UTF-8", Utility.getBaseUrl());
-            if(requestType.isSingle()) doSingle(document.body());
-            else doSearch(document.body());
-            response.close();
+    public void createDocument()throws IOException{
+        if(htmlDocument!=null)return;
+        Response response = Global.getClient(context.get()).newCall(new Request.Builder().url(url).build()).execute();
+        setHtmlDocument(Jsoup.parse(response.body().byteStream(), "UTF-8", Utility.getBaseUrl()));
+        response.close();
+    }
+
+    private void parseDocument() throws IOException{
+        if(requestType.isSingle()) doSingle(htmlDocument.body());
+        else doSearch(htmlDocument.body());
+        htmlDocument = null;
+    }
+
+    public void setHtmlDocument(Document htmlDocument){
+        this.htmlDocument = htmlDocument;
+    }
+    public boolean canParseDocument(){
+        return this.htmlDocument!=null;
+    }
+    @Override
+    public synchronized void start() {
+        if(forceStart||response.shouldStart(this))
+            super.start();
     }
 
     @Override
@@ -296,7 +321,8 @@ public class InspectorV3 extends Thread implements Parcelable {
         LogUtility.d("Starting download: "+url);
         if(response!=null)response.onStart();
         try {
-            execute();
+            createDocument();
+            parseDocument();
             if(response!=null)response.onSuccess(galleries);
         } catch (IOException e) {
             if(response!=null)response.onFailure(e);
@@ -319,7 +345,7 @@ public class InspectorV3 extends Thread implements Parcelable {
             isFavorite=false;
         }
         LogUtility.d("is favorite? "+isFavorite);
-        galleries.add(new Gallery(context.get(), json,com,rel,isFavorite));
+        galleries.add(new Gallery(context.get(), json, rel,isFavorite));
     }
     @Nullable
     private String trimScriptTag(String scriptHtml) {

@@ -155,7 +155,7 @@ public class GalleryDownloaderV2 {
         if(this.gallery!=null)return true;
         InspectorV3 inspector = InspectorV3.galleryInspector(context,id,null);
         try {
-            inspector.execute();
+            inspector.createDocument();
             if(inspector.getGalleries().size()==0)return false;
             Gallery g=(Gallery) inspector.getGalleries().get(0);
             if(g.isValid())
