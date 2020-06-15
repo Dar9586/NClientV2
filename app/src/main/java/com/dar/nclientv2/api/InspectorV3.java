@@ -137,7 +137,11 @@ public class InspectorV3 extends Thread implements Parcelable {
         this.context=new WeakReference<>(context);
     }
 
-    public InspectorV3 cloneInspector(Context context,InspectorResponse response){
+    public InspectorResponse getResponse() {
+        return response;
+    }
+
+    public InspectorV3 cloneInspector(Context context, InspectorResponse response){
         InspectorV3 inspectorV3=new InspectorV3(context,response);
         inspectorV3.query=query;
         inspectorV3.url=url;

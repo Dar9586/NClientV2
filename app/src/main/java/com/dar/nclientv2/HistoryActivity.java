@@ -29,6 +29,7 @@ public class HistoryActivity extends BaseActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setTitle(R.string.history);
         recycler=findViewById(R.id.recycler);
+        masterLayout=findViewById(R.id.master_layout);
         adapter=new ListAdapter(this);
         adapter.addGalleries(new ArrayList<>(Queries.HistoryTable.getHistory()));
         changeLayout(getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE);

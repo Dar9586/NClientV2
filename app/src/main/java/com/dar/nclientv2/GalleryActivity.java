@@ -65,6 +65,7 @@ public class GalleryActivity extends BaseActivity{
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
+        masterLayout=findViewById(R.id.master_layout);
         GenericGallery gal= getIntent().getParcelableExtra(getPackageName()+".GALLERY");
         if(gal==null&&!tryLoadFromURL()){finish();return;}
         if(gal!=null)this.gallery=gal;
@@ -225,8 +226,8 @@ public class GalleryActivity extends BaseActivity{
 
     private void instantiateWebView() {
         if(webView!=null)return;
-        ConstraintLayout master=findViewById(R.id.master_layout);
-        webView=(CustomWebView)getLayoutInflater().inflate(R.layout.custom_webview,master,false);
+
+        webView=(CustomWebView)getLayoutInflater().inflate(R.layout.custom_webview,masterLayout,false);
         webView.addFetcher((url, html) -> {
             /*Map<String,String> headers=new HashMap<>();
             headers.put("X-CSRFToken",fetchCSRF(html));
@@ -248,7 +249,7 @@ public class GalleryActivity extends BaseActivity{
         params.width= ConstraintLayout.LayoutParams.MATCH_PARENT;
         params.height= ConstraintLayout.LayoutParams.MATCH_PARENT;
         webView.setLayoutParams(params);
-        master.addView(webView);
+        masterLayout.addView(webView);
     }
 
     private String fetchCSRF(String html) {

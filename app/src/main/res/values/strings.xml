@@ -286,6 +286,7 @@
     <string name="unable_to_connect_to_the_site">Unable to connect to the site</string>
     <string name="error">Error</string>
     <string name="no_entry_found">No entries found</string>
+    <string name="retry">Retry</string>
 
     <string-array name="language">
         <item>English</item>

@@ -7,7 +7,6 @@ import android.view.View;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.dar.nclientv2.api.comments.CommentsFetcher;
 import com.dar.nclientv2.components.activities.BaseActivity;
@@ -41,10 +40,6 @@ public class CommentActivity extends BaseActivity {
         recycler.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
         refresher.setRefreshing(true);
         new CommentsFetcher(CommentActivity.this,id).start();
-    }
-
-    public RecyclerView getRecycler() {
-        return recycler;
     }
 
     @Override

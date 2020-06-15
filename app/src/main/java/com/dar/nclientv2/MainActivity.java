@@ -16,7 +16,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,7 +24,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
@@ -59,6 +57,7 @@ import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.jsoup.Jsoup;
 
@@ -89,62 +88,58 @@ public class MainActivity extends BaseActivity
     private boolean inspecting=false,filteringTag=false;
     public ListAdapter adapter;
     private SortType temporaryType;
+    private Snackbar snackbar=null;
+    abstract class MainInspectorResponse extends InspectorV3.DefaultInspectorResponse {
+        @Override
+        public void onSuccess(List<GenericGallery> galleries) {
+            super.onSuccess(galleries);
+            if(galleries.size()==0)
+                showError(R.string.no_entry_found,null);
+        }
 
-    private final InspectorV3.InspectorResponse
-            resetDataset=new InspectorV3.DefaultInspectorResponse() {
+        @Override
+        public void onStart() {
+            runOnUiThread(()->refresher.setRefreshing(true));
+            hideError();
+        }
+
+        @Override
+        public void onEnd() {
+            runOnUiThread(()->refresher.setRefreshing(false));
+        }
+
+        @Override
+        public void onFailure(Exception e) {
+            super.onFailure(e);
+            showError(R.string.unable_to_connect_to_the_site, v -> {
+                inspector=inspector.cloneInspector(MainActivity.this,inspector.getResponse());
+                inspector.start();
+            });
+        }
         @Override
         public boolean shouldStart(InspectorV3 inspector) {
             if(modeType!=ModeType.FAVORITE)return true;
             loadWebVewUrl(inspector.getUrl());
             return inspector.canParseDocument();
         }
-
+    }
+    private final InspectorV3.InspectorResponse
+            resetDataset=new MainInspectorResponse() {
         @Override
         public void onSuccess(List<GenericGallery> galleries) {
+            super.onSuccess(galleries);
             adapter.restartDataset(galleries);
             showPageSwitcher(inspector.getPage(),inspector.getPageCount());
             runOnUiThread(()->recycler.smoothScrollToPosition(0));
         }
-
-        @Override
-        public void onStart() {
-            runOnUiThread(()->refresher.setRefreshing(true));
-        }
-
-        @Override
-        public void onEnd() {
-            runOnUiThread(()->refresher.setRefreshing(false));
-        }
     };
-    private final InspectorV3.InspectorResponse addDataset=new InspectorV3.DefaultInspectorResponse() {
-        @Override
-        public boolean shouldStart(InspectorV3 inspector) {
-            if(modeType!=ModeType.FAVORITE)return true;
-            loadWebVewUrl(inspector.getUrl());
-            return inspector.canParseDocument();
-        }
+    private final InspectorV3.InspectorResponse addDataset=new MainInspectorResponse() {
         @Override
         public void onSuccess(List<GenericGallery> galleries) {
             adapter.addGalleries(galleries);
         }
-        @Override
-        public void onStart() {
-            runOnUiThread(()->refresher.setRefreshing(true));
-        }
-
-        @Override
-        public void onEnd() {
-            runOnUiThread(()->refresher.setRefreshing(false));
-            inspecting=false;
-        }
     };
-    private final InspectorV3.InspectorResponse startGallery=new InspectorV3.DefaultInspectorResponse() {
-        @Override
-        public boolean shouldStart(InspectorV3 inspector) {
-            if(modeType!=ModeType.FAVORITE)return true;
-            loadWebVewUrl(inspector.getUrl());
-            return inspector.canParseDocument();
-        }
+    private final InspectorV3.InspectorResponse startGallery=new MainInspectorResponse() {
         @Override
         public void onSuccess(List<GenericGallery> galleries) {
             Gallery g=galleries.size()==1?(Gallery) galleries.get(0):Gallery.emptyGallery();
@@ -157,20 +152,6 @@ public class MainActivity extends BaseActivity
             });
             LogUtility.d("STARTED");
         }
-        @Override
-        public void onStart() {
-            runOnUiThread(()->refresher.setRefreshing(true));
-        }
-
-        @Override
-        public void onEnd() {
-            runOnUiThread(()->refresher.setRefreshing(false));
-        }
-
-        @Override
-        public void onFailure(Exception e) {
-            super.onFailure(e);
-        }
     };
 
     //views
@@ -181,9 +162,6 @@ public class MainActivity extends BaseActivity
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
     private CustomWebView webView=null;
-
-    private ConstraintLayout errorLayout;
-    private TextView errorText;
 
     private final Handler changeLanguageTimeHandler=new Handler();
     final Runnable changeLanguageRunnable=() -> {
@@ -306,8 +284,7 @@ public class MainActivity extends BaseActivity
     }
 
     private void findUsefulViews() {
-        errorLayout = findViewById(R.id.errorDialog);
-        errorText = findViewById(R.id.errorText);
+        masterLayout = findViewById(R.id.master_layout);
         toolbar = findViewById(R.id.toolbar);
         navigationView = findViewById(R.id.nav_view);
         recycler=findViewById(R.id.recycler);
@@ -328,22 +305,27 @@ public class MainActivity extends BaseActivity
     }
 
     private void hideError(){
-        errorLayout.setVisibility(View.GONE);
-        refresher.setVisibility(View.VISIBLE);
+        //errorText.setVisibility(View.GONE);
+        if(snackbar!=null&&snackbar.isShown())snackbar.dismiss();
+        snackbar=null;
     }
 
-    private void showError(@Nullable String text){
+    private void showError(@Nullable String text,@Nullable View.OnClickListener listener){
         if(text==null){
             hideError();
             return;
         }
-        errorText.setText(text);
-        errorLayout.setVisibility(View.VISIBLE);
-        refresher.setVisibility(View.GONE);
+        if(listener==null){
+            snackbar = Snackbar.make(masterLayout,text,Snackbar.LENGTH_SHORT);
+        }else{
+            snackbar = Snackbar.make(masterLayout,text,Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction(R.string.retry, listener);
+        }
+        snackbar.show();
     }
 
-    private void showError(@StringRes int text){
-        showError(getString(text));
+    private void showError(@StringRes int text,View.OnClickListener listener){
+        showError(getString(text),listener);
     }
 
     private void checkUpdate() {

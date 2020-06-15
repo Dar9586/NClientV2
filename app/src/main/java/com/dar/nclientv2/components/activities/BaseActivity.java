@@ -1,6 +1,7 @@
 package com.dar.nclientv2.components.activities;
 
 import android.content.res.Configuration;
+import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,8 +12,17 @@ import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
 public abstract class BaseActivity extends AppCompatActivity {
     protected RecyclerView recycler;
     protected SwipeRefreshLayout refresher;
+    protected ViewGroup masterLayout;
     public SwipeRefreshLayout getRefresher() {
         return refresher;
+    }
+
+    public RecyclerView getRecycler() {
+        return recycler;
+    }
+
+    public ViewGroup getMasterLayout() {
+        return masterLayout;
     }
 
     @Override

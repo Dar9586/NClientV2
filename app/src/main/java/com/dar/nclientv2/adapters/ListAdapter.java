@@ -23,6 +23,7 @@ import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
 import com.dar.nclientv2.utility.ImageDownloadUtility;
 import com.dar.nclientv2.utility.LogUtility;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -75,13 +76,6 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
                 holder.title.setAlpha(1f);
                 holder.flag.setAlpha(1f);
             }
-            /*holder.title.post(() -> {
-                    Global.setGalleryWidth(holder.title.getMeasuredWidth());
-                    Global.setGalleryHeigth(holder.imgView.getMeasuredHeight());
-                    if(Global.getCol)
-                    LogUtility.d("MEASURED: "+holder.title.getMeasuredWidth()+";"+holder.imgView.getMeasuredHeight());
-                });
-            */
             if(context instanceof GalleryActivity){
                 CardView card=(CardView)holder.layout.getParent();
                 ViewGroup.LayoutParams params=card.getLayoutParams();
@@ -115,16 +109,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
               /*Intent intent = new Intent(context, GalleryActivity.class);
               intent.putExtra(context.getPackageName() + ".ID", ent.getId());
               context.startActivity(intent);*/
-                InspectorV3.galleryInspector(context, ent.getId(), new InspectorV3.DefaultInspectorResponse() {
-                    @Override
-                    public void onSuccess(List<GenericGallery> galleries) {
-                        if(galleries.size()!=1)return;
-                        Intent intent=new Intent(context, GalleryActivity.class);
-                        LogUtility.d(galleries.get(0).toString());
-                        intent.putExtra(context.getPackageName()+".GALLERY",galleries.get(0));
-                        context.runOnUiThread(()->context.startActivity(intent));
-                    }
-                }).start();
+                downloadGallery(ent);
               holder.overlay.setVisibility((queryString!=null&&ent.hasIgnoredTags(queryString))?View.VISIBLE:View.GONE);
             });
             holder.overlay.setOnClickListener(v -> holder.overlay.setVisibility(View.GONE));
@@ -134,6 +119,34 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
             holder.pages.animate().alpha(holder.pages.getAlpha()==0f?1f:0f).setDuration(100).start();
             return true;
         });
+    }
+
+    private void downloadGallery(final SimpleGallery ent) {
+        InspectorV3.galleryInspector(context, ent.getId(), new InspectorV3.DefaultInspectorResponse() {
+            @Override
+            public void onFailure(Exception e) {
+                super.onFailure(e);
+                context.runOnUiThread(()-> {
+                        Snackbar snackbar = Snackbar.make(context.getMasterLayout(), R.string.unable_to_connect_to_the_site, Snackbar.LENGTH_SHORT);
+                        snackbar.setAction(R.string.retry,v->downloadGallery(ent));
+                        snackbar.show();
+                    }
+                );
+            }
+            @Override
+            public void onSuccess(List<GenericGallery> galleries) {
+                if(galleries.size()!=1){
+                    context.runOnUiThread(()->
+                            Snackbar.make(context.getMasterLayout(),R.string.no_entry_found,Snackbar.LENGTH_SHORT).show()
+                    );
+                    return;
+                }
+                Intent intent=new Intent(context, GalleryActivity.class);
+                LogUtility.d(galleries.get(0).toString());
+                intent.putExtra(context.getPackageName()+".GALLERY",galleries.get(0));
+                context.runOnUiThread(()->context.startActivity(intent));
+            }
+        }).start();
     }
 
 
