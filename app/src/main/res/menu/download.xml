@@ -10,6 +10,10 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
     <item
+        android:id="@+id/sort_by_name"
+        app:showAsAction="ifRoom|collapseActionView"
+        />
+    <item
         android:id="@+id/random_favorite"
         android:icon="@drawable/ic_shuffle"
         android:title="@string/random_manga"

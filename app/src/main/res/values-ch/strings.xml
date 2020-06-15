@@ -258,8 +258,11 @@
     <string name="sort_recent">Recent</string>
     <string name="sort_popular_day">Daily popular</string>
     <string name="sort_popular_week">Weekly popular</string>
-    <string name="sort_type_title" formatted="true">Choose sort type (%s)</string>
+    <string name="sort_type_title_format" formatted="true">Choose sort type (%s)</string>
     <string name="sort_select_type">Choose sort type:</string>
+    <string name="unable_to_connect_to_the_site">Unable to connect to the site</string>
+    <string name="error">Error</string>
+    <string name="no_entry_found">No entries found</string>
 
     <string-array name="language">
         <item>英文</item>

@@ -63,7 +63,6 @@ public class CrashApplication extends Application{
         NetworkUtil.initConnectivity(this);
         TagV2.initMinCount(this);
         TagV2.initSortByName(this);
-
         DownloadGalleryV2.loadDownloads(this);
     }
 

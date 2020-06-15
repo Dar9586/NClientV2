@@ -68,7 +68,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
             dataset.remove(l);
             dataset.add(l);
             LogUtility.d(l);
-            filter=createHash(galleryDownloaders,dataset);
+            sortElements();
             context.runOnUiThread(()->notifyItemRangeChanged(0,getItemCount()));
         }
 
@@ -89,14 +89,31 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         for(GalleryDownloaderV2 gall:galleryDownloaders)
             hashMap.put(gall.getPathTitle(),gall);
         ArrayList<Object> arr=new ArrayList<>(hashMap.values());
-        Collections.sort(arr,comparator);
+        Collections.sort(arr, getComparator());
         return new CopyOnWriteArrayList<>(arr);
     }
-
-    private final Comparator<Object>comparator= (o1, o2) -> {
+    private Comparator<Object>getComparator(){
+        return Global.isLocalSortByName()?comparatorByName:comparatorByDate;
+    }
+    private final Comparator<Object> comparatorByName = (o1, o2) -> {
         if(o1==o2)return 0;
         boolean b1=o1 instanceof LocalGallery;
         boolean b2=o2 instanceof LocalGallery;
+        String s1=b1?((LocalGallery)o1).getTitle():((GalleryDownloaderV2)o1).getPathTitle();
+        String s2=b2?((LocalGallery)o2).getTitle():((GalleryDownloaderV2)o2).getPathTitle();
+        return s1.compareTo(s2);
+    };
+    private final Comparator<Object> comparatorByDate = (o1, o2) -> {
+        if(o1==o2)return 0;
+        boolean b1=o1 instanceof LocalGallery;
+        boolean b2=o2 instanceof LocalGallery;
+        //downloading manga are newer
+        if(b1&&!b2) return 1;
+        if(!b1&&b2) return -1;
+        if(b1/*&&b2*/){
+            long res=((LocalGallery)o1).getDirectory().lastModified()-((LocalGallery)o2).getDirectory().lastModified();
+            if(res!=0) return res<0?-1:1;
+        }
         String s1=b1?((LocalGallery)o1).getTitle():((GalleryDownloaderV2)o1).getPathTitle();
         String s2=b2?((LocalGallery)o2).getTitle():((GalleryDownloaderV2)o2).getPathTitle();
         return s1.compareTo(s2);
@@ -118,9 +135,11 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         filter.addAll(galleryDownloaders);
 
         DownloadQueue.addObserver(observer);
+        sortElements();
+    }
+    private void sortElements(){
         filter=createHash(galleryDownloaders,dataset);
     }
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -283,7 +302,6 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
                 String query=constraint.toString().toLowerCase(Locale.US);
                 if(lastQuery.equals(query))return null;
                 FilterResults results=new FilterResults();
-
                 lastQuery=query;
                 List<LocalGallery>d1=new ArrayList<>();
                 List<GalleryDownloaderV2>g1=new ArrayList<>();
@@ -313,6 +331,11 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         if(dataset.size()==0)return;
         int x=Utility.RANDOM.nextInt(dataset.size());
         startGallery(dataset.get(x));
+    }
+
+    public void sortChanged() {
+        sortElements();
+        context.runOnUiThread(()->notifyItemRangeChanged(0,getItemCount()));
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

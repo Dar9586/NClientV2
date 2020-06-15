@@ -255,8 +255,11 @@
     <string name="sort_recent">Nuovi</string>
     <string name="sort_popular_day">Popolarità giornaliera</string>
     <string name="sort_popular_week">Popolarità settimanale</string>
-    <string name="sort_type_title" formatted="true">Scegli tipo ordinamento (%s)</string>
+    <string name="sort_type_title_format" formatted="true">Scegli tipo ordinamento (%s)</string>
     <string name="sort_select_type">Choose sort type:</string>
+    <string name="unable_to_connect_to_the_site">Unable to connect to the site</string>
+    <string name="error">Error</string>
+    <string name="no_entry_found">No entries found</string>
     <string-array name="language">
         <item>Inglese</item>
         <item>Cinese (Tradizionale)</item>

@@ -16,7 +16,7 @@ import androidx.annotation.NonNull;
 
 import com.dar.nclientv2.utility.LogUtility;
 public class NetworkUtil {
-    public enum ConnectionType{WIFI,CELLULAR}
+    public enum ConnectionType{NO_CONNECTION,WIFI,CELLULAR}
     private volatile static ConnectionType type=ConnectionType.CELLULAR;
 
     public static ConnectionType getType() {
@@ -78,4 +78,5 @@ public class NetworkUtil {
             setType(getConnectivityPreLollipop(cm));
         }
     }
+
 }

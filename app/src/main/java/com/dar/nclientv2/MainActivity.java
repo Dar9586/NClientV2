@@ -16,12 +16,16 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
@@ -162,6 +166,11 @@ public class MainActivity extends BaseActivity
         public void onEnd() {
             runOnUiThread(()->refresher.setRefreshing(false));
         }
+
+        @Override
+        public void onFailure(Exception e) {
+            super.onFailure(e);
+        }
     };
 
     //views
@@ -172,6 +181,9 @@ public class MainActivity extends BaseActivity
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
     private CustomWebView webView=null;
+
+    private ConstraintLayout errorLayout;
+    private TextView errorText;
 
     private final Handler changeLanguageTimeHandler=new Handler();
     final Runnable changeLanguageRunnable=() -> {
@@ -294,6 +306,8 @@ public class MainActivity extends BaseActivity
     }
 
     private void findUsefulViews() {
+        errorLayout = findViewById(R.id.errorDialog);
+        errorText = findViewById(R.id.errorText);
         toolbar = findViewById(R.id.toolbar);
         navigationView = findViewById(R.id.nav_view);
         recycler=findViewById(R.id.recycler);
@@ -312,6 +326,26 @@ public class MainActivity extends BaseActivity
         else loginItem.setTitle(com.dar.nclientv2.settings.Login.isLogged(true)?R.string.logout :R.string.login);
 
     }
+
+    private void hideError(){
+        errorLayout.setVisibility(View.GONE);
+        refresher.setVisibility(View.VISIBLE);
+    }
+
+    private void showError(@Nullable String text){
+        if(text==null){
+            hideError();
+            return;
+        }
+        errorText.setText(text);
+        errorLayout.setVisibility(View.VISIBLE);
+        refresher.setVisibility(View.GONE);
+    }
+
+    private void showError(@StringRes int text){
+        showError(getString(text));
+    }
+
     private void checkUpdate() {
             if(Global.shouldCheckForUpdates(this))
                 new VersionChecker(this,true);
@@ -618,7 +652,7 @@ public class MainActivity extends BaseActivity
     }
 
     private void popularItemDispay(MenuItem item) {
-        item.setTitle(getString(R.string.sort_type_title,getString(Global.getSortType().getNameId())));
+        item.setTitle(getString(R.string.sort_type_title_format,getString(Global.getSortType().getNameId())));
         Global.setTint(item.getIcon());
     }
 

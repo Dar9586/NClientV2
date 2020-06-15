@@ -69,7 +69,7 @@ public class Global {
     private static Language onlyLanguage;
     private static TitleType titleType;
     private static SortType sortType;
-    private static boolean alternativeSite,volumeOverride,zoomOneColumn,keepHistory,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
+    private static boolean localSortByName,alternativeSite,volumeOverride,zoomOneColumn,keepHistory,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
     private static ThemeScheme theme;
     private static DataUsageType usageMobile, usageWifi;
     private static String lastVersion;
@@ -129,7 +129,16 @@ public class Global {
     public enum ThemeScheme{LIGHT,DARK}
     public enum DataUsageType{NONE,THUMBNAIL,FULL}
 
+    public static boolean isLocalSortByName() {
+        return localSortByName;
+    }
 
+    public static void toggleLocalSort(Context context) {
+        Global.localSortByName = !Global.localSortByName;
+        context.getSharedPreferences("Settings", 0)
+                .edit().putBoolean(context.getString(R.string.key_local_sort),Global.localSortByName)
+                .apply();
+    }
 
     private static void initFilesTree(Context context){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
@@ -216,7 +225,8 @@ public class Global {
         loadNotificationChannel(context);
         NotificationSettings.initializeNotificationManager(context);
         Login.initUseAccountTag(context);
-        useRtl=     shared.getBoolean(context.getString(R.string.key_use_rtl),false);
+        localSortByName=shared.getBoolean(context.getString(R.string.key_local_sort),true);
+        useRtl=shared.getBoolean(context.getString(R.string.key_use_rtl),false);
         keepHistory=shared.getBoolean(context.getString(R.string.key_keep_history),true);
         infiniteScroll=shared.getBoolean(context.getString(R.string.key_infinite_scroll),false);
         removeAvoidedGalleries =shared.getBoolean(context.getString(R.string.key_remove_ignored),true);

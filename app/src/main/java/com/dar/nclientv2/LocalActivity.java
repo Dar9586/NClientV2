@@ -51,7 +51,7 @@ public class LocalActivity extends BaseActivity {
             menu.findItem(R.id.cancelAll).setVisible(false);
             menu.findItem(R.id.startAll).setVisible(false);
         }
-
+        changeSortItem(menu.findItem(R.id.sort_by_name));
         final androidx.appcompat.widget.SearchView searchView=(androidx.appcompat.widget.SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
@@ -105,8 +105,20 @@ public class LocalActivity extends BaseActivity {
             case R.id.random_favorite:
                 if(adapter!=null)adapter.viewRandom();
                 break;
+            case R.id.sort_by_name:
+                Global.toggleLocalSort(this);
+                adapter.sortChanged();
+                changeSortItem(item);
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void changeSortItem(MenuItem item) {
+        boolean sortByName=Global.isLocalSortByName();
+        item.setIcon(sortByName?R.drawable.ic_sort_by_alpha:R.drawable.ic_access_time);
+        item.setTitle(sortByName?R.string.sort_by_latest:R.string.sort_by_title);
+        Global.setTint(item.getIcon());
     }
 
     @Override

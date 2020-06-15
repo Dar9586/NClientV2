@@ -274,5 +274,8 @@
     <string name="sort_popular_day">Günlük popülerlik</string>
     <string name="sort_popular_week">Haftalık popülerlik</string>
     <string name="sort_select_type">Sıralama tipi seç:</string>
-    <string name="sort_type_title" formatted="true">Sıralama tipi seç (%s)</string>
+    <string name="sort_type_title_format" formatted="true">Sıralama tipi seç (%s)</string>
+    <string name="unable_to_connect_to_the_site">Unable to connect to the site</string>
+    <string name="error">Error</string>
+    <string name="no_entry_found">No entries found</string>
 </resources>
