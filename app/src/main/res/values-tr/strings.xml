@@ -172,7 +172,7 @@
     <string name="no">Hayır</string>
     <string name="yes">Evet</string>
     <string name="start_all_downloads">Tüm indirmeleri başlat</string>
-    <string name="pause_all_downloads">Tüm indirmeleri durdur</string>
+    <string name="pause_all_downloads">Tüm indirmeleri duraklat</string>
     <string name="cancel_all_downloads">Tüm indirmeleri iptal et</string>
     <string name="disable_lock_title">Otomatik ekran kapanmasını okurken devre dışı bırak</string>
     <string name="download_all_galleries_in_this_page">Bu sayfadaki tüm mangaları indir</string>
@@ -275,8 +275,8 @@
     <string name="sort_popular_week">Haftalık popülerlik</string>
     <string name="sort_select_type">Sıralama tipi seç:</string>
     <string name="sort_type_title_format" formatted="true">Sıralama tipi seç (%s)</string>
-    <string name="unable_to_connect_to_the_site">Unable to connect to the site</string>
-    <string name="error">Error</string>
-    <string name="no_entry_found">No entries found</string>
-    <string name="retry">Retry</string>
+    <string name="unable_to_connect_to_the_site">Siteye bağlanılamadı</string>
+    <string name="error">Hata</string>
+    <string name="no_entry_found">Girdi bulunamadı</string>
+    <string name="retry">Yeniden Dene</string>
 </resources>
