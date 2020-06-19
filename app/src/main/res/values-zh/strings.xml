@@ -254,20 +254,20 @@
     <string name="copied_to_clipboard">复制至剪贴板</string>
     <string name="maximum_notification_count">最大通知数</string>
     <string name="copy_settings_to_clipboard">复制设置到剪贴板</string>
-    <string name="sort_popular_all_time">Popular</string>
-    <string name="sort_recent">Recent</string>
-    <string name="sort_popular_day">Daily popular</string>
-    <string name="sort_popular_week">Weekly popular</string>
-    <string name="sort_select_type">Choose sort type:</string>
-    <string name="sort_type_title_format" formatted="true">Choose sort type (%s)</string>
-    <string name="unable_to_connect_to_the_site">Unable to connect to the site</string>
-    <string name="error">Error</string>
-    <string name="no_entry_found">No entries found</string>
-    <string name="retry">Retry</string>
+    <string name="sort_popular_all_time">热门</string>
+    <string name="sort_recent">最近</string>
+    <string name="sort_popular_day">日榜</string>
+    <string name="sort_popular_week">周榜</string>
+    <string name="sort_select_type">选择排序类型：</string>
+    <string name="sort_type_title_format" formatted="true">选择排序类型（%s）</string>
+    <string name="unable_to_connect_to_the_site">无法连接站点</string>
+    <string name="error">错误</string>
+    <string name="no_entry_found">找不到条目</string>
+    <string name="retry">重试</string>
     <string-array name="language">
         <item>英文</item>
-        <item>繁体中文</item>
-        <item>简体中文</item>
+        <item>中文（繁体）</item>
+        <item>中文（简体）</item>
         <item>土耳其文</item>
         <item>意大利文</item>
     </string-array>
