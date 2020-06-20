@@ -41,10 +41,10 @@
     <string name="channel2_name">创建 PDF</string>
     <string name="channel3_name">创建 ZIP</string>
     <string name="channel1_description">用于显示画廊下载进度</string>
-    <string name="channel2_description">用于显示pdf的创建进度</string>
-    <string name="channel3_description">用于显示zip的创建进度</string>
-    <string name="channel2_title">正在创建的PDF：</string>
-    <string name="channel3_title">正在创建的ZIP：</string>
+    <string name="channel2_description">用于显示 pdf 的创建进度</string>
+    <string name="channel3_description">用于显示 zip 的创建进度</string>
+    <string name="channel2_title">正在创建的 PDF：</string>
+    <string name="channel3_title">正在创建的 ZIP：</string>
 
     <string name="favorite_max_reached" formatted="true">你最多能收藏 %d 部漫画。</string>
     <string name="tags_max_reached" formatted="true">你最多能选中 %d 个标签。</string>
@@ -85,16 +85,16 @@
     <string name="next">下一个</string>
 
     <string name="create_pdf">创建 PDF</string>
-    <string name="create_pdf_format" formatted="true">创建的PDF："%s"</string>
-    <string name="create_zip_format" formatted="true">创建的ZIP："%s"</string>
-    <string name="created_pdf">成功创建PDF</string>
-    <string name="error_pdf">创建PDF出错</string>
+    <string name="create_pdf_format" formatted="true">创建的 PDF："%s"</string>
+    <string name="create_zip_format" formatted="true">创建的 ZIP："%s"</string>
+    <string name="created_pdf">成功创建 PDF</string>
+    <string name="error_pdf">创建 PDF 出错</string>
     <string name="parsing_pages">正在解析页面</string>
-    <string name="writing_pdf">正在写入PDF</string>
+    <string name="writing_pdf">正在写入 PDF</string>
 
     <string name="navigation_drawer_open">打开导航菜单</string>
     <string name="navigation_drawer_close">关闭导航菜单</string>
-    <string name="nav_header_subtitle">NHentai非官方客户端</string>
+    <string name="nav_header_subtitle">NHentai 非官方客户端</string>
 
     <string name="change_page">跳转页面：</string>
     <string name="prev_page">上一页</string>
@@ -162,7 +162,7 @@
     <string name="send">发送</string>
     <string name="send_comment">发送评论…</string>
     <string name="profile_picture">头像</string>
-    <string name="send_bug_on_github">在Github上反馈bug </string>
+    <string name="send_bug_on_github">在 Github 上反馈 bug</string>
     <string name="github">Github</string>
     <string name="install">安装</string>
     <string name="download_update_failed">无法下载新版本</string>
@@ -206,15 +206,15 @@
     <string name="navigation_settings">浏览设置</string>
     <string name="stop_download">停止下载</string>
     <string name="start_download">开始下载</string>
-    <string name="create_zip">创建ZIP</string>												   
-    <string name="created_zip">成功创建ZIP</string>													   													   
-    <string name="failed_zip">创建ZIP失败: </string>																					  
+    <string name="create_zip">创建 ZIP</string>												   
+    <string name="created_zip">成功创建 ZIP</string>													   													   
+    <string name="failed_zip">创建 ZIP 失败: </string>																					  
     <string name="start_page">起始页</string>
     <string name="end_page">结束页</string>
     <string name="invalid_range_selected">选择范围无效</string>
     <string name="column_count_select">列数选择</string>
     <string name="send_with_title">与标题一起发送？</string>
-    <string name="caption_send_with_title">在图片上添加URL水印？</string>
+    <string name="caption_send_with_title">在图片上添加 URL 水印？</string>
     <string name="error_404">错误 404: 未找到</string>
     <string name="history_size">历史条目数</string>
     <string name="history_size_summary">设置历史条目最大值</string>
@@ -232,25 +232,25 @@
     <string name="title_copied_to_clipboard">标题已复制至剪贴板</string>
     <string name="setting_zoom_one_column">在画廊内一列显示时启用缩放</string>
     <string name="zoom_one_column">启用缩放</string>
-    <string name="insert_pin">输入PIN码</string>
-    <string name="confirm_pin">确认PIN码</string>
-    <string name="setting_pin">启用PIN码登录应用</string>
-    <string name="use_pin">使用PIN码</string>
-    <string name="wrong_pin">PIN码错误</string>
+    <string name="insert_pin">输入 PIN 码</string>
+    <string name="confirm_pin">确认 PIN 码</string>
+    <string name="setting_pin">启用 PIN 码登录应用</string>
+    <string name="use_pin">使用 PIN 码</string>
+    <string name="wrong_pin">PIN 码错误</string>
     <string name="rotate_image">旋转图片</string>
-    <string name="setting_alternative">在有审查制度的国家用nhent.ai替代nhentai.net</string>
-    <string name="use_alternative">使用nhent.ai</string>
+    <string name="setting_alternative">在有审查制度的国家用 nhent.ai 替代 nhentai.net</string>
+    <string name="use_alternative">使用 nhent.ai</string>
     <string name="toggle_online_favorite">切换在线收藏</string>
     <string name="data_usage_settings">修改数据使用设置</string>
     <string name="mobile_data_usage_setting">流量使用设置</string>
-    <string name="wifi_data_usage_setting">Wi-Fi使用设置</string>
+    <string name="wifi_data_usage_setting">Wi-Fi 使用设置</string>
     <string name="data_usage_thumb">总是下载缩略图</string>
     <string name="data_usage_full">按需下载缩略图或完整图片</string>
     <string name="data_usage_no">不下载图片</string>
     <string name="enable_network_to_continue">允许下载图片或切换网络以打开图片</string>
     <string name="donate">支持开发者</string>
     <string name="id_tag">ID:</string>
-    <string name="id_copied_to_clipboard">ID已复制至剪贴板</string>
+    <string name="id_copied_to_clipboard">ID 已复制至剪贴板</string>
     <string name="copied_to_clipboard">复制至剪贴板</string>
     <string name="maximum_notification_count">最大通知数</string>
     <string name="copy_settings_to_clipboard">复制设置到剪贴板</string>
@@ -264,16 +264,16 @@
     <string name="error">错误</string>
     <string name="no_entry_found">找不到条目</string>
     <string name="retry">重试</string>
-    <string name="select_this_directory">Select this directory</string>
-    <string name="select_directory">Select directory</string>
-    <string name="file_path">File path</string>
-    <string name="go">Go</string>
-    <string name="chose_staorage_mode">Choose storage mode:</string>
-    <string name="file_mode_description">Faster, limited folders</string>
-    <string name="document_mode_description">Slower, can access external storage</string>
-    <string name="choose">Choose</string>
-    <string name="help">Help</string>
-    <string name="help_storage_message">A folder called \'NClientV2\' will be created inside the folder you will choose.\nThe files must be copied manually from a folder to another.</string>
+    <string name="select_this_directory">选择此文件夹</string>
+    <string name="select_directory">选择文件夹</string>
+    <string name="file_path">文件路径</string>
+    <string name="go">前往</string>
+    <string name="chose_staorage_mode">选择存储模式</string>
+    <string name="file_mode_description">较快，受限制的文件夹</string>
+    <string name="document_mode_description">较慢，可访问外部存储</string>
+    <string name="choose">选择</string>
+    <string name="help">帮助</string>
+    <string name="help_storage_message">\'NClientV2\' 文件夹将在你选择的文件夹内创建。\n必须手动复制文件到另一个文件夹。</string>
 
     <string-array name="language">
         <item>英文</item>
