@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +33,7 @@ import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.utility.CSRFGet;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
+import com.dar.nclientv2.utility.files.MasterFileManager;
 import com.google.android.material.snackbar.Snackbar;
 
 import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
@@ -403,15 +405,17 @@ public class GalleryActivity extends BaseActivity{
         }).start();
     }
 
-    @TargetApi(23)
+    @TargetApi(Build.VERSION_CODES.M)
     private void requestStorage(){
         requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},1);
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-            Global.initStorage(this);
-            if(requestCode==1&&grantResults.length >0&&grantResults[0]==PackageManager.PERMISSION_GRANTED)
+            if(requestCode==1&&grantResults.length >0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                MasterFileManager.acquiredStoragePermission(this);
                 new RangeSelector(this, (Gallery) gallery).show();
+            }
+
     }
 }

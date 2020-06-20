@@ -4,6 +4,7 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -34,19 +35,19 @@ import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
+import com.dar.nclientv2.utility.files.FileObject;
+import com.dar.nclientv2.utility.files.MasterFileManager;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import java.io.File;
-
 public class ZoomActivity extends AppCompatActivity {
-    @TargetApi(16)
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private final static int hideFlags= View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
             | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
             | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
             | View.SYSTEM_UI_FLAG_FULLSCREEN
             | (Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT?View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY:0);
-    @TargetApi(16)
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private final static int showFlags=View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
 
     private GenericGallery gallery;
@@ -62,7 +63,7 @@ public class ZoomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.initActivity(this);
-        side=getSharedPreferences("Settings",0).getBoolean("volumeSide",true);
+        side=getSharedPreferences("Settings", Context.MODE_PRIVATE).getBoolean("volumeSide",true);
         setContentView(R.layout.activity_zoom);
 
         //read arguments
@@ -194,7 +195,7 @@ public class ZoomActivity extends AppCompatActivity {
         return super.onKeyDown(keyCode, event);
     }
     private void changeSide(){
-        getSharedPreferences("Settings",0).edit().putBoolean("volumeSide",side=!side).apply();
+        getSharedPreferences("Settings",Context.MODE_PRIVATE).edit().putBoolean("volumeSide",side=!side).apply();
         Toast.makeText(this, side?R.string.next_page_volume_up:R.string.next_page_volume_down, Toast.LENGTH_SHORT).show();
     }
     private void changeClosePage(boolean next){
@@ -274,7 +275,7 @@ public class ZoomActivity extends AppCompatActivity {
                 .show();
     }
 
-    @TargetApi(23)
+    @TargetApi(Build.VERSION_CODES.M)
     private void requestStorage(){
         requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},1);
     }
@@ -282,9 +283,11 @@ public class ZoomActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Global.initStorage(this);
-        if(requestCode==1&&grantResults.length >0&&grantResults[0]==PackageManager.PERMISSION_GRANTED)
+        if(requestCode==1&&grantResults.length >0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
+            MasterFileManager.acquiredStoragePermission(this);
             downloadPage();
+        }
+
 
     }
     private ZoomFragment getActualFragment(){
@@ -311,8 +314,8 @@ public class ZoomActivity extends AppCompatActivity {
 
 
     private void downloadPage() {
-        final File output=new File(Global.SCREENFOLDER,gallery.getId()+"-"+(mViewPager.getCurrentItem()+1)+".jpg");
-        Utility.saveImage(getActualFragment().getDrawable(),output);
+        final FileObject output= MasterFileManager.getScreenFolder().createFile(gallery.getId()+"-"+(mViewPager.getCurrentItem()+1)+".jpg");
+        Utility.saveImage(this,getActualFragment().getDrawable(),output);
     }
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
         public SectionsPagerAdapter(@NonNull FragmentManager fm) {

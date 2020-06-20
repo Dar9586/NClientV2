@@ -256,11 +256,21 @@
     <string name="sort_popular_day">Popolarità giornaliera</string>
     <string name="sort_popular_week">Popolarità settimanale</string>
     <string name="sort_type_title_format" formatted="true">Scegli tipo ordinamento (%s)</string>
-    <string name="sort_select_type">Choose sort type:</string>
-    <string name="unable_to_connect_to_the_site">Unable to connect to the site</string>
-    <string name="error">Error</string>
-    <string name="no_entry_found">No entries found</string>
-    <string name="retry">Retry</string>
+    <string name="sort_select_type">Cambia tipo di ordinamento:</string>
+    <string name="unable_to_connect_to_the_site">Impossibile connettersi al sito</string>
+    <string name="error">Errore</string>
+    <string name="no_entry_found">Nessuna galleria trovata</string>
+    <string name="retry">Riprova</string>
+    <string name="select_this_directory">Scegli questa cartella</string>
+    <string name="select_directory">Scegli cartella</string>
+    <string name="file_path">Percorso</string>
+    <string name="go">Vai</string>
+    <string name="chose_staorage_mode">Scegli modalità cartelle:</string>
+    <string name="file_mode_description">Più veloce, cartelle limitate</string>
+    <string name="document_mode_description">Più lento, può accedere ai file esterni</string>
+    <string name="choose">Scegli</string>
+    <string name="help">Aiuto</string>
+    <string name="help_storage_message">Una cartella chiamata \'NClientV2\' verrà creata nella cartella scelta.\nI file devono essere copiati manualmente da una cartella all\'altra.</string>
     <string-array name="language">
         <item>Inglese</item>
         <item>Cinese (Tradizionale)</item>

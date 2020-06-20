@@ -1,5 +1,6 @@
 package com.dar.nclientv2.api.local;
 
+import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.os.Parcel;
 import android.util.JsonReader;
@@ -12,12 +13,13 @@ import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.enums.SpecialTagIds;
 import com.dar.nclientv2.components.classes.Size;
 import com.dar.nclientv2.utility.LogUtility;
+import com.dar.nclientv2.utility.files.FileObject;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -28,80 +30,89 @@ public class LocalGallery extends GenericGallery{
     @NonNull private final GalleryData galleryData;
     private final int min;
     private final String title;
-    @NonNull private final File directory;
+    @NonNull private final FileObject directory;
     private final boolean valid;
     private boolean hasAdvancedData=true;
     @NonNull
     private Size maxSize=new Size(0,0),minSize=new Size(Integer.MAX_VALUE,Integer.MAX_VALUE);
 
     @NonNull
-    private File[] retrieveValidImages(){
-        File[] files=directory.listFiles((dir, name) -> FILE_PATTERN.matcher(name).matches());
-        return files==null?new File[0]:files;
+    private List<FileObject> retrieveValidImages(){
+        FileObject[] files=directory.listFiles();// directory.listFiles((dir, name) -> FILE_PATTERN.matcher(name).matches());
+        List<FileObject>f=new ArrayList<>(files.length);
+        for(FileObject obj:files){
+            if(FILE_PATTERN.matcher(obj.getName()).matches())
+                f.add(obj);
+        }
+        return f;
     }
-    private static int getPageFromFile(File f){
+    private static int getPageFromFile(FileObject f){
         String n=f.getName();
         return Integer.parseInt(n.substring(0,n.indexOf('.')));
     }
 
-    private int oldReadId(){
-        File nomedia=new File(directory,".nomedia");
-        if(!nomedia.exists())return SpecialTagIds.INVALID_ID;
-        try (BufferedReader br = new BufferedReader(new FileReader(nomedia))){//ID check with nomedia
+    private int oldReadId(Context context){
+        FileObject nomedia= directory.getChildFile(".nomedia");
+        if(nomedia==null||!nomedia.exists())return SpecialTagIds.INVALID_ID;
+        try (BufferedReader br = new BufferedReader(nomedia.getReader(context))){//ID check with nomedia
             return Integer.parseInt(br.readLine());
         }catch (IOException|NumberFormatException ignore){}
         return SpecialTagIds.INVALID_ID;
     }
-    public LocalGallery(@NonNull File file,boolean jumpDataRetrieve){
+    public LocalGallery(Context context, @NonNull FileObject file, boolean jumpDataRetrieve){
         directory=file;
         title=file.getName();
         if(jumpDataRetrieve){
             galleryData=GalleryData.fakeData();
         }else {
-            galleryData = readGalleryData();
+            galleryData = readGalleryData(context);
             if (galleryData.getId() == SpecialTagIds.INVALID_ID)
-                galleryData.setId(oldReadId());
+                galleryData.setId(oldReadId(context));
         }
         int max=0,min=Integer.MAX_VALUE;
         //Start search pages
-        File[] files= retrieveValidImages();
+        long time1,time2,time3=0,time4=0;
+        List<FileObject> files= retrieveValidImages();
         //Find page with max number
-        if(files.length >= 1) {
-            Arrays.sort(files, (o1, o2) -> getPageFromFile(o1)-getPageFromFile(o2));
-            min=getPageFromFile(files[0]);
-            max=getPageFromFile(files[files.length-1]);
+        if(files.size() >= 1) {
+            //Collections.sort(files, (o1, o2) -> getPageFromFile(o1)-getPageFromFile(o2));
+            min=getPageFromFile(files.get(0));
+            max=getPageFromFile(files.get(files.size()-1));
         }
         galleryData.setPageCount(max);
         this.min=min;
-        valid=files.length>0;
+        valid=files.size()>0;
     }
 
-    public LocalGallery(@NonNull File file){
-        this(file,false);
+    public LocalGallery(Context context, @NonNull FileObject file){
+        this(context, file,false);
     }
     @NonNull
-    private GalleryData readGalleryData(){
-        File nomedia = new File(directory, ".nomedia");
-        try (JsonReader reader = new JsonReader(new FileReader(nomedia))) {
+    private GalleryData readGalleryData(Context context){
+        FileObject nomedia = directory.getChildFile( ".nomedia");
+        try (JsonReader reader = new JsonReader(nomedia.getReader(context))) {
             return new GalleryData(reader);
         } catch (Exception ignore) {}
         hasAdvancedData=false;
         return GalleryData.fakeData();
     }
 
-    public void calculateSizes(){
-        for(File f: retrieveValidImages())
-            checkSize(f);
+    public void calculateSizes(Context context){
+        for(FileObject f: retrieveValidImages())
+            checkSize(context, f);
     }
-    private void checkSize(File f){
+    private void checkSize(Context context, FileObject f){
         LogUtility.d("Decoding: "+f);
         BitmapFactory.Options options=new BitmapFactory.Options();
         options.inJustDecodeBounds=true;
-        BitmapFactory.decodeFile(f.getAbsolutePath(),options);
-        if(options.outWidth>maxSize.getWidth())maxSize.setWidth(options.outWidth);
-        if(options.outWidth<minSize.getWidth())minSize.setWidth(options.outWidth);
-        if(options.outHeight>maxSize.getHeight())maxSize.setHeight(options.outHeight);
-        if(options.outHeight<minSize.getHeight())minSize.setHeight(options.outHeight);
+        try {
+            InputStream stream = f.getInputStream(context);
+            BitmapFactory.decodeStream(stream,null,options);
+            if(options.outWidth>maxSize.getWidth())maxSize.setWidth(options.outWidth);
+            if(options.outWidth<minSize.getWidth())minSize.setWidth(options.outWidth);
+            if(options.outHeight>maxSize.getHeight())maxSize.setHeight(options.outHeight);
+            if(options.outHeight<minSize.getHeight())minSize.setHeight(options.outHeight);
+        }catch (IOException ignore){}
     }
     @NonNull
     @Override
@@ -120,7 +131,7 @@ public class LocalGallery extends GenericGallery{
         minSize= Objects.requireNonNull(in.readParcelable(Size.class.getClassLoader()));
         min = in.readInt();
         title = in.readString();
-        directory=new File(Objects.requireNonNull(in.readString()));
+        directory= in.readParcelable(FileObject.class.getClassLoader());
         hasAdvancedData=in.readByte()==1;
         valid=true;
     }
@@ -177,31 +188,32 @@ public class LocalGallery extends GenericGallery{
     @Nullable
     @Override
     public String getPageURI(int page) {
-        File p=getPage(page);
-        return p==null?null:p.getAbsolutePath();
+        FileObject p=getPage(page);
+        return p==null?null:p.getUri().toString();
     }
 
     @NonNull
-    public File getDirectory() {
+    public FileObject getDirectory() {
         return directory;
     }
     /**
      * @return null if not found or the file if found
      * */
-    public static File getPage(File dir,int page){
+    public static FileObject getPage(FileObject dir,int page){
         if(dir==null||!dir.exists())return null;
         String pag=String.format(Locale.US,"%03d.",page);
-        File x;
-        x=new File(dir,pag+"jpg");
-        if(x.exists())return x;
-        x=new File(dir,pag+"png");
-        if(x.exists())return x;
-        x=new File(dir,pag+"gif");
-        if(x.exists())return x;
+        FileObject x;
+        x= dir.getChildFile(pag+"jpg");
+        if(x!=null)return x;
+        x= dir.getChildFile(pag+"png");
+        if(x!=null)return x;
+        x= dir.getChildFile(pag+"gif");
+        if(x!=null)return x;
+
         return null;
     }
     @Nullable
-    public File getPage(int index){
+    public FileObject getPage(int index){
         return getPage(directory,index);
     }
 
@@ -217,12 +229,12 @@ public class LocalGallery extends GenericGallery{
         dest.writeParcelable(minSize, flags);
         dest.writeInt(min);
         dest.writeString(title);
-        dest.writeString(directory.getAbsolutePath());
+        dest.writeParcelable(directory,flags);
         dest.writeByte((byte) (hasAdvancedData?1:0));
     }
 
     @Override
-    public String getUri(File directory, int page) {
+    public String getUri(FileObject directory, int page) {
         return super.getUri(directory, page);
     }
 

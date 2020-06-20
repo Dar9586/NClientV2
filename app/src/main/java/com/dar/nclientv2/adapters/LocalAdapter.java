@@ -181,10 +181,10 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
 
 
     private void startGallery(LocalGallery ent) {
-        ent.calculateSizes();
+        ent.calculateSizes(context);
         new Thread(() -> {
             Intent intent = new Intent(context, GalleryActivity.class);
-            intent.putExtra(context.getPackageName()+ ".GALLERY",new LocalGallery(ent.getDirectory()));
+            intent.putExtra(context.getPackageName()+ ".GALLERY",new LocalGallery(context,ent.getDirectory()));
             intent.putExtra(context.getPackageName()+ ".ISLOCAL",true);
             context.runOnUiThread(()->context.startActivity(intent));
         }).start();
@@ -235,10 +235,11 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        if(filter.get(position) instanceof LocalGallery)
-            bindGallery(holder,position, (LocalGallery) filter.get(position));
-        else
-            bindDownload(holder,position, (GalleryDownloaderV2) filter.get(position));
+        int pos=holder.getAdapterPosition();
+        switch (getItemViewType(pos)){
+            case 0:bindGallery(holder,pos, (LocalGallery) filter.get(pos));break;
+            case 1:bindDownload(holder,pos, (GalleryDownloaderV2) filter.get(pos));break;
+        }
     }
     private double sizeForGallery(LocalGallery gallery){
         double size=Global.recursiveSize(gallery.getDirectory());
@@ -336,6 +337,16 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
     public void sortChanged() {
         sortElements();
         context.runOnUiThread(()->notifyItemRangeChanged(0,getItemCount()));
+    }
+    //-x-1=pos
+    public void addGallery(LocalGallery gallery) {
+        dataset.add(gallery);
+        int pos=Collections.binarySearch(filter,gallery,getComparator());
+        final int pos1=-(pos) - 1;
+        filter.add(pos1,gallery);
+        context.runOnUiThread(()->notifyItemInserted(pos1));
+        //sortElements();
+        //context.runOnUiThread(()->notifyItemRangeChanged(0,getItemCount()));
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

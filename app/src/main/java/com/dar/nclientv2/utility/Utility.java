@@ -17,10 +17,13 @@ import androidx.core.content.FileProvider;
 
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.utility.files.FileObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -99,14 +102,13 @@ public class Utility {
         if(!(dra instanceof BitmapDrawable))return null;
         return ((BitmapDrawable) dra).getBitmap();
     }
-    public static void saveImage(Drawable drawable,File output){
+    public static void saveImage(Context context, Drawable drawable, FileObject output){
         Bitmap b=drawableToBitmap(drawable);
-        if(b!=null)saveImage(b,output);
+        if(b!=null)saveImage(context, b,output);
     }
-    private static void saveImage(@NonNull Bitmap bitmap,@NonNull File output){
+    private static void saveImage(Context context, @NonNull Bitmap bitmap,@NonNull FileObject output){
         try {
-            if(!output.exists())output.createNewFile();
-            FileOutputStream ostream = new FileOutputStream(output);
+            OutputStream ostream = output.getOutputStream(context);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 95, ostream);
             ostream.flush();
             ostream.close();
@@ -114,6 +116,17 @@ public class Utility {
             LogUtility.e(e.getLocalizedMessage(),e);
         }
     }
+    private static void saveImage(@NonNull Bitmap bitmap,@NonNull File output){
+        try {
+            OutputStream ostream =new FileOutputStream(output);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 95, ostream);
+            ostream.flush();
+            ostream.close();
+        }catch (IOException e){
+            LogUtility.e(e.getLocalizedMessage(),e);
+        }
+    }
+    /*Here the File class is ok because temp is always accessible*/
     public static void sendImage(Context context, Drawable drawable, String text){
         context=context.getApplicationContext();
         try {
@@ -143,5 +156,21 @@ public class Utility {
         }
 
     }
+    /**
+     * InputStream is not closed
+     * */
+    public static long writeStreamToFile(Context context, InputStream inputStream, FileObject filePath)throws IOException {
+        OutputStream outputStream= filePath.getOutputStream(context);
+        int read;
+        long totalByte=0;
+        byte[] bytes = new byte[1024];
+        while ((read = inputStream.read(bytes)) != -1) {
+            outputStream.write(bytes, 0, read);
+            totalByte+=read;
+        }
+        outputStream.flush();
+        outputStream.close();
 
+        return totalByte;
+    }
 }

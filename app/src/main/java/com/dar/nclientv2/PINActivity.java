@@ -1,5 +1,6 @@
 package com.dar.nclientv2;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -32,7 +33,7 @@ public class PINActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Global.initActivity(this);
         setContentView(R.layout.activity_pin);
-        preferences=getSharedPreferences("Settings",0);
+        preferences=getSharedPreferences("Settings", Context.MODE_PRIVATE);
         setMode=getIntent().getBooleanExtra(getPackageName()+".SET",false);
         if(!setMode&&!hasPin()){
             finish();

@@ -12,11 +12,12 @@ import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.NotificationSettings;
 import com.dar.nclientv2.utility.LogUtility;
+import com.dar.nclientv2.utility.files.FileObject;
+import com.dar.nclientv2.utility.files.MasterFileManager;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -40,18 +41,19 @@ public class CreateZIP extends JobIntentService {
         preExecute(gallery.getDirectory());
         int allPage = gallery.getPageCount();
         try {
-            File file = new File(Global.ZIPFOLDER, gallery.getTitle() + ".zip");
-            FileOutputStream o = new FileOutputStream(file);
+
+            FileObject file = MasterFileManager.getZipFolder().createFile(gallery.getTitle() + ".zip");
+            OutputStream o = file.getOutputStream (getBaseContext());
             ZipOutputStream out=new ZipOutputStream(o);
             out.setLevel(9);
-            FileInputStream in;
-            File actual;
+            InputStream in;
+            FileObject actual;
             int read;
             for (int i = 0; i < allPage; i++) {
                 actual=gallery.getPage(i);
                 if(actual==null)continue;
                 ZipEntry entry=new ZipEntry(actual.getName());
-                in=new FileInputStream(actual);
+                in= actual.getInputStream(getBaseContext());
                 out.putNextEntry(entry);
                 while((read=in.read(buffer))!=-1){
                     out.write(buffer,0,read);
@@ -83,7 +85,7 @@ public class CreateZIP extends JobIntentService {
 
     }
 
-    private void preExecute(File file) {
+    private void preExecute(FileObject file) {
         notId = NotificationSettings.getNotificationId();
         notification=new NotificationCompat.Builder(getApplicationContext(), Global.CHANNEL_ID3);
         notification.setSmallIcon(R.drawable.ic_archive)

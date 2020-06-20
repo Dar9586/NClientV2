@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
@@ -55,6 +56,7 @@ import com.dar.nclientv2.settings.TagV2;
 import com.dar.nclientv2.utility.ImageDownloadUtility;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
+import com.dar.nclientv2.utility.files.MasterFileManager;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -79,7 +81,8 @@ public class MainActivity extends BaseActivity
      * */
     private enum ModeType {UNKNOWN,NORMAL,TAG,FAVORITE,SEARCH,BOOKMARK,ID}
     private static final int CHANGE_LANGUAGE_DELAY=1000;
-
+    public static final int RESPONSE_PERMISSION_CHECK=10;
+    public static final int RESPONSE_PERMISSION_CHECK_VERSION=11;
     private InspectorV3 inspector=null;
     private NavigationView navigationView;
     private static boolean firstTime=true;//true only when app starting
@@ -805,17 +808,28 @@ public class MainActivity extends BaseActivity
         //drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
-    @TargetApi(23)
+    @TargetApi(Build.VERSION_CODES.M)
     private void requestStorage(){
-        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},1);
+        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},RESPONSE_PERMISSION_CHECK);
     }
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Global.initStorage(this);
-        if(requestCode==1&&grantResults.length >0&&grantResults[0]== PackageManager.PERMISSION_GRANTED) startLocalActivity();
-        if(requestCode==2&&grantResults.length >0&&grantResults[0]== PackageManager.PERMISSION_GRANTED) new VersionChecker(this,true);
+        if(grantResults.length >0&&grantResults[0]== PackageManager.PERMISSION_GRANTED){
+            MasterFileManager.acquiredStoragePermission(this);
+            switch (requestCode){
+                case RESPONSE_PERMISSION_CHECK:
+                    startLocalActivity();
+                    break;
+                case RESPONSE_PERMISSION_CHECK_VERSION:
+                    new VersionChecker(this,true);
+                    break;
+            }
+            recreate();
+        }
     }
 
     private void startLocalActivity(){

@@ -14,8 +14,8 @@ import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.components.GlideX;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.targets.BitmapTarget;
+import com.dar.nclientv2.utility.files.FileObject;
 
-import java.io.File;
 
 public class ImageDownloadUtility {
     public static void preloadImage(Context context, Object object){
@@ -57,12 +57,12 @@ public class ImageDownloadUtility {
                 .error(logo)
                 .into(imageView);
     }
-    public static void loadImage(Activity activity,File file,ImageView imageView){
+    public static void loadImage(Activity activity, FileObject file, ImageView imageView){
         if(activity.isFinishing()||Global.isDestroyed(activity))return;
         RequestManager glide=GlideX.with(activity);
         if(glide==null)return;
         int logo=Global.getLogo();
-        glide.load(file)
+        glide.load(file.getUri())
                 .placeholder(logo)
                 .error(logo)
                 .into(imageView);

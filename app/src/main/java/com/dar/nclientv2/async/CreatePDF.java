@@ -10,23 +10,24 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
+import android.os.Build;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.JobIntentService;
 import androidx.core.app.NotificationCompat;
-import androidx.core.content.FileProvider;
 
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.NotificationSettings;
 import com.dar.nclientv2.utility.LogUtility;
+import com.dar.nclientv2.utility.files.FileObject;
+import com.dar.nclientv2.utility.files.MasterFileManager;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
-@TargetApi(19)
+@TargetApi(Build.VERSION_CODES.KITKAT)
 public class CreatePDF extends JobIntentService {
     private int notId;
     private int totalPage;
@@ -46,13 +47,16 @@ public class CreatePDF extends JobIntentService {
         totalPage=gallery.getPageCount();
         preExecute(gallery.getDirectory());
         PdfDocument document = new PdfDocument();
-        File page;
+        FileObject page;
         for(int a=0;a< gallery.getPageCount();a++){
             page=gallery.getPage(a);
             if(page==null)continue;
             BitmapFactory.Options options=new BitmapFactory.Options();
             options.inSampleSize=2;
-            Bitmap bitmap=BitmapFactory.decodeFile(page.getAbsolutePath(),options);
+            Bitmap bitmap=null;
+            try{
+                bitmap=BitmapFactory.decodeStream(page.getInputStream(getBaseContext()),null,options);
+            }catch (IOException ignore){}
             if(bitmap!=null) {
                 PdfDocument.PageInfo info = new PdfDocument.PageInfo.Builder(bitmap.getWidth(), bitmap.getHeight(), a).create();
                 PdfDocument.Page p = document.startPage(info);
@@ -69,12 +73,10 @@ public class CreatePDF extends JobIntentService {
         NotificationSettings.notify(getString(R.string.channel2_name),notId,notification.build());
         try {
 
-            File finalPath=Global.PDFFOLDER;
-            finalPath.mkdirs();
-            finalPath=new File(finalPath,gallery.getTitle()+".pdf");
-            finalPath.createNewFile();
+            FileObject finalPath= MasterFileManager.getPdfFolder();
+            finalPath= finalPath.createFile(gallery.getTitle()+".pdf");
             LogUtility.d("Generating PDF at: "+finalPath);
-            FileOutputStream out = new FileOutputStream(finalPath);
+            OutputStream out = finalPath.getOutputStream(getBaseContext());
             document.writeTo(out);
             out.close();
             document.close();
@@ -83,7 +85,6 @@ public class CreatePDF extends JobIntentService {
             notification.setContentText(gallery.getTitle());
             createIntentOpen(finalPath);
             NotificationSettings.notify(getString(R.string.channel2_name),notId,notification.build());
-            LogUtility.d(finalPath.getAbsolutePath());
         }catch(IOException e){
             notification.setContentTitle(getString(R.string.error_pdf));
             notification.setContentText(getString(R.string.failed));
@@ -97,10 +98,9 @@ public class CreatePDF extends JobIntentService {
 
     }
 
-    private void createIntentOpen(File finalPath) {
+    private void createIntentOpen(FileObject finalPath) {
         Intent i = new Intent(Intent.ACTION_VIEW);
-        Uri apkURI = FileProvider.getUriForFile(
-                getApplicationContext(),getApplicationContext().getPackageName() + ".provider", finalPath);
+        Uri apkURI = finalPath.getUri();
         i.setDataAndType(apkURI, "application/pdf");
         i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         i.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
@@ -115,7 +115,7 @@ public class CreatePDF extends JobIntentService {
 
     }
 
-    private void preExecute(File file) {
+    private void preExecute(FileObject file) {
         notification=new NotificationCompat.Builder(getApplicationContext(), Global.CHANNEL_ID2);
         notification.setSmallIcon(R.drawable.ic_image)
                 .setOnlyAlertOnce(true)

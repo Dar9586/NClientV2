@@ -24,14 +24,14 @@ import com.dar.nclientv2.settings.Favorites;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
 import com.dar.nclientv2.utility.LogUtility;
+import com.dar.nclientv2.utility.files.FileObject;
+import com.dar.nclientv2.utility.files.MasterFileManager;
 import com.dar.nclientv2.utility.network.NetworkUtil;
 
 import org.acra.ACRA;
 import org.acra.ReportField;
 import org.acra.annotation.AcraCore;
 
-import java.io.File;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -54,7 +54,7 @@ public class CrashApplication extends Application{
         Global.initStorage(this);
         Database.setDatabase(new DatabaseHelper(getApplicationContext()).getWritableDatabase());
         String version=Global.getLastVersion(this),actualVersion=Global.getVersionName(this);
-        SharedPreferences preferences=getSharedPreferences("Settings", 0);
+        SharedPreferences preferences=getSharedPreferences("Settings", Context.MODE_PRIVATE);
         if(!actualVersion.equals(version))
             afterUpdateChecks(preferences,version,actualVersion);
 
@@ -112,22 +112,16 @@ public class CrashApplication extends Application{
         }catch (ClassCastException ignore){}
     }
 
-    private void createIdHiddenFile(File folder){
-        LocalGallery gallery=new LocalGallery(folder);
+    private void createIdHiddenFile(FileObject folder){
+        LocalGallery gallery=new LocalGallery(this,folder);
         if(gallery.getId()<0)return;
-        File hiddenFile=new File(folder,"."+gallery.getId());
-        try {
-            hiddenFile.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        FileObject hiddenFile= folder.createFile("."+gallery.getId());
     }
 
     private void createIdHiddenFiles() {
         if(!Global.hasStoragePermission(this))return;
-        File[]files=Global.DOWNLOADFOLDER.listFiles();
-        if(files==null)return;
-        for(File f:files){
+        FileObject[]files= MasterFileManager.getDownloadFolder().listFiles();
+        for(FileObject f:files){
             if(f.isDirectory())
                 createIdHiddenFile(f);
         }
@@ -135,14 +129,14 @@ public class CrashApplication extends Application{
 
     private void removeOldUpdates() {
         if(!Global.hasStoragePermission(this))return;
-        Global.recursiveDelete(Global.UPDATEFOLDER);
-        Global.UPDATEFOLDER.mkdir();
+        for(FileObject file: MasterFileManager.getUpdateFolder().listFiles())
+            Global.recursiveDelete(file);
     }
 
     @Override
     protected void attachBaseContext(Context newBase){
         super.attachBaseContext(newBase);
         ACRA.init(this);
-        ACRA.getErrorReporter().setEnabled(getSharedPreferences("Settings",0).getBoolean(getString(R.string.key_send_report),true));
+        ACRA.getErrorReporter().setEnabled(getSharedPreferences("Settings",Context.MODE_PRIVATE).getBoolean(getString(R.string.key_send_report),true));
     }
 }

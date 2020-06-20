@@ -28,7 +28,7 @@ public class NotificationSettings {
 
     public static void initializeNotificationManager(Context context){
         notificationSettings=new NotificationSettings(NotificationManagerCompat.from(context.getApplicationContext()));
-        maximumNotification=context.getSharedPreferences("Settings",0).getInt(context.getString(R.string.key_maximum_notification),25);
+        maximumNotification=context.getSharedPreferences("Settings",Context.MODE_PRIVATE).getInt(context.getString(R.string.key_maximum_notification),25);
         trimArray();
     }
     public static void notify(String channel, int notificationId, Notification notification){

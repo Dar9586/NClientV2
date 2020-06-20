@@ -64,16 +64,16 @@ public class TagV2{
         return getListPrefer(Global.removeAvoidedGalleries()).size()>=MAXTAGS;
     }
     public static void updateMinCount(Context context,int min){
-        context.getSharedPreferences("ScrapedTags",0).edit().putInt("min_count",minCount=min).apply();
+        context.getSharedPreferences("ScrapedTags",Context.MODE_PRIVATE).edit().putInt("min_count",minCount=min).apply();
     }
     public static void initMinCount(Context context){
-        minCount=context.getSharedPreferences("ScrapedTags",0).getInt("min_count",25);
+        minCount=context.getSharedPreferences("ScrapedTags",Context.MODE_PRIVATE).getInt("min_count",25);
     }
     public static void initSortByName(Context context){
-        sortByName=context.getSharedPreferences("ScrapedTags",0).getBoolean("sort_by_name",false);
+        sortByName=context.getSharedPreferences("ScrapedTags",Context.MODE_PRIVATE).getBoolean("sort_by_name",false);
     }
     public static boolean updateSortByName(Context context){
-        context.getSharedPreferences("ScrapedTags",0).edit().putBoolean("sort_by_name",sortByName=!sortByName).apply();
+        context.getSharedPreferences("ScrapedTags",Context.MODE_PRIVATE).edit().putBoolean("sort_by_name",sortByName=!sortByName).apply();
         return sortByName;
     }
     public static boolean isSortedByName(){

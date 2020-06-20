@@ -7,6 +7,7 @@
     <string name="key_by_popular" translatable="false">is_by_popular</string>
     <string name="key_column_count" translatable="false">column_count</string>
     <string name="key_only_language" translatable="false">only_language</string>
+    <string name="key_storage_location" translatable="false">storage_location</string>
     <string name="key_theme_select" translatable="false">theme_select</string>
     <string name="key_max_id" translatable="false">max_id</string>
     <string name="key_infinite_scroll" translatable="false">infinite_scroll</string>
@@ -287,6 +288,16 @@
     <string name="error">Error</string>
     <string name="no_entry_found">No entries found</string>
     <string name="retry">Retry</string>
+    <string name="select_this_directory">Select this directory</string>
+    <string name="select_directory">Select directory</string>
+    <string name="file_path">File path</string>
+    <string name="go">Go</string>
+    <string name="chose_staorage_mode">Choose storage mode:</string>
+    <string name="file_mode_description">Faster, limited folders</string>
+    <string name="document_mode_description">Slower, can access external storage</string>
+    <string name="choose">Choose</string>
+    <string name="help">Help</string>
+    <string name="help_storage_message">A folder called \'NClientV2\' will be created inside the folder you will choose.\nThe files must be copied manually from a folder to another.</string>
 
     <string-array name="language">
         <item>English</item>

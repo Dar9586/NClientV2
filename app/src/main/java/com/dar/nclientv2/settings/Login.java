@@ -23,7 +23,7 @@ public class Login{
     private static boolean accountTag;
 
     public static void  initUseAccountTag(@NonNull Context context){
-        accountTag=context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_use_account_tag),false);
+        accountTag=context.getSharedPreferences("Settings", Context.MODE_PRIVATE).getBoolean(context.getString(R.string.key_use_account_tag),false);
     }
 
     public static boolean useAccountTag(){

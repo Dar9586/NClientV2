@@ -18,11 +18,13 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/DarkTheme">
-        <activity android:name=".PINActivity"
-            android:label="@string/app_name"
+        <activity android:name=".FileChooserActivity"></activity>
+        <activity android:name=".FileManagerActivity" />
+        <activity
+            android:name=".PINActivity"
             android:configChanges="orientation|screenSize"
-            android:theme="@style/DarkTheme"
-            >
+            android:label="@string/app_name"
+            android:theme="@style/DarkTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,10 +37,10 @@
         <activity android:name=".SearchActivity" />
         <activity
             android:name=".MainActivity"
-            android:parentActivityName=".PINActivity"
             android:configChanges="orientation|screenSize"
             android:hardwareAccelerated="true"
             android:label="@string/app_name"
+            android:parentActivityName=".PINActivity"
             android:theme="@style/DarkTheme">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -138,7 +140,6 @@
                 <data android:scheme="https" />
                 <data android:host="nhentai.net" />
                 <data android:host="nhent.ai" />
-
             </intent-filter>
         </activity>
         <activity
@@ -153,7 +154,6 @@
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
             android:parentActivityName=".MainActivity">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.dar.nclientv2.MainActivity" />
