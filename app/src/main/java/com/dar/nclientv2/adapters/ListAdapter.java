@@ -23,9 +23,9 @@ import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
 import com.dar.nclientv2.utility.ImageDownloadUtility;
 import com.dar.nclientv2.utility.LogUtility;
-import com.dar.nclientv2.utility.files.FileObject;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -54,7 +54,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         if(context.isFinishing())return;
         try {
             if (storagePermission) {
-                FileObject f = LocalGallery.getPage(Global.findGalleryFolder(ent.getId()), 1);
+                File f = LocalGallery.getPage(Global.findGalleryFolder(ent.getId()), 1);
                 if (f != null) {
                     online = false;
                     ImageDownloadUtility.loadImage(context, f, holder.imgView);

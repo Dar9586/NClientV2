@@ -1,7 +1,6 @@
 package com.dar.nclientv2.async;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -11,18 +10,18 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
-import com.dar.nclientv2.MainActivity;
+import com.dar.nclientv2.BuildConfig;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.LogUtility;
-import com.dar.nclientv2.utility.files.FileObject;
-import com.dar.nclientv2.utility.files.MasterFileManager;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -127,7 +126,7 @@ public class VersionChecker{
             if(Global.hasStoragePermission(context)) downloadVersion(latestVersion);
             else{
                 latest=latestVersion;
-                context.runOnUiThread(()-> context.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE}, MainActivity.RESPONSE_PERMISSION_CHECK_VERSION));
+                context.runOnUiThread(()-> context.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},2));
             }
         }).setNegativeButton(R.string.cancel,null)
                 .setNeutralButton(R.string.github, (dialog, which) -> {
@@ -138,14 +137,15 @@ public class VersionChecker{
     }
 
     private void downloadVersion(String latestVersion) {
-        final FileObject f= MasterFileManager.getUpdateFolder().createFile("NClientV2_"+latestVersion+".apk");
+        final File f=new File(Global.UPDATEFOLDER,"NClientV2_"+latestVersion+".apk");
         if(f.exists()){
-            if(context.getSharedPreferences("Settings", Context.MODE_PRIVATE).getBoolean("downloaded",false)) {
+            if(context.getSharedPreferences("Settings",0).getBoolean("downloaded",false)) {
                 installApp(f);
                 return;
             }
             f.delete();
         }
+        LogUtility.d(f.getAbsolutePath());
         Global.getClient(context).newCall(new Request.Builder().url(downloadUrl).build()).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -154,8 +154,10 @@ public class VersionChecker{
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                context.getSharedPreferences("Settings",Context.MODE_PRIVATE).edit().putBoolean("downloaded",false).apply();
-                OutputStream stream = f.getOutputStream(context);
+                context.getSharedPreferences("Settings",0).edit().putBoolean("downloaded",false).apply();
+                f.getParentFile().mkdirs();
+                f.createNewFile();
+                FileOutputStream stream = new FileOutputStream(f);
                 InputStream stream1=response.body().byteStream();
                 int read;
                 byte[] bytes = new byte[1024];
@@ -165,19 +167,20 @@ public class VersionChecker{
                 stream1.close();
                 stream.flush();
                 stream.close();
-                context.getSharedPreferences("Settings",Context.MODE_PRIVATE).edit().putBoolean("downloaded",true).apply();
+                context.getSharedPreferences("Settings",0).edit().putBoolean("downloaded",true).apply();
                 installApp(f);
             }
         });
     }
-    private void installApp(FileObject f){
-        Uri apkUri = f.getUri();
+    private void installApp(File f){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Uri apkUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", f);
             Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
             intent.setData(apkUri);
             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             context.startActivity(intent);
         } else {
+            Uri apkUri = Uri.fromFile(f);
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

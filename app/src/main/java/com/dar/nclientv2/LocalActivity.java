@@ -11,13 +11,10 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.dar.nclientv2.adapters.LocalAdapter;
 import com.dar.nclientv2.api.local.FakeInspector;
-import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.downloader.DownloadQueue;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.Utility;
-
-import java.util.ArrayList;
 
 public class LocalActivity extends BaseActivity {
     private LocalAdapter adapter;
@@ -35,12 +32,8 @@ public class LocalActivity extends BaseActivity {
         findViewById(R.id.page_switcher).setVisibility(View.GONE);
         recycler=findViewById(R.id.recycler);
         refresher=findViewById(R.id.refresher);
-        refresher.setOnRefreshListener(() -> {
-            setAdapter(new LocalAdapter(this,new ArrayList<>()));
-            new FakeInspector().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,LocalActivity.this);
-        });
+        refresher.setOnRefreshListener(() -> new FakeInspector().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,LocalActivity.this));
         changeLayout(getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE);
-        setAdapter(new LocalAdapter(this,new ArrayList<>()));
         new FakeInspector().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,this);
     }
 
@@ -136,9 +129,5 @@ public class LocalActivity extends BaseActivity {
     @Override
     protected int getLandCount() {
         return Global.getColLandDownload();
-    }
-
-    public void addGallery(LocalGallery gallery) {
-        adapter.addGallery(gallery);
     }
 }

@@ -16,6 +16,7 @@ import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.webkit.CookieSyncManager;
 
@@ -38,8 +39,6 @@ import com.dar.nclientv2.loginapi.LoadTags;
 import com.dar.nclientv2.loginapi.User;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
-import com.dar.nclientv2.utility.files.FileObject;
-import com.dar.nclientv2.utility.files.MasterFileManager;
 import com.dar.nclientv2.utility.network.NetworkUtil;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
@@ -58,6 +57,13 @@ import okhttp3.OkHttpClient;
 
 public class Global {
     public static OkHttpClient client=null;
+    public static  File OLD_GALLERYFOLDER;
+    public static  File MAINFOLDER;
+    public static  File DOWNLOADFOLDER;
+    public static  File SCREENFOLDER;
+    public static  File PDFFOLDER;
+    public static  File UPDATEFOLDER;
+    public static  File ZIPFOLDER;
     public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf",CHANNEL_ID3="create_zip";
 
     private static Language onlyLanguage;
@@ -72,27 +78,30 @@ public class Global {
     private static Point screenSize;
     private static final DisplayMetrics lastDisplay=new DisplayMetrics();
 
-    public static long recursiveSize(FileObject path) {
+
+    public static long recursiveSize(File path) {
         if(path.isFile())return path.length();
         long size=0;
-        FileObject[]files=path.listFiles();
-        for(FileObject f:files)
+        File[]files=path.listFiles();
+        if(files==null)return size;
+        for(File f:files)
             size+=f.isFile()?f.length():recursiveSize(f);
+
         return size;
     }
 
     public static int getFavoriteLimit(Context context) {
-        return context.getSharedPreferences("Settings", Context.MODE_PRIVATE).getInt(context.getString(R.string.key_favorite_limit),10);
+        return context.getSharedPreferences("Settings", 0).getInt(context.getString(R.string.key_favorite_limit),10);
     }
 
     public static String getLastVersion(Context context) {
-        if(context!=null)lastVersion=context.getSharedPreferences("Settings", Context.MODE_PRIVATE).getString("last_version","0.0.0");
+        if(context!=null)lastVersion=context.getSharedPreferences("Settings", 0).getString("last_version","0.0.0");
         return lastVersion;
     }
 
     public static void setLastVersion(Context context) {
         lastVersion=getVersionName(context);
-        context.getSharedPreferences("Settings", Context.MODE_PRIVATE).edit().putString("last_version",lastVersion).apply();
+        context.getSharedPreferences("Settings", 0).edit().putString("last_version",lastVersion).apply();
     }
 
 
@@ -106,7 +115,7 @@ public class Global {
     }
 
     public static void updateACRAReportStatus(Context context) {
-        ACRA.getErrorReporter().setEnabled(context.getSharedPreferences("Settings",Context.MODE_PRIVATE).getBoolean(context.getString(R.string.key_send_report),true));
+        ACRA.getErrorReporter().setEnabled(context.getSharedPreferences("Settings",0).getBoolean(context.getString(R.string.key_send_report),true));
     }
 
     public static boolean isDestroyed(Activity activity) {
@@ -126,11 +135,32 @@ public class Global {
 
     public static void toggleLocalSort(Context context) {
         Global.localSortByName = !Global.localSortByName;
-        context.getSharedPreferences("Settings", Context.MODE_PRIVATE)
+        context.getSharedPreferences("Settings", 0)
                 .edit().putBoolean(context.getString(R.string.key_local_sort),Global.localSortByName)
                 .apply();
     }
 
+    public static String getDefaultFileParent(Context context){
+        File f;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+            f= context.getExternalFilesDir(null);
+        }else{
+            f= Environment.getExternalStorageDirectory();
+        }
+        return f.getAbsolutePath();
+    }
+
+    private static void initFilesTree(Context context){
+        String path=context.getSharedPreferences("Settings",Context.MODE_PRIVATE).getString(context.getString(R.string.key_save_path),getDefaultFileParent(context));
+        assert path != null;
+        MAINFOLDER=new File(path,"NClientV2");
+        OLD_GALLERYFOLDER=new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),"NClientV2");
+        DOWNLOADFOLDER=new File(MAINFOLDER,"Download");
+        SCREENFOLDER =new File(MAINFOLDER,"Screen");
+        PDFFOLDER =new File(MAINFOLDER,"PDF");
+        UPDATEFOLDER =new File(MAINFOLDER,"Update");
+        ZIPFOLDER =new File(MAINFOLDER,"ZIP");
+    }
 
 
     @Nullable
@@ -175,7 +205,7 @@ public class Global {
     }
 
     private static void initTitleType(@NonNull Context context){
-        String s=context.getSharedPreferences("Settings", Context.MODE_PRIVATE).getString(context.getString(R.string.key_title_type),"pretty");
+        String s=context.getSharedPreferences("Settings", 0).getString(context.getString(R.string.key_title_type),"pretty");
         switch (s){
             case "pretty":titleType= TitleType.PRETTY;break;
             case "english":titleType=  TitleType.ENGLISH;break;
@@ -195,8 +225,7 @@ public class Global {
             activity.getWindowManager().getDefaultDisplay().getMetrics(lastDisplay);
     }
     public static void initFromShared(@NonNull Context context){
-        SharedPreferences shared=context.getSharedPreferences("Settings", Context.MODE_PRIVATE);
-        initStorage(context);
+        SharedPreferences shared=context.getSharedPreferences("Settings", 0);
         CookieSyncManager.createInstance(context);
         initHttpClient(context);
         initTitleType(context);
@@ -204,6 +233,7 @@ public class Global {
         loadNotificationChannel(context);
         NotificationSettings.initializeNotificationManager(context);
         Login.initUseAccountTag(context);
+        Global.initStorage(context);
         localSortByName=shared.getBoolean(context.getString(R.string.key_local_sort),true);
         useRtl=shared.getBoolean(context.getString(R.string.key_use_rtl),false);
         keepHistory=shared.getBoolean(context.getString(R.string.key_keep_history),true);
@@ -284,15 +314,17 @@ public class Global {
     }
     public static Locale initLanguage(Context context){
         String x=context.getSharedPreferences("Settings",0).getString(context.getString(R.string.key_language),"en");
+        assert x != null;
         return new Locale(x);
     }
     private static ThemeScheme initTheme(Context context){
         String h=context.getSharedPreferences("Settings",0).getString(context.getString(R.string.key_theme_select),"dark");
+        assert h != null;
         return theme=h.equals("light")?ThemeScheme.LIGHT:ThemeScheme.DARK;
     }
 
     public static boolean shouldCheckForUpdates(Context context){
-        return context.getSharedPreferences("Settings", Context.MODE_PRIVATE).getBoolean(context.getString(R.string.key_check_update),true);
+        return context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_check_update),true);
     }
     public static int getLogo(){
         return theme==ThemeScheme.LIGHT?R.drawable.ic_logo_dark:R.drawable.ic_logo;
@@ -368,11 +400,32 @@ public class Global {
     public static int getMaxId() {
         return maxId;
     }
+
     public static void initStorage(Context context){
         if(!Global.hasStoragePermission(context))return;
-        MasterFileManager.initFromShared(context);
-    }
+        Global.initFilesTree(context);
+        boolean[] bools=new boolean[]{
+                Global.MAINFOLDER.mkdirs(),
+                Global.DOWNLOADFOLDER.mkdir(),
+                Global.PDFFOLDER.mkdir(),
+                Global.UPDATEFOLDER.mkdir(),
+                Global.SCREENFOLDER.mkdir(),
+                Global.ZIPFOLDER.mkdir(),
+        };
+        LogUtility.d(
+                "0:"+context.getFilesDir()+'\n'+
+                "1:"+Global.MAINFOLDER+bools[0]+'\n'+
+                "2:"+Global.DOWNLOADFOLDER+bools[1]+'\n'+
+                "3:"+Global.PDFFOLDER+bools[2]+'\n'+
+                "4:"+Global.UPDATEFOLDER+bools[3]+'\n'+
+                "5:"+Global.SCREENFOLDER+bools[4]+'\n'+
+                "5:"+Global.ZIPFOLDER+bools[5]+'\n'
+        );
 
+        try {
+            new File(Global.MAINFOLDER,".nomedia").createNewFile();
+        } catch (IOException e) {e.printStackTrace();}
+    }
 
 
     public static void updateOnlyLanguage(@NonNull Context context, @Nullable Language type){ context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_only_language)),type.ordinal()).apply();onlyLanguage=type; }
@@ -441,9 +494,9 @@ public class Global {
     public static boolean hasStoragePermission(Context context) {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||ContextCompat.checkSelfPermission(context,Manifest.permission.WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED;
     }
-    /*Here file is ok*/
-    public static boolean isJPEGCorrupted(File path){
-        if(!path.exists())return true;
+
+    public static boolean isJPEGCorrupted(String path){
+        if(!new File(path).exists())return true;
         try (RandomAccessFile fh = new RandomAccessFile(path, "r")) {
             long length = fh.length();
             if (length < 10L) {
@@ -459,14 +512,14 @@ public class Global {
     }
 
     @Nullable
-    public static FileObject findGalleryFolder(int id){
-        if(MasterFileManager.getDownloadFolder()==null)return null;
-        /*Due to performance issue*/
-        if(!MasterFileManager.getDownloadFolder().useFile())return null;
+    public static File findGalleryFolder(int id){
+        if(DOWNLOADFOLDER==null)return null;
+        DOWNLOADFOLDER.mkdirs();
         String fileName="."+id;
-        FileObject[] tmp= MasterFileManager.getDownloadFolder().listFiles();
-        for (FileObject tmp2 : tmp) {
-            if (tmp2.isDirectory()&& tmp2.getChildFile(fileName)!=null) {
+        File[] tmp=DOWNLOADFOLDER.listFiles();
+        if(tmp==null)return null;
+        for (File tmp2 : tmp) {
+            if (tmp2.isDirectory()&&new File(tmp2,fileName).exists()) {
                 return tmp2;
             }
         }
@@ -487,11 +540,13 @@ public class Global {
             case DARK:context.setTheme(R.style.DarkTheme);break;
         }
     }
-    public static void recursiveDelete(FileObject file){
+
+    public static void recursiveDelete(File file){
         if(file==null||!file.exists())return;
-        if(!file.isDirectory()){
-            FileObject[] files = file.listFiles();
-            for(FileObject x:files)recursiveDelete(x);
+        if(file.isDirectory()){
+            File[] files = file.listFiles();
+            if(files==null)return;
+            for(File x:files)recursiveDelete(x);
         }
         file.delete();
     }

@@ -34,13 +34,12 @@ import com.dar.nclientv2.targets.BitmapTarget;
 import com.dar.nclientv2.utility.ImageDownloadUtility;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
-import com.dar.nclientv2.utility.files.FileObject;
-import com.dar.nclientv2.utility.files.MasterFileManager;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -90,7 +89,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         }
     }
     private final GenericGallery gallery;
-    private final FileObject directory;
+    private final File directory;
     public GalleryAdapter(GalleryActivity cont, GenericGallery gallery,int colCount) {
         this.context=cont;
         this.gallery=gallery;
@@ -99,7 +98,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         setColCount(colCount);
         if(Global.hasStoragePermission(cont)){
             if(gallery.getId()!=-1)directory=Global.findGalleryFolder(gallery.getId());
-            else directory= MasterFileManager.getDownloadFolder().getChildDirectory(gallery.getTitle());
+            else directory=new File(Global.DOWNLOADFOLDER,gallery.getTitle());
         }else directory=null;
         LogUtility.d("Max maxSize: "+maxSize+", min maxSize: "+gallery.getMinSize());
     }
@@ -314,7 +313,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                     break;
                 case 2:
                     String name=String.format(Locale.US,"%d-%d.jpg",gallery.getId(),pos);
-                    Utility.saveImage(context,imgView.getDrawable(), MasterFileManager.getScreenFolder().createFile(name));
+                    Utility.saveImage(imgView.getDrawable(),new File(Global.SCREENFOLDER,name));
                     break;
             }
         }).show();

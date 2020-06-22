@@ -1,6 +1,5 @@
 package com.dar.nclientv2.adapters;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +25,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
     public HistoryAdapter(SearchActivity context) {
         this.context = context;
-        if(!Global.isKeepHistory())context.getSharedPreferences("History", Context.MODE_PRIVATE).edit().clear().apply();
+        if(!Global.isKeepHistory())context.getSharedPreferences("History",0).edit().clear().apply();
         history=Global.isKeepHistory()?History.setToList(context.getSharedPreferences("History",0).getStringSet("history",new HashSet<>())):null;
     }
 
@@ -91,11 +90,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         int pos=this.history.indexOf(history);
         if(pos>=0)this.history.set(pos,history);
         else this.history.add(history);
-        context.getSharedPreferences("History",Context.MODE_PRIVATE).edit().putStringSet("history",History.listToSet(this.history)).apply();
+        context.getSharedPreferences("History",0).edit().putStringSet("history",History.listToSet(this.history)).apply();
     }
     public void removeHistory(int pos){
         history.remove(pos);
-        context.getSharedPreferences("History",Context.MODE_PRIVATE).edit().putStringSet("history",History.listToSet(this.history)).apply();
+        context.getSharedPreferences("History",0).edit().putStringSet("history",History.listToSet(this.history)).apply();
         context.runOnUiThread(() -> notifyItemRemoved(pos));
     }
 }

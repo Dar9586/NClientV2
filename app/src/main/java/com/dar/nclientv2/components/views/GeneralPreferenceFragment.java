@@ -1,24 +1,21 @@
 package com.dar.nclientv2.components.views;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.JsonWriter;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.Preference;
+import androidx.preference.ListPreference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SeekBarPreference;
 
 import com.dar.nclientv2.CopyToClipboardActivity;
-import com.dar.nclientv2.FileChooserActivity;
 import com.dar.nclientv2.PINActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.SettingsActivity;
@@ -26,11 +23,13 @@ import com.dar.nclientv2.async.VersionChecker;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.utility.LogUtility;
-import com.dar.nclientv2.utility.files.MasterFileManager;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
@@ -89,7 +88,7 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
             return false;
         });
         findPreference(getString(R.string.key_use_account_tag)).setEnabled(Login.isLogged());
-        storageLocationManager(findPreference("storage_location"));
+
         findPreference(getString(R.string.key_theme_select)).setOnPreferenceChangeListener((preference, newValue) -> {
             act.recreate();
             return true;
@@ -106,13 +105,13 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
                 act.finish();
                 return false;
             }
-            act.getSharedPreferences("Settings",Context.MODE_PRIVATE).edit().remove("pin").apply();
+            act.getSharedPreferences("Settings",0).edit().remove("pin").apply();
             return true;
         });
 
         findPreference("version").setTitle(getString(R.string.app_version_format, Global.getVersionName(getContext())));
-
-        double cacheSize=Global.recursiveSize(MasterFileManager.getCacheDir(act))/((double)(1<<20));
+        initStoragePaths(findPreference(getString(R.string.key_save_path)));
+        double cacheSize=Global.recursiveSize(act.getCacheDir())/((double)(1<<20));
 
         //clear cache if pressed
         findPreference(getString(R.string.key_cache)).setSummary(getString(R.string.cache_size_formatted,cacheSize));
@@ -120,10 +119,10 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
             MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(act);
             builder.setTitle(R.string.clear_cache);
             builder.setPositiveButton(R.string.yes, (dialog, which) -> {
-                Global.recursiveDelete(MasterFileManager.getCacheDir(act));
+                Global.recursiveDelete(act.getCacheDir());
                 act.runOnUiThread(() -> {
                     Toast.makeText(act, act.getString(R.string.cache_cleared), Toast.LENGTH_SHORT).show();
-                    double cSize=Global.recursiveSize(MasterFileManager.getCacheDir(act))/((double)(2<<20));
+                    double cSize=Global.recursiveSize(act.getCacheDir())/((double)(2<<20));
                     findPreference(getString(R.string.key_cache)).setSummary(getString(R.string.cache_size_formatted,cSize));
                 });
 
@@ -157,55 +156,32 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
     }
 
 
-    private void storageLocationManager(Preference storage) {
-        boolean shouldShow= Global.hasStoragePermission(getContext())&&
-                (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP||
-                        android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT);
-
-        storage.setVisible(shouldShow);
-        if(!shouldShow)return;
-        storage.setSummary(MasterFileManager.getAbsolutePath(act));
-        storage.setOnPreferenceClickListener(preference -> {
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)showStorageModeSelector();
-            else fileModeStorage();
-            return false;
+    private void initStoragePaths(ListPreference storagePreference) {
+        if(Build.VERSION.SDK_INT<Build.VERSION_CODES.KITKAT){
+            storagePreference.setVisible(false);
+            return;
+        }
+        File[]files=act.getExternalFilesDirs(null);
+        List<CharSequence>strings=new ArrayList<>(files.length+1);
+        if(Build.VERSION.SDK_INT<Build.VERSION_CODES.Q){
+            strings.add(Environment.getExternalStorageDirectory().getAbsolutePath());
+        }
+        for(File f:files){
+            strings.add(f.getAbsolutePath());
+        }
+        storagePreference.setEntries(strings.toArray(new CharSequence[0]));
+        storagePreference.setEntryValues(strings.toArray(new CharSequence[0]));
+        act.getSharedPreferences("Settings",Context.MODE_PRIVATE).edit().remove(getString(R.string.key_save_path)).apply();
+        storagePreference.setSummary(
+                act.getSharedPreferences("Settings",Context.MODE_PRIVATE)
+                        .getString(getString(R.string.key_save_path),Global.MAINFOLDER.getParent())
+        );
+        storagePreference.setOnPreferenceChangeListener((preference, newValue) -> {
+            preference.setSummary(newValue.toString());
+            return true;
         });
     }
 
-    private void fileModeStorage() {
-        Intent intent=new Intent(act,FileChooserActivity.class);
-        act.startActivityForResult(intent,SettingsActivity.RESPONSE_CHANGE_FOLDER);
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void showStorageModeSelector() {
-        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(act);
-        builder.setTitle(R.string.chose_staorage_mode);
-        ArrayAdapter<String>adapter=new ArrayAdapter<>(act,android.R.layout.select_dialog_item);
-        adapter.add(getString(R.string.file_mode_description));
-        adapter.add(getString(R.string.document_mode_description));
-        builder.setAdapter(adapter, (dialog, which) -> {
-            switch (which) {
-                case 0: fileModeStorage();break;
-                case 1: grantSdAccess();break;
-            }
-        }).setNeutralButton(R.string.help, (dialog, which) -> showHelpDialog())
-                .setNegativeButton(R.string.cancel,null);
-        builder.show();
-    }
-    private void showHelpDialog(){
-        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(act);
-        builder.setTitle(R.string.help)
-                .setMessage(R.string.help_storage_message)
-                .setPositiveButton(R.string.ok,null)
-                .show();
-    }
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void grantSdAccess() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        act.startActivityForResult(intent,SettingsActivity.RESPONSE_CHANGE_FOLDER_TREE);
-    }
     private String getDataSettings(Context context)throws IOException{
         String[]names=new String[]{"Settings","ScrapedTags"};
         StringWriter sw=new StringWriter();
@@ -227,7 +203,7 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
     private void processSharedFromName(JsonWriter writer, Context context, String name)throws IOException{
         writer.name(name);
         writer.beginObject();
-        SharedPreferences preferences=context.getSharedPreferences(name,Context.MODE_PRIVATE);
+        SharedPreferences preferences=context.getSharedPreferences(name,0);
         for(Map.Entry<String,?> entry: preferences.getAll().entrySet()){
             writeEntry(writer,entry);
         }

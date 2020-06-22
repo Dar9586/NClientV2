@@ -8,8 +8,8 @@ import androidx.annotation.Nullable;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.components.classes.Size;
 import com.dar.nclientv2.utility.Utility;
-import com.dar.nclientv2.utility.files.FileObject;
 
+import java.io.File;
 import java.util.Locale;
 
 public abstract class GenericGallery implements Parcelable{
@@ -34,13 +34,14 @@ public abstract class GenericGallery implements Parcelable{
 
     public abstract boolean hasGalleryData();
     public abstract GalleryData getGalleryData();
-    public String getUri(FileObject directory, int page){
+    public String getUri(File directory, int page){
         if(directory==null)
             return getPageURI(page);
 
-        FileObject file= LocalGallery.getPage(directory,page);
+        File file= LocalGallery.getPage(directory,page);
         if(file!=null)
-            return file.getUri().toString();
+            return file.getAbsolutePath();
+
         return getPageURI(page);
     }
 }
