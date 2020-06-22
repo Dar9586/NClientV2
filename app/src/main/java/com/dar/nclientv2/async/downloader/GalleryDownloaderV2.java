@@ -13,12 +13,12 @@ import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
-import com.dar.nclientv2.utility.files.FileObject;
-import com.dar.nclientv2.utility.files.MasterFileManager;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -36,7 +36,7 @@ public class GalleryDownloaderV2 {
         observers.remove(observer);
     }
 
-    public FileObject getFolder() {
+    public File getFolder() {
         return folder;
     }
 
@@ -61,7 +61,7 @@ public class GalleryDownloaderV2 {
     private Gallery gallery;
     private final CopyOnWriteArraySet<DownloadObserver> observers= new CopyOnWriteArraySet<>();
     private final List<PageContainer> urls=new ArrayList<>();
-    private FileObject folder;
+    private File folder;
     private boolean initialized=false;
 
     public Gallery getGallery() {
@@ -102,7 +102,7 @@ public class GalleryDownloaderV2 {
     }
     public LocalGallery localGallery(){
         if(status!=Status.FINISHED)return null;
-        return new LocalGallery(context, folder);
+        return new LocalGallery(folder);
     }
     public void setStatus(Status status) {
         if(this.status==status)return;
@@ -191,11 +191,10 @@ public class GalleryDownloaderV2 {
             onUpdate();
         }
     }
-    private boolean isCorrupted(@NonNull FileObject file){
-        String path=file.getName();
-        if(path==null)return true;
-        if(file.useFile() && (path.endsWith(".jpg")||path.endsWith(".jpeg"))){
-            return Global.isJPEGCorrupted(file.toFile());
+    private boolean isCorrupted(File file){
+        String path=file.getAbsolutePath();
+        if(path.endsWith(".jpg")||path.endsWith(".jpeg")){
+            return Global.isJPEGCorrupted(path);
         }
         BitmapFactory.Options options=new BitmapFactory.Options();
         options.inSampleSize=256;
@@ -207,9 +206,9 @@ public class GalleryDownloaderV2 {
     }
     private boolean savePage(PageContainer page) {
         if(page==null)return true;
-        FileObject filePath= folder.createFile(page.getPageName());
+        File filePath=new File(folder,page.getPageName());
         LogUtility.d("Saving into: "+filePath+","+page.url);
-        if(filePath!=null && filePath.exists()&&!isCorrupted(filePath))return true;
+        if(filePath.exists()&&!isCorrupted(filePath))return true;
         try {
             Response r = Global.getClient(context).newCall(new Request.Builder().url(page.url).build()).execute();
             if (r.code() != 200) {r.close();return false;}
@@ -220,9 +219,7 @@ public class GalleryDownloaderV2 {
                 r.close();
                 return false;
             }
-            InputStream stream=r.body().byteStream();
-            long written=Utility.writeStreamToFile(context, stream, filePath);
-            stream.close();
+            long written=writeStreamToFile(r.body().byteStream(), filePath);
             r.close();
             if(written!=len){
                 filePath.delete();
@@ -235,6 +232,21 @@ public class GalleryDownloaderV2 {
         return false;
     }
 
+    private long writeStreamToFile(InputStream inputStream, File filePath)throws IOException {
+        FileOutputStream outputStream=new FileOutputStream(filePath);
+        int read;
+        long totalByte=0;
+        byte[] bytes = new byte[1024];
+        while ((read = inputStream.read(bytes)) != -1) {
+            outputStream.write(bytes, 0, read);
+            totalByte+=read;
+        }
+        outputStream.flush();
+        outputStream.close();
+        inputStream.close();
+        return totalByte;
+    }
+
     public void initDownload() {
         if(initialized)return;
         initialized=true;
@@ -244,10 +256,10 @@ public class GalleryDownloaderV2 {
     }
 
     private void checkPages() {
-        FileObject filePath;
+        File filePath;
         for(int i=0;i<urls.size();i++){
-            filePath= folder.getChildFile(urls.get(i).getPageName());
-            if(filePath!=null && filePath.exists()&&!isCorrupted(filePath))
+            filePath=new File(folder,urls.get(i).getPageName());
+            if(filePath.exists()&&!isCorrupted(filePath))
                 urls.remove(i--);
         }
     }
@@ -258,7 +270,8 @@ public class GalleryDownloaderV2 {
     }
 
     private void createFolder() {
-        folder = MasterFileManager.getDownloadFolder().createDirectory(gallery.getPathTitle());
+        folder = new File(Global.DOWNLOADFOLDER, gallery.getPathTitle());
+        folder.mkdirs();
         try {
             writeNoMedia();
             createIdFile();
@@ -267,14 +280,15 @@ public class GalleryDownloaderV2 {
         }
     }
 
-    private void createIdFile() {
-        folder.createFile("."+id);
+    private void createIdFile()throws IOException {
+        File idFile=new File(folder,"."+id);
+        idFile.createNewFile();
     }
 
     private void writeNoMedia()throws IOException {
-        FileObject nomedia= folder.createFile(".nomedia");
+        File nomedia=new File(folder,".nomedia");
         LogUtility.d("NOMEDIA: "+nomedia+" for id "+id);
-        Writer writer= nomedia.getWriter(context);
+        FileWriter writer=new FileWriter(nomedia);
         gallery.jsonWrite(writer);
         writer.close();
     }

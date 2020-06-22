@@ -25,8 +25,8 @@ import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
 import com.dar.nclientv2.utility.LogUtility;
 
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -42,7 +42,7 @@ public class Queries{
         public static void setDb(SQLiteDatabase database) {
             db=database;
         }
-        private static void dumpTable(String name, Writer sb) throws IOException{
+        private static void dumpTable(String name,FileWriter sb) throws IOException{
 
             String query="SELECT * FROM "+ name;
             Cursor c=db.rawQuery(query,null);

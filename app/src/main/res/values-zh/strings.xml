@@ -264,17 +264,7 @@
     <string name="error">错误</string>
     <string name="no_entry_found">找不到条目</string>
     <string name="retry">重试</string>
-    <string name="select_this_directory">选择此文件夹</string>
-    <string name="select_directory">选择文件夹</string>
-    <string name="file_path">文件路径</string>
-    <string name="go">前往</string>
-    <string name="chose_staorage_mode">选择存储模式</string>
-    <string name="file_mode_description">较快，受限制的文件夹</string>
-    <string name="document_mode_description">较慢，可访问外部存储</string>
-    <string name="choose">选择</string>
-    <string name="help">帮助</string>
-    <string name="help_storage_message">\'NClientV2\' 文件夹将在你选择的文件夹内创建。\n必须手动复制文件到另一个文件夹。</string>
-
+    <string name="folder_location">Folder location</string>
     <string-array name="language">
         <item>英文</item>
         <item>中文（繁体）</item>

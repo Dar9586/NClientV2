@@ -52,7 +52,7 @@ public class ScrapeTags extends JobIntentService {
 
     @Override
     protected void onHandleWork(@Nullable Intent intent) {
-        SharedPreferences preferences = getApplicationContext().getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        SharedPreferences preferences = getApplicationContext().getSharedPreferences("Settings", 0);
         Date nowTime=new Date();
         Date lastTime=new Date(preferences.getLong("lastSync",nowTime.getTime()));
         int lastVersion= preferences.getInt("lastTagsVersion",-1),newVersion=-1;
