@@ -88,10 +88,16 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
     };
     private CopyOnWriteArrayList<Object> createHash(List<GalleryDownloaderV2> galleryDownloaders, List<LocalGallery> dataset) {
         HashMap<String,Object>hashMap=new HashMap<>(dataset.size()+galleryDownloaders.size());
-        for(LocalGallery gall:dataset)
-            hashMap.put(gall.getTitle(),gall);
-        for(GalleryDownloaderV2 gall:galleryDownloaders)
-            hashMap.put(gall.getPathTitle(),gall);
+        for(LocalGallery gall:dataset){
+            if(gall.getTitle().contains(lastQuery))
+                hashMap.put(gall.getTitle(),gall);
+        }
+
+        for(GalleryDownloaderV2 gall:galleryDownloaders){
+            if(gall.getPathTitle().contains(lastQuery))
+                hashMap.put(gall.getPathTitle(),gall);
+        }
+
         ArrayList<Object> arr=new ArrayList<>(hashMap.values());
         Collections.sort(arr, getComparator());
         return new CopyOnWriteArrayList<>(arr);
@@ -122,6 +128,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         String s2=b2?((LocalGallery)o2).getTitle():((GalleryDownloaderV2)o2).getPathTitle();
         return s1.compareTo(s2);
     };
+    @NonNull
     private String lastQuery="";
     private int colCount;
 
