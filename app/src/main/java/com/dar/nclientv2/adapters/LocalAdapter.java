@@ -89,12 +89,12 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
     private CopyOnWriteArrayList<Object> createHash(List<GalleryDownloaderV2> galleryDownloaders, List<LocalGallery> dataset) {
         HashMap<String,Object>hashMap=new HashMap<>(dataset.size()+galleryDownloaders.size());
         for(LocalGallery gall:dataset){
-            if(gall.getTitle().contains(lastQuery))
+            if(gall.getTitle().toLowerCase(Locale.US).contains(lastQuery))
                 hashMap.put(gall.getTitle(),gall);
         }
 
         for(GalleryDownloaderV2 gall:galleryDownloaders){
-            if(gall.getPathTitle().contains(lastQuery))
+            if(gall.getPathTitle().toLowerCase(Locale.US).contains(lastQuery))
                 hashMap.put(gall.getPathTitle(),gall);
         }
 
@@ -141,7 +141,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         dataset=new CopyOnWriteArrayList<>(myDataset);
         colCount=cont.getColCount();
         galleryDownloaders= DownloadQueue.getDownloaders();
-
+        lastQuery=cont.getQuery();
         filter=new ArrayList<>(myDataset);
         filter.addAll(galleryDownloaders);
 
@@ -352,13 +352,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
                 if(lastQuery.equals(query))return null;
                 FilterResults results=new FilterResults();
                 lastQuery=query;
-                List<LocalGallery>d1=new ArrayList<>();
-                List<GalleryDownloaderV2>g1=new ArrayList<>();
-                for(LocalGallery gallery:dataset)
-                    if(gallery.getTitle().toLowerCase(Locale.US).contains(query))d1.add(gallery);
-                for(GalleryDownloaderV2 gallery:galleryDownloaders)
-                    if(gallery.getPathTitle().toLowerCase(Locale.US).contains(query))g1.add(gallery);
-                results.values=createHash(g1,d1);
+                results.values=createHash(galleryDownloaders,dataset);
                 return results;
             }
 

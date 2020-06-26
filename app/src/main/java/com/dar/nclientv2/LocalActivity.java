@@ -25,6 +25,7 @@ public class LocalActivity extends BaseActivity {
     private LocalAdapter adapter;
     private int colCount;
     private File folder=Global.MAINFOLDER;
+    private androidx.appcompat.widget.SearchView searchView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +60,7 @@ public class LocalActivity extends BaseActivity {
         }
         menu.findItem(R.id.folder_choose).setVisible(Global.getUsableFolders(this).size()>1);
         changeSortItem(menu.findItem(R.id.sort_by_name));
-        final androidx.appcompat.widget.SearchView searchView=(androidx.appcompat.widget.SearchView) menu.findItem(R.id.search).getActionView();
+        searchView=(androidx.appcompat.widget.SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -149,5 +150,11 @@ public class LocalActivity extends BaseActivity {
     @Override
     protected int getLandCount() {
         return Global.getColLandDownload();
+    }
+
+    public String getQuery() {
+        if(searchView==null)return "";
+        CharSequence query=searchView.getQuery();
+        return query==null?"":query.toString();
     }
 }
