@@ -279,8 +279,8 @@
     <string name="error">Hata</string>
     <string name="no_entry_found">Girdi bulunamadı</string>
     <string name="retry">Yeniden Dene</string>
-    <string name="folder_location">Folder location</string>
-    <string name="default_zoom">Default zoom</string>
-    <string name="choose_directory">Choose directory</string>
-    <string name="change_directory_position">Change directory position</string>
+    <string name="folder_location">İndirme Dizini</string>
+    <string name="default_zoom">Varsayılan Yakınlaştırma</string>
+    <string name="choose_directory">Dizin Seç</string>
+    <string name="change_directory_position">Dizin pozisyonunu değiştir</string>
 </resources>
