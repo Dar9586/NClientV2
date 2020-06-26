@@ -1,0 +1,18 @@
+Resmi Olmayan NHentai Android Görüntüleyici
+Bu uygulama API 14 (Android 4.0) ve üzerinde çalışmaktadır.
+
+API Özellikleri
+
+ - Ana sayfada gezinme
+ - Etiket ve ya kelimelerle arama
+ - Etiketketleri dahil edip dahil etmeme
+ - Dahil edilmeyen etiketleri bulanıklaştırma ve ya gizleme
+ - Manga indirme
+ - Mangaları favoriye ekleme
+ - PIN kilidi
+
+Özel Özellikler
+
+ - Mangaları Paylaşma
+ - Tarayıcıda Açma
+ - Yer işaretleri
