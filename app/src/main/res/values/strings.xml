@@ -8,6 +8,7 @@
     <string name="key_by_popular" translatable="false">is_by_popular</string>
     <string name="key_column_count" translatable="false">column_count</string>
     <string name="key_only_language" translatable="false">only_language</string>
+    <string name="key_default_zoom" translatable="false">default_zoom</string>
     <string name="key_theme_select" translatable="false">theme_select</string>
     <string name="key_max_id" translatable="false">max_id</string>
     <string name="key_infinite_scroll" translatable="false">infinite_scroll</string>
@@ -289,6 +290,9 @@
     <string name="no_entry_found">No entries found</string>
     <string name="retry">Retry</string>
     <string name="folder_location">Folder location</string>
+    <string name="default_zoom">Default zoom</string>
+    <string name="choose_directory">Choose directory</string>
+    <string name="change_directory_position">Change directory position</string>
 
     <string-array name="language">
         <item>English</item>

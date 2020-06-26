@@ -265,6 +265,9 @@
     <string name="no_entry_found">找不到條目</string>
     <string name="retry">重試</string>
     <string name="folder_location">Folder location</string>
+    <string name="default_zoom">Default zoom</string>
+    <string name="choose_directory">Choose directory</string>
+    <string name="change_directory_position">Change directory position</string>
 
     <string-array name="language">
         <item>英文</item>

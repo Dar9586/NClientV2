@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.JsonWriter;
 import android.widget.Toast;
 
@@ -157,18 +156,13 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
 
 
     private void initStoragePaths(ListPreference storagePreference) {
-        if(Build.VERSION.SDK_INT<Build.VERSION_CODES.KITKAT){
+        if(Build.VERSION.SDK_INT<Build.VERSION_CODES.KITKAT||!Global.hasStoragePermission(act)){
             storagePreference.setVisible(false);
             return;
         }
-        File[]files=act.getExternalFilesDirs(null);
-        List<CharSequence>strings=new ArrayList<>(files.length+1);
-        if(Build.VERSION.SDK_INT<Build.VERSION_CODES.Q){
-            strings.add(Environment.getExternalStorageDirectory().getAbsolutePath());
-        }
-        for(File f:files){
-            strings.add(f.getAbsolutePath());
-        }
+        List<File>files=Global.getUsableFolders(act);
+        List<CharSequence>strings=new ArrayList<>(files.size());
+        for(File f:files)strings.add(f.getAbsolutePath());
         storagePreference.setEntries(strings.toArray(new CharSequence[0]));
         storagePreference.setEntryValues(strings.toArray(new CharSequence[0]));
         act.getSharedPreferences("Settings",Context.MODE_PRIVATE).edit().remove(getString(R.string.key_save_path)).apply();

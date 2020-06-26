@@ -29,6 +29,7 @@ import com.github.chrisbanes.photoview.PhotoView;
 import java.io.File;
 
 public class ZoomFragment extends Fragment {
+    private static final float MAX_SCALE=4f;
     private int page,galleryId;
     private PhotoView photoView=null;
     private ImageButton retryButton;
@@ -55,7 +56,7 @@ public class ZoomFragment extends Fragment {
         return fragment;
     }
     private float calculateScaleFactor(int width,int height){
-        if(height<width*2)return 1f;
+        if(height<width*2)return Global.getDefaultZoom();
         //width:1=dWidth:x
         //float size=((float) Global.getDeviceHeight(getActivity()))/height;//the image has been resized size times
         //float widthTrueSize=width*size;//so also the width has been resized
@@ -63,8 +64,8 @@ public class ZoomFragment extends Fragment {
         float finalSize=
                 ((float) Global.getDeviceWidth (getActivity())*height) /
                 ((float) Global.getDeviceHeight(getActivity())*width);
-        finalSize=Math.max(finalSize,1f);
-        finalSize=Math.min(finalSize,4f);
+        finalSize=Math.max(finalSize,Global.getDefaultZoom());
+        finalSize=Math.min(finalSize,MAX_SCALE);
         LogUtility.d("Final scale: "+finalSize);
         return (float)Math.floor(finalSize);
     }
@@ -86,7 +87,7 @@ public class ZoomFragment extends Fragment {
         photoView.setOnClickListener(v -> {
             if(clickListener!=null)clickListener.onClick(v);
         });
-        photoView.setMaximumScale(4f);
+        photoView.setMaximumScale(MAX_SCALE);
         retryButton.setOnClickListener(v -> loadImage());
         createTarget();
         loadImage();

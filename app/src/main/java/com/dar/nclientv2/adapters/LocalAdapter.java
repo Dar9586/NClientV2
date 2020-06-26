@@ -33,6 +33,10 @@ import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -280,6 +284,44 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
                 case 2:showDialogPDF(pos);break;
             }
         }).show();
+    }
+
+    /*private void changePosition(int pos) {
+        LocalGallery gallery=(LocalGallery) filter.get(pos);
+        List<File>folders=Global.getUsableFolders(context);
+        ArrayAdapter adapter=new ArrayAdapter(context,android.R.layout.select_dialog_singlechoice,folders);
+        folders.remove(gallery.getDirectory().getParentFile().getParentFile());
+        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(context);
+        builder.setTitle(R.string.choose_directory).setIcon(R.drawable.ic_folder);
+        builder.setAdapter(adapter, (dialog, which) -> {
+            File chosen=folders.get(which);
+            chosen=new File(chosen,gallery.getDirectory().getName());
+            chosen.mkdirs();
+            for(File f:gallery.getDirectory().listFiles()){
+                try {
+                    copy(f,new File(chosen,f.getName()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            int index=filter.indexOf(gallery);
+            filter.remove(gallery);
+            dataset.remove(gallery);
+            context.runOnUiThread(()->notifyItemRemoved(index));
+        }).setNegativeButton(R.string.cancel,null).show();
+
+    }*/
+    private void copy(File from,File to)throws IOException{
+        FileInputStream fromFile=new FileInputStream(from);
+        FileOutputStream toFile=new FileOutputStream(to);
+        int len;
+        byte[]buffer=new byte[1024];
+        while((len=fromFile.read(buffer))>0){
+            toFile.write(buffer,0,len);
+        }
+        fromFile.close();
+        toFile.flush();
+        toFile.close();
     }
     private void createZIP(final int pos){
         final LocalGallery gallery=(LocalGallery)filter.get(pos);

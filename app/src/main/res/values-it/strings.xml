@@ -262,6 +262,9 @@
     <string name="no_entry_found">Nessuna galleria trovata</string>
     <string name="retry">Riprova</string>
     <string name="folder_location">Posizione cartella</string>
+    <string name="default_zoom">Default zoom</string>
+    <string name="choose_directory">Choose directory</string>
+    <string name="change_directory_position">Change directory position</string>
     <string-array name="language">
         <item>Inglese</item>
         <item>Cinese (Tradizionale)</item>

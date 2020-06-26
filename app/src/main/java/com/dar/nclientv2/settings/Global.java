@@ -49,6 +49,9 @@ import org.acra.ACRA;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import okhttp3.Cookie;
@@ -75,6 +78,7 @@ public class Global {
     private static String lastVersion;
     private static int maxHistory,columnCount,maxId,galleryWidth=-1, galleryHeight =-1;
     private static int colPortHist,colLandHist,colPortMain,colLandMain,colPortDownload,colLandDownload,colLandFavorite,colPortFavorite;
+    private static int defaultZoom;
     private static Point screenSize;
     private static final DisplayMetrics lastDisplay=new DisplayMetrics();
 
@@ -246,6 +250,7 @@ public class Global {
         lockScreen=shared.getBoolean(context.getString(R.string.key_disable_lock),false);
         maxId=shared.getInt(context.getString(R.string.key_max_id),300000);
         maxHistory=shared.getInt(context.getString(R.string.key_max_history_size),2);
+        defaultZoom=shared.getInt(context.getString(R.string.key_default_zoom),100);
         colPortMain=shared.getInt(context.getString(R.string.key_column_port_main),2);
         colLandMain=shared.getInt(context.getString(R.string.key_column_land_main),4);
         colPortDownload=shared.getInt(context.getString(R.string.key_column_port_down),2);
@@ -332,6 +337,11 @@ public class Global {
     public static Drawable getLogo(Resources resources){
         return ResourcesCompat.getDrawable(resources,getLogo(),null);
     }
+
+    public static float getDefaultZoom() {
+        return ((float)defaultZoom)/100f;
+    }
+
     public static TitleType getTitleType() {
         return titleType;
     }
@@ -489,7 +499,18 @@ public class Global {
         }
     }
 
+    public static List<File>getUsableFolders(Context context){
+        List<File>strings=new ArrayList<>();
+        if(Build.VERSION.SDK_INT<Build.VERSION_CODES.Q)
+            strings.add(Environment.getExternalStorageDirectory());
 
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+            return strings;
+
+        File[]files=context.getExternalFilesDirs(null);
+        strings.addAll(Arrays.asList(files));
+        return strings;
+    }
 
     public static boolean hasStoragePermission(Context context) {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||ContextCompat.checkSelfPermission(context,Manifest.permission.WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED;

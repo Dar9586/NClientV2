@@ -78,6 +78,14 @@
             android:key="@string/key_zoom_one_column"
             android:summary="@string/setting_zoom_one_column"
             android:title="@string/zoom_one_column" />
+        <SeekBarPreference
+            android:defaultValue="100"
+            android:key="@string/key_default_zoom"
+            app:min="100"
+            android:max="400"
+            app:seekBarIncrement="10"
+            android:title="@string/default_zoom"
+            app:showSeekBarValue="true" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/search_settings">
