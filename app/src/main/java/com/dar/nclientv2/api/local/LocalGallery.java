@@ -20,14 +20,16 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LocalGallery extends GenericGallery{
     private static final Pattern FILE_PATTERN=Pattern.compile("^(\\d{3,9})\\.(gif|png|jpg)$",Pattern.CASE_INSENSITIVE);
+    private static final Pattern DUP_PATTERN=Pattern.compile("^(.*)\\.DUP\\d+$");
 
     @NonNull private final GalleryData galleryData;
     private final int min;
-    private final String title;
+    private final String title,trueTitle;
     @NonNull private final File directory;
     private final boolean valid;
     private boolean hasAdvancedData=true;
@@ -54,7 +56,8 @@ public class LocalGallery extends GenericGallery{
     }
     public LocalGallery(@NonNull File file,boolean jumpDataRetrieve){
         directory=file;
-        title=file.getName();
+        trueTitle=file.getName();
+        title=createTitle(file);
         if(jumpDataRetrieve){
             galleryData=GalleryData.fakeData();
         }else {
@@ -74,6 +77,13 @@ public class LocalGallery extends GenericGallery{
         galleryData.setPageCount(max);
         this.min=min;
         valid=files.length>0;
+    }
+
+    private static String createTitle(File file) {
+        String name=file.getName();
+        Matcher matcher=DUP_PATTERN.matcher(name);
+        if(!matcher.matches())return name;
+        return matcher.group(1);
     }
 
     public LocalGallery(@NonNull File file){
@@ -114,11 +124,16 @@ public class LocalGallery extends GenericGallery{
         return minSize;
     }
 
+    public String getTrueTitle() {
+        return trueTitle;
+    }
+
     private LocalGallery(Parcel in) {
         galleryData= Objects.requireNonNull(in.readParcelable(GalleryData.class.getClassLoader()));
         maxSize= Objects.requireNonNull(in.readParcelable(Size.class.getClassLoader()));
         minSize= Objects.requireNonNull(in.readParcelable(Size.class.getClassLoader()));
         min = in.readInt();
+        trueTitle = in.readString();
         title = in.readString();
         directory=new File(Objects.requireNonNull(in.readString()));
         hasAdvancedData=in.readByte()==1;
@@ -216,6 +231,7 @@ public class LocalGallery extends GenericGallery{
         dest.writeParcelable(maxSize, flags);
         dest.writeParcelable(minSize, flags);
         dest.writeInt(min);
+        dest.writeString(trueTitle);
         dest.writeString(title);
         dest.writeString(directory.getAbsolutePath());
         dest.writeByte((byte) (hasAdvancedData?1:0));

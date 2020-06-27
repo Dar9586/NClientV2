@@ -23,11 +23,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.regex.Pattern;
 
 import okhttp3.Request;
 import okhttp3.Response;
 
 public class GalleryDownloaderV2 {
+    public static final String DUPLICATE_EXTENSION=".DUP";
+    public static final Pattern ID_FILE=Pattern.compile("^\\.\\d{1,6}$");
+
     public boolean hasData() {
         return gallery!=null;
     }
@@ -147,6 +151,10 @@ public class GalleryDownloaderV2 {
     public String getPathTitle(){
         if(gallery==null)return "";
         return gallery.getPathTitle();
+    }
+    @NonNull
+    public String getTruePathTitle(){
+        return ""+id;
     }
     /**
      * @return true if the download has been completed, false otherwise
@@ -270,7 +278,8 @@ public class GalleryDownloaderV2 {
     }
 
     private void createFolder() {
-        folder = new File(Global.DOWNLOADFOLDER, gallery.getPathTitle());
+        folder=findFolder(Global.DOWNLOADFOLDER, gallery.getPathTitle(),id);
+        //folder = new File(Global.DOWNLOADFOLDER, gallery.getPathTitle());
         folder.mkdirs();
         try {
             writeNoMedia();
@@ -278,6 +287,25 @@ public class GalleryDownloaderV2 {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static File findFolder(File downloadfolder, String pathTitle,int id) {
+        File folder=new File(downloadfolder,pathTitle);
+        if(usableFolder(folder,id))return folder;
+        int i=1;
+        do{
+            folder=new File(downloadfolder,pathTitle+DUPLICATE_EXTENSION+(i++));
+        }while (!usableFolder(folder,id));
+        return folder;
+    }
+
+    private static boolean usableFolder(File file,int id){
+        if(!file.exists())return true;//folder not exists
+        if(new File(file,"."+id).exists())return true;//same id
+        File[]files=file.listFiles((dir, name) -> ID_FILE.matcher(name).matches());
+        if(files!=null&&files.length>0)return false;//has id but not equal
+        LocalGallery localGallery=new LocalGallery(file);//read id from metadata
+        return localGallery.getId()==id;
     }
 
     private void createIdFile()throws IOException {
