@@ -165,7 +165,6 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
         for(File f:files)strings.add(f.getAbsolutePath());
         storagePreference.setEntries(strings.toArray(new CharSequence[0]));
         storagePreference.setEntryValues(strings.toArray(new CharSequence[0]));
-        act.getSharedPreferences("Settings",Context.MODE_PRIVATE).edit().remove(getString(R.string.key_save_path)).apply();
         storagePreference.setSummary(
                 act.getSharedPreferences("Settings",Context.MODE_PRIVATE)
                         .getString(getString(R.string.key_save_path),Global.MAINFOLDER.getParent())
