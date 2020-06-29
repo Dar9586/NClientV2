@@ -154,7 +154,8 @@ public class GalleryDownloaderV2 {
     }
     @NonNull
     public String getTruePathTitle(){
-        return ""+id;
+        if(folder==null)return "";
+        return folder.getName();
     }
     /**
      * @return true if the download has been completed, false otherwise
@@ -164,7 +165,7 @@ public class GalleryDownloaderV2 {
         InspectorV3 inspector = InspectorV3.galleryInspector(context,id,null);
         try {
             inspector.createDocument();
-            if(inspector.getGalleries().size()==0)return false;
+            if(inspector.getGalleries()==null||inspector.getGalleries().size()==0)return false;
             Gallery g=(Gallery) inspector.getGalleries().get(0);
             if(g.isValid())
                 setGallery(g);

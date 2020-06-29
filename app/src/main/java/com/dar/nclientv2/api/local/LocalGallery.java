@@ -83,7 +83,8 @@ public class LocalGallery extends GenericGallery{
         String name=file.getName();
         Matcher matcher=DUP_PATTERN.matcher(name);
         if(!matcher.matches())return name;
-        return matcher.group(1);
+        String title=matcher.group(1);
+        return title==null?name:title;
     }
 
     public LocalGallery(@NonNull File file){

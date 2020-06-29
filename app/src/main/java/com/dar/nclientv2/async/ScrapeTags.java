@@ -18,7 +18,6 @@ import com.dar.nclientv2.utility.LogUtility;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Scanner;
 
 import okhttp3.Request;
 import okhttp3.Response;
@@ -42,12 +41,15 @@ public class ScrapeTags extends JobIntentService {
             x.close();
             return -1;
         }
-        Scanner sc=new Scanner(body.byteStream());
-        int k=sc.nextInt();
-        LogUtility.d("Found version: "+k);
-        sc.close();
-        x.close();
-        return k;
+        try {
+            int k = Integer.parseInt(body.string());
+            LogUtility.d("Found version: " + k);
+            x.close();
+            return k;
+        }catch (NumberFormatException e){
+            LogUtility.e("Unable to convert",e);
+        }
+        return -1;
     }
 
     @Override
@@ -61,7 +63,7 @@ public class ScrapeTags extends JobIntentService {
         LogUtility.d("Scraping tags");
         try {
             newVersion=getNewVersionCode();
-            if(newVersion==lastVersion)return;
+            if(lastVersion>-1 && lastVersion>=newVersion)return;
             fetchTags();
         } catch (IOException e) {
             e.printStackTrace();
