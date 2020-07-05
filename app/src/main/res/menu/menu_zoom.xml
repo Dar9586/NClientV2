@@ -4,20 +4,22 @@
     tools:context="com.dar.nclientv2.ZoomActivity">
     <item
         android:id="@+id/save_page"
-        android:orderInCategory="100"
         android:icon="@drawable/ic_save"
         android:title="@string/save_page"
         app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/share"
-        android:orderInCategory="200"
         android:icon="@drawable/ic_share"
         android:title="@string/share"
         app:showAsAction="ifRoom|collapseActionView"/>
     <item
         android:id="@+id/rotate"
-        android:orderInCategory="100"
         android:icon="@drawable/ic_rotate_90_degrees"
         android:title="@string/rotate_image"
+        app:showAsAction="ifRoom|collapseActionView" />
+    <item
+        android:id="@+id/bookmark"
+        android:icon="@drawable/ic_bookmark"
+        android:title="@string/bookmark_here"
         app:showAsAction="ifRoom|collapseActionView" />
 </menu>

@@ -22,15 +22,7 @@ public class Database{
     }
 
     private static void setDBForTables(SQLiteDatabase database) {
-        Queries.TagTable.setDb(database);
-        Queries.BookmarkTable.setDb(database);
-        Queries.DebugDatabase.setDb(database);
-        Queries.DownloadTable.setDb(database);
-        Queries.GalleryTable.setDb(database);
-        Queries.HistoryTable.setDb(database);
-        Queries.GalleryBridgeTable.setDb(database);
-        Queries.FavoriteTable.setDb(database);
-
+        Queries.setDb(database);
     }
 
 }

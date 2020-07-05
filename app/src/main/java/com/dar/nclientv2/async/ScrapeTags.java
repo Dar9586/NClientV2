@@ -42,7 +42,7 @@ public class ScrapeTags extends JobIntentService {
             return -1;
         }
         try {
-            int k = Integer.parseInt(body.string());
+            int k = Integer.parseInt(body.string().trim());
             LogUtility.d("Found version: " + k);
             x.close();
             return k;

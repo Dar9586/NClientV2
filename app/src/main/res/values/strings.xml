@@ -293,6 +293,8 @@
     <string name="default_zoom">Default zoom</string>
     <string name="choose_directory">Choose directory</string>
     <string name="change_directory_position">Change directory position</string>
+    <string name="bookmark_here">Bookmark here</string>
+    <string name="resume_from_page">Resume from page %d</string>
 
     <string-array name="language">
         <item>English</item>

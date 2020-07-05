@@ -28,6 +28,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.dar.nclientv2.api.components.GenericGallery;
+import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.views.ZoomFragment;
 import com.dar.nclientv2.components.widgets.CustomViewPager;
 import com.dar.nclientv2.settings.DefaultDialogs;
@@ -260,6 +261,8 @@ public class ZoomActivity extends AppCompatActivity {
             case android.R.id.home:
                 finish();
                 return true;
+            case R.id.bookmark:
+                Queries.ResumeTable.insert(gallery.getId(),actualPage+1);
         }
 
         return super.onOptionsItemSelected(item);

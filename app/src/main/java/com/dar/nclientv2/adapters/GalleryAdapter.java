@@ -27,6 +27,7 @@ import com.dar.nclientv2.api.components.TagList;
 import com.dar.nclientv2.api.enums.SpecialTagIds;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.local.LocalGallery;
+import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.GlideX;
 import com.dar.nclientv2.components.classes.Size;
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
@@ -301,6 +302,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         ArrayAdapter<String>adapter=new ArrayAdapter<>(context,android.R.layout.select_dialog_item);
         adapter.add(context.getString(R.string.share));
         adapter.add(context.getString(R.string.rotate_image));
+        adapter.add(context.getString(R.string.bookmark_here));
         if(Global.hasStoragePermission(context))adapter.add(context.getString(R.string.save_page));
         MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(context);
         builder.setTitle(R.string.settings).setIcon(R.drawable.ic_share);
@@ -313,6 +315,9 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                     rotate(pos);
                     break;
                 case 2:
+                    Queries.ResumeTable.insert(gallery.getId(),pos);
+                    break;
+                case 3:
                     String name=String.format(Locale.US,"%d-%d.jpg",gallery.getId(),pos);
                     Utility.saveImage(imgView.getDrawable(),new File(Global.SCREENFOLDER,name));
                     break;

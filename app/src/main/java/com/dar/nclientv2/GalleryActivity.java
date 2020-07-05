@@ -142,16 +142,30 @@ public class GalleryActivity extends BaseActivity{
             intent.putExtra(getPackageName()+".PAGE",zoom);
             startActivity(intent);
         }
+        checkBookmark();
     }
+
+    private void checkBookmark() {
+        int page=Queries.ResumeTable.pageFromId(gallery.getId());
+        if(page<0)return;
+        Snackbar snack=Snackbar.make(masterLayout,getString(R.string.resume_from_page,page),Snackbar.LENGTH_LONG);
+        //Should be already compensated
+        snack.setAction(R.string.resume, v -> new Thread(() -> {
+            runOnUiThread(() -> recycler.scrollToPosition(page));
+            if(Global.getColumnCount()!=1)return;
+            Utility.threadSleep(500);
+            runOnUiThread(() -> recycler.scrollToPosition(page));
+        }).start());
+        snack.show();
+    }
+
     private void applyTitle() {
         CollapsingToolbarLayout collapsing=findViewById(R.id.collapsing);
         ActionBar actionBar=getSupportActionBar();
-        String title=gallery.getTitle();
-        if(title==null)title="";
+        final String title=gallery.getTitle();
         if(collapsing==null||actionBar==null)return;
-        String finalTitle = title;
         View.OnLongClickListener listener=v -> {
-            CopyToClipboardActivity.copyTextToClipboard(GalleryActivity.this, finalTitle);
+            CopyToClipboardActivity.copyTextToClipboard(GalleryActivity.this, title);
             GalleryActivity.this.runOnUiThread(
                     ()->Toast.makeText(GalleryActivity.this, R.string.title_copied_to_clipboard,Toast.LENGTH_SHORT).show()
             );

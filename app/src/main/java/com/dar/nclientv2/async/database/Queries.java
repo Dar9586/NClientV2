@@ -33,15 +33,16 @@ import java.util.List;
 import java.util.Locale;
 
 public class Queries{
+
+    static SQLiteDatabase db;
+    public static void setDb(SQLiteDatabase database) {
+        db=database;
+    }
     public static int getColumnFromName(Cursor cursor,String name){
         return cursor.getColumnIndex(name);
     }
 
     public static class DebugDatabase{
-        private static SQLiteDatabase db;
-        public static void setDb(SQLiteDatabase database) {
-            db=database;
-        }
         private static void dumpTable(String name,FileWriter sb) throws IOException{
 
             String query="SELECT * FROM "+ name;
@@ -94,11 +95,6 @@ public class Queries{
         public static final String MAX_HEIGHT="maxH";
         public static final String MIN_WIDTH="minW";
         public static final String MIN_HEIGHT="minH";
-        private static SQLiteDatabase db;
-        public static void setDb(SQLiteDatabase database) {
-            db=database;
-        }
-
 
         static void clearGalleries(){
             db.delete(GalleryTable.TABLE_NAME, String.format(Locale.US,
@@ -245,10 +241,6 @@ public class Queries{
         static final String STATUS="status";
         static final String ONLINE="online";
 
-        static SQLiteDatabase db;
-        public static void setDb(SQLiteDatabase db) {
-            TagTable.db = db;
-        }
         /**
          * Convert a {@link Cursor} row to a {@link Tag}
          * */
@@ -520,10 +512,6 @@ public class Queries{
                 "`range_end`   INT NOT NULL," +
                 "FOREIGN KEY(`id_gallery`) REFERENCES `Gallery`(`idGallery`) ON UPDATE CASCADE ON DELETE CASCADE" +
                 "); ";
-        private static SQLiteDatabase db;
-        public static void setDb(SQLiteDatabase database) {
-            db=database;
-        }
 
         public static void addGallery(GalleryDownloaderV2 downloader){
             Gallery gallery=downloader.getGallery();
@@ -574,10 +562,6 @@ public class Queries{
                 "`thumbType` TINYINT(1) NOT NULL," +
                 "`time` INT NOT NULL" +
                 ");";
-        private static SQLiteDatabase db;
-        public static void setDb(SQLiteDatabase database) {
-            db=database;
-        }
         public static void addGallery( SimpleGallery gallery){
             if(gallery.getId()<=0)return;
             ContentValues values=new ContentValues(5);
@@ -621,10 +605,6 @@ public class Queries{
                 "`type` INT NOT NULL," +
                 "`tagId` INT NOT NULL" +
                 ");";
-        private static SQLiteDatabase db;
-        public static void setDb(SQLiteDatabase database) {
-            db=database;
-        }
         public static void deleteBookmark(String url){
             LogUtility.d("Deleted: "+ db.delete(TABLE_NAME,URL+"=?",new String[]{url}));
         }
@@ -669,10 +649,6 @@ public class Queries{
                 "PRIMARY KEY (`id_gallery`, `id_tag`), " +
                 "FOREIGN KEY(`id_gallery`) REFERENCES `Gallery`(`idGallery`) ON UPDATE CASCADE ON DELETE CASCADE , " +
                 "FOREIGN KEY(`id_tag`) REFERENCES `Tags`(`idTag`) ON UPDATE CASCADE ON DELETE RESTRICT );";
-        private static SQLiteDatabase db;
-        public static void setDb(SQLiteDatabase db) {
-            GalleryBridgeTable.db = db;
-        }
 
         static final String ID_GALLERY="id_gallery";
         static final String ID_TAG="id_tag";
@@ -711,11 +687,7 @@ public class Queries{
         static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `Favorite` (" +
                 "`id_gallery` INT NOT NULL PRIMARY KEY , " +
                 "FOREIGN KEY(`id_gallery`) REFERENCES `Gallery`(`idGallery`) ON UPDATE CASCADE ON DELETE CASCADE);";
-        private static SQLiteDatabase db;
-        public static void setDb(SQLiteDatabase db) {
-            LogUtility.d("Setting db to "+db);
-            FavoriteTable.db = db;
-        }
+
         static final String ID_GALLERY="id_gallery";
         public static void addFavorite(Gallery gallery){
             GalleryTable.insert(gallery);
@@ -793,5 +765,40 @@ public class Queries{
         public static void removeAllFavorite() {
             db.delete(TABLE_NAME,null,null);
         }
+    }
+
+    public static class ResumeTable {
+        static final String TABLE_NAME="Resume";
+        public static final String DROP_TABLE= "DROP TABLE IF EXISTS "+ TABLE_NAME;
+        static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `Resume` (" +
+                "`id_gallery` INT NOT NULL PRIMARY KEY , " +
+                "`page` INT NOT NULL" +
+                ");";
+        static final String ID_GALLERY="id_gallery";
+        static final String PAGE="page";
+
+        public static void insert(int id,int page){
+            if(id<0)return;
+            ContentValues values=new ContentValues(2);
+            values.put(ID_GALLERY,id);
+            values.put(PAGE,page);
+            db.insertWithOnConflict(TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_REPLACE);
+            LogUtility.d("Added bookmark to page "+page+" of id "+id);
+        }
+
+        public static int pageFromId(int id){
+            if(id<0)return -1;
+            int val=-1;
+            Cursor c=db.query(TABLE_NAME,new String[]{PAGE},ID_GALLERY+"= ?",new String[]{""+id},null,null,null);
+            if(c.moveToFirst())
+                val=c.getInt(c.getColumnIndex(PAGE));
+            c.close();
+            return val;
+        }
+
+        public static void remove(int id){
+            db.delete(TABLE_NAME,ID_GALLERY+"= ?",new String[]{""+id});
+        }
+
     }
 }

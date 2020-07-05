@@ -63,11 +63,7 @@ public class LoginActivity extends AppCompatActivity {
             CookieManager manager=CookieManager.getInstance();
             String cookies="";
             while (cookies==null||!cookies.contains("sessionid")) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException ignore) {
-
-                }
+                Utility.threadSleep(100);
                 if(isInterrupted())return;
                 cookies=manager.getCookie(Utility.getBaseUrl());
             }

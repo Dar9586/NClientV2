@@ -18,7 +18,7 @@ import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class DatabaseHelper extends SQLiteOpenHelper{
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
     private static final String DATABASE_NAME = "Entries.db";
     public DatabaseHelper(Context context){
         super(context,DATABASE_NAME,null,DATABASE_VERSION);
@@ -74,6 +74,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         if(oldVersion<=7)db.execSQL(Queries.HistoryTable.CREATE_TABLE);
         if(oldVersion<=8)insertFavorite(db);
         if(oldVersion<=9)addRangeColumn(db);
+        if(oldVersion<=10)db.execSQL(Queries.ResumeTable.CREATE_TABLE);
     }
 
     private void addRangeColumn(SQLiteDatabase db) {

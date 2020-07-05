@@ -268,6 +268,8 @@
     <string name="default_zoom">默认缩放</string>
     <string name="choose_directory">选择文件夹</string>
     <string name="change_directory_position">选择文件夹位置</string>
+    <string name="bookmark_here">Bookmark here</string>
+    <string name="resume_from_page">Resume from page %d</string>
     <string-array name="language">
         <item>英文</item>
         <item>中文（繁体）</item>
