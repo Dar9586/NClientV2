@@ -41,6 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         db.execSQL(Queries.DownloadTable.CREATE_TABLE);
         db.execSQL(Queries.HistoryTable.CREATE_TABLE);
         db.execSQL(Queries.FavoriteTable.CREATE_TABLE);
+        db.execSQL(Queries.ResumeTable.CREATE_TABLE);
     }
 
     private void insertCategoryTags(){

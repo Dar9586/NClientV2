@@ -29,12 +29,13 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class VersionChecker{
-    private static final String LATEST_API_URL="https://api.github.com/repos/Dar9586/NClientV2/releases/latest";
+    private static final String RELEASE_API_URL="https://api.github.com/repos/Dar9586/NClientV2/releases";
     private static final String LATEST_RELEASE_URL="https://github.com/Dar9586/NClientV2/releases/latest";
     private final AppCompatActivity context;
     private String downloadUrl;
     private static String latest=null;
     public VersionChecker(AppCompatActivity context, final boolean silent){
+        boolean withPrerelease=Global.isEnableBeta();
         this.context=context;
         if(latest!=null&&Global.hasStoragePermission(context)){
             downloadVersion(latest);
@@ -43,72 +44,112 @@ public class VersionChecker{
         }
         String versionName= Global.getVersionName(context);
         LogUtility.d("ACTUAL VERSION: "+versionName);
-        if(versionName!=null){
-            Global.getClient(context).newCall(new Request.Builder().url(LATEST_API_URL).build()).enqueue(new Callback(){
-                @Override
-                public void onFailure(@NonNull Call call,@NonNull IOException e){
-                    context.runOnUiThread(()->{
-                        LogUtility.e(e.getLocalizedMessage(),e);
-                        if(!silent) Toast.makeText(context, R.string.error_retrieving, Toast.LENGTH_SHORT).show();
-                    });
-                }
+        Global.getClient(context).newCall(new Request.Builder().url(RELEASE_API_URL).build()).enqueue(new Callback(){
+            @Override
+            public void onFailure(@NonNull Call call,@NonNull IOException e){
+                context.runOnUiThread(()->{
+                    LogUtility.e(e.getLocalizedMessage(),e);
+                    if(!silent) Toast.makeText(context, R.string.error_retrieving, Toast.LENGTH_SHORT).show();
+                });
+            }
 
-                @Override
-                public void onResponse(@NonNull Call call,@NonNull  Response response) throws IOException{
-                    JsonReader jr=new JsonReader(response.body().charStream());
-                    String[]arr=parseVersionJson(jr);
-                    jr.close();
-                    final String verName = arr[0],body=arr[1];
-                    downloadUrl=arr[2];
-                    context.runOnUiThread(()->{
-                        if(versionName.equals(verName)){
-                            if(!silent)
-                                Toast.makeText(context, R.string.no_updates_found, Toast.LENGTH_SHORT).show();
-                        }else{
-                            LogUtility.d("Executing false");
-                            createDialog(versionName, verName, body);
-                        }
-                    });
+            @Override
+            public void onResponse(@NonNull Call call,@NonNull  Response response) throws IOException{
+                JsonReader jr=new JsonReader(response.body().charStream());
+                GitHubRelease release=parseVersionJson(jr,withPrerelease);
+                jr.close();
+                if(release==null){
+                    release=new GitHubRelease();
+                    release.versionCode=versionName;
                 }
-            });
-        }
+                downloadUrl=release.downloadUrl;
+                GitHubRelease finalRelease = release;
+                context.runOnUiThread(()->{
+                    if(versionName.equals(finalRelease.versionCode)){
+                        if(!silent)
+                            Toast.makeText(context, R.string.no_updates_found, Toast.LENGTH_SHORT).show();
+                    }else{
+                        LogUtility.d("Executing false");
+                        createDialog(versionName, finalRelease);
+                    }
+                });
+            }
+        });
     }
 
-    private static String[] parseVersionJson(JsonReader jr) throws IOException {
-        String[]vars=new String[3];//ver code,body,changelog
+    public static class GitHubRelease{
+        String versionCode,body,downloadUrl;
+        boolean beta;
+    }
+
+    private static GitHubRelease parseVersionJson(JsonReader jr,boolean withPrerelease) throws IOException {
+        GitHubRelease release;
+        jr.beginArray();
+        while(jr.hasNext()){
+            release=parseVersion(jr,withPrerelease);
+            if(release!=null)
+                return release;
+        }
+        return null;
+    }
+
+    private static GitHubRelease parseVersion(JsonReader jr, boolean withPrerelease) throws IOException {
+        GitHubRelease release=new GitHubRelease();
+        boolean invalid=false;
         jr.beginObject();
+
         while(jr.peek()!=JsonToken.END_OBJECT){
             switch (jr.nextName()){
-                case "tag_name":vars[0]=jr.nextString();break;
-                case "body":vars[1]=jr.nextString();break;
+                default:
+                    jr.skipValue();
+                    break;
+                case "tag_name":
+                    release.versionCode=jr.nextString();
+                    break;
+                case "body":
+                    release.body=jr.nextString();
+                    break;
+                case "prerelease":
+                    release.beta=jr.nextBoolean();
+                    if(release.beta && !withPrerelease)
+                        invalid=true;
+                    break;
                 case "assets":
                     jr.beginArray();
                     while(jr.hasNext()){
-                        if(vars[2]!=null){
+                        if(release.downloadUrl!=null){
                             jr.skipValue();
                             continue;
                         }
-                        jr.beginObject();
-                        while(jr.peek()!=JsonToken.END_OBJECT){
-                            if ("browser_download_url".equals(jr.nextName())) {
-                                String url=jr.nextString();
-                                if(url.contains("Release"))
-                                    vars[2] = url;
-                            } else {
-                                jr.skipValue();
-                            }
-                        }
-                        jr.endObject();
+                        release.downloadUrl=getDownloadUrl(jr);
+                        if(!release.downloadUrl.contains("Release"))
+                            release.downloadUrl=null;
                     }
                     jr.endArray();
                     break;
-                default:jr.skipValue();break;
             }
         }
-        return vars;
+        jr.endObject();
+
+        return invalid?null:release;
     }
 
-    private void createDialog(String versionName, String latestVersion, String finalBody){
+    private static String getDownloadUrl(JsonReader jr) throws IOException{
+        String url=null;
+        jr.beginObject();
+        while(jr.peek()!=JsonToken.END_OBJECT){
+            if ("browser_download_url".equals(jr.nextName()))
+                url = jr.nextString();
+            else jr.skipValue();
+        }
+        jr.endObject();
+        return url;
+    }
+
+    private void createDialog(String versionName,GitHubRelease release){
+        String finalBody=release.body;
+        String latestVersion=release.versionCode;
+        boolean beta=release.beta;
         if(finalBody==null)return;
         finalBody=finalBody
                 .replace("\r\n","\n")//Remove ugly newline
@@ -119,7 +160,7 @@ public class VersionChecker{
         LogUtility.d("Creating dialog");
         MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(context);
         LogUtility.d(""+context);
-        builder.setTitle(R.string.new_version_found);
+        builder.setTitle(beta?R.string.new_beta_version_found:R.string.new_version_found);
         builder.setIcon(R.drawable.ic_file_download);
         builder.setMessage(context.getString(R.string.update_version_format,versionName,latestVersion,finalBody));
         builder.setPositiveButton(R.string.install, (dialog, which) -> {
@@ -148,12 +189,12 @@ public class VersionChecker{
         LogUtility.d(f.getAbsolutePath());
         Global.getClient(context).newCall(new Request.Builder().url(downloadUrl).build()).enqueue(new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NonNull Call call,@NonNull IOException e) {
                 context.runOnUiThread(() -> Toast.makeText(context,R.string.download_update_failed,Toast.LENGTH_LONG).show());
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NonNull Call call,@NonNull Response response) throws IOException {
                 context.getSharedPreferences("Settings",0).edit().putBoolean("downloaded",false).apply();
                 f.getParentFile().mkdirs();
                 f.createNewFile();

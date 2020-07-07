@@ -138,7 +138,7 @@ public class LocalActivity extends BaseActivity {
     private void changeSortItem(MenuItem item) {
         boolean sortByName=Global.isLocalSortByName();
         item.setIcon(sortByName?R.drawable.ic_sort_by_alpha:R.drawable.ic_access_time);
-        item.setTitle(sortByName?R.string.sort_by_latest:R.string.sort_by_title);
+        item.setTitle(sortByName?R.string.sort_by_title:R.string.sort_by_latest);
         Global.setTint(item.getIcon());
     }
 

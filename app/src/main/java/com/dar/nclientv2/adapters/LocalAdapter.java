@@ -120,8 +120,8 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         //downloading manga are newer
         if(b1&&!b2) return 1;
         if(!b1&&b2) return -1;
-        if(b1/*&&b2*/){
-            long res=((LocalGallery)o1).getDirectory().lastModified()-((LocalGallery)o2).getDirectory().lastModified();
+        if(b1/*&&b2*/){//reverse order fot
+            long res=((LocalGallery)o2).getDirectory().lastModified()-((LocalGallery)o1).getDirectory().lastModified();
             if(res!=0) return res<0?-1:1;
         }
         String s1=b1?((LocalGallery)o1).getTitle():((GalleryDownloaderV2)o1).getPathTitle();

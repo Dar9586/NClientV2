@@ -267,6 +267,8 @@
     <string name="change_directory_position">Change directory position</string>
     <string name="bookmark_here">Bookmark here</string>
     <string name="resume_from_page">Resume from page %d</string>
+    <string name="new_beta_version_found">New beta version found</string>
+    <string name="check_beta_releases">Check for beta releases</string>
     <string-array name="language">
         <item>Inglese</item>
         <item>Cinese (Tradizionale)</item>

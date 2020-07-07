@@ -96,6 +96,11 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
             act.recreate();
             return true;
         });
+        findPreference(getString(R.string.key_enable_beta)).setOnPreferenceChangeListener((preference, newValue) -> {
+            //Instant update to allow search for updates
+            Global.setEnableBeta((Boolean) newValue);
+            return true;
+        });
         findPreference("has_pin").setOnPreferenceChangeListener((preference, newValue) -> {
             if(newValue.equals(Boolean.TRUE)) {
                 Intent i = new Intent(act, PINActivity.class);

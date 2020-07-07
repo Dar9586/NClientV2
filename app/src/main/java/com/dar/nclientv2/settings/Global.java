@@ -72,7 +72,7 @@ public class Global {
     private static Language onlyLanguage;
     private static TitleType titleType;
     private static SortType sortType;
-    private static boolean localSortByName,alternativeSite,volumeOverride,zoomOneColumn,keepHistory,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
+    private static boolean enableBeta,localSortByName,alternativeSite,volumeOverride,zoomOneColumn,keepHistory,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
     private static ThemeScheme theme;
     private static DataUsageType usageMobile, usageWifi;
     private static String lastVersion;
@@ -101,6 +101,14 @@ public class Global {
     public static String getLastVersion(Context context) {
         if(context!=null)lastVersion=context.getSharedPreferences("Settings", 0).getString("last_version","0.0.0");
         return lastVersion;
+    }
+
+    public static void setEnableBeta(boolean enableBeta) {
+        Global.enableBeta = enableBeta;
+    }
+
+    public static boolean isEnableBeta() {
+        return enableBeta;
     }
 
     public static void setLastVersion(Context context) {
@@ -245,6 +253,7 @@ public class Global {
         removeAvoidedGalleries =shared.getBoolean(context.getString(R.string.key_remove_ignored),true);
         onlyTag=shared.getBoolean(context.getString(R.string.key_ignore_tags),true);
         volumeOverride=shared.getBoolean(context.getString(R.string.key_override_volume),true);
+        enableBeta=shared.getBoolean(context.getString(R.string.key_enable_beta),true);
         columnCount=shared.getInt(context.getString(R.string.key_column_count),2);
         showTitles=shared.getBoolean(context.getString(R.string.key_show_titles),true);
         lockScreen=shared.getBoolean(context.getString(R.string.key_disable_lock),false);

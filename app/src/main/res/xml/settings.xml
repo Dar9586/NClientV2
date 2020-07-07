@@ -143,6 +143,10 @@
             android:defaultValue="true"
             android:key="@string/key_check_update"
             android:title="@string/check_for_update_on_startup" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/key_enable_beta"
+            android:title="@string/check_beta_releases"/>
         <Preference
             android:key="@string/key_update"
             android:title="@string/check_for_updates" />

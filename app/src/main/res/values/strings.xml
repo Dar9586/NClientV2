@@ -2,6 +2,7 @@
 
 <resources>
     <!--DO NOT TRANSLATE-->
+    <string name="key_enable_beta" translatable="false">enable_beta</string>
     <string name="key_save_path" translatable="false">save_path</string>
     <string name="key_local_sort" translatable="false">local_sort</string>
     <string name="key_title_type" translatable="false">title_type_str</string>
@@ -295,6 +296,8 @@
     <string name="change_directory_position">Change directory position</string>
     <string name="bookmark_here">Bookmark here</string>
     <string name="resume_from_page">Resume from page %d</string>
+    <string name="new_beta_version_found">New beta version found</string>
+    <string name="check_beta_releases">Check for beta releases</string>
 
     <string-array name="language">
         <item>English</item>

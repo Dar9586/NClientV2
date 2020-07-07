@@ -83,7 +83,10 @@ public class Gallery extends GenericGallery{
 
     @NonNull
     public String getPathTitle() {
-        return getTitle().replace('/', '_').replaceAll("[|\\\\?*<\":>+\\[\\]/']", "_");
+        String pathTitle= getTitle().replace('/', ' ').replaceAll("[/|\\\\*\"'?:<>]", " ");
+        while(pathTitle.contains("  "))
+            pathTitle=pathTitle.replace("  "," ");
+        return pathTitle;
     }
 
     public String getCover(){
