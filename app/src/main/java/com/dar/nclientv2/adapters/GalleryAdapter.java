@@ -201,6 +201,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                     intent.putExtra(context.getPackageName() + ".ISBYTAG", true);
                     context.startActivity(intent);
                 });
+                c.setOnLongClickListener(v -> {
+                    CopyToClipboardActivity.copyTextToClipboard(context,tag.getName());
+                    Toast.makeText(context, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show();
+                    return true;
+                });
                 cg.addView(c);
             }
             addInfoLayout(holder,gallery.getGalleryData());

@@ -203,8 +203,8 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
 
     private void bindDownload(@NonNull final ViewHolder holder, int position, GalleryDownloaderV2 downloader){
         int percentage=downloader.getPercentage();
-        if (!downloader.hasData())return;
-        ImageDownloadUtility.loadImage(context, downloader.getGallery().getCover(),holder.imgView);
+        //if (!downloader.hasData())return;
+        ImageDownloadUtility.loadImage(context, downloader.getThumbnail(),holder.imgView);
         holder.title.setText(downloader.getPathTitle());
         holder.cancelButton.setOnClickListener(v -> removeDownloader(downloader));
         switch (downloader.getStatus()){
@@ -238,10 +238,12 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
 
     private void removeDownloader(GalleryDownloaderV2 downloader) {
         int position=filter.indexOf(downloader);
+        if(position<0)return;
+        filter.remove(position);
         DownloadQueue.remove(downloader,true);
-        filter.remove(downloader);
         galleryDownloaders.remove(downloader);
         context.runOnUiThread(()->notifyItemRemoved(position));
+
     }
 
     @Override

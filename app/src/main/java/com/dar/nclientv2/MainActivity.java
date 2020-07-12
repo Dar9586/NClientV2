@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.RequestManager;
 import com.dar.nclientv2.adapters.ListAdapter;
 import com.dar.nclientv2.api.InspectorV3;
+import com.dar.nclientv2.api.SimpleGallery;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.components.Tag;
@@ -740,7 +741,7 @@ public class MainActivity extends BaseActivity
                 .setNegativeButton(R.string.cancel,null)
                 .setPositiveButton(R.string.ok, (dialog, which) -> {
                     for(GenericGallery g:inspector.getGalleries())
-                        DownloadGalleryV2.downloadGallery(MainActivity.this, g);
+                        DownloadGalleryV2.downloadGallery(MainActivity.this, (SimpleGallery)g);
                 });
         builder.show();
     }

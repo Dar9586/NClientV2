@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.JobIntentService;
 
+import com.dar.nclientv2.api.SimpleGallery;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.async.database.Queries;
@@ -20,11 +21,16 @@ public class DownloadGalleryV2 extends JobIntentService {
     private static final int JOB_DOWNLOAD_GALLERY_ID=9999;
     public static void downloadGallery(Context context, GenericGallery gallery){
         if(gallery.isValid() && gallery instanceof Gallery)downloadGallery(context,(Gallery) gallery);
-        if(gallery.getId()>0)downloadGallery(context,gallery.getId());
+        if(gallery.getId()>0){
+            if(gallery instanceof SimpleGallery){
+                SimpleGallery simple= (SimpleGallery) gallery;
+                downloadGallery(context,gallery.getTitle(),simple.getThumbnail(),simple.getId());
+            }else downloadGallery(context,null,null,gallery.getId());
+        }
     }
-    private static void downloadGallery(Context context, int id){
+    private static void downloadGallery(Context context,String title,String thumbnail, int id){
         if(id<1)return;
-        DownloadQueue.add(new GalleryDownloaderManager(context,id));
+        DownloadQueue.add(new GalleryDownloaderManager(context,title,thumbnail,id));
         startWork(context);
     }
     private static void downloadGallery(Context context, Gallery gallery){

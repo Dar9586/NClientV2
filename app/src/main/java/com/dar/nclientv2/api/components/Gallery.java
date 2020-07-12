@@ -83,12 +83,18 @@ public class Gallery extends GenericGallery{
 
     @NonNull
     public String getPathTitle() {
-        String pathTitle= getTitle().replace('/', ' ').replaceAll("[/|\\\\*\"'?:<>]", " ");
+        return getPathTitle(getTitle());
+    }
+    public static String getPathTitle(@Nullable String title,@NonNull String defaultValue){
+        if(title==null)return defaultValue;
+        String pathTitle= title.replace('/', ' ').replaceAll("[/|\\\\*\"'?:<>]", " ");
         while(pathTitle.contains("  "))
             pathTitle=pathTitle.replace("  "," ");
         return pathTitle;
     }
-
+    public static String getPathTitle(@Nullable String title){
+        return getPathTitle(title,"");
+    }
     public String getCover(){
         if(Global.getDownloadPolicy()== Global.DataUsageType.THUMBNAIL)return getThumbnail();
         return String.format(Locale.US,"https://t."+Utility.getHost()+"/galleries/%d/cover.%s",getMediaId(),galleryData.getCover().extToString());

@@ -5,7 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.local.LocalGallery;
@@ -43,7 +45,6 @@ public class GalleryDownloaderV2 {
     public File getFolder() {
         return folder;
     }
-
     public static class PageContainer{
         public final int page;
         public final String url,ext;
@@ -61,6 +62,8 @@ public class GalleryDownloaderV2 {
     private final Context context;
     private Status status=Status.NOT_STARTED;
     private final int id;
+    private String title, thumbnail;
+
     private int start=-1,end=-1;
     private Gallery gallery;
     private final CopyOnWriteArraySet<DownloadObserver> observers= new CopyOnWriteArraySet<>();
@@ -75,7 +78,7 @@ public class GalleryDownloaderV2 {
         return Math.max(1, end-start+1);
     }
     public int getPercentage(){
-        if(gallery==null)return 0;
+        if(gallery==null||urls.size()==0)return 0;
         return ((getTotalPage()-urls.size())*100)/getTotalPage();
     }
     private void onStart(){
@@ -100,9 +103,11 @@ public class GalleryDownloaderV2 {
         for(DownloadObserver observer:observers)observer.triggerPauseDownload(this);
     }
 
-    public GalleryDownloaderV2(Context context, int id) {
+    public GalleryDownloaderV2(Context context, @Nullable String title,@Nullable String thumbnail, int id) {
         this.context=context;
         this.id = id;
+        this.thumbnail = thumbnail;
+        this.title=Gallery.getPathTitle(title,context.getString(R.string.download_gallery));
     }
     public LocalGallery localGallery(){
         if(status!=Status.FINISHED)return null;
@@ -118,12 +123,17 @@ public class GalleryDownloaderV2 {
             Queries.DownloadTable.removeGallery(id);
         }
     }
+
+    public String getTitle() {
+        return title;
+    }
+
     public void addObserver(DownloadObserver observer){
         if(observer==null)return;
         observers.add(observer);
     }
     public GalleryDownloaderV2(Context context, Gallery gallery, int start, int end) {
-        this(context,gallery.getId());
+        this(context,gallery.getTitle(),gallery.getCover(),gallery.getId());
         this.start=start;
         this.end=end;
         setGallery(gallery);
@@ -131,6 +141,8 @@ public class GalleryDownloaderV2 {
 
     private void setGallery(Gallery gallery) {
         this.gallery = gallery;
+        title=gallery.getPathTitle();
+        thumbnail=gallery.getThumbnail();
         Queries.DownloadTable.addGallery(this);
         if(start==-1)start=0;
         if(end==-1)end=gallery.getPageCount()-1;
@@ -149,13 +161,11 @@ public class GalleryDownloaderV2 {
     }
     @NonNull
     public String getPathTitle(){
-        if(gallery==null)return "";
-        return gallery.getPathTitle();
+        return title;
     }
     @NonNull
     public String getTruePathTitle(){
-        if(folder==null)return "";
-        return folder.getName();
+        return title;
     }
     /**
      * @return true if the download has been completed, false otherwise
@@ -165,6 +175,7 @@ public class GalleryDownloaderV2 {
         InspectorV3 inspector = InspectorV3.galleryInspector(context,id,null);
         try {
             inspector.createDocument();
+            inspector.parseDocument();
             if(inspector.getGalleries()==null||inspector.getGalleries().size()==0)return false;
             Gallery g=(Gallery) inspector.getGalleries().get(0);
             if(g.isValid())
@@ -174,6 +185,10 @@ public class GalleryDownloaderV2 {
             LogUtility.e("Error while downloading",e);
             return false;
         }
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
     }
 
     public boolean canBeFetched(){
@@ -279,7 +294,7 @@ public class GalleryDownloaderV2 {
     }
 
     private void createFolder() {
-        folder=findFolder(Global.DOWNLOADFOLDER, gallery.getPathTitle(),id);
+        folder=findFolder(Global.DOWNLOADFOLDER, title,id);
         //folder = new File(Global.DOWNLOADFOLDER, gallery.getPathTitle());
         folder.mkdirs();
         try {

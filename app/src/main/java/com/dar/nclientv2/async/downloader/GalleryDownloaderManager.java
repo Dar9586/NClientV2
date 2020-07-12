@@ -83,9 +83,9 @@ public class GalleryDownloaderManager {
         this.downloaderV2=new GalleryDownloaderV2(context,gallery,start,end);
         this.downloaderV2.addObserver(observer);
     }
-    public GalleryDownloaderManager(Context context,int id){
+    public GalleryDownloaderManager(Context context,String title,String thumbnail,int id){
         this.context=context;
-        this.downloaderV2=new GalleryDownloaderV2(context,id);
+        this.downloaderV2=new GalleryDownloaderV2(context,title,thumbnail,id);
         this.downloaderV2.addObserver(observer);
     }
 

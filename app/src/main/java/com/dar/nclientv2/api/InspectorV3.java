@@ -302,7 +302,7 @@ public class InspectorV3 extends Thread implements Parcelable {
         response.close();
     }
 
-    private void parseDocument() throws IOException{
+    public void parseDocument() throws IOException{
         if(requestType.isSingle()) doSingle(htmlDocument.body());
         else doSearch(htmlDocument.body());
         htmlDocument = null;

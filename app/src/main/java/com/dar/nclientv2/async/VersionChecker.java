@@ -42,8 +42,8 @@ public class VersionChecker{
             latest=null;
             return;
         }
-        String versionName= Global.getVersionName(context);
-        LogUtility.d("ACTUAL VERSION: "+versionName);
+        String actualVersionName= Global.getVersionName(context);
+        LogUtility.d("ACTUAL VERSION: "+actualVersionName);
         Global.getClient(context).newCall(new Request.Builder().url(RELEASE_API_URL).build()).enqueue(new Callback(){
             @Override
             public void onFailure(@NonNull Call call,@NonNull IOException e){
@@ -60,23 +60,25 @@ public class VersionChecker{
                 jr.close();
                 if(release==null){
                     release=new GitHubRelease();
-                    release.versionCode=versionName;
+                    release.versionCode=actualVersionName;
                 }
                 downloadUrl=release.downloadUrl;
                 GitHubRelease finalRelease = release;
                 context.runOnUiThread(()->{
-                    if(versionName.equals(finalRelease.versionCode)){
+                    if(extractVersion(actualVersionName)>=extractVersion(finalRelease.versionCode)){
                         if(!silent)
                             Toast.makeText(context, R.string.no_updates_found, Toast.LENGTH_SHORT).show();
                     }else{
                         LogUtility.d("Executing false");
-                        createDialog(versionName, finalRelease);
+                        createDialog(actualVersionName, finalRelease);
                     }
                 });
             }
         });
     }
-
+    private static int extractVersion(String version){
+        return Integer.parseInt(version.replace(".",""));
+    }
     public static class GitHubRelease{
         String versionCode,body,downloadUrl;
         boolean beta;
