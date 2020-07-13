@@ -277,14 +277,14 @@
     <string name="sort_type_title_format" formatted="true">Sıralama tipi seç (%s)</string>
     <string name="unable_to_connect_to_the_site">Siteye bağlanılamadı</string>
     <string name="error">Hata</string>
-    <string name="no_entry_found">Girdi bulunamadı</string>
+    <string name="no_entry_found">Herhangi bir sonuç bulunamadı</string>
     <string name="retry">Yeniden Dene</string>
     <string name="folder_location">İndirme Dizini</string>
     <string name="default_zoom">Varsayılan Yakınlaştırma</string>
     <string name="choose_directory">Dizin Seç</string>
-    <string name="change_directory_position">Dizin pozisyonunu değiştir</string>
-    <string name="bookmark_here">Bookmark here</string>
-    <string name="resume_from_page">Resume from page %d</string>
-    <string name="new_beta_version_found">New beta version found</string>
-    <string name="check_beta_releases">Check for beta releases</string>
+    <string name="change_directory_position">Dizin konumunu değiştir</string>
+    <string name="bookmark_here">Buraya yer işareti ekle</string>
+    <string name="resume_from_page">%d. sayfadan devam et</string> <!-- change to "%d`inci sayfadan devam et" if " %d. " is a problem-->
+    <string name="new_beta_version_found">Yeni beta sürümü bulundu</string>
+    <string name="check_beta_releases">Beta sürümlerini kontrol et</string>
 </resources>
