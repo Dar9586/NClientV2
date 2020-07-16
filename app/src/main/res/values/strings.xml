@@ -305,6 +305,7 @@
         <item>Chinese (Simplified)</item>
         <item>Turkish</item>
         <item>Italian</item>
+        <item>German</item>
     </string-array>
 
     <string-array name="language_data"><!--DO NOT TRANSLATE-->
@@ -313,6 +314,7 @@
         <item>zh</item>
         <item>tr</item>
         <item>it</item>
+        <item>de</item>
     </string-array>
 
     <string-array name="theme">
