@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--SUMMARY-->
+    <string name="setting_on_ignore_tags">Andere Tags werden nicht gesucht wenn du einen Tag von einer Galerie auswählst (außer die Sprache)</string>
+    <string name="setting_off_ignore_tags">Andere Tags werden gesucht wenn du einen Tag von einer Galerie auswählst</string>
+    <string name="setting_on_high_res">Hochauflösende Bilder werden geladen (verbraucht mehr Daten)</string>
+    <string name="setting_off_high_res">Vorschaubilder werden geladen (verbraucht weniger Daten)</string>
+    <string name="setting_on_load">Bilder werden überall geladen</string>
+    <string name="setting_off_load">Bilder werden nur im Einzelseitenbetrachter geladen</string>
+    <string name="setting_on_use_account_tag">Benutze online Tags in deiner Suche (lokale Tags haben Priorität)</string>
+    <string name="setting_off_use_account_tag">Online Tags werden bei deiner Suche ignoriert</string>
+    <string name="theme_summary">Wähle Farbschema</string>
+
+    <!--SETTINGS NAME-->
+    <string name="send_crash_report">Sende Absturzbericht</string>
+    <string name="change_theme">Ändere Thema</string>
+    <string name="clear_cache">Lösche den Cache</string>
+    <string name="load_images">Lade Bilder</string>
+    <string name="infinite_scroll">Unendlich scrollen</string>
+    <string name="ignore_tags">Ignoriere andere Tags</string>
+    <string name="high_res_gallery">Lade Bilder in bester qualität</string>
+    <string name="use_account_tag">Benutze Account Tags</string>
+
+    <string name="title_activity_gallery">Galerie</string>
+    <string name="title_activity_zoom">Zoom</string>
+    <string name="title_activity_tag_filter">Tagfilter</string>
+    <string name="title_activity_login">Einloggen</string>
+
+    <string name="parodies">Parodien</string>
+    <string name="characters">Charaktere</string>
+    <string name="tags">Tags</string>
+    <string name="artists">Künstler</string>
+    <string name="groups">Gruppen</string>
+    <string name="languages">Sprachen</string>
+    <string name="categories">Kategorien</string>
+    <string name="unknown">Unbekannt</string>
+
+    <string name="channel1_name">Galerie herunterladen</string>
+    <string name="channel2_name">PDF erstellen</string>
+    <string name="channel3_name">ZIP erstellen</string>
+    <string name="channel1_description">Benutzt um den Fortschritt beim Download der Galerie anzuzeigen</string>
+    <string name="channel2_description">Benutzt um den Fortschritt beim Erstellen des PDF anzuzeigen</string>
+    <string name="channel3_description">Benutzt um den Fortschritt beim Erstellen des ZIP anzuzeigen</string>
+    <string name="channel2_title">Erstelle PDF:</string>
+    <string name="channel3_title">Erstelle ZIP:</string>
+
+    <string name="favorite_max_reached" formatted="true">Du kannst ein Maximum von %d Lieblingsmanga haben.</string>
+    <string name="tags_max_reached" formatted="true">Du kannst ein Maximum von %d Tags haben</string>
+
+
+    <string name="only_english">Nur Englisch</string>
+    <string name="only_japanese">Nur Japanisch</string>
+    <string name="only_chinese">Nur Chinesisch</string>
+    <string name="all_languages">Alle Sprachen</string>
+
+
+    <string name="username_or_email">Benutzername oder Email</string>
+    <string name="password">Passwort</string>
+    <string name="login">Einloggen</string>
+    <string name="login_formatted" formatted="true">Eingeloggt als %s</string>
+    <string name="logout">Ausloggen</string>
+    <string name="forgot_password">Passwort vergessen? <b>Zurücksetzen</b></string>
+    <string name="register">Du hast keinen Account? <b>Registrieren</b></string>
+    <string name="invalid_credentials">Ungültige Anmeldedaten</string>
+
+    <string name="favorite_online_manga">Online Manga Favoriten</string>
+    <string name="online_tags">Online Tag</string>
+
+    <string name="add_to_online_favorite">Zu online Favoriten hinzufügen</string>
+    <string name="remove_from_online_favorites">Von online Favoriten entfernen</string>
+    <string name="add_to_online_blacklist">Zur online Blacklist hinzufügen?</string>
+    <string name="tag_already_in_blacklist">Tag ist schon in der Blackist</string>
+
+    <string name="are_you_sure">Bist du dir sicher?</string>
+    <string name="thumbnail">Vorschaubild</string>
+    <string name="settings">Einstellungen</string>
+    <string name="related">Ähnlich</string>
+    <string name="failed">Fehlgeschlagen</string>
+    <string name="search">Suche</string>
+    <string name="prev">Vorherige</string>
+    <string name="share">Teilen</string>
+    <string name="image">Bild</string>
+    <string name="next">Nächste</string>
+
+    <string name="create_pdf">Erstelle PDF</string>
+    <string name="create_pdf_format" formatted="true">Erstelle PDF von: "%s"</string>
+    <string name="create_zip_format" formatted="true">Erstelle ZIP von: "%s"</string>
+    <string name="created_pdf">PDF erfolgreich erstellt</string>
+    <string name="error_pdf">Fehler während des Erstellens der PDF</string>
+    <string name="parsing_pages">Analysiere Seiten</string>
+    <string name="writing_pdf">Schreibe PDF</string>
+
+    <string name="navigation_drawer_open">Öffne Menü</string>
+    <string name="navigation_drawer_close">Schließe Menü</string>
+    <string name="nav_header_subtitle">NHentai inoffizieller Client</string>
+
+    <string name="change_page">Seite wechseln:</string>
+    <string name="prev_page">Vorherige Seite</string>
+    <string name="next_page">Nächste Seite</string>
+
+    <string name="downloaded_manga">Heruntergeladene Manga</string>
+    <string name="download_gallery">Galerie herunterladen</string>
+    <string name="download_completed">Download komplett</string>
+
+    <string name="delete_gallery_size_format" formatted="true">Lösche Galerie (%.2fMB)</string>
+    <string name="delete_gallery_format" formatted="true">Möchtest du die Galerie löschen:\n%s</string>
+
+    <string name="share_with">Teilen mit</string>
+    <string name="link_copied_to_clipboard">Link in die Zwischenablage kopieren</string>
+    <string name="open_in_browser">Im Browser öffnen</string>
+    <string name="go_online">Geh online</string>
+    <string name="update_tag_status">Tag Status ändern</string>
+    <string name="change_view">Ansicht wechseln</string>
+    <string name="tag_preference">Tag Präferenzen</string>
+    <string name="manage_tags">Tags verwalten</string>
+    <string name="applied_filters">Angewandte Filter</string>
+    <string name="show_related">Zeige ähnliche Galerien</string>
+    <string name="random_manga">Zufallsmanga</string>
+    <string name="save_page">Seite speichern</string>
+    <string name="page_count_format" formatted="true">%d Seiten</string>
+    <string name="upload_date_format" formatted="true">Am %s um %s< hochgeladen/string>
+    <string name="favorite_count_format" formatted="true">%d Favoriten</string>
+    <string name="favorite_manga">Lieblingsmanga</string>
+    <string name="setting_on_remove_ignored">Die Galerie mit ignorierten Tags wird nicht gezeigt</string>
+    <string name="setting_off_remove_ignored">Die Galerie mit ignorierten Tags verschwommen angezeigt</string>
+    <string name="remove_ignored_galleries">Entferne ignorierte Galerien</string>
+    <string name="clear_tag_preferences">Tag Präferenzen leeren</string>
+    <string name="check_for_update_on_startup">Beim Start nach Updates suchen</string>
+    <string name="check_for_updates">Nach Updates suchen</string>
+    <string name="no_updates_found">Keine Updates gefunden</string>
+    <string name="error_retrieving">Fehler beim Update suchen</string>
+    <string name="new_version_found">Neue Version gefunden</string>
+    <string name="update_version_format" formatted="true">Von Version %s auf Version %s updaten?\n\nÄnderungsprotokoll:\n%s</string>
+    <string name="clear_this_list">Diese Liste leeren?</string>
+    <string name="set_minimum_count">Setze Minimumanzahl</string>
+    <string name="sort_by_title">Ordne nach Titeln</string>
+    <string name="sort_by_popular">Ordne nach Popularität</string>
+    <string name="next_page_volume_up">Wechsel zur nächsten Seite mit Lautstärke Hoch</string>
+    <string name="next_page_volume_down">Wechsel zur nächsten Seite mit Lautstärke Runter</string>
+    <string name="change_title_type">Ändere Titel Typ</string>
+    <string name="title_type_summary">Wähle den Standard Titel Typ für Galerien aus</string>
+
+    <string name="search_settings">Sucheinstellungen</string>
+    <string name="global_settings">Globale Einstellungen</string>
+    <string name="images_settings">Bilder Einstellungen</string>
+    <string name="miscellaneous">Sonstiges</string>
+    <string name="update_settings">Update Einstellungen</string>
+    <string name="online_favorite_manga">Online Lieblingsmanga</string>
+    <string name="cache_size_formatted">Cache Größe: %.2f MB</string>
+    <string name="cache_cleared">Cache geleert</string>
+    <string name="sort_by_latest">Nach Neusten sortieren</string>
+    <string name="edit">Bearbeiten</string>
+    <string name="options">Optionen</string>
+    <string name="keep_history">Verlauf behalten</string>
+    <string name="add">Hinzufügen</string>
+    <string name="insert_tag_name">Tag Name eingeben:</string>
+    <string name="favorite_count">Favoritenzähler</string>
+    <string name="comments">Kommentieren</string>
+    <string name="send">Senden</string>
+    <string name="send_comment">Sende Kommentar</string>
+    <string name="profile_picture">Profilbild</string>
+    <string name="send_bug_on_github">Einen Fehler auf Github melden</string>
+    <string name="github">Github</string>
+    <string name="install">Installieren</string>
+    <string name="download_update_failed">Update konnte nicht heruntergeladen werden</string>
+    <string name="copyURL">URL kopieren</string>
+    <string name="add_bookmark">Lesezeichen hinzufügen</string>
+    <string name="manage_bookmarks">Lesezeichen verwalten</string>
+    <string name="bookmark_page_format">Seite %d</string>
+    <string name="bookmark_description">Lesezeichen Beschreibung</string>
+    <string name="enable_right_to_left">RTL aktivieren</string>
+    <string name="setting_on_use_rtl">Bilder werden von rechts nach links angezeigt</string>
+    <string name="setting_off_use_rtl">Bilder werden von links nach rechts angezeigt</string>
+    <string name="volume_change_setting">Seite mit Lautstärketasten wechseln</string>
+    <string name="popular_tag_count">Die Anzahl von populären Tags während der erweiterten Suche</string>
+    <string name="show_gallery_titles">Zeige Galerie Titel</string>
+
+    <string name="use_column_port">Spalten Anzahl während Portrait</string>
+    <string name="use_column_land">Spalten Anzahl während Landscape</string>
+    <string name="change_language">Sprache ändern</string>
+
+    <string name="tag_artist_gallery">Künstler:</string>
+    <string name="tag_character_gallery">Charakter:</string>
+    <string name="tag_parody_gallery">Parodie:</string>
+    <string name="tag_language_gallery">Sprache:</string>
+    <string name="tag_category_gallery">Kategorie:</string>
+    <string name="tag_group_gallery">Gruppe:</string>
+    <string name="tag_tag_gallery">Tag:</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="no">Nein</string>
+    <string name="yes">Ja</string>
+    <string name="start_all_downloads">Alle Downloads starten</string>
+    <string name="pause_all_downloads">Alle Downloads pausieren</string>
+    <string name="cancel_all_downloads">Alle Downloads abbrechen</string>
+    <string name="disable_lock_title">Deaktiviere Bildschirm Standby während des Lesen</string>
+    <string name="download_all_galleries_in_this_page">Lade alle Galerien auf dieser Seite herunter</string>
+    <string name="download_all_galleries">Lade alle Galerien herunter</string>
+    <string name="favorite_column_count">Wähle Favoriten Spaltenanzahl aus</string>
+    <string name="download_column_count">Wähle Download Spaltenanzahl aus</string>
+    <string name="history_column_count">Wähle Verlauf Spaltenanzahl aus</string>
+    <string name="main_column_count">Wähle Haupseiten Spaltenanzahl aus</string>
+    <string name="navigation_settings">Navigations Einstellungen</string>
+    <string name="stop_download">Herunterladen stoppen</string>
+    <string name="start_download">Herunterladen starten</string>
+    <string name="create_zip">ZIP erstellen</string>
+    <string name="created_zip">ZIP erfolgreich erstellt</string>
+    <string name="failed_zip">ZIP erstellen fehlgeschlagen: </string>
+    <string name="start_page">Startseite</string>
+    <string name="end_page">Endseite</string>
+    <string name="invalid_range_selected">Ungültige Anzahl ausgewählt</string>
+    <string name="column_count_select">Spaltenanzahl auswählen</string>
+    <string name="send_with_title">Mit Titel senden?</string>
+    <string name="caption_send_with_title">URL als Beschreibung zum Bild hinzufügen?</string>
+    <string name="error_404">Fehler 404: nicht gefunden</string>
+    <string name="history_size">Verlauf Größe</string>
+    <string name="history_size_summary">Setze die maximale Anzahl an Einträgen für deinen Verlauf</string>
+    <string name="view_history">Verlauf anschauen</string>
+    <string name="history">Verlauf</string>
+    <string name="clear_history">Verlauf löschen</string>
+    <string name="cancelled_format">Abgebrochen: %s</string>
+    <string name="completed_format">Fertiggestellt: %s</string>
+    <string name="stop">Stop</string>
+    <string name="downloading_format">Lade: %s</string>
+    <string name="toggle_favorite">Favoriten umschalten</string>
+    <string name="resume">Fortsetzen</string>
+    <string name="pause">Pause</string>
+    <string name="title_copied_to_clipboard">Titel in die Zwischenablage kopiert</string>
+    <string name="setting_zoom_one_column">Zoom aktivieren wenn im Einspalten Modus in einer Galerie</string>
+    <string name="zoom_one_column">Zoom aktivieren</string>
+    <string name="insert_pin">PIN eingeben</string>
+    <string name="confirm_pin">PIN bestätigen</string>
+    <string name="setting_pin">PIN verlangen um App zu öffnen</string>
+    <string name="use_pin">PIN benutzen</string>
+    <string name="wrong_pin">Falscher PIN</string>
+    <string name="rotate_image">Bild drehen</string>
+    <string name="setting_alternative">nhent.ai anstelle von nhentai.net in zensierenden Ländern benutzen</string>
+    <string name="use_alternative">nhent.ai benutzen</string>
+    <string name="toggle_online_favorite">Online Favoriten umschalten</string>
+    <string name="data_usage_settings">Datennutzung ändern</string>
+    <string name="mobile_data_usage_setting">Mobile Datennutzung Einstellungen</string>
+    <string name="wifi_data_usage_setting">Wifi Datennutzung Einstellungen</string>
+    <string name="data_usage_thumb">Immer Vorschaubilder herunterladen</string>
+    <string name="data_usage_full">Lade Vorschaubilder oder ganze Bilder herunter</string>
+    <string name="data_usage_no">Lade keine Bilder herunter</string>
+    <string name="enable_network_to_continue">Aktiviere Bilder laden oder wechsel das Netzwerk um Bild zu öffnen</string>
+    <string name="donate">Unterstütze den Entwickler</string>
+    <string name="id_tag">ID:</string>
+    <string name="id_copied_to_clipboard">ID in die Zwischenablage kopiert</string>
+    <string name="copied_to_clipboard">In die Zwischenablage kopiert</string>
+    <string name="maximum_notification_count">Maximum Anzahl Benachrichtigungen</string>
+    <string name="copy_settings_to_clipboard">Einstellungen in die Zwischenablage kopieren</string>
+    <string name="sort_popular_all_time">Populär</string>
+    <string name="sort_recent">Neu</string>
+    <string name="sort_popular_day">Täglich Populär</string>
+    <string name="sort_popular_week">Wöchentlich Populär</string>
+    <string name="sort_type_title_format" formatted="true">Wähle Sortiertyp (%s)</string>
+    <string name="sort_select_type">Wähle Sortiertyp:</string>
+    <string name="unable_to_connect_to_the_site">Kann sich nicht mit der Seite verbinden</string>
+    <string name="error">Fehler</string>
+    <string name="no_entry_found">Kein Eintrag gefunden</string>
+    <string name="retry">Wiederholen</string>
+    <string name="folder_location">Ordner Location</string>
+    <string name="default_zoom">Standard Zoom</string>
+    <string name="choose_directory">Ordner auswählen</string>
+    <string name="change_directory_position">Ordner position ändern</string>
+    <string name="bookmark_here">Lesezeichen hier</string>
+    <string name="resume_from_page">Mit Seite %d fortsetzen</string>
+    <string name="new_beta_version_found">Neue Beta Version gefunden</string>
+    <string name="check_beta_releases">Nach Beta Versionen suchen</string>
+    <string-array name="language">
+        <item>Englisch</item>
+        <item>Chinesisch (Traditionell)</item>
+        <item>Chinesisch (Vereinfacht)</item>
+        <item>Türkisch</item>
+        <item>Italienisch</item>
+        <item>Deutsch</item>
+    </string-array>
+
+    <string-array name="theme">
+        <item>Hell</item>
+        <item>Dunkel</item>
+    </string-array>
+
+    <string-array name="title_type_array">
+        <item>Englisch</item>
+        <item>Japanisch</item>
+        <item>Schön</item>
+    </string-array>
+
+</resources>
