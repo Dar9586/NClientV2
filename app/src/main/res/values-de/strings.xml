@@ -107,7 +107,7 @@
     <string name="delete_gallery_format" formatted="true">Möchtest du die Galerie löschen:\n%s</string>
 
     <string name="share_with">Teilen mit</string>
-    <string name="link_copied_to_clipboard">Link in die Zwischenablage kopieren</string>
+    <string name="link_copied_to_clipboard">Link in die Zwischenablage kopiert</string>
     <string name="open_in_browser">Im Browser öffnen</string>
     <string name="go_online">Geh online</string>
     <string name="update_tag_status">Tag Status ändern</string>
