@@ -34,6 +34,7 @@ Search|Random manga
 
 - [ZerOri](https://github.com/ZerOri) and [linsui](https://github.com/linsui) for Chinese translation
 - [hmaltr](https://github.com/hmaltr) for Turkish translation
+- [herrsunchess](https://github.com/herrsunchess) for German translation
 
 ## Libraries
 
