@@ -51,6 +51,10 @@
     <string name="page_placeholder" translatable="false">999/999</string>
     <string name="other" translatable="false">other</string>
     <string name="key_favorite_limit" translatable="false">favorite_limit</string>
+    <string name="dash" translatable="false">-</string>
+    <string name="slash" translatable="false">/</string>
+
+
 
     <string name="setting_on_ignore_tags">Other tags won\'t be queried when a tag is selected from the gallery menu (except language)</string>
     <string name="setting_off_ignore_tags">Other tags will be queried when a tag is selected from the gallery menu</string>
@@ -298,6 +302,19 @@
     <string name="resume_from_page">Resume from page %d</string>
     <string name="new_beta_version_found">New beta version found</string>
     <string name="check_beta_releases">Check for beta releases</string>
+    <string name="page_range">Page range:</string>
+    <string name="upload_time">Upload time:</string>
+    <string name="from_page">From page:</string>
+    <string name="to_page">To page:</string>
+    <string name="from_time">From time:</string>
+    <string name="to_time">To time:</string>
+    <string name="reset">Reset</string>
+    <string name="hours">Hours</string>
+    <string name="years">Years</string>
+    <string name="months">Months</string>
+    <string name="days">Days</string>
+    <string name="weeks">Weeks</string>
+    <string name="choose_unit">Choose unit:</string>
 
     <string-array name="language">
         <item>English</item>

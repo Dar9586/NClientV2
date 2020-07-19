@@ -263,12 +263,25 @@
     <string name="retry">Riprova</string>
     <string name="folder_location">Posizione cartella</string>
     <string name="default_zoom">Default zoom</string>
-    <string name="choose_directory">Choose directory</string>
-    <string name="change_directory_position">Change directory position</string>
-    <string name="bookmark_here">Bookmark here</string>
-    <string name="resume_from_page">Resume from page %d</string>
-    <string name="new_beta_version_found">New beta version found</string>
-    <string name="check_beta_releases">Check for beta releases</string>
+    <string name="choose_directory">Scegli cartella</string>
+    <string name="change_directory_position">Scegli posizione cartella</string>
+    <string name="bookmark_here">Segnalibro qui</string>
+    <string name="resume_from_page">Ricomincia dalla pagina %d</string>
+    <string name="new_beta_version_found">Nuova versione beta trovata</string>
+    <string name="check_beta_releases">Controlla versioni beta</string>
+    <string name="page_range">Intervallo pagine:</string>
+    <string name="upload_time">Tempo di caricamento:</string>
+    <string name="from_page">Da pagina:</string>
+    <string name="to_page">A pagina:</string>
+    <string name="from_time">Da tempo:</string>
+    <string name="to_time">A tempo:</string>
+    <string name="reset">Reset</string>
+    <string name="hours">Ore</string>
+    <string name="years">Anni</string>
+    <string name="months">Mesi</string>
+    <string name="days">Giorni</string>
+    <string name="weeks">Settimane</string>
+    <string name="choose_unit">Scegli unità di tempo:</string>
     <string-array name="language">
         <item>Inglese</item>
         <item>Cinese (Tradizionale)</item>

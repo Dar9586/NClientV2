@@ -38,10 +38,10 @@ public class Bookmark {
         String query=uri.getQueryParameter("q");
         SortType popular=SortType.findFromAddition(uri.getQueryParameter("sort"));
         if(requestType==ApiRequestType.FAVORITE)return InspectorV3.favoriteInspector(context,query,page,response);
-        if(requestType==ApiRequestType.BYSEARCH)return InspectorV3.searchInspector(context,query,null,page,popular,response);
-        if(requestType==ApiRequestType.BYALL)return InspectorV3.searchInspector(context,"",null,page,SortType.RECENT_ALL_TIME,response);
+        if(requestType==ApiRequestType.BYSEARCH)return InspectorV3.searchInspector(context,query,null,page,popular, null, response);
+        if(requestType==ApiRequestType.BYALL)return InspectorV3.searchInspector(context,"",null,page,SortType.RECENT_ALL_TIME, null, response);
         if(requestType==ApiRequestType.BYTAG)return InspectorV3.searchInspector(context,"",
-                Collections.singleton(tagVal),page, SortType.findFromAddition(this.url),response);
+                Collections.singleton(tagVal),page, SortType.findFromAddition(this.url), null, response);
         return null;
     }
     public void deleteBookmark(){

@@ -288,4 +288,17 @@
     <string name="resume_from_page">%d. sayfadan devam et</string> <!-- change to "%d`inci sayfadan devam et" if " %d. " is a problem-->
     <string name="new_beta_version_found">Yeni beta sürümü bulundu</string>
     <string name="check_beta_releases">Beta sürümlerini kontrol et</string>
+    <string name="page_range">Page range:</string>
+    <string name="upload_time">Upload time:</string>
+    <string name="from_page">From page:</string>
+    <string name="to_page">To page:</string>
+    <string name="from_time">From time:</string>
+    <string name="to_time">To time:</string>
+    <string name="reset">Reset</string>
+    <string name="hours">Hours</string>
+    <string name="years">Years</string>
+    <string name="months">Months</string>
+    <string name="days">Days</string>
+    <string name="weeks">Weeks</string>
+    <string name="choose_unit">Choose unit:</string>
 </resources>

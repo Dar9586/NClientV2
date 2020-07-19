@@ -177,7 +177,7 @@ public class TagFilterActivity extends AppCompatActivity{
         DefaultDialogs.Builder builder=new DefaultDialogs.Builder(this);
         builder.setActual(min).setMax(100).setMin(2);
         builder.setYesbtn(R.string.ok).setNobtn(R.string.cancel);
-        builder.setTitle(R.string.set_minimum_count).setDialogs(new DefaultDialogs.DialogResults(){
+        builder.setTitle(R.string.set_minimum_count).setDialogs(new DefaultDialogs.CustomDialogResults(){
             @Override
             public void positive(int actual){
                 LogUtility.d("ACTUAL: "+actual);
@@ -186,11 +186,6 @@ public class TagFilterActivity extends AppCompatActivity{
                 if(page!=null){
                     page.changeSize();
                 }
-            }
-
-            @Override
-            public void negative(){
-
             }
         });
         DefaultDialogs.pageChangerDialog(builder);

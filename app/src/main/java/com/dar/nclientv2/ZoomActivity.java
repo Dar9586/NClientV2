@@ -128,13 +128,11 @@ public class ZoomActivity extends AppCompatActivity {
                         .setMax(gallery.getPageCount())
                         .setTitle(R.string.change_page)
                         .setDrawable(R.drawable.ic_find_in_page)
-                        .setDialogs(new DefaultDialogs.DialogResults() {
+                        .setDialogs(new DefaultDialogs.CustomDialogResults() {
                             @Override
                             public void positive(int actual) {
                                 changePage(offsetPage(actual-1));
                             }
-                            @Override
-                            public void negative() {}
                         })
         ));
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

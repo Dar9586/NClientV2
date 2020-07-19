@@ -34,6 +34,7 @@ import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.SimpleGallery;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
+import com.dar.nclientv2.api.components.Ranges;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.api.enums.Language;
@@ -391,13 +392,14 @@ public class MainActivity extends BaseActivity
     private void createSearchInspector(Intent intent, String packageName, String query) {
         boolean advanced = intent.getBooleanExtra(packageName + ".ADVANCED", false);
         ArrayList<Tag>tagArrayList=intent.getParcelableArrayListExtra(packageName + ".TAGS");
+        Ranges ranges=intent.getParcelableExtra(getPackageName()+".RANGES");
         HashSet<Tag> tags = null;
         query = query.trim();
         if (advanced) {
             assert tagArrayList != null;//tags is always not null when advanced is set
             tags = new HashSet<>(tagArrayList);
         }
-        inspector = InspectorV3.searchInspector(this, query, tags, 1, Global.getSortType(), resetDataset);
+        inspector = InspectorV3.searchInspector(this, query, tags, 1, Global.getSortType(),ranges, resetDataset);
         modeType=ModeType.SEARCH;
     }
 
@@ -453,7 +455,7 @@ public class MainActivity extends BaseActivity
             return;
         }
 
-        inspector=InspectorV3.searchInspector(this,query,null,page,type,resetDataset);
+        inspector=InspectorV3.searchInspector(this,query,null,page,type, null, resetDataset);
         modeType= ModeType.SEARCH;
     }
     private void useDataTagMode(List<String> datas,TagType type) {
@@ -528,15 +530,13 @@ public class MainActivity extends BaseActivity
                         .setMax(totalPage)
                         .setTitle(R.string.change_page)
                         .setDrawable(R.drawable.ic_find_in_page)
-                        .setDialogs(new DefaultDialogs.DialogResults() {
+                        .setDialogs(new DefaultDialogs.CustomDialogResults() {
                     @Override
                     public void positive(int actual) {
                         inspector=inspector.cloneInspector(MainActivity.this,resetDataset);
                         inspector.setPage(actual);
                         inspector.start();
                     }
-                    @Override
-                    public void negative() {}
                 })
         );
     }

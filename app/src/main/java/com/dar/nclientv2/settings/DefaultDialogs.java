@@ -21,11 +21,17 @@ public class DefaultDialogs {
     public interface DialogResults{
         void positive(int actual);
         void negative();
+        void neutral();
+    }
+    public static class  CustomDialogResults implements DialogResults {
+        @Override public void positive(int actual) {}
+        @Override public void negative() {}
+        @Override public void neutral() {}
     }
     @SuppressWarnings("UnusedReturnValue")
     public static class Builder{
         private final Context context;
-        private @StringRes int title,yesbtn,nobtn;
+        private @StringRes int title,yesbtn,nobtn,maybebtn;
         private @DrawableRes int drawable;
         private int max,actual,min;
         DialogResults dialogs;
@@ -35,6 +41,7 @@ public class DefaultDialogs {
             title=drawable=0;
             yesbtn=R.string.ok;
             nobtn=R.string.cancel;
+            maybebtn=0;
             max=actual=1;
             min=0;
             dialogs=null;
@@ -67,6 +74,11 @@ public class DefaultDialogs {
 
         public Builder setMax(int max) {
             this.max = max;
+            return this;
+        }
+
+        public Builder setMaybebtn(int maybebtn) {
+            this.maybebtn = maybebtn;
             return this;
         }
 
@@ -134,7 +146,11 @@ public class DefaultDialogs {
             }
         });
         if(builder.dialogs!=null)
-        build.setPositiveButton(builder.context.getString(builder.yesbtn), (dialog, id) -> builder.dialogs.positive(seekBar.getProgress()+builder.min)).setNegativeButton(builder.context.getString(builder.nobtn), (dialog, which) -> builder.dialogs.negative());
+        build
+                .setPositiveButton(builder.context.getString(builder.yesbtn), (dialog, id) -> builder.dialogs.positive(seekBar.getProgress()+builder.min))
+                .setNegativeButton(builder.context.getString(builder.nobtn), (dialog, which) -> builder.dialogs.negative());
+        if(builder.maybebtn!=0)
+            build.setNeutralButton(builder.context.getString(builder.maybebtn), (dialog, which) -> builder.dialogs.neutral());
         build.setCancelable(true);
         build.show();
     }

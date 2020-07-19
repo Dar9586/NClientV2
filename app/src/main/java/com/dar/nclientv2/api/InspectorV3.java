@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
+import com.dar.nclientv2.api.components.Ranges;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.ApiRequestType;
 import com.dar.nclientv2.api.enums.Language;
@@ -49,6 +50,7 @@ public class InspectorV3 extends Thread implements Parcelable {
     private ApiRequestType requestType;
     private Set<Tag> tags;
     private List<GenericGallery> galleries=null;
+    private Ranges ranges=null;
     private InspectorResponse response;
     private WeakReference<Context> context;
     private Document htmlDocument;
@@ -69,6 +71,7 @@ public class InspectorV3 extends Thread implements Parcelable {
         }
         galleries=(ArrayList<GenericGallery>)x;
         tags =new HashSet<>(in.createTypedArrayList(Tag.CREATOR));
+        ranges=in.readParcelable(Ranges.class.getClassLoader());
     }
 
     public static final Creator<InspectorV3> CREATOR = new Creator<InspectorV3>() {
@@ -102,6 +105,7 @@ public class InspectorV3 extends Thread implements Parcelable {
         else dest.writeByte((byte)galleries.get(0).getType().ordinal());
         dest.writeTypedList(galleries);
         dest.writeTypedList(new ArrayList<>(tags));
+        dest.writeParcelable(ranges,flags);
     }
 
     public String getSearchTitle() {
@@ -152,6 +156,7 @@ public class InspectorV3 extends Thread implements Parcelable {
         inspectorV3.page=page;
         inspectorV3.id=id;
         inspectorV3.custom=custom;
+        inspectorV3.ranges=ranges;
         return inspectorV3;
     }
     /**
@@ -186,7 +191,7 @@ public class InspectorV3 extends Thread implements Parcelable {
         return inspector;
     }
     public static InspectorV3 basicInspector(Context context,int page,InspectorResponse response){
-        return searchInspector(context,null,null,page,Global.getSortType(),response);
+        return searchInspector(context,null,null,page,Global.getSortType(), null, response);
     }
     public static InspectorV3 tagInspector(Context context,Tag tag,int page,SortType sortType,InspectorResponse response){
         Collection<Tag>tags;
@@ -196,18 +201,19 @@ public class InspectorV3 extends Thread implements Parcelable {
         }else {
             tags = Collections.singleton(tag);
         }
-        return searchInspector(context,null,tags,page,sortType,response);
+        return searchInspector(context,null,tags,page,sortType, null, response);
     }
-    public static InspectorV3 searchInspector(Context context, String query, Collection<Tag> tags, int page, SortType sortType, InspectorResponse response){
+    public static InspectorV3 searchInspector(Context context, String query, Collection<Tag> tags, int page, SortType sortType,@Nullable Ranges ranges, InspectorResponse response){
         InspectorV3 inspector=new InspectorV3(context,response);
         inspector.custom=tags!=null;
         inspector.tags=inspector.custom?new HashSet<>(tags):getDefaultTags();
         inspector.tags.addAll(getLanguageTags(Global.getOnlyLanguage()));
         inspector.page=page;
         inspector.pageCount=0;
+        inspector.ranges=ranges;
         inspector.query=query==null?"":query;
         inspector.sortType =sortType;
-        if(inspector.query.isEmpty()) {
+        if(inspector.query.isEmpty()&&(ranges==null||ranges.isDefault())) {
             switch (inspector.tags.size()) {
                 case 0:
                     inspector.requestType = ApiRequestType.BYALL;
@@ -259,6 +265,8 @@ public class InspectorV3 extends Thread implements Parcelable {
                      if(builder.toString().contains(tt.toQueryTag(TagStatus.ACCEPTED)))continue;
                      builder.append('+').append(tt.toQueryTag());
                  }
+                 if(ranges!=null)
+                    builder.append('+').append(ranges.toQuery());
                  builder.append("&page=").append(page);
                  if(sortType.getUrlAddition()!=null){
                      builder.append("&sort=").append(sortType.getUrlAddition());
@@ -340,7 +348,6 @@ public class InspectorV3 extends Thread implements Parcelable {
         if(scripts.size()==0 )return;
         String json=trimScriptTag(scripts.last().html());
         if(json==null)return;
-        Elements com=document.getElementById("comments").getElementsByClass("comment");
         Elements rel=document.getElementById("related-container").getElementsByClass("gallery");
         boolean isFavorite;
         try {

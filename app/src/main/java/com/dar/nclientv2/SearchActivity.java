@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +23,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dar.nclientv2.adapters.HistoryAdapter;
+import com.dar.nclientv2.api.components.Ranges;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.SpecialTagIds;
@@ -28,6 +32,7 @@ import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.widgets.ChipTag;
 import com.dar.nclientv2.components.widgets.CustomLinearLayoutManager;
+import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.utility.LogUtility;
@@ -42,6 +47,7 @@ import java.util.Locale;
 
 public class SearchActivity extends AppCompatActivity {
     public static final int CUSTOM_ID_START=100000000;
+    private final Ranges ranges=new Ranges();
     private final ArrayList<ChipTag>tags=new ArrayList<>();
     private ChipGroup[] groups;
     private final Chip[] addChip =new Chip[TagType.values.length];
@@ -50,6 +56,7 @@ public class SearchActivity extends AppCompatActivity {
     private TagType loadedTag=null;
     private HistoryAdapter adapter;
     private boolean advanced=false;
+    private Ranges.TimeUnit temporaryUnit;
     private static int customId = CUSTOM_ID_START;
     private InputMethodManager inputMethodManager;
     public void setQuery(String str,boolean submit){
@@ -83,7 +90,7 @@ public class SearchActivity extends AppCompatActivity {
                 findViewById(R.id.language_group),
                 findViewById(R.id.category_group),
         };
-
+        initRanges();
         adapter=new HistoryAdapter(this);
         autoComplete=(AppCompatAutoCompleteTextView) getLayoutInflater().inflate(R.layout.autocomplete_entry,findViewById(R.id.appbar),false);
         autoComplete.setOnEditorActionListener((v, actionId, event) -> {
@@ -115,6 +122,7 @@ public class SearchActivity extends AppCompatActivity {
                     ArrayList<Tag>tt=new ArrayList<>(tags.size());
                     for(ChipTag t:tags)if(t.getTag().getStatus()==TagStatus.ACCEPTED)tt.add(t.getTag());
                     i.putParcelableArrayListExtra(getPackageName()+".TAGS",tt);
+                    i.putExtra(getPackageName()+".RANGES",ranges);
                 }
                 SearchActivity.this.runOnUiThread(()->{
                     startActivity(i);
@@ -132,6 +140,122 @@ public class SearchActivity extends AppCompatActivity {
         populateGroup();
         searchView.requestFocus();
     }
+
+    private void createPageBuilder(int title,int min,int max,int actual,DefaultDialogs.DialogResults results){
+        min=Math.max(1,min);
+        actual=Math.max(actual,min);
+        DefaultDialogs.pageChangerDialog(new DefaultDialogs.Builder(this)
+                .setTitle(title)
+                .setMax(max)
+                .setMin(min)
+                .setDrawable(R.drawable.ic_search)
+                .setActual(actual)
+                .setYesbtn(R.string.ok)
+                .setNobtn(R.string.cancel)
+                .setMaybebtn(R.string.reset)
+                .setDialogs(results));
+    }
+
+    private void initRanges() {
+        LinearLayout pageRangeLayout=findViewById(R.id.page_range);
+        LinearLayout uploadRangeLayout=findViewById(R.id.upload_range);
+        ((TextView)  pageRangeLayout.findViewById(R.id.title)).setText(R.string.page_range);
+        ((TextView)uploadRangeLayout.findViewById(R.id.title)).setText(R.string.upload_time);
+        Button fromPage=pageRangeLayout.findViewById(R.id.fromButton);
+        Button toPage  =pageRangeLayout.findViewById(R.id.toButton);
+        Button fromDate=uploadRangeLayout.findViewById(R.id.fromButton);
+        Button toDate  =uploadRangeLayout.findViewById(R.id.toButton);
+        fromPage.setOnClickListener(v -> {
+            createPageBuilder(R.string.from_page,0,2000,ranges.getFromPage(),new DefaultDialogs.CustomDialogResults(){
+                @Override
+                public void positive(int actual) {
+                    ranges.setFromPage(actual);
+                    fromPage.setText(String.format(Locale.US,"%d",actual));
+                    if(ranges.getFromPage()>ranges.getToPage()){
+                        ranges.setToPage(Ranges.UNDEFINED);
+                        toPage.setText("");
+                    }
+                    advanced=true;
+                }
+
+                @Override
+                public void neutral() {
+                    ranges.setFromPage(Ranges.UNDEFINED);
+                    fromPage.setText("");
+                }
+            });
+        });
+        toPage.setOnClickListener(v -> {
+            createPageBuilder(R.string.to_page,ranges.getFromPage(),2000,ranges.getToPage(),new DefaultDialogs.CustomDialogResults(){
+                @Override
+                public void positive(int actual) {
+                    ranges.setToPage(actual);
+                    toPage.setText(String.format(Locale.US,"%d",actual));
+                    advanced=true;
+                }
+
+                @Override
+                public void neutral() {
+                    ranges.setToPage(Ranges.UNDEFINED);
+                    toPage.setText("");
+                }
+            });
+        });
+        fromDate.setOnClickListener(v -> showUnitDialog(fromDate,true));
+        toDate.setOnClickListener(v -> showUnitDialog(toDate,false));
+    }
+
+    private void showUnitDialog(Button button, boolean from) {
+        int i=0;
+        String[]strings=new String[Ranges.TimeUnit.values().length];
+        for(Ranges.TimeUnit unit:Ranges.TimeUnit.values())
+            strings[i++]=getString(unit.getString());
+
+        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(this);
+        builder.setTitle(R.string.choose_unit);
+        builder.setIcon(R.drawable.ic_search);
+        builder.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line,strings), (dialog, which) -> {
+            temporaryUnit= Ranges.TimeUnit.values()[which];
+            createPageBuilder(from?R.string.from_time:R.string.to_time,1,temporaryUnit == Ranges.TimeUnit.YEAR?10:100,1,new DefaultDialogs.CustomDialogResults(){
+                @Override
+                public void positive(int actual) {
+                    if(from){
+                        ranges.setFromDateUnit(temporaryUnit);
+                        ranges.setFromDate(actual);
+                    }else{
+                        ranges.setToDateUnit(temporaryUnit);
+                        ranges.setToDate(actual);
+                    }
+                    button.setText(String.format(Locale.US, "%d %c",actual,Character.toUpperCase(temporaryUnit.getVal())));
+                    advanced=true;
+                }
+
+                @Override
+                public void neutral() {
+                    if(from){
+                        ranges.setFromDateUnit(Ranges.UNDEFINED_DATE);
+                        ranges.setFromDate(Ranges.UNDEFINED);
+                    }else{
+                        ranges.setToDateUnit(Ranges.UNDEFINED_DATE);
+                        ranges.setToDate(Ranges.UNDEFINED);
+                    }
+                    button.setText("");
+                }
+            });
+        });
+        builder.setNeutralButton(R.string.reset, (dialog, which) -> {
+            if(from){
+                ranges.setFromDateUnit(Ranges.UNDEFINED_DATE);
+                ranges.setFromDate(Ranges.UNDEFINED);
+            }else{
+                ranges.setToDateUnit(Ranges.UNDEFINED_DATE);
+                ranges.setToDate(Ranges.UNDEFINED);
+            }
+            button.setText("");
+        });
+        builder.show();
+    }
+
     private void populateGroup(){
         //add top tags
         for(TagType type:new TagType[]{TagType.TAG,TagType.PARODY,TagType.CHARACTER,TagType.ARTIST,TagType.GROUP}) {
@@ -266,7 +390,7 @@ public class SearchActivity extends AppCompatActivity {
                 View v=findViewById(R.id.groups);
                 boolean isVisible=v.getVisibility()==View.VISIBLE;
                 v.setVisibility(isVisible?View.GONE:View.VISIBLE);
-                item.setIcon(isVisible?R.drawable.ic_close:R.drawable.ic_add);
+                item.setIcon(isVisible?R.drawable.ic_add:R.drawable.ic_close);
                 Global.setTint(item.getIcon());
                 break;
         }
