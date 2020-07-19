@@ -119,7 +119,7 @@
     <string name="random_manga">Zufallsmanga</string>
     <string name="save_page">Seite speichern</string>
     <string name="page_count_format" formatted="true">%d Seiten</string>
-    <string name="upload_date_format" formatted="true">Am %s um %s< hochgeladen/string>
+    <string name="upload_date_format" formatted="true">Am %s um %s< hochgeladen</string>
     <string name="favorite_count_format" formatted="true">%d Favoriten</string>
     <string name="favorite_manga">Lieblingsmanga</string>
     <string name="setting_on_remove_ignored">Die Galerie mit ignorierten Tags wird nicht gezeigt</string>
