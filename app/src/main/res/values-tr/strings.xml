@@ -7,7 +7,7 @@
     <string name="setting_on_high_res">Kullanılabilen en yüksek çözünürlük yüklenecek (daha fazla veri gerektirir)</string>
     <string name="setting_off_load">Fotoğraflar sadece tek sayfa görünümünde yüklenecek</string>
     <string name="setting_off_use_account_tag">Hesap etiketleri aramada dikkate alınmayacak</string>
-    <string name="theme_summary">Tema renklerini seç</string>
+    <string name="theme_summary">Tema rengini seç</string>
 
     <!--SETTINGS NAME-->
     <string name="send_crash_report">Otomatik çökme raporu gönder</string>
@@ -26,7 +26,7 @@
     <string name="characters">Karakterler</string>
     <string name="tags">Etiketler</string>
     <string name="artists">Sanatçılar</string>
-    <string name="groups">Gruplar</string>
+    <string name="groups">Çeviri Grupları</string>
     <string name="languages">Diller</string>
     <string name="categories">Kategoriler</string>
     <string name="unknown">Bilinmiyor</string>
@@ -127,9 +127,9 @@
     <string name="change_title_type">Başlık dilini değiştir</string>
     <string name="title_type_summary">Tüm mangalar için varsayılan başlığı seç</string>
 
-    <string name="search_settings">Ayarlarda ara</string>
+    <string name="search_settings">Arama ayarları</string>
     <string name="global_settings">Uygulama ayarları</string>
-    <string name="images_settings">Fotoğraf ayarları</string>
+    <string name="images_settings">Okuma ayarları</string>
     <string name="miscellaneous">Çeşitli</string>
     <string name="update_settings">Güncelleme ayarları</string>
     <string name="online_favorite_manga">Online favori manga</string>
@@ -199,7 +199,7 @@
     <string name="history">Geçmiş</string>
     <string name="clear_history">Geçmişi temizle</string>
     <string name="cancelled_format">İptal edildi: %s</string>
-    <string name="completed_format">İndirme tamamlandı: %s</string> <!--Download complete:-->
+    <string name="completed_format">İndirme tamamlandı: %s</string>
     <string name="stop">Dur</string>
     <string name="downloading_format">İndiriliyor: %s</string>
     <string name="toggle_favorite">Favorilere ekle/çıkar</string>
@@ -224,8 +224,8 @@
         <item>Arapça</item>
     </string-array>
     <string-array name="theme">
-        <item>Beyaz</item>
-        <item>Siyah</item>
+        <item>Beyaz Tema</item>
+        <item>Siyah Tema</item>
     </string-array>
 
     <string-array name="title_type_array">
@@ -244,7 +244,7 @@
     <string name="navigation_drawer_open">Gezinme çekmecesini aç</string>
     <string name="link_copied_to_clipboard">Link panoya kopyalandı</string>
     <string name="go_online">Online görüntüle</string>
-    <string name="no_updates_found">Zaten en son sürümü kullanıyorsunuz!</string> <!--You are already using the latest version-->
+    <string name="no_updates_found">Zaten en son sürümü kullanıyorsunuz!</string> 
     <string name="clear_this_list">Bu listeyi temizle?</string>
     <string name="next_page_volume_up">Ses arttırma tuşuyla sıradaki sayfaya geç</string>
     <string name="comments">Yorumlar</string>
@@ -267,12 +267,12 @@
     <string name="copied_to_clipboard">Panoya kopyalandı</string>
     <string name="maximum_notification_count">Maksimum bildirim sayısı</string>
 
-    <string name="data_usage_full">Her şeyi indir (Yüksek veri kullanımı)</string> <!--Download & View everything (high data usage)-->
+    <string name="data_usage_full">Her şeyi indir (Yüksek veri kullanımı)</string>
     <string name="use_column_port">Dikey konumda satır başına öğe sayısını seçin</string>
     <string name="use_column_land">Yatay konumda satır başına öğe sayısını seçin</string>
     <string name="copy_settings_to_clipboard">Ayarları panoya kopyala</string>
-    <string name="sort_popular_all_time">Popüler</string>
-    <string name="sort_recent">Yeni</string>
+    <string name="sort_popular_all_time">Popülerlik</string>
+    <string name="sort_recent">Eklenme tarihi</string>
     <string name="sort_popular_day">Günlük popülerlik</string>
     <string name="sort_popular_week">Haftalık popülerlik</string>
     <string name="sort_select_type">Sıralama tipi seç:</string>
@@ -286,20 +286,20 @@
     <string name="choose_directory">Dizin Seç</string>
     <string name="change_directory_position">Dizin konumunu değiştir</string>
     <string name="bookmark_here">Buraya yer işareti ekle</string>
-    <string name="resume_from_page">%d. sayfadan devam et</string> <!-- change to "%d`inci sayfadan devam et" if " %d. " is a problem-->
+    <string name="resume_from_page">%d. sayfadan devam et</string>
     <string name="new_beta_version_found">Yeni beta sürümü bulundu</string>
     <string name="check_beta_releases">Beta sürümlerini kontrol et</string>
-    <string name="page_range">Page range:</string>
-    <string name="upload_time">Upload time:</string>
-    <string name="from_page">From page:</string>
-    <string name="to_page">To page:</string>
-    <string name="from_time">From time:</string>
-    <string name="to_time">To time:</string>
-    <string name="reset">Reset</string>
-    <string name="hours">Hours</string>
-    <string name="years">Years</string>
-    <string name="months">Months</string>
-    <string name="days">Days</string>
-    <string name="weeks">Weeks</string>
-    <string name="choose_unit">Choose unit:</string>
+    <string name="page_range">Sayfa aralığı:</string>
+    <string name="upload_time">Yüklenme tarifi:</string>
+    <string name="from_page">Sayfadan:</string>
+    <string name="to_page">Sayfaya:</string>
+    <string name="from_time">Bu tarihten:</string>
+    <string name="to_time">Bu tarihe:</string>
+    <string name="reset">Sıfırla</string>
+    <string name="hours">Saat</string>
+    <string name="years">Yıl</string>
+    <string name="months">Ay</string>
+    <string name="days">Gün</string>
+    <string name="weeks">Hafta</string>
+    <string name="choose_unit">Birim seç:</string>
 </resources>
