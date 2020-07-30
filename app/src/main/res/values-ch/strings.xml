@@ -292,7 +292,8 @@
         <item>簡體中文</item>
         <item>土耳其文</item>
         <item>義大利文</item>
-	<item>德語</item>   
+	    <item>德語</item>
+        <item>阿拉伯</item>
     </string-array>
     <string-array name="theme">
         <item>亮色</item>
