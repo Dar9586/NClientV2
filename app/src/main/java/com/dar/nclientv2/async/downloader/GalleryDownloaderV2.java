@@ -97,7 +97,7 @@ public class GalleryDownloaderV2 {
         for(DownloadObserver observer:observers)observer.triggerUpdateProgress(this,reach,total);
     }
     private void onCancel(){
-        for(DownloadObserver observer:observers)observer.triggerStopDownlaod(this);
+        for(DownloadObserver observer:observers)observer.triggerCancelDownload(this);
     }
     private void onPause(){
         for(DownloadObserver observer:observers)observer.triggerPauseDownload(this);

@@ -77,7 +77,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         }
 
         @Override
-        public void triggerStopDownlaod(GalleryDownloaderV2 downloader) {
+        public void triggerCancelDownload(GalleryDownloaderV2 downloader) {
             removeDownloader(downloader);
         }
 

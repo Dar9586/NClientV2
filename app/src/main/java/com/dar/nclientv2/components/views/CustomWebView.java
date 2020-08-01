@@ -35,6 +35,12 @@ public class CustomWebView extends WebView {
         initialize();
     }
 
+    @Override
+    public void loadUrl(String url) {
+        LogUtility.d("Loading url: "+url);
+        super.loadUrl(url);
+    }
+
     public CustomWebView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         javaScriptInterface=new MyJavaScriptInterface(context.getApplicationContext());

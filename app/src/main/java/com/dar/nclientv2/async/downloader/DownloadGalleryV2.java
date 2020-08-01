@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class DownloadGalleryV2 extends JobIntentService {
+    private static final Object lock=new Object();
     private static final int JOB_DOWNLOAD_GALLERY_ID=9999;
     public static void downloadGallery(Context context, GenericGallery gallery){
         if(gallery.isValid() && gallery instanceof Gallery)downloadGallery(context,(Gallery) gallery);
@@ -43,6 +44,7 @@ public class DownloadGalleryV2 extends JobIntentService {
 
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
+        int startCommand=super.onStartCommand(intent, flags, startId);
         if(intent!=null){
             int id=intent.getIntExtra(getPackageName()+".ID",-1);
             String mode=intent.getStringExtra(getPackageName()+".MODE");
@@ -62,7 +64,7 @@ public class DownloadGalleryV2 extends JobIntentService {
                 }
             }
         }
-        return super.onStartCommand(intent, flags, startId);
+        return startCommand;
     }
 
     public static void loadDownloads(Context context) {
@@ -86,14 +88,26 @@ public class DownloadGalleryV2 extends JobIntentService {
     public static void startWork(@Nullable Context context) {
         if(context!=null)
             enqueueWork(context,DownloadGalleryV2.class,JOB_DOWNLOAD_GALLERY_ID,new Intent());
+        synchronized (lock) {
+                lock.notify();
+        }
     }
 
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
-        while (true){
+        for(;;){
             obtainData();
             GalleryDownloaderManager entry = DownloadQueue.fetch();
-            if(entry==null)return;
+            if(entry==null){
+                synchronized (lock) {
+                    try {
+                        lock.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                continue;
+            }
             LogUtility.d("Downloading: "+entry.downloader().getId());
             if(entry.downloader().downloadGalleryData()){
                 entry.downloader().download();

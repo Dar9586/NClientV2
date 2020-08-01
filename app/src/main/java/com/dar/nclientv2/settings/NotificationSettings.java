@@ -37,10 +37,10 @@ public class NotificationSettings {
         notificationArray.add(notificationId);
         trimArray();
         LogUtility.d("Notification count: "+notificationArray.size());
-        notificationSettings.notificationManager.notify(null,notificationId,notification);
+        notificationSettings.notificationManager.notify(notificationId,notification);
     }
     public static void cancel(String channel, int notificationId){
-        notificationSettings.notificationManager.cancel(channel,notificationId);
+        notificationSettings.notificationManager.cancel(notificationId);
         notificationArray.remove(Integer.valueOf(notificationId));
     }
     private static void trimArray(){

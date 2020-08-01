@@ -46,7 +46,7 @@ public class GalleryDownloaderManager {
         }
 
         @Override
-        public void triggerStopDownlaod(GalleryDownloaderV2 downloader) {
+        public void triggerCancelDownload(GalleryDownloaderV2 downloader) {
             cancelNotification();
             Global.recursiveDelete(downloader.getFolder());
         }
