@@ -268,23 +268,24 @@
     <string name="default_zoom">默認縮放</string>
     <string name="choose_directory">選擇資料夾</string>
     <string name="change_directory_position">更改資料夾路徑</string>
-    <string name="bookmark_here">Bookmark here</string>
-    <string name="resume_from_page">Resume from page %d</string>
-    <string name="new_beta_version_found">New beta version found</string>
-    <string name="check_beta_releases">Check for beta releases</string>
-    <string name="page_range">Page range:</string>
-    <string name="upload_time">Upload time:</string>
-    <string name="from_page">From page:</string>
-    <string name="to_page">To page:</string>
-    <string name="from_time">From time:</string>
-    <string name="to_time">To time:</string>
-    <string name="reset">Reset</string>
-    <string name="hours">Hours</string>
-    <string name="years">Years</string>
-    <string name="months">Months</string>
-    <string name="days">Days</string>
-    <string name="weeks">Weeks</string>
-    <string name="choose_unit">Choose unit:</string>
+    <string name="bookmark_here">加入書簽</string>
+    <string name="resume_from_page">從 %d 頁繼續</string>
+    <string name="new_beta_version_found">發現新的測試版</string>
+    <string name="check_beta_releases">下載測試版</string>
+    <string name="page_range">頁面範圍：</string>
+    <string name="upload_time">上傳時間：</string>
+    <string name="from_page">從頁數：</string>
+    <string name="to_page">到頁數：</string>
+    <string name="from_time">從時間：</string>
+    <string name="to_time">到時間：</string>
+    <string name="reset">重置</string>
+    <string name="hours">小時</string>
+    <string name="years">年</string>
+    <string name="months">月</string>
+    <string name="days">日</string>
+    <string name="weeks">周</string>
+    <string name="choose_unit">選擇時間單位:</string>
+
 
     <string-array name="language">
         <item>英文</item>
