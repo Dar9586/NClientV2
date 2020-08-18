@@ -268,31 +268,31 @@
     <string name="default_zoom">默认缩放</string>
     <string name="choose_directory">选择文件夹</string>
     <string name="change_directory_position">选择文件夹位置</string>
-    <string name="bookmark_here">Bookmark here</string>
-    <string name="resume_from_page">Resume from page %d</string>
-    <string name="new_beta_version_found">New beta version found</string>
-    <string name="check_beta_releases">Check for beta releases</string>
-    <string name="page_range">Page range:</string>
-    <string name="upload_time">Upload time:</string>
-    <string name="from_page">From page:</string>
-    <string name="to_page">To page:</string>
-    <string name="from_time">From time:</string>
-    <string name="to_time">To time:</string>
-    <string name="reset">Reset</string>
-    <string name="hours">Hours</string>
-    <string name="years">Years</string>
-    <string name="months">Months</string>
-    <string name="days">Days</string>
-    <string name="weeks">Weeks</string>
-    <string name="choose_unit">Choose unit:</string>
+    <string name="bookmark_here">加入书签</string>
+    <string name="resume_from_page">从 %d 页继续</string>
+    <string name="new_beta_version_found">发现新的测试版</string>
+    <string name="check_beta_releases">下载测试版</string>
+    <string name="page_range">页面范围：</string>
+    <string name="upload_time">上传时间：</string>
+    <string name="from_page">从页数：</string>
+    <string name="to_page">到页数：</string>
+    <string name="from_time">从时间：</string>
+    <string name="to_time">到时间：</string>
+    <string name="reset">重置</string>
+    <string name="hours">小时</string>
+    <string name="years">年</string>
+    <string name="months">月</string>
+    <string name="days">日</string>
+    <string name="weeks">周</string>
+    <string name="choose_unit">选择时间单位:</string>
     <string-array name="language">
         <item>英文</item>
         <item>中文（繁体）</item>
         <item>中文（简体）</item>
-        <item>土耳其文</item>
-        <item>意大利文</item>
-	    <item>德语</item>
-        <item>阿拉伯</item>
+        <item>土耳其语</item>
+        <item>意大利语</item>
+	<item>德语</item>
+        <item>阿拉伯语</item>
     </string-array>
     <string-array name="theme">
         <item>亮色</item>
