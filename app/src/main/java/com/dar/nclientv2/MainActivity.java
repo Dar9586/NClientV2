@@ -108,6 +108,7 @@ public class MainActivity extends BaseActivity
         @Override
         public void onEnd() {
             runOnUiThread(()->refresher.setRefreshing(false));
+            inspecting=false;
         }
 
         @Override

@@ -148,7 +148,7 @@ public class GalleryActivity extends BaseActivity{
     private void checkBookmark() {
         int page=Queries.ResumeTable.pageFromId(gallery.getId());
         if(page<0)return;
-        Snackbar snack=Snackbar.make(masterLayout,getString(R.string.resume_from_page,page),Snackbar.LENGTH_LONG);
+        Snackbar snack=Snackbar.make(toolbar,getString(R.string.resume_from_page,page),Snackbar.LENGTH_LONG);
         //Should be already compensated
         snack.setAction(R.string.resume, v -> new Thread(() -> {
             runOnUiThread(() -> recycler.scrollToPosition(page));

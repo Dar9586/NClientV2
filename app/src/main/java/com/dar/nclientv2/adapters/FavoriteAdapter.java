@@ -21,6 +21,9 @@ import com.dar.nclientv2.utility.ImageDownloadUtility;
 import com.dar.nclientv2.utility.LogUtility;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 
 public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder> implements Filterable{
@@ -149,5 +152,19 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
     private void updateCursor(Cursor c){
         if(cursor!=null)cursor.close();
         cursor=c;
+    }
+    public Collection<Gallery> getAllGalleries(){
+        List<Gallery>galleries=new ArrayList<>(cursor.getCount());
+        if(cursor.moveToFirst()){
+            do{
+                try{
+                    Gallery ent = Queries.GalleryTable.cursorToGallery(cursor);
+                    galleries.add(ent);
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
+            }while (cursor.moveToNext());
+        }
+        return galleries;
     }
 }

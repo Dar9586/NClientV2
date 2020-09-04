@@ -11,11 +11,15 @@ import android.view.View;
 import androidx.appcompat.widget.Toolbar;
 
 import com.dar.nclientv2.adapters.FavoriteAdapter;
+import com.dar.nclientv2.api.components.Gallery;
+import com.dar.nclientv2.async.downloader.DownloadGalleryV2;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.Utility;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class FavoriteActivity extends BaseActivity {
+    private FavoriteAdapter adapter=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +34,7 @@ public class FavoriteActivity extends BaseActivity {
         recycler = findViewById(R.id.recycler);
         refresher = findViewById(R.id.refresher);
         refresher.setRefreshing(true);
-        final FavoriteAdapter adapter = new FavoriteAdapter(this);
+        adapter = new FavoriteAdapter(this);
 
         findViewById(R.id.page_switcher).setVisibility(View.GONE);
 
@@ -55,14 +59,14 @@ public class FavoriteActivity extends BaseActivity {
     protected void onResume() {
         refresher.setEnabled(true);
         refresher.setRefreshing(true);
-        ((FavoriteAdapter) recycler.getAdapter()).forceReload();
+        adapter.forceReload();
         super.onResume();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        menu.findItem(R.id.download_page).setVisible(false);
+        menu.findItem(R.id.download_page).setVisible(true);
         menu.findItem(R.id.by_popular).setVisible(false);
         menu.findItem(R.id.only_language).setVisible(false);
         menu.findItem(R.id.add_bookmark).setVisible(false);
@@ -75,8 +79,8 @@ public class FavoriteActivity extends BaseActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (recycler.getAdapter() != null)
-                    ((FavoriteAdapter) recycler.getAdapter()).getFilter().filter(newText);
+                if (adapter != null)
+                    adapter.getFilter().filter(newText);
                 return true;
             }
         });
@@ -92,7 +96,24 @@ public class FavoriteActivity extends BaseActivity {
             case R.id.open_browser:
                 i = new Intent(Intent.ACTION_VIEW, Uri.parse(Utility.getBaseUrl()+"favorites/"));
                 startActivity(i);
+                break;
+            case R.id.download_page:
+                if(adapter!=null)showDialogDownloadAll();
+                break;
+
         }
         return super.onOptionsItemSelected(item);
+    }
+    private void showDialogDownloadAll() {
+        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(this);
+        builder
+                .setTitle(R.string.download_all_galleries_in_this_page)
+                .setIcon(R.drawable.ic_file)
+                .setNegativeButton(R.string.cancel,null)
+                .setPositiveButton(R.string.ok, (dialog, which) -> {
+                    for(Gallery g:adapter.getAllGalleries())
+                        DownloadGalleryV2.downloadGallery(this, g);
+                });
+        builder.show();
     }
 }

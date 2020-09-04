@@ -10,8 +10,8 @@ android {
         applicationId "com.dar.nclientv2"
         minSdkVersion 14
         targetSdkVersion 29
-        versionCode 254
-        versionName "2.5.4"
+        versionCode 256
+        versionName "2.5.6"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
 
@@ -32,24 +32,24 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.preference:preference:1.1.1'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.viewpager:viewpager:1.0.0'
     implementation 'androidx.fragment:fragment:1.2.5'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta7'
-    implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.12.6'//Because of min SDK
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.12.12'//Because of min SDK
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
 
     implementation 'net.opacapp:multiline-collapsingtoolbar:27.1.1'
 
-    implementation 'com.github.chrisbanes:PhotoView:2.1.3'
+    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation 'org.jsoup:jsoup:1.13.1'
 
-    implementation 'ch.acra:acra-core:5.5.1'
+    implementation 'ch.acra:acra-core:5.7.0'
 
     implementation ("com.github.bumptech.glide:glide:4.11.0") {
         exclude group: "com.android.support"
