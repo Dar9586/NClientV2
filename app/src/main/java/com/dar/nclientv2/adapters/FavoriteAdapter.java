@@ -31,6 +31,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
     private CharSequence lastQuery;
     private Cursor cursor;
     private boolean force=false;
+    private boolean sortByTitle=false;
     public FavoriteAdapter(FavoriteActivity activity) {
         boolean online = false;
         this.activity=activity;
@@ -112,7 +113,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
                 lastQuery=constraint.toString();
                 LogUtility.d(lastQuery+"LASTQERY");
                 force=false;
-                Cursor c=Queries.FavoriteTable.getAllFavoriteGalleriesCursor(lastQuery);
+                Cursor c=Queries.FavoriteTable.getAllFavoriteGalleriesCursor(lastQuery,sortByTitle);
                 results.count=c.getCount();
                 results.values=c;
                 LogUtility.d("FILTERING3");
@@ -136,6 +137,12 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
             }
         };
     }
+
+    public void setSortByTitle(boolean sortByTitle) {
+        this.sortByTitle = sortByTitle;
+        forceReload();
+    }
+
     public void forceReload(){
         force=true;
         activity.runOnUiThread(() -> getFilter().filter(lastQuery));

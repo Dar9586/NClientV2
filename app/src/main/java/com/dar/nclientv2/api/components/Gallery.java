@@ -52,6 +52,7 @@ public class Gallery extends GenericGallery{
         for(Element e:related) this.related.add(new SimpleGallery(context,e));
         galleryData=new GalleryData(reader);
         calculateSizes(galleryData);
+        language=loadLanguage(getTags());
         onlineFavorite=isFavorite;
     }
 

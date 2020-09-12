@@ -43,4 +43,9 @@
         android:title="@string/download_all_galleries_in_this_page"
         android:titleCondensed="@string/download_all_galleries"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/sort_by_name"
+        android:title="@string/sort_by_title"
+        android:visible="false"
+        app:showAsAction="never" />
 </menu>

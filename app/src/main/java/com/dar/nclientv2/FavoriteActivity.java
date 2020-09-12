@@ -20,6 +20,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class FavoriteActivity extends BaseActivity {
     private FavoriteAdapter adapter=null;
+    private boolean sortByTitle=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,9 +68,11 @@ public class FavoriteActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         menu.findItem(R.id.download_page).setVisible(true);
+        menu.findItem(R.id.sort_by_name).setVisible(true);
         menu.findItem(R.id.by_popular).setVisible(false);
         menu.findItem(R.id.only_language).setVisible(false);
         menu.findItem(R.id.add_bookmark).setVisible(false);
+
         final androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
@@ -99,6 +102,11 @@ public class FavoriteActivity extends BaseActivity {
                 break;
             case R.id.download_page:
                 if(adapter!=null)showDialogDownloadAll();
+                break;
+            case R.id.sort_by_name:
+                sortByTitle=!sortByTitle;
+                adapter.setSortByTitle(sortByTitle);
+                item.setTitle(sortByTitle?R.string.sort_by_latest:R.string.sort_by_title);
                 break;
 
         }

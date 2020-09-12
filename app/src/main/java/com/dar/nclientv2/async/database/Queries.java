@@ -99,8 +99,8 @@ public class Queries{
         static void clearGalleries(){
             db.delete(GalleryTable.TABLE_NAME, String.format(Locale.US,
                     "%s NOT IN (SELECT %s FROM %s) AND " +
-                            "%s NOT IN (SELECT * FROM %s)",
-                    IDGALLERY,DownloadTable.ID_GALLERY,DownloadTable.TABLE_NAME,IDGALLERY,FavoriteTable.TABLE_NAME)
+                            "%s NOT IN (SELECT %s FROM %s)",
+                    IDGALLERY,DownloadTable.ID_GALLERY,DownloadTable.TABLE_NAME,IDGALLERY,FavoriteTable.ID_GALLERY,FavoriteTable.TABLE_NAME)
             ,null);
             db.delete(GalleryBridgeTable.TABLE_NAME,String.format(Locale.US,
                     "%s NOT IN (SELECT %s FROM %s)",
@@ -686,19 +686,31 @@ public class Queries{
         public static final String DROP_TABLE= "DROP TABLE IF EXISTS "+ TABLE_NAME;
         static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `Favorite` (" +
                 "`id_gallery` INT NOT NULL PRIMARY KEY , " +
+                "`time` INT NOT NULL," +
                 "FOREIGN KEY(`id_gallery`) REFERENCES `Gallery`(`idGallery`) ON UPDATE CASCADE ON DELETE CASCADE);";
 
         static final String ID_GALLERY="id_gallery";
+        static final String TIME="time";
         public static void addFavorite(Gallery gallery){
             GalleryTable.insert(gallery);
             FavoriteTable.insert(gallery.getId());
         }
 
+
+        private static String titleTypeToColumn(TitleType type){
+            switch (type){
+                case PRETTY:return GalleryTable.TITLE_PRETTY;
+                case ENGLISH:return GalleryTable.TITLE_ENG;
+                case JAPANESE:return GalleryTable.TITLE_JP;
+            }
+            return "";
+        }
         /**
          * Get all favorites galleries which title contains <code>query</code>
+         * @param orderByTitle true if order by title, false order by latest
          * @return cursor which points to the galleries
          * */
-        public static Cursor getAllFavoriteGalleriesCursor(CharSequence query){
+        public static Cursor getAllFavoriteGalleriesCursor(CharSequence query,boolean orderByTitle){
             String q=String.format(Locale.US,"SELECT * FROM %s INNER JOIN %s ON %s=%s WHERE %s LIKE ? OR %s LIKE ? OR %s LIKE ?",
                     FavoriteTable.TABLE_NAME,
                     GalleryTable.TABLE_NAME,
@@ -708,6 +720,8 @@ public class Queries{
                     GalleryTable.TITLE_JP,
                     GalleryTable.TITLE_PRETTY
             );
+            if(orderByTitle)q+="ORDER BY "+titleTypeToColumn(Global.getTitleType());
+            else q+="ORDER BY "+FavoriteTable.TIME+" DESC";
             String param="%"+query+"%";
             return db.rawQuery(q,new String[]{param,param,param});
         }
@@ -736,8 +750,9 @@ public class Queries{
         }
 
         static void insert(int galleryId){
-            ContentValues values=new ContentValues(1);
+            ContentValues values=new ContentValues(2);
             values.put(ID_GALLERY,galleryId);
+            values.put(TIME,new Date().getTime());
             LogUtility.d("DB: "+db);
             db.insertWithOnConflict(TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_IGNORE);
         }
