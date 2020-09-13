@@ -167,7 +167,10 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
         }
         List<File>files=Global.getUsableFolders(act);
         List<CharSequence>strings=new ArrayList<>(files.size());
-        for(File f:files)strings.add(f.getAbsolutePath());
+        for(File f:files){
+            if(f!=null)
+                strings.add(f.getAbsolutePath());
+        }
         storagePreference.setEntries(strings.toArray(new CharSequence[0]));
         storagePreference.setEntryValues(strings.toArray(new CharSequence[0]));
         storagePreference.setSummary(
