@@ -116,9 +116,11 @@ public class LocalActivity extends BaseActivity {
                 if(adapter!=null)adapter.viewRandom();
                 break;
             case R.id.sort_by_name:
-                Global.toggleLocalSort(this);
-                adapter.sortChanged();
-                changeSortItem(item);
+                if(adapter!=null) {
+                    Global.toggleLocalSort(this);
+                    adapter.sortChanged();
+                    changeSortItem(item);
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);

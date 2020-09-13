@@ -110,7 +110,7 @@ public class GalleryDownloaderV2 {
         this.title=Gallery.getPathTitle(title,context.getString(R.string.download_gallery));
     }
     public LocalGallery localGallery(){
-        if(status!=Status.FINISHED)return null;
+        if(status!=Status.FINISHED||folder==null)return null;
         return new LocalGallery(folder);
     }
     public void setStatus(Status status) {

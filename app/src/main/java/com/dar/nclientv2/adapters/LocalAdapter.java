@@ -89,12 +89,12 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
     private CopyOnWriteArrayList<Object> createHash(List<GalleryDownloaderV2> galleryDownloaders, List<LocalGallery> dataset) {
         HashMap<String,Object>hashMap=new HashMap<>(dataset.size()+galleryDownloaders.size());
         for(LocalGallery gall:dataset){
-            if(gall.getTitle().toLowerCase(Locale.US).contains(lastQuery))
+            if(gall!=null&&gall.getTitle().toLowerCase(Locale.US).contains(lastQuery))
                 hashMap.put(gall.getTrueTitle(),gall);
         }
 
         for(GalleryDownloaderV2 gall:galleryDownloaders){
-            if(gall.getPathTitle().toLowerCase(Locale.US).contains(lastQuery))
+            if(gall!=null&&gall.getPathTitle().toLowerCase(Locale.US).contains(lastQuery))
                 hashMap.put(gall.getTruePathTitle(),gall);
         }
 

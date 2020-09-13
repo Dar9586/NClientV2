@@ -362,14 +362,14 @@ public class SearchActivity extends AppCompatActivity {
         LogUtility.d("CREATED WITH ID: "+tag.getId());
         if(tagAlreadyExist(tag))return;
         //remove add, insert new tag, reinsert add
-        getGroup(loadedTag).removeView(addChip[loadedTag.getId()]);
+        if(getGroup(loadedTag)!=null)getGroup(loadedTag).removeView(addChip[loadedTag.getId()]);
         addChipTag(tag,true,true);
         getGroup(loadedTag).addView(addChip[loadedTag.getId()]);
 
         inputMethodManager.hideSoftInputFromWindow(searchView.getWindowToken(),InputMethodManager.SHOW_IMPLICIT);
         autoComplete.setText("");
         advanced=true;
-        ((ViewGroup)autoComplete.getParent()).removeView(autoComplete);
+        if(autoComplete.getParent()!=null)((ViewGroup)autoComplete.getParent()).removeView(autoComplete);
     }
 
     @Override

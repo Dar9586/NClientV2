@@ -84,8 +84,8 @@ public class Page implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(page);
         dest.writeParcelable(size, flags);
-        dest.writeByte((byte) imageExt.ordinal());
-        dest.writeByte((byte) imageType.ordinal());
+        dest.writeByte((byte) (imageExt==null?ImageExt.JPG.ordinal():imageExt.ordinal()));
+        dest.writeByte((byte) (imageType==null?ImageType.PAGE.ordinal():imageType.ordinal()));
     }
 
     public int getPage() {

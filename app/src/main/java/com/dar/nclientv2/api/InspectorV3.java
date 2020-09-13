@@ -93,7 +93,9 @@ public class InspectorV3 extends Thread implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte((byte) (sortType.ordinal()));
+        if(sortType!=null)
+            dest.writeByte((byte) (sortType.ordinal()));
+        else dest.writeByte((byte)SortType.RECENT_ALL_TIME.ordinal());
         dest.writeByte((byte) (custom ? 1 : 0));
         dest.writeInt(page);
         dest.writeInt(pageCount);
@@ -348,7 +350,12 @@ public class InspectorV3 extends Thread implements Parcelable {
         if(scripts.size()==0 )return;
         String json=trimScriptTag(scripts.last().html());
         if(json==null)return;
-        Elements rel=document.getElementById("related-container").getElementsByClass("gallery");
+        Element relContainer=document.getElementById("related-container");
+        Elements rel;
+        if(relContainer!=null)
+            rel=relContainer.getElementsByClass("gallery");
+        else
+            rel=new Elements();
         boolean isFavorite;
         try {
              isFavorite = document.getElementById("favorite").getElementsByTag("span").get(0).text().equals("Unfavorite");

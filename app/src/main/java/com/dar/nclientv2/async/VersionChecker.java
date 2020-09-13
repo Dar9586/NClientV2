@@ -85,13 +85,15 @@ public class VersionChecker{
     }
 
     private static GitHubRelease parseVersionJson(JsonReader jr,boolean withPrerelease) throws IOException {
-        GitHubRelease release;
-        jr.beginArray();
-        while(jr.hasNext()){
-            release=parseVersion(jr,withPrerelease);
-            if(release!=null)
-                return release;
-        }
+        try {
+            GitHubRelease release;
+            jr.beginArray();
+            while (jr.hasNext()) {
+                release = parseVersion(jr, withPrerelease);
+                if (release != null)
+                    return release;
+            }
+        }catch (IllegalStateException ignore){}
         return null;
     }
 
