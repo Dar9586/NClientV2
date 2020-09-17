@@ -540,18 +540,23 @@ public class Global {
             LogUtility.e(e.getMessage(),e);}
         return true;
     }
-
-    @Nullable
-    public static File findGalleryFolder(int id){
-        if(DOWNLOADFOLDER==null)return null;
-        DOWNLOADFOLDER.mkdirs();
+    private static File findGalleryFolder(File directory,int id){
+        if(!directory.exists()||!directory.isDirectory())return null;
         String fileName="."+id;
-        File[] tmp=DOWNLOADFOLDER.listFiles();
+        File[] tmp=directory.listFiles();
         if(tmp==null)return null;
         for (File tmp2 : tmp) {
             if (tmp2.isDirectory()&&new File(tmp2,fileName).exists()) {
                 return tmp2;
             }
+        }
+        return null;
+    }
+    @Nullable
+    public static File findGalleryFolder(Context context, int id){
+        for(File dir:getUsableFolders(context)){
+            File f=findGalleryFolder(dir,id);
+            if(f!=null)return f;
         }
         return null;
     }

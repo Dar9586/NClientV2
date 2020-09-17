@@ -99,7 +99,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         minSize =gallery.getMinSize();
         setColCount(colCount);
         if(Global.hasStoragePermission(cont)){
-            if(gallery.getId()!=-1)directory=Global.findGalleryFolder(gallery.getId());
+            if(gallery.getId()!=-1)directory=Global.findGalleryFolder(context, gallery.getId());
             else directory=new File(Global.DOWNLOADFOLDER,gallery.getTitle());
         }else directory=null;
         LogUtility.d("Max maxSize: "+maxSize+", min maxSize: "+gallery.getMinSize());

@@ -51,6 +51,7 @@ public class ZoomFragment extends Fragment {
         args.putInt("PAGE",page);
         args.putInt("ID",gallery.getId());
         args.putString("URL",gallery.isLocal()?null:((Gallery)gallery).getPageUrl(page));
+        args.putString("FILE",!gallery.isLocal()?null:((LocalGallery)gallery).getDirectory().getAbsolutePath());
         ZoomFragment fragment = new ZoomFragment();
         fragment.setArguments(args);
         return fragment;
@@ -78,12 +79,14 @@ public class ZoomFragment extends Fragment {
         photoView=rootView.findViewById(R.id.image);
         retryButton=rootView.findViewById(R.id.imageView);
         //read arguments
+        String path=getArguments().getString("FILE");
         page=getArguments().getInt("PAGE",0);
         galleryId=getArguments().getInt("ID",0);
         url=getArguments().getString("URL");
         LogUtility.d("Requested: "+page);
-        if(Global.hasStoragePermission(photoView.getContext()))
-            galleryFolder=Global.findGalleryFolder(galleryId);
+        if(path!=null)galleryFolder=new File(path);
+        else if(Global.hasStoragePermission(photoView.getContext()))
+            galleryFolder=Global.findGalleryFolder(getContext(), galleryId);
         photoView.setOnClickListener(v -> {
             if(clickListener!=null)clickListener.onClick(v);
         });

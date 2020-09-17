@@ -54,7 +54,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         if(context.isFinishing())return;
         try {
             if (storagePermission) {
-                File f = LocalGallery.getPage(Global.findGalleryFolder(ent.getId()), 1);
+                File f = LocalGallery.getPage(Global.findGalleryFolder(context,ent.getId()), 1);
                 if (f != null) {
                     online = false;
                     ImageDownloadUtility.loadImage(context, f, holder.imgView);
