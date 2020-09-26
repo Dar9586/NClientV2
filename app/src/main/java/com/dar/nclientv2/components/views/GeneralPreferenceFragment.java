@@ -18,6 +18,7 @@ import com.dar.nclientv2.CopyToClipboardActivity;
 import com.dar.nclientv2.PINActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.SettingsActivity;
+import com.dar.nclientv2.StatusManagerActivity;
 import com.dar.nclientv2.async.VersionChecker;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
@@ -42,7 +43,7 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
         switch (type){
             case MAIN:mainMenu();break;
             case COLUMN:columnMenu();break;
-            case DATA:dataMenu();
+            case DATA:dataMenu();break;
         }
     }
 
@@ -73,7 +74,11 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
     }
     private void mainMenu(){
         addPreferencesFromResource(R.xml.settings);
-
+        findPreference("status_screen").setOnPreferenceClickListener(preference -> {
+            Intent i=new Intent(act, StatusManagerActivity.class);
+            act.runOnUiThread(() -> act.startActivity(i));
+            return false;
+        });
         findPreference("col_screen").setOnPreferenceClickListener(preference -> {
             Intent i=new Intent(act,SettingsActivity.class);
             i.putExtra(act.getPackageName()+".TYPE", SettingsActivity.Type.COLUMN.ordinal());

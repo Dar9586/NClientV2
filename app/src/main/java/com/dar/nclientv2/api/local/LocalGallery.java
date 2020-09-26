@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 public class LocalGallery extends GenericGallery{
     private static final Pattern FILE_PATTERN=Pattern.compile("^(\\d{3,9})\\.(gif|png|jpg)$",Pattern.CASE_INSENSITIVE);
     private static final Pattern DUP_PATTERN=Pattern.compile("^(.*)\\.DUP\\d+$");
+    private static final Pattern IDFILE_PATTERN=Pattern.compile("^\\.\\d{1,6}$");
 
     @NonNull private final GalleryData galleryData;
     private final int min;
@@ -33,6 +34,7 @@ public class LocalGallery extends GenericGallery{
     @NonNull private final File directory;
     private final boolean valid;
     private boolean hasAdvancedData=true;
+    private int id;
     @NonNull
     private Size maxSize=new Size(0,0),minSize=new Size(Integer.MAX_VALUE,Integer.MAX_VALUE);
 
@@ -60,10 +62,12 @@ public class LocalGallery extends GenericGallery{
         title=createTitle(file);
         if(jumpDataRetrieve){
             galleryData=GalleryData.fakeData();
+            id=readIdFile();
         }else {
             galleryData = readGalleryData();
             if (galleryData.getId() == SpecialTagIds.INVALID_ID)
                 galleryData.setId(oldReadId());
+            id=galleryData.getId();
         }
         int max=0,min=Integer.MAX_VALUE;
         //Start search pages
@@ -77,6 +81,12 @@ public class LocalGallery extends GenericGallery{
         galleryData.setPageCount(max);
         this.min=min;
         valid=files.length>0;
+    }
+
+    private int readIdFile() {
+        File[]files=directory.listFiles((dir, name) -> IDFILE_PATTERN.matcher(name).matches());
+        if(files==null||files.length==0)return -1;
+        return Integer.parseInt(files[0].getName().substring(1));
     }
 
     private static String createTitle(File file) {
@@ -130,6 +140,7 @@ public class LocalGallery extends GenericGallery{
     }
 
     private LocalGallery(Parcel in) {
+        id=in.readInt();
         galleryData= Objects.requireNonNull(in.readParcelable(GalleryData.class.getClassLoader()));
         maxSize= Objects.requireNonNull(in.readParcelable(Size.class.getClassLoader()));
         minSize= Objects.requireNonNull(in.readParcelable(Size.class.getClassLoader()));
@@ -175,7 +186,7 @@ public class LocalGallery extends GenericGallery{
     }
     @Override
     public int getId() {
-        return galleryData.getId();
+        return id;
     }
     @Override
     public int getPageCount() {
@@ -228,6 +239,7 @@ public class LocalGallery extends GenericGallery{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
         dest.writeParcelable(galleryData, flags);
         dest.writeParcelable(maxSize, flags);
         dest.writeParcelable(minSize, flags);

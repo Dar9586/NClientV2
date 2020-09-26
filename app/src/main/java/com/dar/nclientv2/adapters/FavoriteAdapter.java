@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
 import android.text.Layout;
+import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dar.nclientv2.FavoriteActivity;
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder> implements Filterable{
+    private final SparseIntArray statuses=new SparseIntArray();
     private final FavoriteActivity activity;
     private CharSequence lastQuery;
     private Cursor cursor;
@@ -50,17 +53,20 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
     public GenericAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
         return new GenericAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.entry_layout, parent, false));
     }
-
-    @Override
-    public void onBindViewHolder(@NonNull final GenericAdapter.ViewHolder holder, int position) {
+    @Nullable
+    private Gallery galleryFromPosition(int position){
         cursor.moveToPosition(position);
-        final Gallery ent;
         try{
-            ent = Queries.GalleryTable.cursorToGallery(cursor);
+            return Queries.GalleryTable.cursorToGallery(cursor);
         }catch(IOException e){
             e.printStackTrace();
-            return;
+            return null;
         }
+    }
+    @Override
+    public void onBindViewHolder(@NonNull final GenericAdapter.ViewHolder holder, int position) {
+        final Gallery ent=galleryFromPosition(holder.getAdapterPosition());
+        if(ent==null)return;
         ImageDownloadUtility.loadImage(activity,ent.getThumbnail(),holder.imgView);
         holder.pages.setText(String.format(Locale.US, "%d", ent.getPageCount()));
         holder.title.setText(ent.getTitle());
@@ -93,6 +99,20 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
             holder.pages.animate().alpha(holder.pages.getAlpha()==0f?1f:0f).setDuration(100).start();
             return true;
         });
+        int statusColor=statuses.get(ent.getId(), 0);
+        if(statusColor==0){
+            statusColor=Queries.StatusMangaTable.getStatus(ent.getId()).color;
+            statuses.put(ent.getId(),statusColor);
+        }
+        holder.title.setBackgroundColor(statusColor);
+    }
+
+    public void updateColor(int position){
+        Gallery ent=galleryFromPosition(position);
+        if(ent==null)return;
+        int id=ent.getId();
+        statuses.put(id,Queries.StatusMangaTable.getStatus(id).color);
+        notifyItemChanged(position);
     }
 
     @Override
@@ -159,6 +179,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
     private void updateCursor(Cursor c){
         if(cursor!=null)cursor.close();
         cursor=c;
+        statuses.clear();
     }
     public Collection<Gallery> getAllGalleries(){
         List<Gallery>galleries=new ArrayList<>(cursor.getCount());

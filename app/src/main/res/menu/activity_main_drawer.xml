@@ -25,6 +25,10 @@
             android:icon="@drawable/ic_hashtag"
             android:title="@string/manage_tags" />
         <item
+            android:id="@+id/status_manager"
+            android:icon="@drawable/ic_hashtag"
+            android:title="View gallery with status" />
+        <item
             android:id="@+id/bookmarks"
             android:title="@string/manage_bookmarks"
             android:icon="@drawable/ic_bookmark" />

@@ -19,6 +19,7 @@ public class Database{
         Database.database = database;
         LogUtility.d("SETTED database"+database);
         setDBForTables(database);
+        Queries.StatusTable.initStatuses();
     }
 
     private static void setDBForTables(SQLiteDatabase database) {

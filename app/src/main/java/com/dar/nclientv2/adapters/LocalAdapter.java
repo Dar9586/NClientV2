@@ -3,6 +3,7 @@ package com.dar.nclientv2.adapters;
 import android.content.Intent;
 import android.os.Build;
 import android.text.Layout;
+import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.CreatePDF;
 import com.dar.nclientv2.async.CreateZIP;
+import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.async.downloader.DownloadGalleryV2;
 import com.dar.nclientv2.async.downloader.DownloadObserver;
 import com.dar.nclientv2.async.downloader.DownloadQueue;
@@ -46,6 +48,7 @@ import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> implements Filterable {
+    private final SparseIntArray statuses=new SparseIntArray();
     private final LocalActivity context;
     private List<Object> filter;
     private final List<LocalGallery> dataset;
@@ -183,11 +186,26 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
                 else holder.layout.performClick();
             }else holder.layout.performClick();
         });
-        holder.layout.setOnClickListener(v -> startGallery(ent));
+        holder.layout.setOnClickListener(v -> {
+            startGallery(ent);
+            context.setOpenedGalleryPosition(position);
+        });
         holder.layout.setOnLongClickListener(v -> {
             createContextualMenu(holder.getAdapterPosition());
             return true;
         });
+        int statusColor=statuses.get(ent.getId(), 0);
+        if(statusColor==0){
+            statusColor= Queries.StatusMangaTable.getStatus(ent.getId()).color;
+            statuses.put(ent.getId(),statusColor);
+        }
+        holder.title.setBackgroundColor(statusColor);
+    }
+
+    public void updateColor(int position){
+        int id=((LocalGallery)filter.get(position)).getId();
+        statuses.put(id,Queries.StatusMangaTable.getStatus(id).color);
+        notifyItemChanged(position);
     }
 
 

@@ -3,6 +3,7 @@ package com.dar.nclientv2.adapters;
 import android.content.Intent;
 import android.os.Build;
 import android.text.Layout;
+import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +13,14 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dar.nclientv2.GalleryActivity;
+import com.dar.nclientv2.MainActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.SimpleGallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.local.LocalGallery;
+import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
@@ -31,7 +34,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder> {
-
+    private final SparseIntArray statuses=new SparseIntArray();
     private final List<SimpleGallery> mDataset;
     private final BaseActivity context;
     private final boolean storagePermission;
@@ -109,18 +112,30 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
               /*Intent intent = new Intent(context, GalleryActivity.class);
               intent.putExtra(context.getPackageName() + ".ID", ent.getId());
               context.startActivity(intent);*/
-                downloadGallery(ent);
+              if(context instanceof MainActivity)
+                ((MainActivity)context).setPositionOpenedGallery(holder.getAdapterPosition());
+              downloadGallery(ent);
               holder.overlay.setVisibility((queryString!=null&&ent.hasIgnoredTags(queryString))?View.VISIBLE:View.GONE);
             });
             holder.overlay.setOnClickListener(v -> holder.overlay.setVisibility(View.GONE));
-        holder.layout.setOnLongClickListener(v -> {
+            holder.layout.setOnLongClickListener(v -> {
             holder.title.animate().alpha(holder.title.getAlpha()==0f?1f:0f).setDuration(100).start();
             holder.flag.animate().alpha(holder.flag.getAlpha()==0f?1f:0f).setDuration(100).start();
             holder.pages.animate().alpha(holder.pages.getAlpha()==0f?1f:0f).setDuration(100).start();
             return true;
         });
+        int statusColor=statuses.get(ent.getId(), 0);
+        if(statusColor==0){
+            statusColor=Queries.StatusMangaTable.getStatus(ent.getId()).color;
+            statuses.put(ent.getId(),statusColor);
+        }
+        holder.title.setBackgroundColor(statusColor);
     }
-
+    public void updateColor(int position){
+        int id=mDataset.get(position).getId();
+        statuses.put(id,Queries.StatusMangaTable.getStatus(id).color);
+        notifyItemChanged(position);
+    }
     private void downloadGallery(final SimpleGallery ent) {
         InspectorV3.galleryInspector(context, ent.getId(), new InspectorV3.DefaultInspectorResponse() {
             @Override
@@ -183,4 +198,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
     }
 
 
+    public void resetStatuses() {
+        statuses.clear();
+    }
 }

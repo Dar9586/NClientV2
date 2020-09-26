@@ -4,12 +4,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Color;
 
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.SpecialTagIds;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
+import com.dar.nclientv2.components.status.StatusManager;
 import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.utility.LogUtility;
 
@@ -19,7 +21,7 @@ import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class DatabaseHelper extends SQLiteOpenHelper{
-    private static final int DATABASE_VERSION = 12;
+    private static final int DATABASE_VERSION = 13;
     private static final String DATABASE_NAME = "Entries.db";
     public DatabaseHelper(Context context){
         super(context,DATABASE_NAME,null,DATABASE_VERSION);
@@ -31,6 +33,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         Database.setDatabase(db);
         insertLanguageTags();
         insertCategoryTags();
+        insertDefaultStatus();
         //Queries.DebugDatabase.dumpDatabase(db);
     }
 
@@ -43,6 +46,9 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         db.execSQL(Queries.HistoryTable.CREATE_TABLE);
         db.execSQL(Queries.FavoriteTable.CREATE_TABLE);
         db.execSQL(Queries.ResumeTable.CREATE_TABLE);
+        db.execSQL(Queries.StatusTable.CREATE_TABLE);
+        db.execSQL(Queries.StatusMangaTable.CREATE_TABLE);
+
     }
 
     private void insertCategoryTags(){
@@ -78,6 +84,23 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         if(oldVersion<=9)addRangeColumn(db);
         if(oldVersion<=10)db.execSQL(Queries.ResumeTable.CREATE_TABLE);
         if(oldVersion<=11)updateFavoriteTable(db);
+        if(oldVersion<=12)addStatusTables(db);
+
+    }
+
+    private void addStatusTables(SQLiteDatabase db) {
+        db.execSQL(Queries.StatusTable.CREATE_TABLE);
+        db.execSQL(Queries.StatusMangaTable.CREATE_TABLE);
+        insertDefaultStatus();
+    }
+
+    private void insertDefaultStatus() {
+        StatusManager.add("Reading", Color.BLUE);
+        StatusManager.add("Completed", Color.GREEN);
+        StatusManager.add("On Hold", Color.YELLOW);
+        StatusManager.add("Dropped", Color.RED);
+        StatusManager.add("Plan to read", Color.GRAY);
+        StatusManager.add(StatusManager.DEFAULT_STATUS, Color.BLACK);
     }
 
     private void updateFavoriteTable(SQLiteDatabase db) {

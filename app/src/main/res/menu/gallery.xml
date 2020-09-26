@@ -39,6 +39,12 @@
         android:title="@string/remove_from_online_favorites"
         app:showAsAction="ifRoom|collapseActionView"/>
     <item
+        android:id="@+id/manage_status"
+        android:orderInCategory="550"
+        android:title="@string/change_status"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/share"
         android:orderInCategory="600"
         android:icon="@drawable/ic_share"

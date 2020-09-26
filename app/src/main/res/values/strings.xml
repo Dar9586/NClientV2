@@ -55,7 +55,6 @@
     <string name="slash" translatable="false">/</string>
 
 
-
     <string name="setting_on_ignore_tags">Other tags won\'t be queried when a tag is selected from the gallery menu (except language)</string>
     <string name="setting_off_ignore_tags">Other tags will be queried when a tag is selected from the gallery menu</string>
     <string name="setting_on_high_res">Best resolution images will be loaded (more data)</string>
@@ -315,6 +314,16 @@
     <string name="days">Days</string>
     <string name="weeks">Weeks</string>
     <string name="choose_unit">Choose unit:</string>
+    <string name="change_status">Change status</string>
+    <string name="create_new_status">Create new status:</string>
+    <string name="invalid_color_selected">Black and white can not be used</string>
+    <string name="change_status_title">Select new status:</string>
+    <string name="remove_status">None</string>
+    <string name="name_too_short">Name too short</string>
+    <string name="duplicated_name">Duplicated name</string>
+    <string name="manage_statuses">Manage statuses</string>
+    <string name="update_status">Update status:</string>
+    <string name="view_statuses">View statuses</string>
 
     <string-array name="language">
         <item>English</item>
@@ -357,4 +366,5 @@
         <item>japanese</item>
         <item>pretty</item>
     </string-array>
+
 </resources>

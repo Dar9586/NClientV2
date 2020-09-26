@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.SimpleGallery;
 import com.dar.nclientv2.api.components.Gallery;
+import com.dar.nclientv2.api.components.GalleryData;
+import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.components.TagList;
 import com.dar.nclientv2.api.enums.ApiRequestType;
@@ -21,6 +23,8 @@ import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.async.downloader.GalleryDownloaderManager;
 import com.dar.nclientv2.async.downloader.GalleryDownloaderV2;
 import com.dar.nclientv2.components.classes.Bookmark;
+import com.dar.nclientv2.components.status.Status;
+import com.dar.nclientv2.components.status.StatusManager;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
 import com.dar.nclientv2.utility.LogUtility;
@@ -164,23 +168,24 @@ public class Queries{
             return galleries;
         }
 
-        public static void insert(Gallery gallery){
+        public static void insert(GenericGallery gallery){
             ContentValues values=new ContentValues(12);
+            GalleryData data=gallery.getGalleryData();
             values.put(IDGALLERY,gallery.getId());
-            values.put(TITLE_ENG,gallery.getTitle(TitleType.ENGLISH));
-            values.put(TITLE_JP,gallery.getTitle(TitleType.JAPANESE));
-            values.put(TITLE_PRETTY,gallery.getTitle(TitleType.PRETTY));
-            values.put(FAVORITE_COUNT,gallery.getFavoriteCount());
-            values.put(MEDIAID,gallery.getMediaId());
-            values.put(PAGES,gallery.createPagePath());
-            values.put(UPLOAD,gallery.getUploadDate()==null?null:gallery.getUploadDate().getTime());
+            values.put(TITLE_ENG,data.getTitle(TitleType.ENGLISH));
+            values.put(TITLE_JP,data.getTitle(TitleType.JAPANESE));
+            values.put(TITLE_PRETTY,data.getTitle(TitleType.PRETTY));
+            values.put(FAVORITE_COUNT,data.getFavoriteCount());
+            values.put(MEDIAID,data.getMediaId());
+            values.put(PAGES,data.createPagePath());
+            values.put(UPLOAD,data.getUploadDate()==null?null:data.getUploadDate().getTime());
             values.put(MAX_WIDTH,gallery.getMaxSize().getWidth());
             values.put(MAX_HEIGHT,gallery.getMaxSize().getHeight());
             values.put(MIN_WIDTH,gallery.getMinSize().getWidth());
             values.put(MIN_HEIGHT,gallery.getMinSize().getHeight());
             //Insert gallery
-            db.insertWithOnConflict(TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_IGNORE);
-            TagTable.insertTagsForGallery(gallery);
+            db.insertWithOnConflict(TABLE_NAME,null,values,gallery instanceof Gallery? SQLiteDatabase.CONFLICT_REPLACE:SQLiteDatabase.CONFLICT_IGNORE);
+            TagTable.insertTagsForGallery(data);
         }
         /**
          * Convert a cursor pointing to galleries to a list of galleries, cursor not closed
@@ -482,12 +487,13 @@ public class Queries{
         /**
          * Insert all tags owned by a gallery and link it using {@link GalleryBridgeTable}
          * */
-        public static void insertTagsForGallery(Gallery gallery) {
+        public static void insertTagsForGallery(GalleryData gallery) {
+            TagList tags=gallery.getTags();
             int len;Tag tag;
             for(TagType t:TagType.values){
-                len=gallery.getTagCount(t);
+                len=tags.getCount(t);
                 for(int i=0;i<len;i++){
-                    tag=gallery.getTag(t,i);
+                    tag=tags.getTag(t,i);
                     TagTable.insert(tag);//Insert tag
                     GalleryBridgeTable.insert(gallery.getId(),tag.getId());//Insert link
                 }
@@ -781,7 +787,6 @@ public class Queries{
             db.delete(TABLE_NAME,null,null);
         }
     }
-
     public static class ResumeTable {
         static final String TABLE_NAME="Resume";
         public static final String DROP_TABLE= "DROP TABLE IF EXISTS "+ TABLE_NAME;
@@ -815,5 +820,107 @@ public class Queries{
             db.delete(TABLE_NAME,ID_GALLERY+"= ?",new String[]{""+id});
         }
 
+    }
+
+    public static class StatusMangaTable{
+        static final String TABLE_NAME="StatusManga";
+        public static final String DROP_TABLE= "DROP TABLE IF EXISTS "+ TABLE_NAME;
+        static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `StatusManga` (" +
+                "`gallery` INT NOT NULL PRIMARY KEY, " +
+                "`name` TINYTEXT NOT NULL, " +
+                "FOREIGN KEY(`gallery`) REFERENCES `"+GalleryTable.TABLE_NAME+"`(`"+GalleryTable.IDGALLERY+"`) ON UPDATE CASCADE ON DELETE CASCADE," +
+                "FOREIGN KEY(`name`) REFERENCES `"+StatusTable.TABLE_NAME+"`(`"+StatusTable.NAME+"`) ON UPDATE CASCADE ON DELETE CASCADE" +
+                ");";
+        static final String NAME="name";
+        static final String GALLERY="gallery";
+
+        public static void insert(GenericGallery gallery,Status status){
+            ContentValues values=new ContentValues(2);
+            GalleryTable.insert(gallery);
+            StatusTable.insert(status);
+            values.put(NAME,status.name);
+            values.put(GALLERY,gallery.getId());
+            db.insertWithOnConflict(TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_REPLACE);
+        }
+        public static void remove(Gallery gallery){
+            db.delete(TABLE_NAME,GALLERY+"=?",new String[]{""+gallery.getId()});
+        }
+        @NonNull
+        public static Status getStatus(int id){
+            Cursor cursor=db.query(TABLE_NAME,new String[]{NAME},GALLERY+"=?",new String[]{""+id},null,null,null);
+            Status status;
+            if(cursor.moveToFirst()) status = StatusManager.getByName(cursor.getString(cursor.getColumnIndex(NAME)));
+            else status = StatusManager.getByName(StatusManager.DEFAULT_STATUS);
+            cursor.close();
+            return status;
+        }
+
+        public static void insert(GenericGallery gallery, String s) {
+            insert(gallery,StatusManager.getByName(s));
+        }
+
+        public static void update(Status oldStatus, Status newStatus) {
+            ContentValues values=new ContentValues(1);
+            values.put(NAME,newStatus.name);
+            db.update(TABLE_NAME,values,NAME+"=?",new String[]{oldStatus.name});
+        }
+
+        public static Cursor getGalleryOfStatus(String name,String filter){
+            String query=String.format("SELECT * FROM %s WHERE %s IN (SELECT %s FROM %s WHERE %s=?) AND (%s LIKE ? OR %s LIKE ? OR %s LIKE ?)",
+                    GalleryTable.TABLE_NAME,GalleryTable.IDGALLERY,
+                    StatusMangaTable.GALLERY,StatusMangaTable.TABLE_NAME,StatusMangaTable.NAME,
+                    GalleryTable.TITLE_ENG,GalleryTable.TITLE_JP,GalleryTable.TITLE_PRETTY
+                    );
+            String likeFilter='%'+filter+'%';
+            return db.rawQuery(query,new String[]{name,likeFilter,likeFilter,likeFilter});
+        }
+
+        public static void removeStatus(String name) {
+            db.delete(TABLE_NAME,NAME+"=?",new String[]{name});
+        }
+    }
+
+    public static class StatusTable {
+        static final String TABLE_NAME="Status";
+        public static final String DROP_TABLE= "DROP TABLE IF EXISTS "+ TABLE_NAME;
+        static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `Status` (" +
+                "`name` TINYTEXT NOT NULL PRIMARY KEY, " +
+                "`color` INT NOT NULL " +
+                ");";
+        static final String NAME="name";
+        static final String COLOR="color";
+
+        public static void insert(Status status){
+            ContentValues values=new ContentValues(2);
+            values.put(NAME,status.name);
+            values.put(COLOR,status.color);
+            db.insertWithOnConflict(TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_IGNORE);
+        }
+
+        public static void remove(String name){
+            db.delete(TABLE_NAME,NAME+"= ?",new String[]{name});
+            StatusMangaTable.removeStatus(name);
+        }
+        public static void initStatuses(){
+            db.execSQL(CREATE_TABLE);
+            Cursor cursor=db.rawQuery("SELECT * FROM "+TABLE_NAME,null);
+            if(cursor.moveToFirst()){
+                do{
+                    StatusManager.add(
+                            cursor.getString(cursor.getColumnIndex(NAME)),
+                            cursor.getInt(cursor.getColumnIndex(COLOR))
+                    );
+                }while (cursor.moveToNext());
+            }
+            cursor.close();
+        }
+
+        public static void update(Status oldStatus, Status newStatus) {
+            ContentValues values=new ContentValues(2);
+            values.put(NAME,newStatus.name);
+            values.put(COLOR,newStatus.color);
+            db.update(TABLE_NAME,values,NAME+"=?",new String[]{oldStatus.name});
+            StatusMangaTable.update(oldStatus,newStatus);
+        }
     }
 }

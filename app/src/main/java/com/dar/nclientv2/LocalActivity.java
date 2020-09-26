@@ -24,6 +24,7 @@ import java.util.List;
 public class LocalActivity extends BaseActivity {
     private LocalAdapter adapter;
     private int colCount;
+    private int openedGalleryPosition=-1;
     private File folder=Global.MAINFOLDER;
     private androidx.appcompat.widget.SearchView searchView;
     @Override
@@ -47,6 +48,10 @@ public class LocalActivity extends BaseActivity {
     public void setAdapter(LocalAdapter adapter) {
         this.adapter = adapter;
         recycler.setAdapter(adapter);
+    }
+
+    public void setOpenedGalleryPosition(int openedGalleryPosition) {
+        this.openedGalleryPosition = openedGalleryPosition;
     }
 
     @Override
@@ -94,6 +99,15 @@ public class LocalActivity extends BaseActivity {
 
     public int getColCount() {
         return colCount;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(openedGalleryPosition!=-1){
+            adapter.updateColor(openedGalleryPosition);
+            openedGalleryPosition=-1;
+        }
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {

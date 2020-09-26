@@ -15,6 +15,9 @@
             android:key="@string/key_theme_select"
             android:summary="@string/theme_summary"
             android:title="@string/change_theme" />
+        <Preference
+            android:key="status_screen"
+            android:title="@string/manage_statuses" />
         <ListPreference
             android:defaultValue="pretty"
             android:entries="@array/title_type_array"

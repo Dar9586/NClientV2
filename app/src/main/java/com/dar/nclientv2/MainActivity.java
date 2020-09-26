@@ -87,6 +87,7 @@ public class MainActivity extends BaseActivity
     private static boolean firstTime=true;//true only when app starting
     private ModeType modeType = ModeType.UNKNOWN;
     private int actualPage=1,totalPage;
+    private int positionOpenedGallery=-1;//Position in the recycler of the opened gallery
     private boolean inspecting=false,filteringTag=false;
     public ListAdapter adapter;
     private SortType temporaryType;
@@ -95,6 +96,7 @@ public class MainActivity extends BaseActivity
         @Override
         public void onSuccess(List<GenericGallery> galleries) {
             super.onSuccess(galleries);
+            if(adapter!=null)adapter.resetStatuses();
             if(galleries.size()==0)
                 showError(R.string.no_entry_found,null);
         }
@@ -284,6 +286,10 @@ public class MainActivity extends BaseActivity
         toolbar.setNavigationOnClickListener(v -> finish());
         navigationView.setNavigationItemSelectedListener(this);
         onlineFavoriteManager.setVisible(com.dar.nclientv2.settings.Login.isLogged(true));
+    }
+
+    public void setPositionOpenedGallery(int positionOpenedGallery) {
+        this.positionOpenedGallery = positionOpenedGallery;
     }
 
     private void findUsefulViews() {
@@ -565,7 +571,10 @@ public class MainActivity extends BaseActivity
         super.onResume();
         Global.updateACRAReportStatus(this);
         com.dar.nclientv2.settings.Login.initUseAccountTag(this);
-
+        if(positionOpenedGallery!=-1){
+            adapter.updateColor(positionOpenedGallery);
+            positionOpenedGallery=-1;
+        }
         loadStringLogin();
         onlineFavoriteManager.setVisible(com.dar.nclientv2.settings.Login.isLogged(true));
         if(setting!=null){
@@ -578,6 +587,7 @@ public class MainActivity extends BaseActivity
                 recreate();
             }
             adapter.notifyDataSetChanged();//restart adapter
+            adapter.resetStatuses();
             showPageSwitcher(inspector.getPage(),inspector.getPageCount());//restart page switcher
             changeLayout(getResources().getConfiguration().orientation==Configuration.ORIENTATION_LANDSCAPE);
             setting=null;
@@ -801,6 +811,10 @@ public class MainActivity extends BaseActivity
             case R.id.tag_manager:
                 intent=new Intent(this, TagFilterActivity.class);
                 filteringTag=true;
+                startActivity(intent);
+                break;
+            case R.id.status_manager:
+                intent=new Intent(this, StatusViewerActivity.class);
                 startActivity(intent);
                 break;
         }

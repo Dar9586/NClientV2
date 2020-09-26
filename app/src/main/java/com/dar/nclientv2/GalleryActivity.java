@@ -4,15 +4,23 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckedTextView;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -23,6 +31,8 @@ import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.activities.BaseActivity;
+import com.dar.nclientv2.components.status.Status;
+import com.dar.nclientv2.components.status.StatusManager;
 import com.dar.nclientv2.components.views.CustomWebView;
 import com.dar.nclientv2.components.views.RangeSelector;
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
@@ -32,6 +42,7 @@ import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.utility.CSRFGet;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 
 import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
@@ -43,6 +54,7 @@ import okhttp3.FormBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class GalleryActivity extends BaseActivity{
     @NonNull private GenericGallery gallery=Gallery.emptyGallery();
@@ -53,6 +65,11 @@ public class GalleryActivity extends BaseActivity{
     private boolean isLocalFavorite;
     private Toolbar toolbar;
     private MenuItem onlineFavoriteItem;
+    private String statusString;
+
+    private int newStatusColor;
+    private String newStatusName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -300,7 +317,9 @@ public class GalleryActivity extends BaseActivity{
                 i.putExtra(getPackageName()+".GALLERYID",gallery.getId());
                 startActivity(i);
                 break;
-
+            case R.id.manage_status:
+                updateStatus();
+                break;
             case R.id.share:
                 Global.shareGallery(this,gallery);
                 break;
@@ -328,6 +347,71 @@ public class GalleryActivity extends BaseActivity{
 
         return super.onOptionsItemSelected(item);
     }
+
+    private void updateStatus() {
+        List<String>statuses= StatusManager.getNames();
+        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(this);
+        statusString=Queries.StatusMangaTable.getStatus(gallery.getId()).name;
+        ArrayAdapter<String>adapter=new ArrayAdapter<String>(this,android.R.layout.select_dialog_singlechoice,statuses){
+            @NonNull
+            @Override
+            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                CheckedTextView textView=(CheckedTextView) super.getView(position, convertView, parent);
+                textView.setTextColor(StatusManager.getByName(statuses.get(position)).opaqueColor());
+                return textView;
+            }
+        };
+        builder.setSingleChoiceItems(adapter, statuses.indexOf(statusString), (dialog, which) -> statusString=statuses.get(which));
+        builder
+                .setNeutralButton(R.string.add, (dialog, which) -> createNewStatusDialog())
+                .setNegativeButton(R.string.remove_status, (dialog, which) -> Queries.StatusMangaTable.insert(gallery,StatusManager.DEFAULT_STATUS))
+                .setPositiveButton(R.string.ok, (dialog, which) -> Queries.StatusMangaTable.insert(gallery,statusString))
+                .setTitle(R.string.change_status_title)
+                .show();
+    }
+
+    private void createNewStatusDialog() {
+        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(this);
+        LinearLayout layout=(LinearLayout) View.inflate(this,R.layout.dialog_add_status,null);
+        EditText name=layout.findViewById(R.id.name);
+        Button btnColor=layout.findViewById(R.id.color);
+        do {
+            newStatusColor = Utility.RANDOM.nextInt() | 0xff000000;
+        }while (newStatusColor==Color.BLACK||newStatusColor==Color.WHITE);
+        btnColor.setBackgroundColor(newStatusColor);
+        btnColor.setOnClickListener(v -> new AmbilWarnaDialog(GalleryActivity.this, newStatusColor, false, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+            @Override public void onCancel(AmbilWarnaDialog dialog) {}
+
+            @Override
+            public void onOk(AmbilWarnaDialog dialog, int color) {
+                if(color==Color.WHITE||color==Color.BLACK){
+                    Toast.makeText(GalleryActivity.this, R.string.invalid_color_selected, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                newStatusColor=color;
+                btnColor.setBackgroundColor(color);
+            }
+        }).show());
+        builder.setView(layout);
+        builder.setTitle(R.string.create_new_status);
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
+            String newName=name.getText().toString();
+            if(newName.length()<2) {
+                Toast.makeText(this, R.string.name_too_short, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if(StatusManager.getByName(newName)!=null){
+                Toast.makeText(this, R.string.duplicated_name, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Status status=StatusManager.add(name.getText().toString(),newStatusColor);
+            Queries.StatusMangaTable.insert(gallery,status);
+        });
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> updateStatus());
+        builder.setOnCancelListener(dialog -> updateStatus());
+        builder.show();
+    }
+
     private void updateIcon(boolean nowIsFavorite){
         GalleryActivity.this.runOnUiThread(() -> {
             onlineFavoriteItem.setIcon(!nowIsFavorite?R.drawable.ic_star_border:R.drawable.ic_star);
