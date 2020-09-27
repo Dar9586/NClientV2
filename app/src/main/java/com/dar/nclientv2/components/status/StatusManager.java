@@ -1,5 +1,7 @@
 package com.dar.nclientv2.components.status;
 
+import androidx.annotation.Nullable;
+
 import com.dar.nclientv2.async.database.Queries;
 
 import java.util.ArrayList;
@@ -39,7 +41,9 @@ public class StatusManager {
         statuses.remove(getByName(DEFAULT_STATUS));
         return statuses;
     }
-    public static Status updateStatus(Status oldStatus,String newName,int newColor){
+    public static Status updateStatus(@Nullable Status oldStatus, String newName, int newColor){
+        if(oldStatus==null)
+            return add(newName,newColor);
         Status newStatus=new Status(newColor,newName);
         Queries.StatusTable.update(oldStatus,newStatus);
         statusMap.remove(oldStatus.name);

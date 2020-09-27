@@ -13,13 +13,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.components.status.Status;
 import com.dar.nclientv2.components.status.StatusManager;
+import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.util.Collections;
 import java.util.List;
 
 import yuku.ambilwarna.AmbilWarnaDialog;
@@ -42,12 +46,23 @@ public class StatusManagerAdapter extends RecyclerView.Adapter<StatusManagerAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        if(holder.getAdapterPosition()==statusList.size()){
+            holder.name.setText(R.string.add);
+            holder.color.setVisibility(View.INVISIBLE);
+            holder.color.setBackgroundColor(Color.TRANSPARENT);
+            holder.cancel.setImageResource(R.drawable.ic_add);
+            Global.setTint(holder.cancel.getDrawable());
+            holder.cancel.setOnClickListener(null);
+            holder.master.setOnClickListener(v -> updateStatus(null));
+            return;
+        }
         Status status=statusList.get(holder.getAdapterPosition());
         holder.name.setText(status.name);
+        holder.color.setVisibility(View.VISIBLE);
         holder.color.setBackgroundColor(status.opaqueColor());
-        holder.master.setOnClickListener(v -> {
-            updateStatus(status);
-        });
+
+        holder.cancel.setImageResource(R.drawable.ic_close);
+        holder.master.setOnClickListener(v -> updateStatus(status));
         holder.cancel.setOnClickListener(v -> {
             StatusManager.remove(status);
             notifyItemRemoved(statusList.indexOf(status));
@@ -57,7 +72,7 @@ public class StatusManagerAdapter extends RecyclerView.Adapter<StatusManagerAdap
 
     @Override
     public int getItemCount() {
-        return statusList.size();
+        return statusList.size()+1;
     }
 
     @Override
@@ -65,14 +80,16 @@ public class StatusManagerAdapter extends RecyclerView.Adapter<StatusManagerAdap
         return position==statusList.size()?1:0;
     }
     private int newColor;
-    private void updateStatus(Status status){
+    private void updateStatus(@Nullable Status status){
         MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(activity);
         LinearLayout layout=(LinearLayout) View.inflate(activity,R.layout.dialog_add_status,null);
         EditText name=layout.findViewById(R.id.name);
         Button btnColor=layout.findViewById(R.id.color);
-        btnColor.setBackgroundColor(status.opaqueColor());
-        name.setText(status.name);
-        btnColor.setOnClickListener(v -> new AmbilWarnaDialog(activity, status.color, false, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+        int color=status==null?Utility.RANDOM.nextInt()|0xff000000:status.opaqueColor();
+        newColor=color;
+        btnColor.setBackgroundColor(color);
+        name.setText(status==null?"":status.name);
+        btnColor.setOnClickListener(v -> new AmbilWarnaDialog(activity, color, false, new AmbilWarnaDialog.OnAmbilWarnaListener() {
             @Override public void onCancel(AmbilWarnaDialog dialog) {}
 
             @Override
@@ -86,17 +103,32 @@ public class StatusManagerAdapter extends RecyclerView.Adapter<StatusManagerAdap
             }
         }).show());
         builder.setView(layout);
-        builder.setTitle(R.string.update_status);
+        builder.setTitle(status==null?R.string.create_new_status:R.string.update_status);
         builder.setPositiveButton(R.string.ok, (dialog, which) -> {
             String newName=name.getText().toString();
             if(newName.length()<2) {
                 Toast.makeText(activity, R.string.name_too_short, Toast.LENGTH_SHORT).show();
                 return;
             }
+            if(StatusManager.getByName(newName)!=null&&!newName.equals(status.name)){
+                Toast.makeText(activity, R.string.duplicated_name, Toast.LENGTH_SHORT).show();
+                return;
+            }
             Status newStatus=StatusManager.updateStatus(status,name.getText().toString(),newColor);
-            int index=statusList.indexOf(status);
-            statusList.set(index,newStatus);
-            notifyItemChanged(index);
+            if(status==null){
+                statusList.add(newStatus);
+                Collections.sort(statusList, (o1, o2) -> o1.name.compareToIgnoreCase(o2.name));
+                int index=statusList.indexOf(newStatus);
+                notifyItemInserted(index);
+            }else {
+                int oldIndex = statusList.indexOf(status);
+                statusList.set(oldIndex, newStatus);
+                Collections.sort(statusList, (o1, o2) -> o1.name.compareToIgnoreCase(o2.name));
+                int newIndex=statusList.indexOf(newStatus);
+                notifyItemMoved(oldIndex,newIndex);
+                notifyItemChanged(newIndex);
+            }
+
         });
         builder.setNegativeButton(R.string.cancel, null);
         builder.show();

@@ -103,8 +103,11 @@ public class Queries{
         static void clearGalleries(){
             db.delete(GalleryTable.TABLE_NAME, String.format(Locale.US,
                     "%s NOT IN (SELECT %s FROM %s) AND " +
+                            "%s NOT IN (SELECT %s FROM %s) AND " +
                             "%s NOT IN (SELECT %s FROM %s)",
-                    IDGALLERY,DownloadTable.ID_GALLERY,DownloadTable.TABLE_NAME,IDGALLERY,FavoriteTable.ID_GALLERY,FavoriteTable.TABLE_NAME)
+                    GalleryTable.IDGALLERY,DownloadTable.ID_GALLERY,DownloadTable.TABLE_NAME,
+                    GalleryTable.IDGALLERY,FavoriteTable.ID_GALLERY,FavoriteTable.TABLE_NAME,
+                    GalleryTable.IDGALLERY,StatusMangaTable.GALLERY,StatusMangaTable.TABLE_NAME)
             ,null);
             db.delete(GalleryBridgeTable.TABLE_NAME,String.format(Locale.US,
                     "%s NOT IN (SELECT %s FROM %s)",
@@ -703,7 +706,7 @@ public class Queries{
         }
 
 
-        private static String titleTypeToColumn(TitleType type){
+        static String titleTypeToColumn(TitleType type){
             switch (type){
                 case PRETTY:return GalleryTable.TITLE_PRETTY;
                 case ENGLISH:return GalleryTable.TITLE_ENG;
@@ -828,22 +831,25 @@ public class Queries{
         static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `StatusManga` (" +
                 "`gallery` INT NOT NULL PRIMARY KEY, " +
                 "`name` TINYTEXT NOT NULL, " +
+                "`time` INT NOT NULL," +
                 "FOREIGN KEY(`gallery`) REFERENCES `"+GalleryTable.TABLE_NAME+"`(`"+GalleryTable.IDGALLERY+"`) ON UPDATE CASCADE ON DELETE CASCADE," +
                 "FOREIGN KEY(`name`) REFERENCES `"+StatusTable.TABLE_NAME+"`(`"+StatusTable.NAME+"`) ON UPDATE CASCADE ON DELETE CASCADE" +
                 ");";
         static final String NAME="name";
         static final String GALLERY="gallery";
+        static final String TIME="time";
 
         public static void insert(GenericGallery gallery,Status status){
-            ContentValues values=new ContentValues(2);
+            ContentValues values=new ContentValues(3);
             GalleryTable.insert(gallery);
             StatusTable.insert(status);
             values.put(NAME,status.name);
             values.put(GALLERY,gallery.getId());
+            values.put(TIME,new Date().getTime());
             db.insertWithOnConflict(TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_REPLACE);
         }
-        public static void remove(Gallery gallery){
-            db.delete(TABLE_NAME,GALLERY+"=?",new String[]{""+gallery.getId()});
+        public static void remove(int id){
+            db.delete(TABLE_NAME,GALLERY+"=?",new String[]{""+id});
         }
         @NonNull
         public static Status getStatus(int id){
@@ -862,16 +868,20 @@ public class Queries{
         public static void update(Status oldStatus, Status newStatus) {
             ContentValues values=new ContentValues(1);
             values.put(NAME,newStatus.name);
+            values.put(TIME,new Date().getTime());
             db.update(TABLE_NAME,values,NAME+"=?",new String[]{oldStatus.name});
         }
 
-        public static Cursor getGalleryOfStatus(String name,String filter){
-            String query=String.format("SELECT * FROM %s WHERE %s IN (SELECT %s FROM %s WHERE %s=?) AND (%s LIKE ? OR %s LIKE ? OR %s LIKE ?)",
-                    GalleryTable.TABLE_NAME,GalleryTable.IDGALLERY,
-                    StatusMangaTable.GALLERY,StatusMangaTable.TABLE_NAME,StatusMangaTable.NAME,
-                    GalleryTable.TITLE_ENG,GalleryTable.TITLE_JP,GalleryTable.TITLE_PRETTY
+        public static Cursor getGalleryOfStatus(String name,String filter,boolean sortByTitle){
+            String query=String.format("SELECT * FROM %s INNER JOIN %s ON %s=%s WHERE %s=? AND (%s LIKE ? OR %s LIKE ? OR %s LIKE ?) ORDER BY %s",
+                    GalleryTable.TABLE_NAME,StatusMangaTable.TABLE_NAME,
+                    GalleryTable.IDGALLERY,StatusMangaTable.GALLERY,
+                    StatusMangaTable.NAME,
+                    GalleryTable.TITLE_ENG,GalleryTable.TITLE_JP,GalleryTable.TITLE_PRETTY,
+                    sortByTitle? FavoriteTable.titleTypeToColumn(Global.getTitleType()):TIME+" DESC"
                     );
             String likeFilter='%'+filter+'%';
+            LogUtility.d(query);
             return db.rawQuery(query,new String[]{name,likeFilter,likeFilter,likeFilter});
         }
 

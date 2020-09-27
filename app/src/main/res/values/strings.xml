@@ -27,6 +27,8 @@
     <string name="key_column_land_down" translatable="false">column_land_down</string>
     <string name="key_column_port_favo" translatable="false">column_port_favo</string>
     <string name="key_column_land_favo" translatable="false">column_land_favo</string>
+    <string name="key_column_port_stat" translatable="false">column_port_stat</string>
+    <string name="key_column_land_stat" translatable="false">column_land_stat</string>
     <string name="key_language" translatable="false">key_language</string>
     <string name="key_disable_lock" translatable="false">disable_lock</string>
     <string name="key_max_history_size" translatable="false">max_history_size</string>
@@ -324,6 +326,8 @@
     <string name="manage_statuses">Manage statuses</string>
     <string name="update_status">Update status:</string>
     <string name="view_statuses">View statuses</string>
+    <string name="status_column_count">Select status column count</string>
+    <string name="status_viewer">Status viewer</string>
 
     <string-array name="language">
         <item>English</item>

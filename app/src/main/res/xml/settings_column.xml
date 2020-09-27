@@ -71,5 +71,21 @@
             app:showSeekBarValue="true"
             android:max="4"/>
     </PreferenceCategory>
-
+    <PreferenceCategory
+        android:title="@string/status_column_count">
+        <SeekBarPreference
+            android:title="@string/use_column_port"
+            android:key="@string/key_column_port_stat"
+            android:defaultValue="2"
+            app:min="1"
+            app:showSeekBarValue="true"
+            android:max="4"/>
+        <SeekBarPreference
+            android:title="@string/use_column_land"
+            android:key="@string/key_column_land_stat"
+            android:defaultValue="4"
+            app:min="1"
+            app:showSeekBarValue="true"
+            android:max="4"/>
+    </PreferenceCategory>
 </PreferenceScreen>

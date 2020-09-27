@@ -26,12 +26,14 @@ import java.util.Locale;
 public class StatusViewerAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder> {
     private final String statusName;
     private final Activity context;
+    @NonNull private String query="";
+    private boolean sortByTitle=false;
     @Nullable
     private Cursor galleries=null;
     public StatusViewerAdapter(Activity context, String statusName) {
         this.statusName = statusName;
         this.context = context;
-        setGalleries(Queries.StatusMangaTable.getGalleryOfStatus(statusName,""));
+        reloadGalleries();
     }
 
     @NonNull
@@ -99,6 +101,23 @@ public class StatusViewerAdapter extends RecyclerView.Adapter<GenericAdapter.Vie
     }
 
     public void reloadGalleries() {
-        setGalleries(Queries.StatusMangaTable.getGalleryOfStatus(statusName,""));
+        setGalleries(Queries.StatusMangaTable.getGalleryOfStatus(statusName,query,sortByTitle));
+    }
+
+    public void setQuery(@Nullable String newQuery) {
+        query=newQuery==null?"":newQuery;
+        reloadGalleries();
+    }
+
+    public void updateSort(boolean byTitle) {
+        sortByTitle=byTitle;
+        reloadGalleries();
+    }
+
+    public void update(String newQuery, boolean byTitle) {
+        if(query.equals(newQuery) && byTitle==sortByTitle)return;
+        query=newQuery==null?"":newQuery;
+        sortByTitle=byTitle;
+        reloadGalleries();
     }
 }

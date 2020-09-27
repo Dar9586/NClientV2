@@ -364,7 +364,7 @@ public class GalleryActivity extends BaseActivity{
         builder.setSingleChoiceItems(adapter, statuses.indexOf(statusString), (dialog, which) -> statusString=statuses.get(which));
         builder
                 .setNeutralButton(R.string.add, (dialog, which) -> createNewStatusDialog())
-                .setNegativeButton(R.string.remove_status, (dialog, which) -> Queries.StatusMangaTable.insert(gallery,StatusManager.DEFAULT_STATUS))
+                .setNegativeButton(R.string.remove_status, (dialog, which) -> Queries.StatusMangaTable.remove(gallery.getId()))
                 .setPositiveButton(R.string.ok, (dialog, which) -> Queries.StatusMangaTable.insert(gallery,statusString))
                 .setTitle(R.string.change_status_title)
                 .show();

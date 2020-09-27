@@ -77,7 +77,7 @@ public class Global {
     private static DataUsageType usageMobile, usageWifi;
     private static String lastVersion;
     private static int maxHistory,columnCount,maxId,galleryWidth=-1, galleryHeight =-1;
-    private static int colPortHist,colLandHist,colPortMain,colLandMain,colPortDownload,colLandDownload,colLandFavorite,colPortFavorite;
+    private static int colPortStat,colLandStat,colPortHist,colLandHist,colPortMain,colLandMain,colPortDownload,colLandDownload,colLandFavorite,colPortFavorite;
     private static int defaultZoom;
     private static Point screenSize;
     private static final DisplayMetrics lastDisplay=new DisplayMetrics();
@@ -124,6 +124,14 @@ public class Global {
 
     public static int getColPortHistory() {
         return colPortHist;
+    }
+
+    public static int getColLandStatus() {
+        return colLandStat;
+    }
+
+    public static int getColPortStatus() {
+        return colPortStat;
     }
 
     public static void updateACRAReportStatus(Context context) {
@@ -268,6 +276,8 @@ public class Global {
         colLandFavorite=shared.getInt(context.getString(R.string.key_column_land_favo),4);
         colPortHist=shared.getInt(context.getString(R.string.key_column_port_hist),2);
         colLandHist=shared.getInt(context.getString(R.string.key_column_land_hist),4);
+        colPortStat=shared.getInt(context.getString(R.string.key_column_port_stat),2);
+        colLandStat=shared.getInt(context.getString(R.string.key_column_land_stat),4);
         zoomOneColumn=shared.getBoolean(context.getString(R.string.key_zoom_one_column),false);
         alternativeSite=shared.getBoolean(context.getString(R.string.key_alternative_site),false);
         int x=Math.max(0,shared.getInt(context.getString(R.string.key_only_language),Language.ALL.ordinal()));

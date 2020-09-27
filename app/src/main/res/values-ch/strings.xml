@@ -295,6 +295,8 @@
     <string name="manage_statuses">Manage statuses</string>
     <string name="update_status">Update status:</string>
     <string name="view_statuses">View statuses</string>
+    <string name="status_column_count">Select status column count</string>
+    <string name="status_viewer">Status viewer</string>
 
 
     <string-array name="language">
