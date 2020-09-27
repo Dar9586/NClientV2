@@ -551,7 +551,7 @@ public class Global {
         return true;
     }
     private static File findGalleryFolder(File directory,int id){
-        if(!directory.exists()||!directory.isDirectory())return null;
+        if(directory==null||!directory.exists()||!directory.isDirectory())return null;
         String fileName="."+id;
         File[] tmp=directory.listFiles();
         if(tmp==null)return null;

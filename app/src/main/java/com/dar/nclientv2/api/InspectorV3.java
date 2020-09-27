@@ -433,6 +433,7 @@ public class InspectorV3 extends Thread implements Parcelable {
 
     public Tag getTag(){
         Tag t=null;
+        if(tags==null)return null;
         for(Tag tt:tags){
             if(tt.getType()!= TagType.LANGUAGE)
                 return tt;

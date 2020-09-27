@@ -93,6 +93,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         context.getSharedPreferences("History",0).edit().putStringSet("history",History.listToSet(this.history)).apply();
     }
     public void removeHistory(int pos){
+        if(pos<0||pos>=history.size())return;
         history.remove(pos);
         context.getSharedPreferences("History",0).edit().putStringSet("history",History.listToSet(this.history)).apply();
         context.runOnUiThread(() -> notifyItemRemoved(pos));
