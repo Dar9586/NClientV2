@@ -19,7 +19,6 @@ import com.dar.nclientv2.api.InspectorV3;
 import com.dar.nclientv2.api.SimpleGallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.enums.Language;
-import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.settings.Global;
@@ -53,18 +52,10 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         return new GenericAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.entry_layout, parent, false));
     }
     private void loadGallery(final GenericAdapter.ViewHolder holder, SimpleGallery ent){
-        boolean online=true;
         if(context.isFinishing())return;
         try {
-            if (storagePermission) {
-                File f = LocalGallery.getPage(Global.findGalleryFolder(context,ent.getId()), 1);
-                if (f != null) {
-                    online = false;
-                    ImageDownloadUtility.loadImage(context, f, holder.imgView);
-                }
-            }
             if(Global.isDestroyed(context))return;
-            if (online) ImageDownloadUtility.loadImage(context, ent.getThumbnail(), holder.imgView);
+            ImageDownloadUtility.loadImage(context, ent.getThumbnail(), holder.imgView);
         }catch (VerifyError ignore){}
     }
     @Override
