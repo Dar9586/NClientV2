@@ -1,5 +1,6 @@
 package com.dar.nclientv2.adapters;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.text.Layout;
@@ -187,7 +188,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
             }else holder.layout.performClick();
         });
         holder.layout.setOnClickListener(v -> {
-            startGallery(ent);
+            startGallery(context,ent.getDirectory());
             context.setOpenedGalleryPosition(position);
         });
         holder.layout.setOnLongClickListener(v -> {
@@ -209,11 +210,12 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
     }
 
 
-    private void startGallery(LocalGallery ent) {
+    static void startGallery(Activity context, File directory) {
+        LocalGallery ent=new LocalGallery(directory);
         ent.calculateSizes();
         new Thread(() -> {
             Intent intent = new Intent(context, GalleryActivity.class);
-            intent.putExtra(context.getPackageName()+ ".GALLERY",new LocalGallery(ent.getDirectory()));
+            intent.putExtra(context.getPackageName()+ ".GALLERY",ent);
             intent.putExtra(context.getPackageName()+ ".ISLOCAL",true);
             context.runOnUiThread(()->context.startActivity(intent));
         }).start();
@@ -393,7 +395,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
     public void viewRandom() {
         if(dataset.size()==0)return;
         int x=Utility.RANDOM.nextInt(dataset.size());
-        startGallery(dataset.get(x));
+        startGallery(context,dataset.get(x).getDirectory());
     }
 
     public void sortChanged() {

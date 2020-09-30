@@ -112,6 +112,10 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         LogUtility.d("NEW POLICY: "+policy);
     }
 
+    public File getDirectory() {
+        return directory;
+    }
+
     @NonNull
     @Override
     public GalleryAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -356,6 +360,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         }
         Intent intent = new Intent(context, ZoomActivity.class);
         intent.putExtra(context.getPackageName() + ".GALLERY", gallery);
+        intent.putExtra(context.getPackageName() + ".DIRECTORY", directory);
         intent.putExtra(context.getPackageName() + ".PAGE",page);
         context.startActivity(intent);
     }

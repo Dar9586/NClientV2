@@ -59,6 +59,7 @@ public class ZoomActivity extends AppCompatActivity {
     private SeekBar seekBar;
     private Toolbar toolbar;
     private View view;
+    private File directory;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +70,7 @@ public class ZoomActivity extends AppCompatActivity {
         //read arguments
         gallery=getIntent().getParcelableExtra(getPackageName()+".GALLERY");
         final int page=getIntent().getExtras().getInt(getPackageName()+".PAGE",1)-1;
-
+        directory= (File) getIntent().getSerializableExtra(getPackageName() + ".DIRECTORY");
         //toolbar setup
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -323,7 +324,7 @@ public class ZoomActivity extends AppCompatActivity {
         @NonNull
         @Override
         public Fragment getItem(int position) {
-            ZoomFragment f= ZoomFragment.newInstance(gallery,position);
+            ZoomFragment f= ZoomFragment.newInstance(gallery,position,directory);
             f.setClickListener(v -> {
                 isHidden = !isHidden;
                 LogUtility.d("Clicked "+isHidden);

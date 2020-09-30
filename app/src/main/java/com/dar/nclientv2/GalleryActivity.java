@@ -156,6 +156,7 @@ public class GalleryActivity extends BaseActivity{
         if(zoom>0 && Global.getDownloadPolicy()!= Global.DataUsageType.NONE){
             Intent intent = new Intent(this, ZoomActivity.class);
             intent.putExtra(getPackageName()+".GALLERY",this.gallery);
+            intent.putExtra(getPackageName()+".DIRECTORY",adapter.getDirectory());
             intent.putExtra(getPackageName()+".PAGE",zoom);
             startActivity(intent);
         }

@@ -141,13 +141,17 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
             @Override
             public void onFailure(Exception e) {
                 super.onFailure(e);
-                if(context.getMasterLayout()!=null)
-                    context.runOnUiThread(()-> {
-                            Snackbar snackbar = Snackbar.make(context.getMasterLayout(), R.string.unable_to_connect_to_the_site, Snackbar.LENGTH_SHORT);
-                            snackbar.setAction(R.string.retry,v->downloadGallery(ent));
-                            snackbar.show();
-                        }
+                File file=Global.findGalleryFolder(context,ent.getId());
+                if(file!=null){
+                    LocalAdapter.startGallery(context,file);
+                }else if(context.getMasterLayout()!=null) {
+                    context.runOnUiThread(() -> {
+                                Snackbar snackbar = Snackbar.make(context.getMasterLayout(), R.string.unable_to_connect_to_the_site, Snackbar.LENGTH_SHORT);
+                                snackbar.setAction(R.string.retry, v -> downloadGallery(ent));
+                                snackbar.show();
+                            }
                     );
+                }
             }
             @Override
             public void onSuccess(List<GenericGallery> galleries) {

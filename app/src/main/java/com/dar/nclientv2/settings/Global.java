@@ -67,6 +67,13 @@ public class Global {
     public static  File PDFFOLDER;
     public static  File UPDATEFOLDER;
     public static  File ZIPFOLDER;
+
+    private static final String MAINFOLDER_NAME="NClientV2";
+    private static final String DOWNLOADFOLDER_NAME="Download";
+    private static final String SCREENFOLDER_NAME="Screen";
+    private static final String PDFFOLDER_NAME="PDF";
+    private static final String UPDATEFOLDER_NAME="Update";
+    private static final String ZIPFOLDER_NAME="ZIP";
     public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf",CHANNEL_ID3="create_zip";
 
     private static Language onlyLanguage;
@@ -170,16 +177,18 @@ public class Global {
         return f.getAbsolutePath();
     }
 
+
+
     private static void initFilesTree(Context context){
         String path=context.getSharedPreferences("Settings",Context.MODE_PRIVATE).getString(context.getString(R.string.key_save_path),getDefaultFileParent(context));
         assert path != null;
-        MAINFOLDER=new File(path,"NClientV2");
-        OLD_GALLERYFOLDER=new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),"NClientV2");
-        DOWNLOADFOLDER=new File(MAINFOLDER,"Download");
-        SCREENFOLDER =new File(MAINFOLDER,"Screen");
-        PDFFOLDER =new File(MAINFOLDER,"PDF");
-        UPDATEFOLDER =new File(MAINFOLDER,"Update");
-        ZIPFOLDER =new File(MAINFOLDER,"ZIP");
+        MAINFOLDER=new File(path,MAINFOLDER_NAME);
+        OLD_GALLERYFOLDER=new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),MAINFOLDER_NAME);
+        DOWNLOADFOLDER=new File(MAINFOLDER,DOWNLOADFOLDER_NAME);
+        SCREENFOLDER =new File(MAINFOLDER,SCREENFOLDER_NAME);
+        PDFFOLDER =new File(MAINFOLDER,PDFFOLDER_NAME);
+        UPDATEFOLDER =new File(MAINFOLDER,UPDATEFOLDER_NAME);
+        ZIPFOLDER =new File(MAINFOLDER,ZIPFOLDER_NAME);
     }
 
 
@@ -565,6 +574,8 @@ public class Global {
     @Nullable
     public static File findGalleryFolder(Context context, int id){
         for(File dir:getUsableFolders(context)){
+            dir=new File(dir,MAINFOLDER_NAME);
+            dir=new File(dir,DOWNLOADFOLDER_NAME);
             File f=findGalleryFolder(dir,id);
             if(f!=null)return f;
         }
