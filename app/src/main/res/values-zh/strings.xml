@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--Thanks to ZerOri and linsui for the Simplified Chinese translation-->
 <resources>
-											  
-    <!--SUMMARY-->
+
+
     <string name="setting_on_ignore_tags">从画廊菜单中选中一个标签时不再查询其它标签（语言项除外）</string>
     <string name="setting_off_ignore_tags">从画廊菜单中选中一个标签时查询其它标签</string>
     <string name="setting_on_high_res">加载原图（较多流量）</string>
@@ -12,8 +12,6 @@
     <string name="setting_on_use_account_tag">在搜索请求中使用账户标签（本地标签优先）</string>
     <string name="setting_off_use_account_tag">在搜索请求中忽略账户标签</string>
     <string name="theme_summary">选择主题颜色</string>
-
-    <!--SETTINGS NAME-->
     <string name="send_crash_report">发送崩溃报告</string>
     <string name="change_theme">更改主题</string>
     <string name="clear_cache">清除缓存</string>
@@ -22,12 +20,10 @@
     <string name="ignore_tags">忽略其它标签</string>
     <string name="high_res_gallery">以最佳分辨率加载画廊图像</string>
     <string name="use_account_tag">使用账户标签</string>
-
     <string name="title_activity_gallery">画廊</string>
     <string name="title_activity_zoom">启用放大</string>
     <string name="title_activity_tag_filter">标签筛选</string>
     <string name="title_activity_login">登录</string>
-
     <string name="parodies">原作</string>
     <string name="characters">角色</string>
     <string name="tags">标签</string>
@@ -36,7 +32,6 @@
     <string name="languages">语言</string>
     <string name="categories">类别</string>
     <string name="unknown">未知</string>
-
     <string name="channel1_name">下载画廊</string>
     <string name="channel2_name">创建 PDF</string>
     <string name="channel3_name">创建 ZIP</string>
@@ -45,17 +40,12 @@
     <string name="channel3_description">用于显示 zip 的创建进度</string>
     <string name="channel2_title">正在创建的 PDF：</string>
     <string name="channel3_title">正在创建的 ZIP：</string>
-
     <string name="favorite_max_reached" formatted="true">你最多能收藏 %d 部漫画。</string>
     <string name="tags_max_reached" formatted="true">你最多能选中 %d 个标签。</string>
-
-
     <string name="only_english">仅英文</string>
     <string name="only_japanese">仅日文</string>
     <string name="only_chinese">仅中文</string>
     <string name="all_languages">所有语言</string>
-
-
     <string name="username_or_email">用户名或邮件</string>
     <string name="password">密码</string>
     <string name="login">登录</string>
@@ -64,15 +54,12 @@
     <string name="forgot_password">忘记密码？<b>重置密码</b></string>
     <string name="register">没有账户？<b>注册账号</b></string>
     <string name="invalid_credentials">无效凭证</string>
-
     <string name="favorite_online_manga">在线收藏漫画</string>
     <string name="online_tags">在线标签</string>
-
     <string name="add_to_online_favorite">添加至在线收藏</string>
     <string name="remove_from_online_favorites">从在线收藏移除</string>
     <string name="add_to_online_blacklist">列入在线黑名单？</string>
     <string name="tag_already_in_blacklist">标签已列入黑名单</string>
-
     <string name="are_you_sure">你确定？</string>
     <string name="thumbnail">预览</string>
     <string name="settings">设置</string>
@@ -83,7 +70,6 @@
     <string name="share">分享</string>
     <string name="image">图像</string>
     <string name="next">下一个</string>
-
     <string name="create_pdf">创建 PDF</string>
     <string name="create_pdf_format" formatted="true">创建的 PDF："%s"</string>
     <string name="create_zip_format" formatted="true">创建的 ZIP："%s"</string>
@@ -91,23 +77,17 @@
     <string name="error_pdf">创建 PDF 出错</string>
     <string name="parsing_pages">正在解析页面</string>
     <string name="writing_pdf">正在写入 PDF</string>
-
     <string name="navigation_drawer_open">打开导航菜单</string>
     <string name="navigation_drawer_close">关闭导航菜单</string>
     <string name="nav_header_subtitle">NHentai 非官方客户端</string>
-
     <string name="change_page">跳转页面：</string>
     <string name="prev_page">上一页</string>
     <string name="next_page">下一页</string>
-
     <string name="downloaded_manga">已下载漫画</string>
     <string name="download_gallery">下载画廊</string>
     <string name="download_completed">下载完成</string>
-
     <string name="delete_gallery_size_format" formatted="true">删除画廊 (%.2fMB)</string>
     <string name="delete_gallery_format" formatted="true">是否删除画廊：\n%s</string>
-
-
     <string name="share_with">分享</string>
     <string name="link_copied_to_clipboard">链接已复制到剪贴板</string>
     <string name="open_in_browser">在浏览器中打开</string>
@@ -142,7 +122,6 @@
     <string name="next_page_volume_down">音量-切换下一页</string>
     <string name="change_title_type">更改标题类型</string>
     <string name="title_type_summary">为画廊选择默认标题类型</string>
-
     <string name="search_settings">搜索设置</string>
     <string name="global_settings">全局设置</string>
     <string name="images_settings">图像设置</string>
@@ -180,7 +159,6 @@
     <string name="use_column_port">选择竖屏每行列数</string>
     <string name="use_column_land">选择横屏每行列数</string>
     <string name="change_language">更改语言</string>
-
     <string name="tag_artist_gallery">艺术家：</string>
     <string name="tag_character_gallery">角色：</string>
     <string name="tag_parody_gallery">原作：</string>
@@ -192,14 +170,12 @@
     <string name="cancel">取消</string>
     <string name="no">否</string>
     <string name="yes">是</string>
-																																
     <string name="start_all_downloads">开始所有下载</string>
     <string name="pause_all_downloads">停止所有下载</string>
     <string name="cancel_all_downloads">取消所有下载</string>
     <string name="disable_lock_title">阅读时常亮</string>
     <string name="download_all_galleries_in_this_page">下载此页所有画廊</string>
     <string name="download_all_galleries">下载所有画廊</string>
-
     <string name="favorite_column_count">选择收藏界面列数</string>
     <string name="download_column_count">选择下载界面列数</string>
     <string name="main_column_count">选择主界面列数</string>
@@ -254,6 +230,7 @@
     <string name="copied_to_clipboard">复制至剪贴板</string>
     <string name="maximum_notification_count">最大通知数</string>
     <string name="copy_settings_to_clipboard">复制设置到剪贴板</string>
+
     <string name="sort_popular_all_time">热门</string>
     <string name="sort_recent">最近</string>
     <string name="sort_popular_day">日榜</string>
@@ -285,18 +262,19 @@
     <string name="days">日</string>
     <string name="weeks">周</string>
     <string name="choose_unit">选择时间单位:</string>
-    <string name="change_status">Change status</string>
-    <string name="create_new_status">Create new status:</string>
-    <string name="invalid_color_selected">Black and white can not be used</string>
-    <string name="change_status_title">Select new status:</string>
-    <string name="remove_status">None</string>
-    <string name="name_too_short">Name too short</string>
-    <string name="duplicated_name">Duplicated name</string>
-    <string name="manage_statuses">Manage statuses</string>
-    <string name="update_status">Update status:</string>
-    <string name="view_statuses">View statuses</string>
-    <string name="status_column_count">Select status column count</string>
-    <string name="status_viewer">Status viewer</string>
+    <string name="change_status">更改状态</string>
+    <string name="create_new_status">创建新状态：</string>
+    <string name="invalid_color_selected">黑色和白色不能使用</string>
+    <string name="change_status_title">选择新状态：</string>
+    <string name="remove_status">无</string>
+    <string name="name_too_short">名称太短</string>
+    <string name="duplicated_name">重复名称</string>
+    <string name="manage_statuses">管理状态</string>
+    <string name="update_status">更新状态：</string>
+    <string name="view_statuses">查看状态</string>
+    <string name="status_column_count">选择状态列数</string>
+    <string name="status_viewer">状态查看器</string>
+
     <string-array name="language">
         <item>英文</item>
         <item>中文（繁体）</item>
