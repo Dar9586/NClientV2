@@ -1,49 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--Thanks to ZerOri for the Traditional Chinese translation-->
+<!--Thanks to ZerOri & Still34 for the Traditional Chinese translation-->
 <resources>
     <!--SUMMARY-->
-    <string name="setting_on_ignore_tags">從畫廊功能表中選中一個標籤時不再查詢其它標籤（語言項除外）</string>
-    <string name="setting_off_ignore_tags">從畫廊功能表中選中一個標籤時查詢其它標籤</string>
+    <string name="setting_on_ignore_tags">從圖庫功能表中選中一個標籤時不再查詢其它標籤（語言項除外）</string>
+    <string name="setting_off_ignore_tags">從圖庫功能表中選中一個標籤時查詢其它標籤</string>
     <string name="setting_on_high_res">載入原圖（更多資料量）</string>
-    <string name="setting_off_high_res">載入縮略圖（較少資料量）</string>
+    <string name="setting_off_high_res">載入縮圖（較少資料量）</string>
     <string name="setting_on_load">所有活動均載入圖像</string>
     <string name="setting_off_load">僅單頁閱讀時載入圖像</string>
-    <string name="setting_on_use_account_tag">帳戶標籤用於搜查（本地標籤優先）</string>
-    <string name="setting_off_use_account_tag">搜查時忽略帳戶標籤</string>
+    <string name="setting_on_use_account_tag">帳戶標籤用於搜尋（本地標籤優先）</string>
+    <string name="setting_off_use_account_tag">搜尋時忽略帳戶標籤</string>
     <string name="theme_summary">選擇主題顏色</string>
 
     <!--SETTINGS NAME-->
-    <string name="send_crash_report">發送崩潰報告</string>
+    <string name="send_crash_report">發送錯誤報告</string>
     <string name="change_theme">更改主題</string>
-    <string name="clear_cache">清除緩存</string>
+    <string name="clear_cache">清除快取</string>
     <string name="load_images">載入圖像</string>
     <string name="infinite_scroll">無限滾動</string>
     <string name="ignore_tags">忽略其它標籤</string>
-    <string name="high_res_gallery">以最佳解析度載入畫廊圖像</string>
+    <string name="high_res_gallery">以最佳解析度載入圖庫圖像</string>
     <string name="use_account_tag">使用帳戶標籤</string>
 
-    <string name="title_activity_gallery">畫廊</string>
-    <string name="title_activity_zoom">啟用放大</string>
+    <string name="title_activity_gallery">圖庫</string>
+    <string name="title_activity_zoom">啟用縮放</string>
     <string name="title_activity_tag_filter">標籤篩選</string>
-    <string name="title_activity_login">登錄</string>
+    <string name="title_activity_login">登入</string>
 
     <string name="parodies">原作</string>
     <string name="characters">角色</string>
     <string name="tags">標籤</string>
-    <string name="artists">藝術家</string>
+    <string name="artists">繪師</string>
     <string name="groups">社團</string>
     <string name="languages">語言</string>
     <string name="categories">類別</string>
     <string name="unknown">未知</string>
 
-    <string name="channel1_name">下載畫廊</string>
-    <string name="channel2_name">創建PDF</string>
-    <string name="channel1_description">用於顯示畫廊下載進度</string>
-    <string name="channel2_description">用於顯示PDF創建進度</string>
-    <string name="channel2_title">正在創建的PDF：</string>
+    <string name="channel1_name">下載圖庫</string>
+    <string name="channel2_name">建立 PDF</string>
+    <string name="channel1_description">用於顯示圖庫下載進度</string>
+    <string name="channel2_description">用於顯示 PDF 建立進度</string>
+    <string name="channel2_title">正在建立的 PDF：</string>
 
-    <string name="favorite_max_reached" formatted="true">你最多能收藏 %d 部漫畫。</string>
-    <string name="tags_max_reached" formatted="true">你最多能選中 %d 個標籤。</string>
+    <string name="favorite_max_reached" formatted="true">最多只能收藏 %d 部漫畫。</string>
+    <string name="tags_max_reached" formatted="true">最多只能選擇 %d 個標籤。</string>
 
 
     <string name="only_english">僅英文</string>
@@ -52,10 +52,10 @@
     <string name="all_languages">所有語言</string>
 
 
-    <string name="username_or_email">用戶名或郵件</string>
+    <string name="username_or_email">用戶名或電子郵件</string>
     <string name="password">密碼</string>
-    <string name="login">登錄</string>
-    <string name="login_formatted" formatted="true">以 %s 身份登錄</string>
+    <string name="login">登入</string>
+    <string name="login_formatted" formatted="true">以 %s 身份登入</string>
     <string name="logout">登出</string>
     <string name="forgot_password">忘記密碼？<b>重置密碼</b></string>
     <string name="register">沒有帳戶？<b>註冊帳號</b></string>
@@ -71,22 +71,22 @@
 
     <string name="are_you_sure">你確定？</string>
     <string name="thumbnail">預覽</string>
-    <string name="settings">設置</string>
+    <string name="settings">設定</string>
     <string name="related">相關</string>
     <string name="failed">失敗</string>
-    <string name="search">搜索</string>
+    <string name="search">搜尋</string>
     <string name="prev">上一個</string>
     <string name="share">分享</string>
     <string name="image">圖像</string>
     <string name="next">下一個</string>
 
-    <string name="create_pdf">創建PDF</string>
-    <string name="create_pdf_format" formatted="true">創建的PDF："%s"</string>
-	<string name="create_zip_format" formatted="true">創建的ZIP："%s"</string>																			
-    <string name="created_pdf">成功創建PDF</string>
-    <string name="error_pdf">創建PDF出錯</string>
+    <string name="create_pdf">建立 PDF</string>
+    <string name="create_pdf_format" formatted="true">建立的 PDF："%s"</string>
+	<string name="create_zip_format" formatted="true">建立的 ZIP："%s"</string>																			
+    <string name="created_pdf">成功建立 PDF</string>
+    <string name="error_pdf">建立 PDF 出錯</string>
     <string name="parsing_pages">正在分析頁面</string>
-    <string name="writing_pdf">正在寫入PDF</string>
+    <string name="writing_pdf">正在寫入 PDF</string>
 
 											  
     <string name="navigation_drawer_open">打開側邊欄</string>
@@ -98,11 +98,11 @@
     <string name="next_page">下一頁</string>
 
     <string name="downloaded_manga">已下載漫畫</string>
-    <string name="download_gallery">下載畫廊</string>
+    <string name="download_gallery">下載圖庫</string>
     <string name="download_completed">下載完成</string>
 
-    <string name="delete_gallery_size_format" formatted="true">刪除畫廊 (%.2fMB)</string>
-    <string name="delete_gallery_format" formatted="true">是否刪除畫廊：\n%s</string>
+    <string name="delete_gallery_size_format" formatted="true">刪除圖庫 (%.2fMB)</string>
+    <string name="delete_gallery_format" formatted="true">是否刪除圖庫：\n%s</string>
 
 
     <string name="share_with">分享</string>
@@ -114,16 +114,16 @@
     <string name="tag_preference">標籤偏好</string>
     <string name="manage_tags">管理標籤</string>
     <string name="applied_filters">已篩選</string>
-    <string name="show_related">跳轉至相關畫廊</string>
+    <string name="show_related">跳轉至相關漫畫</string>
     <string name="random_manga">隨機漫畫</string>
     <string name="save_page">保存頁數</string>
     <string name="page_count_format" formatted="true">%d 頁</string>
     <string name="upload_date_format" formatted="true">上傳於 %s 在 %s</string>
     <string name="favorite_count_format" formatted="true">%d 收藏</string>
     <string name="favorite_manga">收藏漫畫</string>
-    <string name="setting_on_remove_ignored">不顯示帶有已忽略標籤的畫廊</string>
-    <string name="setting_off_remove_ignored">模糊化帶有已忽略標籤的畫廊</string>
-    <string name="remove_ignored_galleries">移除已忽略畫廊</string>
+    <string name="setting_on_remove_ignored">不顯示帶有已忽略標籤的圖庫</string>
+    <string name="setting_off_remove_ignored">模糊化帶有已忽略標籤的圖庫</string>
+    <string name="remove_ignored_galleries">移除已忽略圖庫</string>
     <string name="clear_tag_preferences">清除標籤偏好</string>
     <string name="check_for_update_on_startup">啟動時檢查更新</string>
     <string name="check_for_updates">檢查更新</string>
@@ -132,51 +132,51 @@
     <string name="new_version_found">發現新版本</string>
     <string name="update_version_format" formatted="true">從V %s 更新至V %s？\n\nChangelog:\n%s</string>
     <string name="clear_this_list">清空此列表？</string>
-    <string name="set_minimum_count">設置最小值</string>
+    <string name="set_minimum_count">設定最小值</string>
     <string name="sort_by_title">按標題排列</string>
     <string name="sort_by_popular">按熱度排列</string>
     <string name="next_page_volume_up">音量+切換下一頁</string>
     <string name="next_page_volume_down">音量-切換下一頁</string>
     <string name="change_title_type">更改標題類型</string>
-    <string name="title_type_summary">為畫廊選擇默認標題類型</string>
+    <string name="title_type_summary">為圖庫選擇默認標題類型</string>
 
-    <string name="search_settings">搜索設置</string>
-    <string name="global_settings">全域設置</string>
-    <string name="images_settings">圖像設置</string>
-    <string name="miscellaneous">其它設置</string>
-    <string name="update_settings">更新設置</string>
+    <string name="search_settings">搜尋設定</string>
+    <string name="global_settings">全域設定</string>
+    <string name="images_settings">圖像設定</string>
+    <string name="miscellaneous">其它設定</string>
+    <string name="update_settings">更新設定</string>
     <string name="online_favorite_manga">線上收藏漫畫</string>
-    <string name="cache_size_formatted">緩存大小：%.2f MB</string>
-    <string name="cache_cleared">緩存已清理</string>
+    <string name="cache_size_formatted">快取大小：%.2f MB</string>
+    <string name="cache_cleared">快取已清理</string>
     <string name="sort_by_latest">按更新排列</string>
     <string name="edit">編輯</string>
     <string name="options">選項</string>
-    <string name="keep_history">保留搜索歷史</string>
-    <string name="add">加入</string>
+    <string name="keep_history">保留搜尋歷史</string>
+    <string name="add">新增</string>
     <string name="insert_tag_name">插入標籤名：</string>
     <string name="favorite_count">收藏數</string>
     <string name="comments">評論</string>
     <string name="send">發送</string>
     <string name="send_comment">發送評論…</string>
     <string name="profile_picture">頭像</string>
-    <string name="send_bug_on_github">在Github上回饋bug</string>
+    <string name="send_bug_on_github">在 Github 上提交錯誤報告</string>
     <string name="github">Github</string>
     <string name="install">安裝</string>
     <string name="download_update_failed">無法下載新版本</string>
     <string name="copyURL">複製URL</string>
-    <string name="add_bookmark">加入書簽</string>
-    <string name="manage_bookmarks">管理書簽</string>
+    <string name="add_bookmark">加入書籤</string>
+    <string name="manage_bookmarks">管理書籤</string>
     <string name="bookmark_page_format">第 %d 頁</string>
-    <string name="bookmark_description">書簽描述</string>
+    <string name="bookmark_description">書籤描述</string>
     <string name="enable_right_to_left">從右至左閱讀</string>
     <string name="setting_on_use_rtl">圖像將從右至左顯示</string>
     <string name="setting_off_use_rtl">圖像將從左至右顯示</string>														
     <string name="volume_change_setting">音量鍵換頁</string>
-    <string name="popular_tag_count">高級搜索中顯示熱門標籤數</string>
-    <string name="show_gallery_titles">顯示畫廊標題</string>
+    <string name="popular_tag_count">進階搜尋中顯示熱門標籤數</string>
+    <string name="show_gallery_titles">顯示圖庫標題</string>
     <string name="change_language">更改語言</string>
 
-    <string name="tag_artist_gallery">藝術家：</string>
+    <string name="tag_artist_gallery">繪師：</string>
     <string name="tag_character_gallery">角色：</string>
     <string name="tag_parody_gallery">原作：</string>
     <string name="tag_language_gallery">語言：</string>
@@ -194,66 +194,66 @@
     <string name="pause_all_downloads">停止所有下載</string>
     <string name="cancel_all_downloads">取消所有下載</string>
     <string name="disable_lock_title">閱讀時常亮</string>
-    <string name="download_all_galleries_in_this_page">下載此頁所有畫廊</string>
-    <string name="download_all_galleries">下載所有畫廊</string>
+    <string name="download_all_galleries_in_this_page">下載此頁所有圖庫</string>
+    <string name="download_all_galleries">下載所有圖庫</string>
 
     <string name="favorite_column_count">選擇收藏介面列數</string>
     <string name="download_column_count">選擇下載介面列數</string>
     <string name="main_column_count">選擇主介面列數</string>
-    <string name="navigation_settings">巡覽列設置</string>
+    <string name="navigation_settings">巡覽列設定</string>
     <string name="stop_download">停止下載</string>
     <string name="start_download">開始下載</string>
-    <string name="create_zip">創建ZIP</string>
-    <string name="channel3_name">創建ZIP</string>
-    <string name="channel3_description">用於顯示zip的創建進度</string>
-    <string name="channel3_title">創建ZIP：</string>
-    <string name="created_zip">成功創建ZIP</string>
-    <string name="failed_zip">創建ZIP失敗: </string>
+    <string name="create_zip">建立 ZIP</string>
+    <string name="channel3_name">建立 ZIP</string>
+    <string name="channel3_description">用於顯示 ZIP 的建立進度</string>
+    <string name="channel3_title">建立 ZIP：</string>
+    <string name="created_zip">成功建立 ZIP</string>
+    <string name="failed_zip">無法建立 ZIP：</string>
     <string name="start_page">起始頁</string>
     <string name="end_page">結束頁</string>
     <string name="invalid_range_selected">選擇的範圍無效</string>
     <string name="column_count_select">列數選擇</string>
     <string name="send_with_title">與標題一起發送？</string>
-    <string name="caption_send_with_title">在圖片上添加URL浮水印？</string>
-    <string name="error_404">錯誤 404: 未找到</string>
-    <string name="history_size">歷史條目數</string>
-    <string name="history_size_summary">設置歷史條目最大值</string>
-    <string name="view_history">閱讀歷史</string>
-    <string name="history">歷史</string>
+    <string name="caption_send_with_title">在圖片上添加 URL 浮水印？</string>
+    <string name="error_404">錯誤 404：未找到網頁</string>
+    <string name="history_size">歷史記錄大小</string>
+    <string name="history_size_summary">設定歷史記錄最大值</string>
+    <string name="view_history">歷史記錄</string>
+    <string name="history">歷史記錄</string>
     <string name="history_column_count">選擇歷史列數</string>
     <string name="clear_history">清除歷史</string>
-    <string name="cancelled_format">取消: %s</string>
-    <string name="completed_format">完成: %s</string>
+    <string name="cancelled_format">取消：%s</string>
+    <string name="completed_format">完成：%s</string>
     <string name="stop">停止</string>
-    <string name="downloading_format">下載中: %s</string>
+    <string name="downloading_format">下載中：%s</string>
     <string name="toggle_favorite">切換收藏</string>
     <string name="resume">恢復</string>
     <string name="pause">暫停</string>
     <string name="title_copied_to_clipboard">標題已複製至剪貼板</string>
-    <string name="setting_zoom_one_column">在畫廊內一列顯示時啟用縮放</string>
+    <string name="setting_zoom_one_column">在圖庫內一列顯示時啟用縮放</string>
     <string name="zoom_one_column">啟用縮放</string>
-    <string name="insert_pin">輸入PIN碼</string>
-    <string name="confirm_pin">確認PIN碼</string>
-    <string name="setting_pin">啟用PIN碼登錄應用</string>
-    <string name="use_pin">使用PIN碼</string>
-    <string name="wrong_pin">PIN碼錯誤</string>
+    <string name="insert_pin">輸入 PIN 碼</string>
+    <string name="confirm_pin">確認 PIN 碼</string>
+    <string name="setting_pin">啟用 PIN 碼登入應用</string>
+    <string name="use_pin">使用 PIN 碼</string>
+    <string name="wrong_pin">PIN 碼錯誤</string>
     <string name="rotate_image">旋轉圖片</string>
-    <string name="setting_alternative">在有審查制度的國家用nhent.ai替代nhentai.net</string>
-    <string name="use_alternative">使用nhent.ai</string>
+    <string name="setting_alternative">在有審查制度的國家使用 nhent.ai 而非 nhentai.net </string>
+    <string name="use_alternative">使用 nhent.ai</string>
     <string name="toggle_online_favorite">切換線上收藏</string>
-    <string name="data_usage_settings">修改資料使用設置</string>
-    <string name="mobile_data_usage_setting">流量使用設置</string>
-    <string name="wifi_data_usage_setting">Wi-Fi使用設置</string>
-    <string name="data_usage_thumb">總是下載縮略圖</string>
-    <string name="data_usage_full">按需下載縮略圖或完整圖片</string>
+    <string name="data_usage_settings">修改資料使用設定</string>
+    <string name="mobile_data_usage_setting">流量使用設定</string>
+    <string name="wifi_data_usage_setting">Wi-Fi 使用設定</string>
+    <string name="data_usage_thumb">總是下載縮圖</string>
+    <string name="data_usage_full">按需下載縮圖或完整圖片</string>
     <string name="data_usage_no">不下載圖片</string>
     <string name="enable_network_to_continue">允許下載圖片或切換網路以打開圖片</string>
     <string name="donate">支援開發者</string>
-    <string name="id_tag">ID:</string>
+    <string name="id_tag">ID：</string>
     <string name="id_copied_to_clipboard">ID已複製至剪貼板</string>
     <string name="copied_to_clipboard">複製至剪貼板</string>
     <string name="maximum_notification_count">最大通知數</string>
-    <string name="copy_settings_to_clipboard">復制設置到剪貼板</string>
+    <string name="copy_settings_to_clipboard">復制設定到剪貼板</string>
     <string name="sort_popular_all_time">熱門</string>
     <string name="sort_recent">最近</string>
     <string name="sort_popular_day">日榜</string>
@@ -268,7 +268,7 @@
     <string name="default_zoom">默認縮放</string>
     <string name="choose_directory">選擇資料夾</string>
     <string name="change_directory_position">更改資料夾路徑</string>
-    <string name="bookmark_here">加入書簽</string>
+    <string name="bookmark_here">加入書籤</string>
     <string name="resume_from_page">從 %d 頁繼續</string>
     <string name="new_beta_version_found">發現新的測試版</string>
     <string name="check_beta_releases">下載測試版</string>
@@ -285,21 +285,22 @@
     <string name="days">日</string>
     <string name="weeks">周</string>
     <string name="choose_unit">選擇時間單位:</string>
-    <string name="change_status">Change status</string>
-    <string name="create_new_status">Create new status:</string>
-    <string name="invalid_color_selected">Black and white can not be used</string>
-    <string name="change_status_title">Select new status:</string>
-    <string name="remove_status">None</string>
-    <string name="name_too_short">Name too short</string>
-    <string name="duplicated_name">Duplicated name</string>
-    <string name="manage_statuses">Manage statuses</string>
-    <string name="update_status">Update status:</string>
-    <string name="view_statuses">View statuses</string>
-    <string name="status_column_count">Select status column count</string>
-    <string name="status_viewer">Status viewer</string>
+    <string name="change_status">變更狀態</string>
+    <string name="create_new_status">建立新狀態：</string>
+    <string name="invalid_color_selected">無法使用黑白顏色</string>
+    <string name="change_status_title">選擇新狀態：</string>
+    <string name="remove_status">無</string>
+    <string name="name_too_short">名稱太短</string>
+    <string name="duplicated_name">名稱重複</string>
+    <string name="manage_statuses">管理狀態</string>
+    <string name="update_status">更新狀態：</string>
+    <string name="view_statuses">漫畫狀態</string>
+    <string name="status_column_count">選擇狀態列數</string>
+    <string name="status_viewer">漫畫狀態</string>
 
 
     <string-array name="language">
+        <item>系統預設</item>
         <item>英文</item>
         <item>繁體中文</item>
         <item>簡體中文</item>
@@ -309,7 +310,7 @@
         <item>阿拉伯</item>
     </string-array>
     <string-array name="theme">
-        <item>亮色</item>
+        <item>淺色</item>
         <item>暗色</item>
     </string-array>
 	
