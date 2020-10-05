@@ -273,6 +273,7 @@
     <string name="status_viewer">Status viewer</string>
 
     <string-array name="language">
+        <item>System Default</item>
         <item>English</item>
         <item>Chinese (Traditional)</item>
         <item>Chinese (Simplified)</item>

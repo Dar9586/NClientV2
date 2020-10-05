@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--Thanks to ZerOri and linsui for the Simplified Chinese translation-->
 <resources>
-
-
     <string name="setting_on_ignore_tags">从画廊菜单中选中一个标签时不再查询其它标签（语言项除外）</string>
     <string name="setting_off_ignore_tags">从画廊菜单中选中一个标签时查询其它标签</string>
     <string name="setting_on_high_res">加载原图（较多流量）</string>
@@ -276,12 +274,13 @@
     <string name="status_viewer">状态查看器</string>
 
     <string-array name="language">
+        <item>默认</item>
         <item>英文</item>
         <item>中文（繁体）</item>
         <item>中文（简体）</item>
         <item>土耳其语</item>
         <item>意大利语</item>
-	<item>德语</item>
+	    <item>德语</item>
         <item>阿拉伯语</item>
     </string-array>
     <string-array name="theme">

@@ -296,6 +296,7 @@
     <string name="status_column_count">Select status column count</string>
     <string name="status_viewer">Status viewer</string>
     <string-array name="language">
+        <item>System Default</item>
         <item>Englisch</item>
         <item>Chinesisch (Traditionell)</item>
         <item>Chinesisch (Vereinfacht)</item>

@@ -215,6 +215,7 @@
     <string name="rotate_image">Fotoğrafı çevir</string>
 
     <string-array name="language">
+        <item>System Default</item>
         <item>İngilizce</item>
         <item>Çince (Geleneksel)</item>
         <item>Çince (Basitleştirilmiş)</item>
