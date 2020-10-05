@@ -752,7 +752,7 @@ public class MainActivity extends BaseActivity
                 .setNegativeButton(R.string.cancel,null)
                 .setPositiveButton(R.string.ok, (dialog, which) -> {
                     for(GenericGallery g:inspector.getGalleries())
-                        DownloadGalleryV2.downloadGallery(MainActivity.this, (SimpleGallery)g);
+                        DownloadGalleryV2.downloadGallery(MainActivity.this, g);
                 });
         builder.show();
     }

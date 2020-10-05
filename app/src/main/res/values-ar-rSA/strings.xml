@@ -2,20 +2,14 @@
 <resources>
     <string name="setting_on_ignore_tags">Other tags won\'t be queried when a tag is selected from the gallery menu (except language)</string>
     <string name="setting_off_ignore_tags">Other tags will be queried when a tag is selected from the gallery menu</string>
-    <string name="setting_on_high_res">Best resolution images will be loaded (more data)</string>
-    <string name="setting_off_high_res">Thumbnails images will be loaded (less data)</string>
-    <string name="setting_on_load">Images will be loaded in all activities</string>
-    <string name="setting_off_load">Images will be loaded only in single page viewer</string>
     <string name="setting_on_use_account_tag">Use the account tags into the search query (Local tags will have priority)</string>
     <string name="setting_off_use_account_tag">Account tags will be ignored for the query</string>
     <string name="theme_summary">Select theme colors</string>
     <string name="send_crash_report">Send crash report</string>
     <string name="change_theme">Change theme</string>
     <string name="clear_cache">Clear cache</string>
-    <string name="load_images">Load images</string>
     <string name="infinite_scroll">Infinite scroll</string>
     <string name="ignore_tags">Ignore other tags</string>
-    <string name="high_res_gallery">Load image in best resolution into gallery</string>
     <string name="use_account_tag">Use tags from account</string>
     <string name="title_activity_gallery">Gallery</string>
     <string name="title_activity_zoom">Zoom Activity</string>
@@ -43,14 +37,9 @@
     <string name="only_japanese">Only japanese</string>
     <string name="only_chinese">Only chinese</string>
     <string name="all_languages">All languages</string>
-    <string name="username_or_email">Username or Email</string>
-    <string name="password">Password</string>
     <string name="login">Log in</string>
     <string name="login_formatted" formatted="true">Logged as %s</string>
     <string name="logout">Logout</string>
-    <string name="forgot_password">Forgot your password? <b>Reset it</b></string>
-    <string name="register">Don\'t have an account? <b>Register</b></string>
-    <string name="invalid_credentials">Invalid credentials</string>
     <string name="favorite_online_manga">Favorite online manga</string>
     <string name="online_tags">Online tags</string>
     <string name="add_to_online_favorite">Add to online favorites</string>
@@ -82,7 +71,6 @@
     <string name="next_page">Next page</string>
     <string name="downloaded_manga">Downloaded manga</string>
     <string name="download_gallery">Download gallery</string>
-    <string name="download_completed">Download completed</string>
     <string name="delete_gallery_size_format" formatted="true">Delete gallery (%.2fMB)</string>
     <string name="delete_gallery_format" formatted="true">Do you want to delete the gallery:\n%s</string>
     <string name="share_with">Share with</string>
@@ -189,7 +177,6 @@
     <string name="column_count_select">Column count select</string>
     <string name="send_with_title">Send with title?</string>
     <string name="caption_send_with_title">Append url to the image as caption to the image?</string>
-    <string name="error_404">Error 404: not found</string>
     <string name="history_size">History size</string>
     <string name="history_size_summary">Set the max number of entries for the history</string>
     <string name="view_history">View history</string>
@@ -197,7 +184,6 @@
     <string name="clear_history">Clear history</string>
     <string name="cancelled_format">Cancelled: %s</string>
     <string name="completed_format">Completed: %s</string>
-    <string name="stop">Stop</string>
     <string name="downloading_format">Downloading: %s</string>
     <string name="toggle_favorite">Toggle favorite</string>
     <string name="resume">Resume</string>
@@ -235,13 +221,11 @@
     <string name="sort_type_title_format" formatted="true">Choose sort type (%s)</string>
     <string name="sort_select_type">Choose sort type:</string>
     <string name="unable_to_connect_to_the_site">Unable to connect to the site</string>
-    <string name="error">Error</string>
     <string name="no_entry_found">No entries found</string>
     <string name="retry">Retry</string>
     <string name="folder_location">Folder location</string>
     <string name="default_zoom">Default zoom</string>
     <string name="choose_directory">Choose directory</string>
-    <string name="change_directory_position">Change directory position</string>
     <string name="bookmark_here">Bookmark here</string>
     <string name="resume_from_page">Resume from page %d</string>
     <string name="new_beta_version_found">New beta version found</string>
