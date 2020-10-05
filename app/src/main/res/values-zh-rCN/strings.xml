@@ -1,24 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--Thanks to ZerOri and linsui for the Simplified Chinese translation-->
 <resources>
-
-
     <string name="setting_on_ignore_tags">从画廊菜单中选中一个标签时不再查询其它标签（语言项除外）</string>
     <string name="setting_off_ignore_tags">从画廊菜单中选中一个标签时查询其它标签</string>
-    <string name="setting_on_high_res">加载原图（较多流量）</string>
-    <string name="setting_off_high_res">加载缩略图（较少流量）</string>
-    <string name="setting_on_load">所有活动均加载图像</string>
-    <string name="setting_off_load">仅单页阅读时加载图像</string>
     <string name="setting_on_use_account_tag">在搜索请求中使用账户标签（本地标签优先）</string>
     <string name="setting_off_use_account_tag">在搜索请求中忽略账户标签</string>
     <string name="theme_summary">选择主题颜色</string>
     <string name="send_crash_report">发送崩溃报告</string>
     <string name="change_theme">更改主题</string>
     <string name="clear_cache">清除缓存</string>
-    <string name="load_images">加载图像</string>
     <string name="infinite_scroll">无限滚动</string>
     <string name="ignore_tags">忽略其它标签</string>
-    <string name="high_res_gallery">以最佳分辨率加载画廊图像</string>
     <string name="use_account_tag">使用账户标签</string>
     <string name="title_activity_gallery">画廊</string>
     <string name="title_activity_zoom">启用放大</string>
@@ -46,14 +38,9 @@
     <string name="only_japanese">仅日文</string>
     <string name="only_chinese">仅中文</string>
     <string name="all_languages">所有语言</string>
-    <string name="username_or_email">用户名或邮件</string>
-    <string name="password">密码</string>
     <string name="login">登录</string>
     <string name="login_formatted" formatted="true">以 %s 身份登录</string>
     <string name="logout">登出</string>
-    <string name="forgot_password">忘记密码？<b>重置密码</b></string>
-    <string name="register">没有账户？<b>注册账号</b></string>
-    <string name="invalid_credentials">无效凭证</string>
     <string name="favorite_online_manga">在线收藏漫画</string>
     <string name="online_tags">在线标签</string>
     <string name="add_to_online_favorite">添加至在线收藏</string>
@@ -85,7 +72,6 @@
     <string name="next_page">下一页</string>
     <string name="downloaded_manga">已下载漫画</string>
     <string name="download_gallery">下载画廊</string>
-    <string name="download_completed">下载完成</string>
     <string name="delete_gallery_size_format" formatted="true">删除画廊 (%.2fMB)</string>
     <string name="delete_gallery_format" formatted="true">是否删除画廊：\n%s</string>
     <string name="share_with">分享</string>
@@ -191,7 +177,6 @@
     <string name="column_count_select">列数选择</string>
     <string name="send_with_title">与标题一起发送？</string>
     <string name="caption_send_with_title">在图片上添加 URL 水印？</string>
-    <string name="error_404">错误 404: 未找到</string>
     <string name="history_size">历史条目数</string>
     <string name="history_size_summary">设置历史条目最大值</string>
     <string name="view_history">阅读历史</string>
@@ -200,7 +185,6 @@
     <string name="clear_history">清除历史</string>
     <string name="cancelled_format">取消: %s</string>
     <string name="completed_format">完成: %s</string>
-    <string name="stop">停止</string>
     <string name="downloading_format">下载中: %s</string>
     <string name="toggle_favorite">切换收藏</string>
     <string name="resume">恢复</string>
@@ -238,13 +222,11 @@
     <string name="sort_select_type">选择排序类型：</string>
     <string name="sort_type_title_format" formatted="true">选择排序类型（%s）</string>
     <string name="unable_to_connect_to_the_site">无法连接站点</string>
-    <string name="error">错误</string>
     <string name="no_entry_found">找不到条目</string>
     <string name="retry">重试</string>
     <string name="folder_location">文件夹位置</string>
     <string name="default_zoom">默认缩放</string>
     <string name="choose_directory">选择文件夹</string>
-    <string name="change_directory_position">选择文件夹位置</string>
     <string name="bookmark_here">加入书签</string>
     <string name="resume_from_page">从 %d 页继续</string>
     <string name="new_beta_version_found">发现新的测试版</string>
@@ -276,12 +258,13 @@
     <string name="status_viewer">状态查看器</string>
 
     <string-array name="language">
+        <item>默认</item>
         <item>英文</item>
         <item>中文（繁体）</item>
         <item>中文（简体）</item>
         <item>土耳其语</item>
         <item>意大利语</item>
-	<item>德语</item>
+	    <item>德语</item>
         <item>阿拉伯语</item>
     </string-array>
     <string-array name="theme">

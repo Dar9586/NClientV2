@@ -3,11 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory android:title="@string/global_settings">
         <ListPreference
-            android:defaultValue="en"
+            android:defaultValue="@string/key_default_value"
             android:entries="@array/language"
             android:entryValues="@array/language_data"
             android:key="@string/key_language"
-            android:title="@string/change_language" />
+            android:title="@string/change_language"
+            app:useSimpleSummaryProvider="true"/>
         <ListPreference
             android:defaultValue="dark"
             android:entries="@array/theme"

@@ -5,10 +5,6 @@
     <!--SUMMARY-->
     <string name="setting_on_ignore_tags">Andere Tags werden nicht gesucht wenn du einen Tag von einer Galerie auswählst (außer die Sprache)</string>
     <string name="setting_off_ignore_tags">Andere Tags werden gesucht wenn du einen Tag von einer Galerie auswählst</string>
-    <string name="setting_on_high_res">Hochauflösende Bilder werden geladen (verbraucht mehr Daten)</string>
-    <string name="setting_off_high_res">Vorschaubilder werden geladen (verbraucht weniger Daten)</string>
-    <string name="setting_on_load">Bilder werden überall geladen</string>
-    <string name="setting_off_load">Bilder werden nur im Einzelseitenbetrachter geladen</string>
     <string name="setting_on_use_account_tag">Benutze online Tags in deiner Suche (lokale Tags haben Priorität)</string>
     <string name="setting_off_use_account_tag">Online Tags werden bei deiner Suche ignoriert</string>
     <string name="theme_summary">Wähle Farbschema</string>
@@ -17,10 +13,8 @@
     <string name="send_crash_report">Sende Absturzbericht</string>
     <string name="change_theme">Ändere Thema</string>
     <string name="clear_cache">Lösche den Cache</string>
-    <string name="load_images">Lade Bilder</string>
     <string name="infinite_scroll">Unendlich scrollen</string>
     <string name="ignore_tags">Ignoriere andere Tags</string>
-    <string name="high_res_gallery">Lade Bilder in bester qualität</string>
     <string name="use_account_tag">Benutze Account Tags</string>
 
     <string name="title_activity_gallery">Galerie</string>
@@ -56,14 +50,9 @@
     <string name="all_languages">Alle Sprachen</string>
 
 
-    <string name="username_or_email">Benutzername oder Email</string>
-    <string name="password">Passwort</string>
     <string name="login">Einloggen</string>
     <string name="login_formatted" formatted="true">Eingeloggt als %s</string>
     <string name="logout">Ausloggen</string>
-    <string name="forgot_password">Passwort vergessen? <b>Zurücksetzen</b></string>
-    <string name="register">Du hast keinen Account? <b>Registrieren</b></string>
-    <string name="invalid_credentials">Ungültige Anmeldedaten</string>
 
     <string name="favorite_online_manga">Online Manga Favoriten</string>
     <string name="online_tags">Online Tag</string>
@@ -102,7 +91,6 @@
 
     <string name="downloaded_manga">Heruntergeladene Manga</string>
     <string name="download_gallery">Galerie herunterladen</string>
-    <string name="download_completed">Download komplett</string>
 
     <string name="delete_gallery_size_format" formatted="true">Lösche Galerie (%.2fMB)</string>
     <string name="delete_gallery_format" formatted="true">Möchtest du die Galerie löschen:\n%s</string>
@@ -214,7 +202,6 @@
     <string name="column_count_select">Spaltenanzahl auswählen</string>
     <string name="send_with_title">Mit Titel senden?</string>
     <string name="caption_send_with_title">URL als Beschreibung zum Bild hinzufügen?</string>
-    <string name="error_404">Fehler 404: nicht gefunden</string>
     <string name="history_size">Verlauf Größe</string>
     <string name="history_size_summary">Setze die maximale Anzahl an Einträgen für deinen Verlauf</string>
     <string name="view_history">Verlauf anschauen</string>
@@ -222,7 +209,6 @@
     <string name="clear_history">Verlauf löschen</string>
     <string name="cancelled_format">Abgebrochen: %s</string>
     <string name="completed_format">Fertiggestellt: %s</string>
-    <string name="stop">Stop</string>
     <string name="downloading_format">Lade: %s</string>
     <string name="toggle_favorite">Favoriten umschalten</string>
     <string name="resume">Fortsetzen</string>
@@ -259,13 +245,11 @@
     <string name="sort_type_title_format" formatted="true">Wähle Sortiertyp (%s)</string>
     <string name="sort_select_type">Wähle Sortiertyp:</string>
     <string name="unable_to_connect_to_the_site">Kann sich nicht mit der Seite verbinden</string>
-    <string name="error">Fehler</string>
     <string name="no_entry_found">Kein Eintrag gefunden</string>
     <string name="retry">Wiederholen</string>
     <string name="folder_location">Ordner Location</string>
     <string name="default_zoom">Standard Zoom</string>
     <string name="choose_directory">Ordner auswählen</string>
-    <string name="change_directory_position">Ordner position ändern</string>
     <string name="bookmark_here">Lesezeichen hier</string>
     <string name="resume_from_page">Mit Seite %d fortsetzen</string>
     <string name="new_beta_version_found">Neue Beta Version gefunden</string>
@@ -296,6 +280,7 @@
     <string name="status_column_count">Select status column count</string>
     <string name="status_viewer">Status viewer</string>
     <string-array name="language">
+        <item>System Default</item>
         <item>Englisch</item>
         <item>Chinesisch (Traditionell)</item>
         <item>Chinesisch (Vereinfacht)</item>

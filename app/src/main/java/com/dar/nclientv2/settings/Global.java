@@ -345,10 +345,40 @@ public class Global {
         if(client!=null)return;
         reloadHttpClient(context);
     }
-    public static Locale initLanguage(Context context){
-        String x=context.getSharedPreferences("Settings",0).getString(context.getString(R.string.key_language),"en");
-        assert x != null;
-        return new Locale(x);
+
+    public static Locale initLanguage(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("Settings", 0);
+        String prefLangKey = context.getString(R.string.key_language);
+        String defaultValue = context.getString(R.string.key_default_value);
+        String langCode = sharedPreferences.getString(prefLangKey, defaultValue);
+        assert langCode != null;
+        if (langCode.equalsIgnoreCase(defaultValue)){
+            Locale defaultLocale = Locale.getDefault();
+            if (isLocaleAvailable(context, defaultLocale)) return defaultLocale;
+        }
+        if (langCode.contains("-")) {
+            String[] regexSplit = langCode.split("-");
+            Locale targetLocale = new Locale(regexSplit[0], regexSplit[1]);
+            if (isLocaleAvailable(context, targetLocale)) return targetLocale;
+        }
+        return new Locale("en", "US");
+    }
+
+    private static boolean isLocaleAvailable(Context context, Locale targetLocale) {
+        Locale[] availableLocales = Locale.getAvailableLocales();
+        String[] supportedLangCodes = context.getResources().getStringArray(R.array.language_data);
+        // array.stream is not supported on Android <6.0
+        for (Locale availableLocale : availableLocales)
+            if (availableLocale.getCountry().equalsIgnoreCase(targetLocale.getCountry()) &&
+                    availableLocale.getLanguage().equalsIgnoreCase(targetLocale.getLanguage()))
+                for (String supportedLangCode : supportedLangCodes)
+                    if (getLocaleCode(targetLocale).equalsIgnoreCase(supportedLangCode))
+                        return true;
+        return false;
+    }
+
+    private static String getLocaleCode(Locale locale) {
+        return String.format("%s-%s", locale.getLanguage(), locale.getCountry());
     }
     private static ThemeScheme initTheme(Context context){
         String h=context.getSharedPreferences("Settings",0).getString(context.getString(R.string.key_theme_select),"dark");

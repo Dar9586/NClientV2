@@ -4,8 +4,6 @@
     <!--SUMMARY-->
     <string name="setting_on_ignore_tags">Diğer etiketler manga menüsünden bir etiket seçildiğinde listelenmeyecek (dil hariç)</string>
     <string name="setting_off_ignore_tags">Diğer etiketler manga menüsünden bir etiket seçildiğinde listelenecek</string>
-    <string name="setting_on_high_res">Kullanılabilen en yüksek çözünürlük yüklenecek (daha fazla veri gerektirir)</string>
-    <string name="setting_off_load">Fotoğraflar sadece tek sayfa görünümünde yüklenecek</string>
     <string name="setting_off_use_account_tag">Hesap etiketleri aramada dikkate alınmayacak</string>
     <string name="theme_summary">Tema rengini seç</string>
 
@@ -13,7 +11,6 @@
     <string name="send_crash_report">Otomatik çökme raporu gönder</string>
     <string name="change_theme">Tema değiştir</string>
     <string name="clear_cache">Önbelleği temizle</string>
-    <string name="load_images">Fotoğrafları yükle</string>
     <string name="infinite_scroll">Sonsuz kaydırma</string>
     <string name="use_account_tag">Hesaptan etiketleri kullan</string> <!-- DEPRECATED-->
 
@@ -49,12 +46,9 @@
     <string name="only_chinese">Sadece Çince</string>
     <string name="all_languages">Tüm Diller</string>
 
-    <string name="username_or_email">Kullanıcı adı ve ya Email</string>
     <string name="login">Giriş yap</string>
     <string name="login_formatted" formatted="true">%s olarak giriş yapıldı</string>
     <string name="logout">Çıkış yap</string>
-    <string name="forgot_password">Şifrenizi mi unuttunuz? <b>Sıfırlayın</b></string>
-    <string name="register">Hesabınız yok mu? <b>Kaydol</b></string>
 
     <string name="favorite_online_manga">Favori online manga</string>
     <string name="online_tags">Online etiketler</string>
@@ -91,7 +85,6 @@
 
     <string name="downloaded_manga">İndirilmiş Mangalar</string>
     <string name="download_gallery">Bu mangayı indir</string>
-    <string name="download_completed">İndirme tamamlandı</string>
 
     <string name="delete_gallery_size_format" formatted="true">Mangayı sil %.2fMB boyutunda</string> <!--Delete manga? Its xMB-->
     <string name="delete_gallery_format" formatted="true">Bu mangayı silmek istiyor musunuz? %s</string> 
@@ -192,7 +185,6 @@
     <string name="column_count_select">Sütun sayısı seç</string>
     <string name="send_with_title">Başlıkla gönder?</string>
     <string name="caption_send_with_title">Fotoğrafa URL yi çeviri olarak ekle?</string>
-    <string name="error_404">Hata 404: Bulunamadı</string>
     <string name="history_size">Geçmiş boyutu</string>
     <string name="history_size_summary">Geçmişe kaydedilecek kayıt sayısını seç</string>
     <string name="view_history">Geçmişi görüntüle</string>
@@ -200,7 +192,6 @@
     <string name="clear_history">Geçmişi temizle</string>
     <string name="cancelled_format">İptal edildi: %s</string>
     <string name="completed_format">İndirme tamamlandı: %s</string>
-    <string name="stop">Dur</string>
     <string name="downloading_format">İndiriliyor: %s</string>
     <string name="toggle_favorite">Favorilere ekle/çıkar</string>
     <string name="resume">Devam et</string>
@@ -215,6 +206,7 @@
     <string name="rotate_image">Fotoğrafı çevir</string>
 
     <string-array name="language">
+        <item>System Default</item>
         <item>İngilizce</item>
         <item>Çince (Geleneksel)</item>
         <item>Çince (Basitleştirilmiş)</item>
@@ -233,13 +225,8 @@
         <item>Japonca</item>
         <item>Özel</item>
     </string-array>
-    <string name="setting_off_high_res">Önizlemeler yüklenecek (az veri kullanır)</string>
-    <string name="setting_on_load">Fotoğraflar tüm aktivitelerde yüklenecek</string>
     <string name="setting_on_use_account_tag">Hesap etiketlerini aramada kullan (Yerel etiketler daha önceliklidir)</string>
     <string name="ignore_tags">Diğer etiketleri dikkate alma</string>
-    <string name="high_res_gallery">Fotoğrafı mangada en yüksek çözünürlükte yükle</string>
-    <string name="password">Şifre</string>
-    <string name="invalid_credentials">Yanlış giriş bilgisi. Lütfen İsminizi ve ya Şifrenizi tekrar girin</string>
     <string name="created_pdf">PDF başarıyla oluşturuldu</string>
     <string name="navigation_drawer_open">Gezinme çekmecesini aç</string>
     <string name="link_copied_to_clipboard">Link panoya kopyalandı</string>
@@ -278,13 +265,11 @@
     <string name="sort_select_type">Sıralama tipi seç:</string>
     <string name="sort_type_title_format" formatted="true">Sıralama tipi seç (%s)</string>
     <string name="unable_to_connect_to_the_site">Siteye bağlanılamadı</string>
-    <string name="error">Hata</string>
     <string name="no_entry_found">Herhangi bir sonuç bulunamadı</string>
     <string name="retry">Yeniden Dene</string>
     <string name="folder_location">İndirme Dizini</string>
     <string name="default_zoom">Varsayılan Yakınlaştırma</string>
     <string name="choose_directory">Dizin Seç</string>
-    <string name="change_directory_position">Dizin konumunu değiştir</string>
     <string name="bookmark_here">Buraya yer işareti ekle</string>
     <string name="resume_from_page">%d. sayfadan devam et</string>
     <string name="new_beta_version_found">Yeni beta sürümü bulundu</string>

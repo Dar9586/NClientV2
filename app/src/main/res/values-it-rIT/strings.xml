@@ -4,10 +4,6 @@
     <!--SUMMARY-->
     <string name="setting_on_ignore_tags">Non verranno aggiunti ulteriori tag quando un tag è scelto da una galleria (tranne la lingua)</string>
     <string name="setting_off_ignore_tags">Verranno aggiunti ulteriori tag quando un tag è scelto da una galleria (tranne la lingua)</string>
-    <string name="setting_on_high_res">Verrà usata la massima risuluzione per le immagini (più dari)</string>
-    <string name="setting_off_high_res">Verrà usata la miniatura per le immagini (meno dati)</string>
-    <string name="setting_on_load">Le immagini verranno caricate ovunque</string>
-    <string name="setting_off_load">Le immagini verranno caricate solo nella visualizzazione a singola pagina</string>
     <string name="setting_on_use_account_tag">Usa i tag online per la ricerca (i tag locali avranno priorità)</string>
     <string name="setting_off_use_account_tag">I tag online verranno ignorati</string>
     <string name="theme_summary">Seleziona schema colori</string>
@@ -16,10 +12,8 @@
     <string name="send_crash_report">Invia report in caso di errori</string>
     <string name="change_theme">Cambia temi</string>
     <string name="clear_cache">Pulisci cache</string>
-    <string name="load_images">Carica immagini</string>
     <string name="infinite_scroll">Scorrimento infinito</string>
     <string name="ignore_tags">Ignora altri tag</string>
-    <string name="high_res_gallery">Carica immagini ad alta risoluzione</string>
     <string name="use_account_tag">Usa i tag dall\'account</string>
 
     <string name="title_activity_gallery">Galleria</string>
@@ -55,14 +49,9 @@
     <string name="all_languages">Tutte le lingue</string>
 
 
-    <string name="username_or_email">Username o Email</string>
-    <string name="password">Password</string>
     <string name="login">Accedi</string>
     <string name="login_formatted" formatted="true">Entrato come %s</string>
     <string name="logout">Logout</string>
-    <string name="forgot_password">Password dimenticata? <b>Reimpostala</b></string>
-    <string name="register">Non hai un account? <b>Registrati</b></string>
-    <string name="invalid_credentials">Credenziali invalide</string>
 
     <string name="favorite_online_manga">Manga online preferiti</string>
     <string name="online_tags">Online tag</string>
@@ -101,7 +90,6 @@
 
     <string name="downloaded_manga">Manga scaricati</string>
     <string name="download_gallery">Scarica galleria</string>
-    <string name="download_completed">Download completato</string>
 
     <string name="delete_gallery_size_format" formatted="true">Cancella galleria (%.2fMB)</string>
     <string name="delete_gallery_format" formatted="true">Vuoi cancellare la gallerria:\n%s</string>
@@ -213,7 +201,6 @@
     <string name="column_count_select">Seleziona numero colonne</string>
     <string name="send_with_title">Invia con titolo?</string>
     <string name="caption_send_with_title">Inserire URL come descrizione dell\'immagine?</string>
-    <string name="error_404">Errore 404: non trovato</string>
     <string name="history_size">Grandezza cronologia</string>
     <string name="history_size_summary">Seleziona numero massimo di elementi nella cronologia</string>
     <string name="view_history">Vedi cronologia</string>
@@ -221,7 +208,6 @@
     <string name="clear_history">Pulisci cronologia</string>
     <string name="cancelled_format">Cancellato: %s</string>
     <string name="completed_format">Completato: %s</string>
-    <string name="stop">Ferma</string>
     <string name="downloading_format">Scaricando: %s</string>
     <string name="toggle_favorite">Alterna preferito</string>
     <string name="resume">Riprendi</string>
@@ -258,13 +244,11 @@
     <string name="sort_type_title_format" formatted="true">Scegli tipo ordinamento (%s)</string>
     <string name="sort_select_type">Seleziona tipo di ordinamento:</string>
     <string name="unable_to_connect_to_the_site">Impossibile connettersi al sito</string>
-    <string name="error">Errore</string>
     <string name="no_entry_found">Nessuna galleria trovata</string>
     <string name="retry">Riprova</string>
     <string name="folder_location">Posizione cartella</string>
     <string name="default_zoom">Default zoom</string>
     <string name="choose_directory">Scegli cartella</string>
-    <string name="change_directory_position">Scegli posizione cartella</string>
     <string name="bookmark_here">Segnalibro qui</string>
     <string name="resume_from_page">Ricomincia dalla pagina %d</string>
     <string name="new_beta_version_found">Nuova versione beta trovata</string>
@@ -295,6 +279,7 @@
     <string name="status_column_count">Select status column count</string>
     <string name="status_viewer">Status viewer</string>
     <string-array name="language">
+        <item>System Default</item>
         <item>Inglese</item>
         <item>Cinese (Tradizionale)</item>
         <item>Cinese (Semplificate)</item>
