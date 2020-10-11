@@ -5,7 +5,7 @@
     <string name="key_default_value" translatable="false">default_value</string>
     <string name="key_enable_beta" translatable="false">enable_beta</string>
     <string name="key_save_path" translatable="false">save_path</string>
-    <string name="key_local_sort" translatable="false">local_sort</string>
+    <string name="key_local_sort" translatable="false">local_sort_type</string>
     <string name="key_title_type" translatable="false">title_type_str</string>
     <string name="key_by_popular" translatable="false">is_by_popular</string>
     <string name="key_column_count" translatable="false">column_count</string>
@@ -30,6 +30,7 @@
     <string name="key_column_land_favo" translatable="false">column_land_favo</string>
     <string name="key_column_port_stat" translatable="false">column_port_stat</string>
     <string name="key_column_land_stat" translatable="false">column_land_stat</string>
+    <string name="key_hide_multitasking" translatable="false">hide_multitasking</string>
     <string name="key_language" translatable="false">key_language</string>
     <string name="key_disable_lock" translatable="false">disable_lock</string>
     <string name="key_max_history_size" translatable="false">max_history_size</string>
@@ -312,6 +313,12 @@
     <string name="view_statuses">View statuses</string>
     <string name="status_column_count">Select status column count</string>
     <string name="status_viewer">Status viewer</string>
+    <string name="title_hide_multitasking">Hide app content in multitasking</string>
+    <string name="title">Title</string>
+    <string name="download_date">Download date</string>
+    <string name="page_count">Page count</string>
+    <string name="size">Size</string>
+    <string name="descending_order">Descending order</string>
 
     <string-array name="language">
         <item>System Default</item>

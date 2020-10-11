@@ -9,18 +9,18 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.widget.ImageViewCompat;
 
 import com.dar.nclientv2.api.RandomLoader;
 import com.dar.nclientv2.api.components.Gallery;
+import com.dar.nclientv2.components.activities.GeneralActivity;
 import com.dar.nclientv2.settings.Favorites;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.ImageDownloadUtility;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class RandomActivity extends AppCompatActivity {
+public class RandomActivity extends GeneralActivity {
     private TextView language;
     private ImageButton thumbnail;
     private ImageButton favorite;

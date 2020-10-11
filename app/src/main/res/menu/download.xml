@@ -12,7 +12,8 @@
     <item
         android:id="@+id/sort_by_name"
         app:showAsAction="ifRoom|collapseActionView"
-        android:title="@string/sort_by_title"
+        android:icon="@drawable/ic_sort"
+        android:title="@string/sort_select_type"
         />
     <item
         android:id="@+id/folder_choose"

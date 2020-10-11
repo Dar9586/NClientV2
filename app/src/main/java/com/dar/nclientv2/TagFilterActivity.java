@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -17,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.dar.nclientv2.adapters.TagsAdapter;
+import com.dar.nclientv2.components.activities.GeneralActivity;
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
 import com.dar.nclientv2.components.widgets.TagTypePage;
 import com.dar.nclientv2.settings.DefaultDialogs;
@@ -29,7 +29,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.List;
 
-public class TagFilterActivity extends AppCompatActivity{
+public class TagFilterActivity extends GeneralActivity {
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }

@@ -1,18 +1,32 @@
 package com.dar.nclientv2.components.activities;
 
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.view.ViewGroup;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
+import com.dar.nclientv2.settings.Global;
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends GeneralActivity {
     protected RecyclerView recycler;
     protected SwipeRefreshLayout refresher;
     protected ViewGroup masterLayout;
+
+    protected abstract int getPortraitColumnCount();
+    protected abstract int getLandscapeColumnCount();
+
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Global.initActivity(this);
+    }
+
     public SwipeRefreshLayout getRefresher() {
         return refresher;
     }
@@ -26,7 +40,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             changeLayout(true);
@@ -34,16 +48,18 @@ public abstract class BaseActivity extends AppCompatActivity {
             changeLayout(false);
         }
     }
-    protected abstract int getPortCount();
-    protected abstract int getLandCount();
+
     protected void changeLayout(boolean landscape){
-        final int count=landscape? getLandCount():getPortCount();
-        int first=recycler.getLayoutManager()==null?0:((CustomGridLayoutManager)recycler.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+        CustomGridLayoutManager manager=(CustomGridLayoutManager)recycler.getLayoutManager();
         RecyclerView.Adapter adapter=recycler.getAdapter();
+        int count=landscape? getLandscapeColumnCount(): getPortraitColumnCount();
+        int position=0;
+
+        if(manager!=null)
+            position=manager.findFirstCompletelyVisibleItemPosition();
         CustomGridLayoutManager gridLayoutManager=new CustomGridLayoutManager(this,count);
         recycler.setLayoutManager(gridLayoutManager);
         recycler.setAdapter(adapter);
-        recycler.scrollToPosition(first);
+        recycler.scrollToPosition(position);
     }
-
 }

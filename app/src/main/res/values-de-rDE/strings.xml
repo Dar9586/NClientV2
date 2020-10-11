@@ -279,6 +279,12 @@
     <string name="view_statuses">View statuses</string>
     <string name="status_column_count">Select status column count</string>
     <string name="status_viewer">Status viewer</string>
+    <string name="title_hide_multitasking">Hide app content in multitasking</string>
+    <string name="title">Title</string>
+    <string name="download_date">Download date</string>
+    <string name="page_count">Page count</string>
+    <string name="size">Size</string>
+    <string name="descending_order">Descending order</string>
     <string-array name="language">
         <item>System Default</item>
         <item>Englisch</item>

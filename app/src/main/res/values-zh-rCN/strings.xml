@@ -256,6 +256,12 @@
     <string name="view_statuses">查看状态</string>
     <string name="status_column_count">选择状态列数</string>
     <string name="status_viewer">状态查看器</string>
+    <string name="title_hide_multitasking">Hide app content in multitasking</string>
+    <string name="title">Title</string>
+    <string name="download_date">Download date</string>
+    <string name="page_count">Page count</string>
+    <string name="size">Size</string>
+    <string name="descending_order">Descending order</string>
 
     <string-array name="language">
         <item>默认</item>

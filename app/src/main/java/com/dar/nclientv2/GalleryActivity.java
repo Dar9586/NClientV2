@@ -204,12 +204,12 @@ public class GalleryActivity extends BaseActivity{
     }
 
     @Override
-    protected int getPortCount() {
+    protected int getPortraitColumnCount() {
         return 0;
     }
 
     @Override
-    protected int getLandCount() {
+    protected int getLandscapeColumnCount() {
         return 0;
     }
 

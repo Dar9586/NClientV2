@@ -15,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -30,6 +29,7 @@ import com.dar.nclientv2.api.enums.SpecialTagIds;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.database.Queries;
+import com.dar.nclientv2.components.activities.GeneralActivity;
 import com.dar.nclientv2.components.widgets.ChipTag;
 import com.dar.nclientv2.components.widgets.CustomLinearLayoutManager;
 import com.dar.nclientv2.settings.DefaultDialogs;
@@ -45,7 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends GeneralActivity {
     public static final int CUSTOM_ID_START=100000000;
     private final Ranges ranges=new Ranges();
     private final ArrayList<ChipTag>tags=new ArrayList<>();

@@ -9,15 +9,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import com.dar.nclientv2.components.activities.GeneralActivity;
 import com.dar.nclientv2.settings.Global;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class PINActivity extends AppCompatActivity {
+public class PINActivity extends GeneralActivity {
     private static final int PIN_LENGHT=4;
     private List<Button> numbers;
     private List<TextView> texts;

@@ -27,6 +27,10 @@
             android:summary="@string/title_type_summary"
             android:title="@string/change_title_type" />
         <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/key_hide_multitasking"
+            android:title="@string/title_hide_multitasking" />
+        <SwitchPreference
             android:defaultValue="false"
             android:key="@string/key_alternative_site"
             android:summary="@string/setting_alternative"

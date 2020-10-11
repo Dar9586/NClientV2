@@ -23,6 +23,7 @@ import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.LocalActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.local.LocalGallery;
+import com.dar.nclientv2.api.local.LocalSortType;
 import com.dar.nclientv2.async.CreatePDF;
 import com.dar.nclientv2.async.CreateZIP;
 import com.dar.nclientv2.async.database.Queries;
@@ -103,11 +104,26 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         }
 
         ArrayList<Object> arr=new ArrayList<>(hashMap.values());
-        Collections.sort(arr, getComparator());
+
+        sortItems(arr);
+
         return new CopyOnWriteArrayList<>(arr);
     }
-    private Comparator<Object>getComparator(){
-        return Global.isLocalSortByName()?comparatorByName:comparatorByDate;
+
+    private void sortItems(ArrayList<Object> arr) {
+        LocalSortType type=Global.getLocalSortType();
+        Collections.sort(arr, getComparator(type.type));
+        if(type.descending)Collections.reverse(arr);
+    }
+
+    private Comparator<Object>getComparator(LocalSortType.Type type){
+        switch (type){
+            case DATE:return comparatorByDate;
+            case TITLE:return comparatorByName;
+            case PAGE_COUNT:return comparatorByPageCount;
+            case SIZE:return comparatorBySize;
+        }
+        return comparatorByName;
     }
     private final Comparator<Object> comparatorByName = (o1, o2) -> {
         if(o1==o2)return 0;
@@ -117,6 +133,18 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         String s2=b2?((LocalGallery)o2).getTitle():((GalleryDownloaderV2)o2).getPathTitle();
         return s1.compareTo(s2);
     };
+    private final Comparator<Object>comparatorBySize= (o1, o2) -> {
+        if(o1==o2)return 0;
+        long page1=o1 instanceof LocalGallery?Global.recursiveSize(((LocalGallery)o1).getDirectory()):0;
+        long page2=o2 instanceof LocalGallery?Global.recursiveSize(((LocalGallery)o2).getDirectory()):0;
+        return Long.compare(page1,page2);
+    };
+    private final Comparator<Object>comparatorByPageCount= (o1, o2) -> {
+        if(o1==o2)return 0;
+        int page1=o1 instanceof LocalGallery?((LocalGallery)o1).getPageCount():0;
+        int page2=o2 instanceof LocalGallery?((LocalGallery)o2).getPageCount():0;
+        return page1-page2;
+    };
     private final Comparator<Object> comparatorByDate = (o1, o2) -> {
         if(o1==o2)return 0;
         boolean b1=o1 instanceof LocalGallery;
@@ -124,8 +152,8 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         //downloading manga are newer
         if(b1&&!b2) return 1;
         if(!b1&&b2) return -1;
-        if(b1/*&&b2*/){//reverse order fot
-            long res=((LocalGallery)o2).getDirectory().lastModified()-((LocalGallery)o1).getDirectory().lastModified();
+        if(b1/*&&b2*/){
+            long res=((LocalGallery)o1).getDirectory().lastModified()-((LocalGallery)o2).getDirectory().lastModified();
             if(res!=0) return res<0?-1:1;
         }
         String s1=b1?((LocalGallery)o1).getTitle():((GalleryDownloaderV2)o1).getPathTitle();

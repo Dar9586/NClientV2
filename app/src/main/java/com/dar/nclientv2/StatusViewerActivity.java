@@ -4,18 +4,18 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
+import com.dar.nclientv2.components.activities.GeneralActivity;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.ui.main.PlaceholderFragment;
 import com.dar.nclientv2.ui.main.SectionsPagerAdapter;
 import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.tabs.TabLayout;
 
-public class StatusViewerActivity extends AppCompatActivity {
+public class StatusViewerActivity extends GeneralActivity {
     private boolean sortByTitle=false;
     private String query;
     private ViewPager viewPager;

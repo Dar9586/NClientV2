@@ -7,9 +7,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.dar.nclientv2.components.activities.GeneralActivity;
 
-public class CopyToClipboardActivity extends AppCompatActivity {
+public class CopyToClipboardActivity extends GeneralActivity {
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);

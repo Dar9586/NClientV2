@@ -34,6 +34,7 @@ import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.SortType;
 import com.dar.nclientv2.api.enums.TitleType;
+import com.dar.nclientv2.api.local.LocalSortType;
 import com.dar.nclientv2.components.classes.CustomSSLSocketFactory;
 import com.dar.nclientv2.loginapi.LoadTags;
 import com.dar.nclientv2.loginapi.User;
@@ -79,7 +80,8 @@ public class Global {
     private static Language onlyLanguage;
     private static TitleType titleType;
     private static SortType sortType;
-    private static boolean enableBeta,localSortByName,alternativeSite,volumeOverride,zoomOneColumn,keepHistory,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
+    private static LocalSortType localSortType;
+    private static boolean hideMultitask,enableBeta,alternativeSite,volumeOverride,zoomOneColumn,keepHistory,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
     private static ThemeScheme theme;
     private static DataUsageType usageMobile, usageWifi;
     private static String lastVersion;
@@ -156,16 +158,7 @@ public class Global {
     public enum ThemeScheme{LIGHT,DARK}
     public enum DataUsageType{NONE,THUMBNAIL,FULL}
 
-    public static boolean isLocalSortByName() {
-        return localSortByName;
-    }
 
-    public static void toggleLocalSort(Context context) {
-        Global.localSortByName = !Global.localSortByName;
-        context.getSharedPreferences("Settings", 0)
-                .edit().putBoolean(context.getString(R.string.key_local_sort),Global.localSortByName)
-                .apply();
-    }
 
     public static String getDefaultFileParent(Context context){
         File f;
@@ -235,6 +228,7 @@ public class Global {
 
     private static void initTitleType(@NonNull Context context){
         String s=context.getSharedPreferences("Settings", 0).getString(context.getString(R.string.key_title_type),"pretty");
+        assert s != null;
         switch (s){
             case "pretty":titleType= TitleType.PRETTY;break;
             case "english":titleType=  TitleType.ENGLISH;break;
@@ -263,7 +257,8 @@ public class Global {
         NotificationSettings.initializeNotificationManager(context);
         Login.initUseAccountTag(context);
         Global.initStorage(context);
-        localSortByName=shared.getBoolean(context.getString(R.string.key_local_sort),true);
+        shared.edit().remove("local_sort").apply();
+        localSortType=new LocalSortType(shared.getInt(context.getString(R.string.key_local_sort),0));
         useRtl=shared.getBoolean(context.getString(R.string.key_use_rtl),false);
         keepHistory=shared.getBoolean(context.getString(R.string.key_keep_history),true);
         infiniteScroll=shared.getBoolean(context.getString(R.string.key_infinite_scroll),false);
@@ -274,6 +269,7 @@ public class Global {
         columnCount=shared.getInt(context.getString(R.string.key_column_count),2);
         showTitles=shared.getBoolean(context.getString(R.string.key_show_titles),true);
         lockScreen=shared.getBoolean(context.getString(R.string.key_disable_lock),false);
+        hideMultitask=shared.getBoolean(context.getString(R.string.key_hide_multitasking),true);
         maxId=shared.getInt(context.getString(R.string.key_max_id),300000);
         maxHistory=shared.getInt(context.getString(R.string.key_max_history_size),2);
         defaultZoom=shared.getInt(context.getString(R.string.key_default_zoom),100);
@@ -300,6 +296,21 @@ public class Global {
         onlyLanguage=Language.values()[x];
 
     }
+
+    public static boolean hideMultitask() {
+        return hideMultitask;
+    }
+
+    public static LocalSortType getLocalSortType() {
+        return localSortType;
+    }
+
+    public static void setLocalSortType(Context context,LocalSortType localSortType) {
+        context.getSharedPreferences("Settings",0).edit().putInt(context.getString(R.string.key_local_sort),localSortType.hashCode()).apply();
+        Global.localSortType = localSortType;
+        LogUtility.d("Assegning: "+localSortType);
+    }
+
     public static DataUsageType getDownloadPolicy(){
         switch (NetworkUtil.getType()){
             case WIFI:return usageWifi;

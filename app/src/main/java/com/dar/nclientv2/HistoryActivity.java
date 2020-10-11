@@ -50,12 +50,12 @@ public class HistoryActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
     @Override
-    protected int getPortCount() {
+    protected int getPortraitColumnCount() {
         return Global.getColPortHistory();
     }
 
     @Override
-    protected int getLandCount() {
+    protected int getLandscapeColumnCount() {
         return Global.getColLandHistory();
     }
     @Override

@@ -19,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
@@ -29,6 +28,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.async.database.Queries;
+import com.dar.nclientv2.components.activities.GeneralActivity;
 import com.dar.nclientv2.components.views.ZoomFragment;
 import com.dar.nclientv2.components.widgets.CustomViewPager;
 import com.dar.nclientv2.settings.DefaultDialogs;
@@ -39,7 +39,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
 
-public class ZoomActivity extends AppCompatActivity {
+public class ZoomActivity extends GeneralActivity {
     @TargetApi(16)
     private final static int hideFlags= View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION

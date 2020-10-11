@@ -3,15 +3,15 @@ package com.dar.nclientv2;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dar.nclientv2.adapters.StatusManagerAdapter;
+import com.dar.nclientv2.components.activities.GeneralActivity;
 import com.dar.nclientv2.components.widgets.CustomLinearLayoutManager;
 import com.dar.nclientv2.settings.Global;
 
-public class StatusManagerActivity extends AppCompatActivity {
+public class StatusManagerActivity extends GeneralActivity {
 
     StatusManagerAdapter adapter;
     RecyclerView recycler;

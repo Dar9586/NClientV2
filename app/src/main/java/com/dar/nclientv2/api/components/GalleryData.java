@@ -49,12 +49,14 @@ public class GalleryData implements Parcelable {
     }
 
     public GalleryData(Cursor cursor,@NonNull TagList tagList)throws IOException{
-        id=cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.IDGALLERY));
-        mediaId=cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.MEDIAID));
+        id =          cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.IDGALLERY));
+        mediaId =     cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.MEDIAID));
         favoriteCount=cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.FAVORITE_COUNT));
-        titles[0]=cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.TITLE_JP));
-        titles[1]=cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.TITLE_PRETTY));
-        titles[2]=cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.TITLE_ENG));
+
+        titles[TitleType.JAPANESE.ordinal()]=cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.TITLE_JP));
+        titles[TitleType.PRETTY.ordinal()]  =cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.TITLE_PRETTY));
+        titles[TitleType.ENGLISH.ordinal()] =cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.TITLE_ENG));
+
         uploadDate=new Date(cursor.getLong(Queries.getColumnFromName(cursor,Queries.GalleryTable.UPLOAD)));
         readPagePath(cursor.getString(Queries.getColumnFromName(cursor,Queries.GalleryTable.PAGES)));
         pageCount=pages.size();
@@ -65,15 +67,15 @@ public class GalleryData implements Parcelable {
         jr.beginObject();
         while(jr.peek()!= JsonToken.END_OBJECT){
             switch(jr.nextName()){
-                case "upload_date":uploadDate=new Date(jr.nextLong()*1000);break;
+                case "upload_date":  uploadDate=new Date(jr.nextLong()*1000);break;
                 case "num_favorites":favoriteCount=jr.nextInt();break;
-                case "media_id":mediaId=jr.nextInt();break;
-                case "title":readTitles(jr);break;
-                case "images":readImages(jr); break;
-                case "tags":readTags(jr);break;
-                case "id":id=jr.nextInt();break;
-                case "num_pages":pageCount=jr.nextInt();break;
-                case "error":jr.skipValue(); valid=false;break;
+                case "num_pages":    pageCount=jr.nextInt();break;
+                case "media_id":     mediaId=jr.nextInt();break;
+                case "id":           id=jr.nextInt();break;
+                case "images":       readImages(jr); break;
+                case "title":        readTitles(jr);break;
+                case "tags":         readTags(jr);break;
+                case "error":jr.skipValue();valid=false;break;
                 default:jr.skipValue();break;
             }
         }
@@ -110,21 +112,15 @@ public class GalleryData implements Parcelable {
         jr.beginObject();
         while (jr.peek()!=JsonToken.END_OBJECT){
             switch (jr.nextName()){
-                case "cover":
-                    cover= new Page(ImageType.COVER,jr);
-                    break;
+                case "cover":     cover    = new Page(ImageType.COVER,jr);    break;
+                case "thumbnail": thumbnail= new Page(ImageType.THUMBNAIL,jr);break;
                 case "pages":
                     jr.beginArray();
                     while(jr.hasNext())
                         pages.add(new Page(ImageType.PAGE,jr,actualPage++));
                     jr.endArray();
                     break;
-                case "thumbnail":
-                    thumbnail= new Page(ImageType.THUMBNAIL,jr);
-                    break;
-                default:
-                    jr.skipValue();
-                    break;
+                default: jr.skipValue();break;
             }
         }
         jr.endObject();
@@ -298,6 +294,7 @@ public class GalleryData implements Parcelable {
         }
     };
 
+    @NonNull
     @Override
     public String toString() {
         return "GalleryData{" +

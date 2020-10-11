@@ -54,10 +54,6 @@ public class Size implements Parcelable {
         dest.writeInt(height);
     }
 
-    public static Size maxSize(Size s1,Size s2){
-        return new Size(Math.max(s1.getWidth(),s2.getWidth()),Math.max(s2.getHeight(),s2.getWidth()));
-    }
-
     @Override
     public String toString() {
         return "Size{" +

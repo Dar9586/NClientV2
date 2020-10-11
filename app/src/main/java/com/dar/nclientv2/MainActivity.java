@@ -31,7 +31,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.RequestManager;
 import com.dar.nclientv2.adapters.ListAdapter;
 import com.dar.nclientv2.api.InspectorV3;
-import com.dar.nclientv2.api.SimpleGallery;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.components.Ranges;
@@ -661,12 +660,12 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    protected int getPortCount() {
+    protected int getPortraitColumnCount() {
         return Global.getColPortMain();
     }
 
     @Override
-    protected int getLandCount() {
+    protected int getLandscapeColumnCount() {
         return Global.getColLandMain();
     }
 

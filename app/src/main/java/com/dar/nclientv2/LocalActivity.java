@@ -3,26 +3,32 @@ package com.dar.nclientv2;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.widget.Toolbar;
 
 import com.dar.nclientv2.adapters.LocalAdapter;
 import com.dar.nclientv2.api.local.FakeInspector;
+import com.dar.nclientv2.api.local.LocalSortType;
 import com.dar.nclientv2.async.downloader.DownloadQueue;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.Utility;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.io.File;
 import java.util.List;
 
 public class LocalActivity extends BaseActivity {
     private LocalAdapter adapter;
+    private Toolbar toolbar;
     private int colCount;
     private int openedGalleryPosition=-1;
     private File folder=Global.MAINFOLDER;
@@ -32,7 +38,7 @@ public class LocalActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         Global.initActivity(this);
         setContentView(R.layout.app_bar_main);
-        Toolbar toolbar=findViewById(R.id.toolbar);
+        toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -64,7 +70,6 @@ public class LocalActivity extends BaseActivity {
             menu.findItem(R.id.startAll).setVisible(false);
         }
         menu.findItem(R.id.folder_choose).setVisible(Global.getUsableFolders(this).size()>1);
-        changeSortItem(menu.findItem(R.id.sort_by_name));
         searchView=(androidx.appcompat.widget.SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
@@ -92,7 +97,7 @@ public class LocalActivity extends BaseActivity {
 
     @Override
     protected void changeLayout(boolean landscape) {
-        colCount=(landscape?getLandCount():getPortCount());
+        colCount=(landscape? getLandscapeColumnCount(): getPortraitColumnCount());
         if(adapter!=null)adapter.setColCount(colCount);
         super.changeLayout(landscape);
     }
@@ -130,11 +135,8 @@ public class LocalActivity extends BaseActivity {
                 if(adapter!=null)adapter.viewRandom();
                 break;
             case R.id.sort_by_name:
-                if(adapter!=null) {
-                    Global.toggleLocalSort(this);
-                    adapter.sortChanged();
-                    changeSortItem(item);
-                }
+                dialogSortType();
+
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -151,20 +153,42 @@ public class LocalActivity extends BaseActivity {
         }).setNegativeButton(R.string.cancel,null).show();
     }
 
-    private void changeSortItem(MenuItem item) {
-        boolean sortByName=Global.isLocalSortByName();
+    private void dialogSortType() {
+        LocalSortType sortType=Global.getLocalSortType();
+        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(this);
+        LinearLayout view= (LinearLayout) LayoutInflater.from(this).inflate(R.layout.local_sort_type,toolbar,false);
+        ChipGroup group=view.findViewById(R.id.chip_group);
+        SwitchMaterial switchMaterial=view.findViewById(R.id.ascending);
+        group.check(group.getChildAt(sortType.type.ordinal()).getId());
+        switchMaterial.setChecked(sortType.descending);
+        builder.setView(view);
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
+            int typeSelectedIndex=group.indexOfChild(group.findViewById(group.getCheckedChipId()));
+            LocalSortType.Type typeSelected=LocalSortType.Type.values()[typeSelectedIndex];
+            boolean descending=switchMaterial.isChecked();
+            LocalSortType newSortType=new LocalSortType(typeSelected,descending);
+            if(sortType.equals(newSortType))return;
+            Global.setLocalSortType(LocalActivity.this,newSortType);
+            if(adapter!=null) adapter.sortChanged();
+        })
+                .setNeutralButton(R.string.cancel,null)
+                .setTitle(R.string.sort_select_type)
+                .show();
+
+
+       /* boolean sortByName=Global.isLocalSortByName();
         item.setIcon(sortByName?R.drawable.ic_sort_by_alpha:R.drawable.ic_access_time);
         item.setTitle(sortByName?R.string.sort_by_title:R.string.sort_by_latest);
-        Global.setTint(item.getIcon());
+        Global.setTint(item.getIcon());*/
     }
 
     @Override
-    protected int getPortCount() {
+    protected int getPortraitColumnCount() {
         return Global.getColPortDownload();
     }
 
     @Override
-    protected int getLandCount() {
+    protected int getLandscapeColumnCount() {
         return Global.getColLandDownload();
     }
 

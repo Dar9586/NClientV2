@@ -47,12 +47,12 @@ public class FavoriteActivity extends BaseActivity {
     }
 
     @Override
-    protected int getLandCount() {
+    protected int getLandscapeColumnCount() {
         return Global.getColLandFavorite();
     }
 
     @Override
-    protected int getPortCount() {
+    protected int getPortraitColumnCount() {
         return Global.getColPortFavorite();
     }
 

@@ -299,4 +299,10 @@
     <string name="view_statuses">Kategorileri görüntüle</string>
     <string name="status_column_count">Dikeyde gösterilecek kategori sayısını seç</string>
     <string name="status_viewer">Kategori görüntüleyici</string>
+    <string name="title_hide_multitasking">Hide app content in multitasking</string>
+    <string name="title">Title</string>
+    <string name="download_date">Download date</string>
+    <string name="page_count">Page count</string>
+    <string name="size">Size</string>
+    <string name="descending_order">Descending order</string>
 </resources>

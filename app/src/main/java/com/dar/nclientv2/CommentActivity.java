@@ -43,12 +43,12 @@ public class CommentActivity extends BaseActivity {
     }
 
     @Override
-    protected int getPortCount() {
+    protected int getPortraitColumnCount() {
         return 1;
     }
 
     @Override
-    protected int getLandCount() {
+    protected int getLandscapeColumnCount() {
         return 2;
     }
     @Override
