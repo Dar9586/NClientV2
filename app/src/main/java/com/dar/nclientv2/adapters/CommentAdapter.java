@@ -14,13 +14,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.comments.Comment;
+import com.dar.nclientv2.settings.AuthRequest;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.utility.ImageDownloadUtility;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHolder> {
     private final List<Comment>comments;
@@ -45,8 +52,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CommentAdapter.ViewHolder holder, int position) {
-        Comment c=comments.get(holder.getAdapterPosition());
+    public void onBindViewHolder(@NonNull CommentAdapter.ViewHolder holder, int pos) {
+        int position=holder.getAdapterPosition();
+        Comment c=comments.get(position);
         holder.layout.setOnClickListener(v1 -> {
             if(Build.VERSION.SDK_INT>Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1){
                 context.runOnUiThread(() -> holder.body.setMaxLines(holder.body.getMaxLines()==7?999:7));
@@ -56,6 +64,28 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.user.setText(c.getUsername());
         holder.body.setText(c.getComment());
         holder.date.setText(format.format(c.getPostDate()));
+        holder.close.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                String refererUrl=String.format(Locale.US,"https://nhentai.net/g/%d/",galleryId);
+                String submitUrl=String.format(Locale.US,"https://nhentai.net/api/comments/%d/delete",c.getId());
+                new AuthRequest(refererUrl, submitUrl, new Callback() {
+                    @Override
+                    public void onFailure(@NonNull Call call,@NonNull IOException e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(@NonNull Call call,@NonNull Response response) throws IOException {
+                        if(response.body().string().contains("true")){
+                            comments.remove(position);
+                            context.runOnUiThread(() -> notifyItemRemoved(position));
+                        }
+                    }
+                }).setMethod("POST",AuthRequest.EMPTY_BODY).start();
+            }
+        });
         if(c.getAvatarUrl()==null||Global.getDownloadPolicy() != Global.DataUsageType.FULL)
             ImageDownloadUtility.loadImage(R.drawable.ic_person,holder.userImage);
         else

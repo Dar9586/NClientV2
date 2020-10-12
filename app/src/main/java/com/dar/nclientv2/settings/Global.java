@@ -56,7 +56,6 @@ import java.util.List;
 import java.util.Locale;
 
 import okhttp3.Cookie;
-import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 
 public class Global {
@@ -255,7 +254,7 @@ public class Global {
         initTheme(context);
         loadNotificationChannel(context);
         NotificationSettings.initializeNotificationManager(context);
-        Login.initUseAccountTag(context);
+        Login.initLogin(context);
         Global.initStorage(context);
         shared.edit().remove("local_sort").apply();
         localSortType=new LocalSortType(shared.getInt(context.getString(R.string.key_local_sort),0));
@@ -326,19 +325,22 @@ public class Global {
         return zoomOneColumn;
     }
     public static void reloadHttpClient(@NonNull Context context){
+        SharedPreferences preferences=context.getSharedPreferences("Login",0);
+        Login.setLoginShared(preferences);
         OkHttpClient.Builder builder=new OkHttpClient.Builder()
                 .cookieJar(
                         new PersistentCookieJar(
                                 new SetCookieCache(),
-                                new SharedPrefsCookiePersistor(context.getSharedPreferences("Login",0))
+                                new SharedPrefsCookiePersistor(preferences)
                         )
                 );
         CustomSSLSocketFactory.enableTls12OnPreLollipop(builder);
         builder.addInterceptor(new CustomInterceptor());
+        builder.addInterceptor(new LoginInterceptor());
         client=builder.build();
         client.dispatcher().setMaxRequests(25);
         client.dispatcher().setMaxRequestsPerHost(25);
-        for(Cookie cookie:client.cookieJar().loadForRequest(HttpUrl.get(Utility.getBaseUrl()))){
+        for(Cookie cookie:client.cookieJar().loadForRequest(Login.BASE_HTTP_URL)){
             LogUtility.d("Cookie: "+cookie);
         }
         if(Login.isLogged()&&Login.getUser()==null){

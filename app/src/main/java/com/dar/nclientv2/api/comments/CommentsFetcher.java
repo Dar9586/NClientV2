@@ -36,6 +36,7 @@ public class CommentsFetcher extends Thread {
 
     private void postResult() {
         CommentAdapter commentAdapter=new CommentAdapter(commentActivity,comments,id);
+        commentActivity.setAdapter(commentAdapter);
         commentActivity.runOnUiThread(() -> {
             commentActivity.getRecycler().setAdapter(commentAdapter);
             commentActivity.getRefresher().setRefreshing(false);

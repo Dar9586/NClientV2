@@ -12,16 +12,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
 import com.dar.nclientv2.components.activities.GeneralActivity;
+import com.dar.nclientv2.loginapi.User;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 
-import java.util.Calendar;
-import java.util.List;
+import java.util.Collections;
 
 import okhttp3.Cookie;
-import okhttp3.HttpUrl;
 
 /**
  * A login screen that offers login via email/password.
@@ -67,40 +66,24 @@ public class LoginActivity extends GeneralActivity {
                 if(isInterrupted())return;
                 cookies=manager.getCookie(Utility.getBaseUrl());
             }
-            /*LogUtility.d("Cookie string: "+cookies);
-            String session= fetchCookie("sessionid",cookies);
-            String cloudflare= fetchCookie("__cfduid",cookies);
-            applyCookie("sessionid",session);
-            applyCookie("__cfduid",cloudflare);
-            runOnUiThread(LoginActivity.this::finish);*/
-            Login.hasLogged(webView);
+            LogUtility.d("Cookie string: "+cookies);
+            String session= fetchCookie(cookies);
+            applyCookie(session);
             runOnUiThread(LoginActivity.this::finish);
         }
 
-        private void applyCookie(String name,String session) {
-            HttpUrl url=HttpUrl.parse(Utility.getBaseUrl());
-            Calendar expire=Calendar.getInstance();
-            expire.add(Calendar.DAY_OF_MONTH,14);
-            if(url==null)return;
-            List<Cookie>cookies=Global.getClient().cookieJar().loadForRequest(url);
-            Cookie newCookie=new Cookie.Builder()
-                    .value(session)
-                    .httpOnly()
-                    .path("/")
-                    .expiresAt(expire.getTimeInMillis())
-                    .name(name)
-                    .domain(Utility.getHost())
-                    .build();
-            LogUtility.d("Created cookie: "+newCookie);
-            cookies.add(newCookie);
-            Global.getClient().cookieJar().saveFromResponse(url,cookies);
+        private void applyCookie(String session) {
+            Cookie cookie=Cookie.parse(Login.BASE_HTTP_URL,"sessionid="+session+"; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax");
+            Global.client.cookieJar().saveFromResponse(Login.BASE_HTTP_URL, Collections.singletonList(cookie));
+            User.createUser(null);
+            finish();
         }
 
-        String fetchCookie(String cookieName, String cookies){
-            int start=cookies.indexOf(cookieName);
+        String fetchCookie(String cookies){
+            int start=cookies.indexOf("sessionid");
             start=cookies.indexOf('=',start)+1;
             int end=cookies.indexOf(';',start);
-            return cookies.substring(start,end==-1?cookies.length()-1:end);
+            return cookies.substring(start,end==-1?cookies.length():end);
         }
     }
     @Override

@@ -25,7 +25,7 @@ public class User {
         void onCreateUser(User user);
     }
     public static void createUser(final CreateUser createUser){
-        Global.getClient().newCall(new Request.Builder().url(Utility.getBaseUrl()).build()).enqueue(new Callback() {
+        Global.getClient().newCall(new Request.Builder().url(Login.BASE_HTTP_URL).build()).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {}
 
@@ -33,7 +33,7 @@ public class User {
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 User user=null;
                 Document doc= Jsoup.parse(response.body().byteStream(),null, Utility.getBaseUrl());
-                Elements elements=doc.getElementsByClass("fa-tachometer");
+                Elements elements=doc.getElementsByClass("fa-tachometer-alt");
                 if(elements.size()>0) {
                     Element x = elements.first().parent();
                     String username = x.text().trim();

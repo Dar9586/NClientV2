@@ -122,9 +122,9 @@ public class MainActivity extends BaseActivity
         }
         @Override
         public boolean shouldStart(InspectorV3 inspector) {
-            if(modeType!=ModeType.FAVORITE)return true;
-            loadWebVewUrl(inspector.getUrl());
-            return inspector.canParseDocument();
+            return true;
+            //loadWebVewUrl(inspector.getUrl());
+            //return inspector.canParseDocument();
         }
     }
     private final InspectorV3.InspectorResponse
@@ -284,7 +284,7 @@ public class MainActivity extends BaseActivity
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         toolbar.setNavigationOnClickListener(v -> finish());
         navigationView.setNavigationItemSelectedListener(this);
-        onlineFavoriteManager.setVisible(com.dar.nclientv2.settings.Login.isLogged(true));
+        onlineFavoriteManager.setVisible(com.dar.nclientv2.settings.Login.isLogged());
     }
 
     public void setPositionOpenedGallery(int positionOpenedGallery) {
@@ -308,7 +308,7 @@ public class MainActivity extends BaseActivity
     private void loadStringLogin() {
         if(loginItem==null)return;
         if(com.dar.nclientv2.settings.Login.getUser()!=null)loginItem.setTitle(getString(R.string.login_formatted, com.dar.nclientv2.settings.Login.getUser().getUsername()));
-        else loginItem.setTitle(com.dar.nclientv2.settings.Login.isLogged(true)?R.string.logout :R.string.login);
+        else loginItem.setTitle(com.dar.nclientv2.settings.Login.isLogged()?R.string.logout :R.string.login);
 
     }
 
@@ -372,7 +372,7 @@ public class MainActivity extends BaseActivity
     }
 
     private void useFavoriteMode(int page) {
-        instantiateWebView();
+        //instantiateWebView();
         inspector=InspectorV3.favoriteInspector(this,null,page,resetDataset);
         modeType = ModeType.FAVORITE;
     }
@@ -452,7 +452,7 @@ public class MainActivity extends BaseActivity
         if(pageParam!=null)page=Integer.parseInt(pageParam);
 
         if(favorite){
-            if(com.dar.nclientv2.settings.Login.isLogged(true))useFavoriteMode(page);
+            if(com.dar.nclientv2.settings.Login.isLogged())useFavoriteMode(page);
             else{
                 Intent intent=new Intent(this,FavoriteActivity.class);
                 startActivity(intent);
@@ -569,13 +569,13 @@ public class MainActivity extends BaseActivity
     protected void onResume() {
         super.onResume();
         Global.updateACRAReportStatus(this);
-        com.dar.nclientv2.settings.Login.initUseAccountTag(this);
+        com.dar.nclientv2.settings.Login.initLogin(this);
         if(positionOpenedGallery!=-1){
             adapter.updateColor(positionOpenedGallery);
             positionOpenedGallery=-1;
         }
         loadStringLogin();
-        onlineFavoriteManager.setVisible(com.dar.nclientv2.settings.Login.isLogged(true));
+        onlineFavoriteManager.setVisible(com.dar.nclientv2.settings.Login.isLogged());
         if(setting!=null){
             Global.initFromShared(this);//restart all settings
             inspector=inspector.cloneInspector(this,resetDataset);
@@ -598,7 +598,10 @@ public class MainActivity extends BaseActivity
         invalidateOptionsMenu();
     }
 
-
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -796,7 +799,7 @@ public class MainActivity extends BaseActivity
                 startActivity(intent);
                 break;
             case R.id.action_login:
-                if(com.dar.nclientv2.settings.Login.isLogged(true))
+                if(com.dar.nclientv2.settings.Login.isLogged())
                     showLogoutForm();
                 else {
                     intent = new Intent(this, LoginActivity.class);

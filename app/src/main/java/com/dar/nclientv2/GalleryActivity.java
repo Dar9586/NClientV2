@@ -23,7 +23,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.dar.nclientv2.adapters.GalleryAdapter;
 import com.dar.nclientv2.api.InspectorV3;
@@ -33,13 +32,12 @@ import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.components.status.Status;
 import com.dar.nclientv2.components.status.StatusManager;
-import com.dar.nclientv2.components.views.CustomWebView;
 import com.dar.nclientv2.components.views.RangeSelector;
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
+import com.dar.nclientv2.settings.AuthRequest;
 import com.dar.nclientv2.settings.Favorites;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
-import com.dar.nclientv2.utility.CSRFGet;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -47,18 +45,17 @@ import com.google.android.material.snackbar.Snackbar;
 
 import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import okhttp3.FormBody;
-import okhttp3.Request;
-import okhttp3.RequestBody;
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.Response;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class GalleryActivity extends BaseActivity{
     @NonNull private GenericGallery gallery=Gallery.emptyGallery();
-    private CustomWebView webView;
     private boolean isLocal;
     private GalleryAdapter adapter;
     private int zoom;
@@ -251,44 +248,9 @@ public class GalleryActivity extends BaseActivity{
         menu.findItem(R.id.share).setVisible(gallery.isValid());
         menu.findItem(R.id.load_internet).setVisible(isLocal&&gallery.isValid());
 
-        if(isValidOnline&&isLogged)
-            instantiateWebView();
+        if(isValidOnline&&isLogged);
+            //instantiateWebView();
 
-    }
-
-    private void instantiateWebView() {
-        if(webView!=null)return;
-
-        webView=(CustomWebView)getLayoutInflater().inflate(R.layout.custom_webview,masterLayout,false);
-        webView.addFetcher((url, html) -> {
-            /*Map<String,String> headers=new HashMap<>();
-            headers.put("X-CSRFToken",fetchCSRF(html));
-            headers.put("X-Requested-With", "XMLHttpRequest");
-            if(html.contains("Unfavorite")){
-                webView.loadUrl("https://nhentai.net/api/gallery/"+gallery.getId()+"/favorite",headers);
-                updateIcon(true);
-            }else{
-                webView.loadUrl("https://nhentai.net/api/gallery/"+gallery.getId()+"/unfavorite",headers);
-                updateIcon(false);
-            }*/
-        });
-
-        ConstraintLayout.LayoutParams params=new ConstraintLayout.LayoutParams(webView.getLayoutParams());
-        params.topToBottom=R.id.parent;
-        params.bottomToBottom=R.id.parent;
-        params.startToStart=R.id.parent;
-        params.endToEnd=R.id.parent;
-        params.width= ConstraintLayout.LayoutParams.MATCH_PARENT;
-        params.height= ConstraintLayout.LayoutParams.MATCH_PARENT;
-        webView.setLayoutParams(params);
-        masterLayout.addView(webView);
-    }
-
-    private String fetchCSRF(String html) {
-        html=html.substring(html.lastIndexOf("csrf_token"));
-        html=html.substring(html.indexOf('"')+1);
-        html=html.substring(0,html.indexOf('"'));
-        return html;
     }
 
     @Override
@@ -420,40 +382,25 @@ public class GalleryActivity extends BaseActivity{
         });
     }
     private void addToFavorite(final MenuItem item) {
-        if(webView==null)return;
-        boolean beforeIsFavorite=((Gallery)gallery).isOnlineFavorite();
-        String url=String.format(Locale.US,"https://nhentai.net/g/%d/#favorite",gallery.getId());
+
+        boolean wasFavorite=onlineFavoriteItem.getTitle().equals(getString(R.string.remove_from_online_favorites));
+        String url=String.format(Locale.US,"https://nhentai.net/api/gallery/%d/%sfavorite",gallery.getId(),wasFavorite?"un":"");
+        String galleryUrl=String.format(Locale.US,"https://nhentai.net/g/%d/",gallery.getId());
         LogUtility.d("Calling: "+url);
-        webView.loadUrl(url);
-        webView.setVisibility(View.VISIBLE);
+        new AuthRequest(galleryUrl,url,new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call,@NonNull IOException e) {
 
-        if(true)return;
-        new CSRFGet(token -> {
-            LogUtility.d("FIND TOKEN: "+token);
-            RequestBody formBody = new FormBody.Builder()
-                    .add("WTF","OK")
-                    .build();
-            assert Global.getClient() != null;
-            Response response=Global.getClient().newCall(
-                    new Request.Builder()
-                            .addHeader("Referer","URL_TEST")
-                            .addHeader("X-CSRFToken",token)
-                            .addHeader("X-Requested-With","XMLHttpRequest")
-                            .url(url)
-                            .post(formBody)
-                            .build()
-            ).execute();
+            }
 
-            String resp=response.body().string();
-            LogUtility.d("Called: "+response.request().method()+response.request().url().toString()+response.code()+resp);
-            final boolean removedFromFavorite=resp.contains("false");
-            GalleryActivity.this.runOnUiThread(() -> {
-                item.setIcon(removedFromFavorite?R.drawable.ic_star_border:R.drawable.ic_star);
-                item.setTitle(removedFromFavorite?R.string.add_to_online_favorite:R.string.remove_from_online_favorites);
-            });
-            response.close();
-        },"URL_TEST","csrfmiddlewaretoken").start();
-
+            @Override
+            public void onResponse(@NonNull Call call,@NonNull Response response) throws IOException{
+                assert response.body() != null;
+                String responseString=response.body().string();
+                boolean nowIsFavorite=responseString.contains("true");
+                updateIcon(nowIsFavorite);
+            }
+        }).setMethod("POST",AuthRequest.EMPTY_BODY).start();
     }
 
     private void updateColumnCount(boolean increase) {

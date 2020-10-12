@@ -21,6 +21,7 @@ import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.database.Queries;
+import com.dar.nclientv2.settings.AuthRequest;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.settings.TagV2;
@@ -36,7 +37,6 @@ import java.util.Locale;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
-import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
@@ -164,7 +164,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         }).setNegativeButton(R.string.no,null).show();
     }
     private void onlineTagUpdate(final Tag tag, final boolean add,final ImageView imgView) throws IOException{
-        if(!Login.isLogged()&&Login.getUser()!=null)return;
+        if(!Login.isLogged()||Login.getUser()==null)return;
         StringWriter sw=new StringWriter();
         JsonWriter jw=new JsonWriter(sw);
         jw.beginObject().name("added").beginArray();
@@ -175,32 +175,19 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
 
         final String url=String.format(Locale.US,"https://"+ Utility.getHost()+"/users/%d/%s/blacklist",Login.getUser().getId(),Login.getUser().getCodename());
         final RequestBody ss=RequestBody.create(MediaType.get("application/json"),sw.toString());
-        Global.getClient(context).newCall(new Request.Builder().url(url).build()).enqueue(new Callback() {
+        new AuthRequest(url, url, new Callback() {
             @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {}
+            public void onFailure(@NonNull Call call,@NonNull IOException e) { }
 
             @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                String token=response.body().string();
-                token=token.substring(token.lastIndexOf("csrf_token"));
-                token=token.substring(token.indexOf('"')+1);
-                token=token.substring(0,token.indexOf('"'));
-                Global.getClient(context).newCall(new Request.Builder().addHeader("Referer",url).addHeader("X-CSRFToken",token).url(url).post(ss).build()).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NonNull Call call, @NonNull IOException e) {}
-
-                    @Override
-                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                        String s=response.body().string();
-                        if(s.equals("{\"status\": \"ok\"}")) {
-                            if (add) Login.addOnlineTag(tag);
-                            else Login.removeOnlineTag(tag);
-                            if(tagMode==TagMode.ONLINE)updateLogo(imgView, add ? TagStatus.AVOIDED : TagStatus.DEFAULT);
-                        }
-                    }
-                });
+            public void onResponse(@NonNull Call call,@NonNull Response response) throws IOException {
+                if(response.body().string().contains("ok")){
+                    if (add) Login.addOnlineTag(tag);
+                    else Login.removeOnlineTag(tag);
+                    if(tagMode==TagMode.ONLINE)updateLogo(imgView, add ? TagStatus.AVOIDED : TagStatus.DEFAULT);
+                }
             }
-        });
+        }).setMethod("POST",ss).start();
     }
     private static void writeTag(JsonWriter jw, Tag tag) throws IOException{
         jw.beginObject();
