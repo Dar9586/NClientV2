@@ -261,4 +261,26 @@
     <string name="history_column_count">Seleccion de numero de columna de historial</string>
     <string name="download_column_count">Seleccion de numero de columna de descargas</string>
     <string name="favorite_column_count">Seleccion de numero de columna de favoritos</string>
+    <string-array name="language">
+        <item>Por Defecto</item>
+        <item>English</item>
+        <item>Chinese (Traditional)</item>
+        <item>Chinese (Simplified)</item>
+        <item>Turkish</item>
+        <item>Italian</item>
+        <item>German</item>
+        <item>Arabic</item>
+<!--        <item>Español</item>-->
+    </string-array>
+    <string-array name="theme">
+        <item>Claro</item>
+        <item>Oscuro</item>
+    </string-array>
+
+    <string-array name="title_type_array">
+        <item>Inglés</item>
+        <item>Japonés</item>
+        <item>Arreglado</item>
+    </string-array>
+
 </resources>
