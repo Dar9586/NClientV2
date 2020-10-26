@@ -4,6 +4,7 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -29,8 +30,8 @@ import androidx.viewpager.widget.ViewPager;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.activities.GeneralActivity;
+import com.dar.nclientv2.components.views.VerticalViewPager;
 import com.dar.nclientv2.components.views.ZoomFragment;
-import com.dar.nclientv2.components.widgets.CustomViewPager;
 import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.LogUtility;
@@ -49,22 +50,27 @@ public class ZoomActivity extends GeneralActivity {
             | (Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT?View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY:0);
     @TargetApi(16)
     private final static int showFlags=View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-
+    private static final String VOLUME_SIDE_KEY="volumeSide";
+    private static final String SCROLL_TYPE_KEY="zoomScrollType";
+    private enum ScrollType{HORIZONTAL,VERTICAL}
     private GenericGallery gallery;
     private int actualPage=0;
     private boolean isHidden=false;
-    private CustomViewPager mViewPager;
+    private VerticalViewPager mViewPager;
     private TextView pageManagerLabel, cornerPageViewer;
     private View pageSwitcher;
     private SeekBar seekBar;
     private Toolbar toolbar;
     private View view;
     private File directory;
+    private ScrollType scrollType=ScrollType.HORIZONTAL,tmpScrollType;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.initActivity(this);
-        side=getSharedPreferences("Settings",0).getBoolean("volumeSide",true);
+        SharedPreferences preferences=getSharedPreferences("Settings",0);
+        side=preferences.getBoolean(VOLUME_SIDE_KEY,true);
+        scrollType=ScrollType.values()[preferences.getInt(SCROLL_TYPE_KEY,ScrollType.HORIZONTAL.ordinal())];
         setContentView(R.layout.activity_zoom);
 
         //read arguments
@@ -91,6 +97,7 @@ public class ZoomActivity extends GeneralActivity {
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setVerticalMode(scrollType==ScrollType.VERTICAL);
         pageSwitcher =findViewById(R.id.page_switcher);
         pageManagerLabel =findViewById(R.id.pages);
         cornerPageViewer =findViewById(R.id.page_text);
@@ -194,7 +201,7 @@ public class ZoomActivity extends GeneralActivity {
         return super.onKeyDown(keyCode, event);
     }
     private void changeSide(){
-        getSharedPreferences("Settings",0).edit().putBoolean("volumeSide",side=!side).apply();
+        getSharedPreferences("Settings",0).edit().putBoolean(VOLUME_SIDE_KEY,side=!side).apply();
         Toast.makeText(this, side?R.string.next_page_volume_up:R.string.next_page_volume_down, Toast.LENGTH_SHORT).show();
     }
     private void changeClosePage(boolean next){
@@ -230,6 +237,22 @@ public class ZoomActivity extends GeneralActivity {
     }
 
 
+
+    private void changeScrollTypeDialog(){
+        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(this);
+        tmpScrollType=scrollType;
+        builder.setTitle(getString(R.string.change_scroll_type)+":");
+        builder.setSingleChoiceItems(R.array.scroll_type, scrollType.ordinal(), (dialog, which) -> tmpScrollType=ScrollType.values()[which]);
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
+            if(tmpScrollType!=scrollType){
+                scrollType=tmpScrollType;
+                mViewPager.setVerticalMode(scrollType==ScrollType.VERTICAL);
+                getSharedPreferences("Settings",0).edit().putInt(SCROLL_TYPE_KEY,scrollType.ordinal()).apply();
+            }
+        }).setNegativeButton(R.string.cancel,null);
+        builder.show();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -262,6 +285,10 @@ public class ZoomActivity extends GeneralActivity {
                 return true;
             case R.id.bookmark:
                 Queries.ResumeTable.insert(gallery.getId(),actualPage+1);
+                break;
+            case R.id.scrollType:
+                changeScrollTypeDialog();
+                break;
         }
 
         return super.onOptionsItemSelected(item);

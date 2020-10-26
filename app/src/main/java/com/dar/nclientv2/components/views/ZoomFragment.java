@@ -85,6 +85,7 @@ public class ZoomFragment extends Fragment {
         url=getArguments().getString("URL");
         LogUtility.d("Requested: "+page);
         if(path!=null)galleryFolder=new File(path);
+        photoView.setAllowParentInterceptOnEdge(true);
         photoView.setOnClickListener(v -> {
             if(clickListener!=null)clickListener.onClick(v);
         });

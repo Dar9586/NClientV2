@@ -22,4 +22,8 @@
         android:icon="@drawable/ic_bookmark"
         android:title="@string/bookmark_here"
         app:showAsAction="ifRoom|collapseActionView" />
+    <item
+        android:id="@+id/scrollType"
+        android:title="@string/change_scroll_type"
+        app:showAsAction="never" />
 </menu>

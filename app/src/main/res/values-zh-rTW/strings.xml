@@ -288,7 +288,12 @@
     <string name="size">Size</string>
     <string name="descending_order">Descending order</string>
     <string name="minimum_comment_length" formatted="true">The comment must be at least %d characters</string>
+    <string name="change_scroll_type">Change scroll type</string>
 
+    <string-array name="scroll_type">
+        <item>Horizontal</item>
+        <item>Vertical</item>
+    </string-array>
 
     <string-array name="language">
         <item>系統預設</item>
@@ -299,6 +304,7 @@
         <item>義大利文</item>
 	    <item>德語</item>
         <item>阿拉伯</item>
+        <item>Spanish</item>
     </string-array>
     <string-array name="theme">
         <item>淺色</item>

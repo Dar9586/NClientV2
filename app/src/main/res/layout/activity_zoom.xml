@@ -23,7 +23,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.dar.nclientv2.components.widgets.CustomViewPager
+            <com.dar.nclientv2.components.views.VerticalViewPager
 
                 android:id="@+id/container"
                 android:layout_width="0dp"
@@ -36,7 +36,7 @@
                 tools:context=".ZoomActivity">
 
 
-            </com.dar.nclientv2.components.widgets.CustomViewPager>
+            </com.dar.nclientv2.components.views.VerticalViewPager>
             <androidx.appcompat.widget.Toolbar
                 android:alpha="0.75"
                 android:paddingTop="@dimen/status_bar_height"

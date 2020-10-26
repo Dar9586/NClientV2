@@ -205,6 +205,11 @@
     <string name="wrong_pin">Yanlış PIN</string>
     <string name="rotate_image">Fotoğrafı çevir</string>
 
+    <string-array name="scroll_type">
+        <item>Horizontal</item>
+        <item>Vertical</item>
+    </string-array>
+
     <string-array name="language">
         <item>Sistem Dili</item>
         <item>İngilizce</item>
@@ -214,6 +219,7 @@
         <item>İtalyanca</item>
         <item>Almanca</item>
         <item>Arapça</item>
+        <item>Spanish</item>
     </string-array>
     <string-array name="theme">
         <item>Beyaz Tema</item>
@@ -306,4 +312,5 @@
     <string name="size">Size</string>
     <string name="descending_order">Descending order</string>
     <string name="minimum_comment_length" formatted="true">The comment must be at least %d characters</string>
+    <string name="change_scroll_type">Change scroll type</string>
 </resources>

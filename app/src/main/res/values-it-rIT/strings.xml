@@ -266,27 +266,34 @@
     <string name="days">Giorni</string>
     <string name="weeks">Settimane</string>
     <string name="choose_unit">Scegli unità di tempo:</string>
-    <string name="change_status">Change status</string>
-    <string name="create_new_status">Create new status:</string>
-    <string name="invalid_color_selected">Black and white can not be used</string>
-    <string name="change_status_title">Select new status:</string>
-    <string name="remove_status">None</string>
-    <string name="name_too_short">Name too short</string>
-    <string name="duplicated_name">Duplicated name</string>
-    <string name="manage_statuses">Manage statuses</string>
-    <string name="update_status">Update status:</string>
-    <string name="view_statuses">View statuses</string>
-    <string name="status_column_count">Select status column count</string>
-    <string name="status_viewer">Status viewer</string>
-    <string name="title_hide_multitasking">Hide app content in multitasking</string>
-    <string name="title">Title</string>
-    <string name="download_date">Download date</string>
-    <string name="page_count">Page count</string>
-    <string name="size">Size</string>
-    <string name="descending_order">Descending order</string>
-    <string name="minimum_comment_length" formatted="true">The comment must be at least %d characters</string>
+    <string name="change_status">Cambia status</string>
+    <string name="create_new_status">Crea nuovo status:</string>
+    <string name="invalid_color_selected">Bianco e nero non possono essere usati</string>
+    <string name="change_status_title">Scegli nuovo status:</string>
+    <string name="remove_status">Nessuno</string>
+    <string name="name_too_short">Nome troppo piccolo</string>
+    <string name="duplicated_name">Nome duplicato</string>
+    <string name="manage_statuses">Gestisci status</string>
+    <string name="update_status">Cambia status:</string>
+    <string name="view_statuses">Vedi status</string>
+    <string name="status_column_count">Scegliil numero di colonne nello status</string>
+    <string name="status_viewer">Controlla status</string>
+    <string name="title_hide_multitasking">Nascondi app dal multitasking</string>
+    <string name="title">Titolo</string>
+    <string name="download_date">Data di download</string>
+    <string name="page_count">Numero di pagine</string>
+    <string name="size">Grandezza</string>
+    <string name="descending_order">Ordine decrescente</string>
+    <string name="minimum_comment_length" formatted="true">Il commento deve essere di almeno %d caratteri</string>
+    <string name="change_scroll_type">Cambia scorrimento</string>
+
+    <string-array name="scroll_type">
+        <item>Orizzontale</item>
+        <item>Verticale</item>
+    </string-array>
+
     <string-array name="language">
-        <item>System Default</item>
+        <item>Predefinito</item>
         <item>Inglese</item>
         <item>Cinese (Tradizionale)</item>
         <item>Cinese (Semplificate)</item>
@@ -294,6 +301,7 @@
         <item>Italiano</item>
         <item>Tedesco</item>
         <item>Arabo</item>
+        <item>Spagnolo</item>
     </string-array>
 
     <string-array name="theme">

@@ -320,7 +320,12 @@
     <string name="size">Size</string>
     <string name="descending_order">Descending order</string>
     <string name="minimum_comment_length" formatted="true">The comment must be at least %d characters</string>
+    <string name="change_scroll_type">Change scroll type</string>
 
+    <string-array name="scroll_type">
+        <item>Horizontal</item>
+        <item>Vertical</item>
+    </string-array>
     <string-array name="language">
         <item>System Default</item>
         <item>English</item>
@@ -330,6 +335,7 @@
         <item>Italian</item>
         <item>German</item>
         <item>Arabic</item>
+        <item>Spanish</item>
     </string-array>
 
     <string-array name="language_data"><!--DO NOT TRANSLATE-->
@@ -341,6 +347,7 @@
         <item>it-IT</item>
         <item>de-DE</item>
         <item>ar-SA</item>
+        <item>es-ES</item>
     </string-array>
 
     <string-array name="theme">

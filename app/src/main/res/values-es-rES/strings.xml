@@ -261,6 +261,13 @@
     <string name="history_column_count">Seleccion de numero de columna de historial</string>
     <string name="download_column_count">Seleccion de numero de columna de descargas</string>
     <string name="favorite_column_count">Seleccion de numero de columna de favoritos</string>
+    <string name="change_scroll_type">Change scroll type</string>
+
+    <string-array name="scroll_type">
+        <item>Horizontal</item>
+        <item>Vertical</item>
+    </string-array>
+
     <string-array name="language">
         <item>Por Defecto</item>
         <item>English</item>
@@ -270,7 +277,7 @@
         <item>Italian</item>
         <item>German</item>
         <item>Arabic</item>
-<!--        <item>Español</item>-->
+        <item>Español</item>
     </string-array>
     <string-array name="theme">
         <item>Claro</item>
