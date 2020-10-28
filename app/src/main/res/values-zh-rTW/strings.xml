@@ -281,30 +281,30 @@
     <string name="view_statuses">漫畫狀態</string>
     <string name="status_column_count">選擇狀態列數</string>
     <string name="status_viewer">漫畫狀態</string>
-    <string name="title_hide_multitasking">Hide app content in multitasking</string>
-    <string name="title">Title</string>
-    <string name="download_date">Download date</string>
-    <string name="page_count">Page count</string>
-    <string name="size">Size</string>
-    <string name="descending_order">Descending order</string>
-    <string name="minimum_comment_length" formatted="true">The comment must be at least %d characters</string>
-    <string name="change_scroll_type">Change scroll type</string>
+    <string name="title_hide_multitasking">在多工介面中隱藏該應用的內容預覽</string>
+    <string name="title">標題</string>
+    <string name="download_date">下載日期</string>
+    <string name="page_count">頁數</string>
+    <string name="size">大小</string>
+    <string name="descending_order">降冪排列</string>
+    <string name="minimum_comment_length" formatted="true">評論不得少於 %d 個字元</string>
+    <string name="change_scroll_type">切換滾動類型</string>
 
     <string-array name="scroll_type">
-        <item>Horizontal</item>
-        <item>Vertical</item>
+        <item>水準</item>
+        <item>垂直</item>
     </string-array>
 
     <string-array name="language">
         <item>系統預設</item>
-        <item>英文</item>
-        <item>繁體中文</item>
-        <item>簡體中文</item>
-        <item>土耳其文</item>
-        <item>義大利文</item>
-	    <item>德語</item>
-        <item>阿拉伯</item>
-        <item>Spanish</item>
+        <item>English</item>
+        <item>中文</item>
+        <item>简体中文</item>
+        <item>Türkçe</item>
+        <item>Italiano</item>
+	<item>Deutsch</item>
+        <item>اَلْعَرَبِيَّةُ</item>
+        <item>Español</item>
     </string-array>
     <string-array name="theme">
         <item>淺色</item>
