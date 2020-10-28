@@ -67,6 +67,7 @@ public class Global {
     public static  File PDFFOLDER;
     public static  File UPDATEFOLDER;
     public static  File ZIPFOLDER;
+    public static  File BACKUPFOLDER;
 
     private static final String MAINFOLDER_NAME="NClientV2";
     private static final String DOWNLOADFOLDER_NAME="Download";
@@ -74,13 +75,14 @@ public class Global {
     private static final String PDFFOLDER_NAME="PDF";
     private static final String UPDATEFOLDER_NAME="Update";
     private static final String ZIPFOLDER_NAME="ZIP";
+    private static final String BACKUPFOLDER_NAME="Backup";
     public static final String CHANNEL_ID1="download_gallery",CHANNEL_ID2="create_pdf",CHANNEL_ID3="create_zip";
 
     private static Language onlyLanguage;
     private static TitleType titleType;
     private static SortType sortType;
     private static LocalSortType localSortType;
-    private static boolean hideMultitask,enableBeta,alternativeSite,volumeOverride,zoomOneColumn,keepHistory,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
+    private static boolean hideMultitask,enableBeta,volumeOverride,zoomOneColumn,keepHistory,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
     private static ThemeScheme theme;
     private static DataUsageType usageMobile, usageWifi;
     private static String lastVersion;
@@ -181,6 +183,7 @@ public class Global {
         PDFFOLDER =new File(MAINFOLDER,PDFFOLDER_NAME);
         UPDATEFOLDER =new File(MAINFOLDER,UPDATEFOLDER_NAME);
         ZIPFOLDER =new File(MAINFOLDER,ZIPFOLDER_NAME);
+        BACKUPFOLDER =new File(MAINFOLDER,BACKUPFOLDER_NAME);
     }
 
 
@@ -219,10 +222,6 @@ public class Global {
 
     public static int getMaxHistory() {
         return maxHistory;
-    }
-
-    public static boolean useAlternativeSite() {
-        return alternativeSite;
     }
 
     private static void initTitleType(@NonNull Context context){
@@ -283,7 +282,6 @@ public class Global {
         colPortStat=shared.getInt(context.getString(R.string.key_column_port_stat),2);
         colLandStat=shared.getInt(context.getString(R.string.key_column_land_stat),4);
         zoomOneColumn=shared.getBoolean(context.getString(R.string.key_zoom_one_column),false);
-        alternativeSite=shared.getBoolean(context.getString(R.string.key_alternative_site),false);
         int x=Math.max(0,shared.getInt(context.getString(R.string.key_only_language),Language.ALL.ordinal()));
         sortType = SortType.values()[shared.getInt(context.getString(R.string.key_by_popular),SortType.RECENT_ALL_TIME.ordinal())];
         usageMobile =DataUsageType.values()[shared.getInt(context.getString(R.string.key_mobile_usage),DataUsageType.FULL.ordinal())];
@@ -492,6 +490,7 @@ public class Global {
                 Global.UPDATEFOLDER.mkdir(),
                 Global.SCREENFOLDER.mkdir(),
                 Global.ZIPFOLDER.mkdir(),
+                Global.BACKUPFOLDER.mkdir(),
         };
         LogUtility.d(
                 "0:"+context.getFilesDir()+'\n'+
@@ -500,7 +499,8 @@ public class Global {
                 "3:"+Global.PDFFOLDER+bools[2]+'\n'+
                 "4:"+Global.UPDATEFOLDER+bools[3]+'\n'+
                 "5:"+Global.SCREENFOLDER+bools[4]+'\n'+
-                "5:"+Global.ZIPFOLDER+bools[5]+'\n'
+                "5:"+Global.ZIPFOLDER+bools[5]+'\n'+
+                "6:"+Global.BACKUPFOLDER+bools[6]+'\n'
         );
 
         try {

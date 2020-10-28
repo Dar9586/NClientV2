@@ -198,8 +198,6 @@
     <string name="use_pin">使用 PIN 码</string>
     <string name="wrong_pin">PIN 码错误</string>
     <string name="rotate_image">旋转图片</string>
-    <string name="setting_alternative">在有审查制度的国家用 nhent.ai 替代 nhentai.net</string>
-    <string name="use_alternative">使用 nhent.ai</string>
     <string name="toggle_online_favorite">切换在线收藏</string>
     <string name="data_usage_settings">修改数据使用设置</string>
     <string name="mobile_data_usage_setting">流量使用设置</string>
@@ -256,6 +254,7 @@
     <string name="view_statuses">查看状态</string>
     <string name="status_column_count">选择状态列数</string>
     <string name="status_viewer">状态查看器</string>
+
     <string name="title_hide_multitasking">在多任务界面中隐藏该应用的内容预览</string>
     <string name="title">标题</string>
     <string name="download_date">下载日期</string>
@@ -264,6 +263,8 @@
     <string name="descending_order">降序排列</string>
     <string name="minimum_comment_length" formatted="true">评论不得少于 %d 个字符</string>
     <string name="change_scroll_type">切换滚动类型</string>
+    <string name="exported_backup_file_toast" formatted="true">Exported backup file in %s</string>
+
 
     <string-array name="scroll_type">
         <item>水平</item>

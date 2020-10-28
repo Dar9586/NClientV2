@@ -20,6 +20,7 @@ import com.dar.nclientv2.R;
 import com.dar.nclientv2.SettingsActivity;
 import com.dar.nclientv2.StatusManagerActivity;
 import com.dar.nclientv2.async.VersionChecker;
+import com.dar.nclientv2.async.database.Exporter;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.utility.LogUtility;
@@ -158,6 +159,26 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
             try {
                 CopyToClipboardActivity.copyTextToClipboard(getContext(),getDataSettings(getContext()));
             } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return true;
+        });
+        findPreference("export").setOnPreferenceClickListener(preference -> {
+            try {
+                String path= Exporter.exportData(act);
+                Toast.makeText(act, act.getString(R.string.exported_backup_file_toast,path), Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return true;
+        });
+        findPreference("import").setOnPreferenceClickListener(preference -> {
+            try {
+                Intent intent=new Intent(Intent.ACTION_GET_CONTENT).setType("application/zip");
+                act.startActivityForResult(intent,132);
+                //ExporterV2.importData(act,new File(Global.BACKUPFOLDER,"Backup.zip"));
+                //System.exit(0);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return true;

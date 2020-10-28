@@ -37,7 +37,6 @@
     <string name="key_zoom_one_column" translatable="false">zoom_one_column</string>
     <string name="empty_circle" translatable="false">○</string>
     <string name="full_circle" translatable="false">◉</string>
-    <string name="key_alternative_site" translatable="false">alternative_site</string>
     <string name="key_mobile_usage" translatable="false">mobile_usage</string>
     <string name="key_wifi_usage" translatable="false">wifi_usage</string>
     <string name="key_maximum_notification" translatable="false">maximum_notification</string>
@@ -255,8 +254,6 @@
     <string name="use_pin">Use PIN</string>
     <string name="wrong_pin">Wrong PIN</string>
     <string name="rotate_image">Rotate image</string>
-    <string name="setting_alternative">Use nhent.ai instead of nhentai.net for censored country</string>
-    <string name="use_alternative">Use nhent.ai</string>
     <string name="toggle_online_favorite">Toggle online favorite</string>
     <string name="data_usage_settings">Change data usage settings</string>
     <string name="mobile_data_usage_setting">Mobile data usage settings</string>
@@ -321,6 +318,7 @@
     <string name="descending_order">Descending order</string>
     <string name="minimum_comment_length" formatted="true">The comment must be at least %d characters</string>
     <string name="change_scroll_type">Change scroll type</string>
+    <string name="exported_backup_file_toast" formatted="true">Exported backup file in %s</string>
 
     <string-array name="scroll_type">
         <item>Horizontal</item>
