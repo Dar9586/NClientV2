@@ -224,8 +224,6 @@
     <string name="use_pin">使用 PIN 碼</string>
     <string name="wrong_pin">PIN 碼錯誤</string>
     <string name="rotate_image">旋轉圖片</string>
-    <string name="setting_alternative">在有審查制度的國家使用 nhent.ai 而非 nhentai.net </string>
-    <string name="use_alternative">使用 nhent.ai</string>
     <string name="toggle_online_favorite">切換線上收藏</string>
     <string name="data_usage_settings">修改資料使用設定</string>
     <string name="mobile_data_usage_setting">流量使用設定</string>
@@ -281,6 +279,7 @@
     <string name="view_statuses">漫畫狀態</string>
     <string name="status_column_count">選擇狀態列數</string>
     <string name="status_viewer">漫畫狀態</string>
+
     <string name="title_hide_multitasking">在多工介面中隱藏該應用的內容預覽</string>
     <string name="title">標題</string>
     <string name="download_date">下載日期</string>
@@ -289,6 +288,9 @@
     <string name="descending_order">降冪排列</string>
     <string name="minimum_comment_length" formatted="true">評論不得少於 %d 個字元</string>
     <string name="change_scroll_type">切換滾動類型</string>
+
+    <string name="exported_backup_file_toast" formatted="true">Exported backup file in %s</string>
+
 
     <string-array name="scroll_type">
         <item>水準</item>

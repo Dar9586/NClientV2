@@ -204,6 +204,7 @@
     <string name="use_pin">PIN kullan</string>
     <string name="wrong_pin">Yanlış PIN</string>
     <string name="rotate_image">Fotoğrafı çevir</string>
+    <string name="exported_backup_file_toast" formatted="true">Exported backup file in %s</string>
 
     <string-array name="scroll_type">
         <item>Horizontal</item>
@@ -245,8 +246,6 @@
     <string name="bookmark_description">Yer imi açıklaması</string>
     <string name="history_column_count">Tarihçe sütun sayısını seç</string>
     <string name="setting_pin">Uygulamaya girmek için PIN`i aktifleştir</string>
-    <string name="setting_alternative">nhentai.net websitesini yasaklayan ülkelerde nhentai.net yerine nhent.ai kullan</string>
-    <string name="use_alternative">nhent.ai Kullan</string>
     <string name="toggle_online_favorite">Online favori aç/kapa</string>
     <string name="data_usage_settings">Veri kullanım ayarları</string>
     <string name="mobile_data_usage_setting">Mobil veri kullanım ayarları</string>

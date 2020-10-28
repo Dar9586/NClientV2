@@ -69,7 +69,7 @@ public class Queries{
      * Table with information about the galleries
      * */
     public static class GalleryTable{
-        static final String TABLE_NAME="Gallery";
+        public static final String TABLE_NAME="Gallery";
         public static final String DROP_TABLE= "DROP TABLE IF EXISTS "+ TABLE_NAME;
         static final String CREATE_TABLE="CREATE TABLE IF NOT EXISTS `Gallery` ( " +
                 "`idGallery`      INT               NOT NULL PRIMARY KEY , " +
@@ -79,7 +79,7 @@ public class Queries{
                 "`favorite_count` INT               NOT NULL, " +
                 "`mediaId`        INT               NOT NULL, " +
                 "`pages`          TEXT              NOT NULL," +
-                "`upload`         UNSIGNED BIG INT," +//Date
+                "`upload`         UNSIGNED BIG INT  NOT NULL," +//Date
                 "`maxW`           INT               NOT NULL," +
                 "`maxH`           INT               NOT NULL," +
                 "`minW`           INT               NOT NULL," +
@@ -181,7 +181,7 @@ public class Queries{
             values.put(FAVORITE_COUNT,data.getFavoriteCount());
             values.put(MEDIAID,data.getMediaId());
             values.put(PAGES,data.createPagePath());
-            values.put(UPLOAD,data.getUploadDate()==null?null:data.getUploadDate().getTime());
+            values.put(UPLOAD,data.getUploadDate().getTime());
             values.put(MAX_WIDTH,gallery.getMaxSize().getWidth());
             values.put(MAX_HEIGHT,gallery.getMaxSize().getHeight());
             values.put(MIN_WIDTH,gallery.getMinSize().getWidth());
@@ -230,6 +230,8 @@ public class Queries{
             values.put(MIN_HEIGHT,gallery.getMinSize().getHeight());
             db.updateWithOnConflict("Gallery",values,IDGALLERY+"=?",new String[]{""+gallery.getId()},SQLiteDatabase.CONFLICT_IGNORE);
         }
+
+
     }
     public static class TagTable{
         static final String TABLE_NAME="Tags";
@@ -503,8 +505,10 @@ public class Queries{
             }
         }
 
-
-
+        /*To avoid conflict between the import process and the ScrapeTags*/
+        public static void insertScrape(Tag tag, boolean b) {
+            if(db.isOpen())insert(tag, b);
+        }
     }
     public static class DownloadTable{
         static final String TABLE_NAME="Downloads";
@@ -672,18 +676,20 @@ public class Queries{
             db.delete(TABLE_NAME,ID_GALLERY+"=?",new String[]{""+id});
         }
 
-
-        public static TagList getTagsForGallery(int id){
-            String query=String.format(Locale.US,"SELECT * FROM %s INNER JOIN %s ON %s=%s WHERE %s=%d",
+        static Cursor getTagCursorForGallery(int id){
+            String query=String.format(Locale.US,"SELECT * FROM %s WHERE %s IN (SELECT %s FROM %s WHERE %s=%d)",
                     TagTable.TABLE_NAME,
-                    GalleryBridgeTable.TABLE_NAME,
                     TagTable.IDTAG,
                     GalleryBridgeTable.ID_TAG,
+                    GalleryBridgeTable.TABLE_NAME,
                     GalleryBridgeTable.ID_GALLERY,
                     id
-                    );
+            );
+            return db.rawQuery(query,null);
+        }
+        public static TagList getTagsForGallery(int id){
+            Cursor c=getTagCursorForGallery(id);
             TagList tagList=new TagList();
-            Cursor c=db.rawQuery(query,null);
             List<Tag>tags= TagTable.getTagsFromCursor(c);
             tagList.addTags(tags);
             return tagList;
@@ -740,11 +746,11 @@ public class Queries{
          * @return cursor which points to the galleries
          * */
         public static Cursor getAllFavoriteGalleriesCursor(){
-            String query=String.format(Locale.US,"SELECT * FROM %s INNER JOIN %s ON %s=%s",
-                    FavoriteTable.TABLE_NAME,
+            String query=String.format(Locale.US,"SELECT * FROM %s WHERE %s IN (SELECT %s FROM %s)",
                     GalleryTable.TABLE_NAME,
+                    GalleryTable.IDGALLERY,
                     FavoriteTable.ID_GALLERY,
-                    GalleryTable.IDGALLERY
+                    FavoriteTable.TABLE_NAME
             );
             return db.rawQuery(query,null);
         }
@@ -762,7 +768,6 @@ public class Queries{
             ContentValues values=new ContentValues(2);
             values.put(ID_GALLERY,galleryId);
             values.put(TIME,new Date().getTime());
-            LogUtility.d("DB: "+db);
             db.insertWithOnConflict(TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_IGNORE);
         }
 
