@@ -31,13 +31,11 @@ import java.util.Random;
 public class Utility {
     public static final Random RANDOM=new Random(System.nanoTime());
     private static final String ORIGINAL_URL ="nhentai.net";
-    private static final String ALTERNATIVE_URL="nhent.ai";
     public static String getBaseUrl(){
         return "https://"+Utility.getHost()+"/";
     }
     public static String getHost(){
-        boolean x=Global.useAlternativeSite();
-        return x?ALTERNATIVE_URL: ORIGINAL_URL;
+        return  ORIGINAL_URL;
     }
     private static void parseEscapedCharacter(Reader reader, Writer writer)throws IOException{
         int toCreate,read;

@@ -22,7 +22,7 @@ import java.util.List;
 @SuppressWarnings("deprecation")
 public class DatabaseHelper extends SQLiteOpenHelper{
     private static final int DATABASE_VERSION = 13;
-    private static final String DATABASE_NAME = "Entries.db";
+    static final String DATABASE_NAME = "Entries.db";
     public DatabaseHelper(Context context){
         super(context,DATABASE_NAME,null,DATABASE_VERSION);
     }

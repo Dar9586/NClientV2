@@ -198,8 +198,6 @@
     <string name="use_pin">使用 PIN 码</string>
     <string name="wrong_pin">PIN 码错误</string>
     <string name="rotate_image">旋转图片</string>
-    <string name="setting_alternative">在有审查制度的国家用 nhent.ai 替代 nhentai.net</string>
-    <string name="use_alternative">使用 nhent.ai</string>
     <string name="toggle_online_favorite">切换在线收藏</string>
     <string name="data_usage_settings">修改数据使用设置</string>
     <string name="mobile_data_usage_setting">流量使用设置</string>
@@ -264,6 +262,7 @@
     <string name="descending_order">Descending order</string>
     <string name="minimum_comment_length" formatted="true">The comment must be at least %d characters</string>
     <string name="change_scroll_type">Change scroll type</string>
+    <string name="exported_backup_file_toast" formatted="true">Exported backup file in %s</string>
 
     <string-array name="scroll_type">
         <item>Horizontal</item>

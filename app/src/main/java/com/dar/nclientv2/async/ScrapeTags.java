@@ -86,7 +86,7 @@ public class ScrapeTags extends JobIntentService {
         reader.beginArray();
         while (reader.hasNext()) {
             Tag tag=readTag(reader);
-            Queries.TagTable.insert(tag,true);
+            Queries.TagTable.insertScrape(tag,true);
         }
         reader.close();
         x.close();

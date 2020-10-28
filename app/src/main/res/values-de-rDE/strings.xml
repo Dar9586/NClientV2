@@ -222,8 +222,6 @@
     <string name="use_pin">PIN benutzen</string>
     <string name="wrong_pin">Falscher PIN</string>
     <string name="rotate_image">Bild drehen</string>
-    <string name="setting_alternative">nhent.ai anstelle von nhentai.net in zensierenden Ländern benutzen</string>
-    <string name="use_alternative">nhent.ai benutzen</string>
     <string name="toggle_online_favorite">Online Favoriten umschalten</string>
     <string name="data_usage_settings">Datennutzung ändern</string>
     <string name="mobile_data_usage_setting">Mobile Datennutzung Einstellungen</string>
@@ -287,6 +285,7 @@
     <string name="descending_order">Descending order</string>
     <string name="minimum_comment_length" formatted="true">The comment must be at least %d characters</string>
     <string name="change_scroll_type">Change scroll type</string>
+    <string name="exported_backup_file_toast" formatted="true">Exported backup file in %s</string>
 
     <string-array name="scroll_type">
         <item>Horizontal</item>

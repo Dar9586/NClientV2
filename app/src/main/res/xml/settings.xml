@@ -30,11 +30,7 @@
             android:defaultValue="true"
             android:key="@string/key_hide_multitasking"
             android:title="@string/title_hide_multitasking" />
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="@string/key_alternative_site"
-            android:summary="@string/setting_alternative"
-            android:title="@string/use_alternative" />
+
         <ListPreference
             android:title="@string/folder_location"
             android:key="@string/key_save_path" />
@@ -144,6 +140,14 @@
         <Preference
             android:key="copy_settings"
             android:title="@string/copy_settings_to_clipboard" />
+        <Preference
+            android:key="export"
+            android:title="Export data"
+            />
+        <Preference
+            android:key="import"
+            android:title="Import data"
+            />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/update_settings">

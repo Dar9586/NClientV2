@@ -178,8 +178,6 @@ public class InspectorV3 extends Thread implements Parcelable {
      * @param favorite true if random online favorite, false for general random manga
      * */
     public static InspectorV3 randomInspector(Context context,InspectorResponse response,boolean favorite){
-        if(!favorite&&Global.useAlternativeSite())
-            return InspectorV3.galleryInspector(context,Utility.RANDOM.nextInt(Global.getMaxId()),response);
         InspectorV3 inspector=new InspectorV3(context,response);
         inspector.requestType=favorite?ApiRequestType.RANDOM_FAVORITE:ApiRequestType.RANDOM;
         inspector.createUrl();
