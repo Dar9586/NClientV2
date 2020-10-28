@@ -264,6 +264,8 @@
     <string name="minimum_comment_length" formatted="true">评论不得少于 %d 个字符</string>
     <string name="change_scroll_type">切换滚动类型</string>
     <string name="exported_backup_file_toast" formatted="true">Exported backup file in %s</string>
+    <string name="export_data">Export data</string>
+    <string name="import_data">Import data</string>
 
 
     <string-array name="scroll_type">

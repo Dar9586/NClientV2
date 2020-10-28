@@ -142,11 +142,11 @@
             android:title="@string/copy_settings_to_clipboard" />
         <Preference
             android:key="export"
-            android:title="Export data"
+            android:title="@string/export_data"
             />
         <Preference
             android:key="import"
-            android:title="Import data"
+            android:title="@string/import_data"
             />
     </PreferenceCategory>
 

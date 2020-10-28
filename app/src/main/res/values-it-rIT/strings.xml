@@ -285,6 +285,8 @@
     <string name="minimum_comment_length" formatted="true">Il commento deve essere di almeno %d caratteri</string>
     <string name="change_scroll_type">Cambia scorrimento</string>
     <string name="exported_backup_file_toast" formatted="true">Exported backup file in %s</string>
+    <string name="export_data">Export data</string>
+    <string name="import_data">Import data</string>
 
     <string-array name="scroll_type">
         <item>Orizzontale</item>

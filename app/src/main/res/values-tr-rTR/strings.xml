@@ -312,4 +312,6 @@
     <string name="descending_order">Descending order</string>
     <string name="minimum_comment_length" formatted="true">The comment must be at least %d characters</string>
     <string name="change_scroll_type">Change scroll type</string>
+    <string name="export_data">Export data</string>
+    <string name="import_data">Import data</string>
 </resources>
