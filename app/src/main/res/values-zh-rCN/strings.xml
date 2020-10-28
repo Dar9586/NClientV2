@@ -256,30 +256,30 @@
     <string name="view_statuses">查看状态</string>
     <string name="status_column_count">选择状态列数</string>
     <string name="status_viewer">状态查看器</string>
-    <string name="title_hide_multitasking">Hide app content in multitasking</string>
-    <string name="title">Title</string>
-    <string name="download_date">Download date</string>
-    <string name="page_count">Page count</string>
-    <string name="size">Size</string>
-    <string name="descending_order">Descending order</string>
-    <string name="minimum_comment_length" formatted="true">The comment must be at least %d characters</string>
-    <string name="change_scroll_type">Change scroll type</string>
+    <string name="title_hide_multitasking">在多任务界面中隐藏该应用的内容预览</string>
+    <string name="title">标题</string>
+    <string name="download_date">下载日期</string>
+    <string name="page_count">页数</string>
+    <string name="size">大小</string>
+    <string name="descending_order">降序排列</string>
+    <string name="minimum_comment_length" formatted="true">评论不得少于 %d 个字符</string>
+    <string name="change_scroll_type">切换滚动类型</string>
 
     <string-array name="scroll_type">
-        <item>Horizontal</item>
-        <item>Vertical</item>
+        <item>水平</item>
+        <item>垂直</item>
     </string-array>
 
     <string-array name="language">
         <item>默认</item>
-        <item>英文</item>
-        <item>中文（繁体）</item>
-        <item>中文（简体）</item>
-        <item>土耳其语</item>
-        <item>意大利语</item>
-	    <item>德语</item>
-        <item>阿拉伯语</item>
-        <item>Spanish</item>
+        <item>English</item>
+        <item>繁体中文</item>
+        <item>中文</item>
+        <item>Türkçe</item>
+        <item>Italiano</item>
+	<item>Deutsch</item>
+        <item>اَلْعَرَبِيَّةُ</item>
+        <item>Español</item>
     </string-array>
     <string-array name="theme">
         <item>亮色</item>
