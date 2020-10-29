@@ -321,6 +321,11 @@
     <string name="exported_backup_file_toast" formatted="true">Exported backup file in %s</string>
     <string name="export_data">Export data</string>
     <string name="import_data">Import data</string>
+    <string name="default_status_1">Reading</string>
+    <string name="default_status_2">Completed</string>
+    <string name="default_status_3">On Hold</string>
+    <string name="default_status_4">Dropped</string>
+    <string name="default_status_5">Plan to read</string>
 
     <string-array name="scroll_type">
         <item>Horizontal</item>
@@ -347,7 +352,7 @@
         <item>it-IT</item>
         <item>de-DE</item>
         <item>ar-SA</item>
-        <item>es-ES</item>
+        <item>es</item>
     </string-array>
 
     <string-array name="theme">

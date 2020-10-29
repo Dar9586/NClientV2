@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 
+import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.SpecialTagIds;
@@ -23,8 +24,11 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper{
     private static final int DATABASE_VERSION = 13;
     static final String DATABASE_NAME = "Entries.db";
-    public DatabaseHelper(Context context){
-        super(context,DATABASE_NAME,null,DATABASE_VERSION);
+    private final Context context;
+
+    public DatabaseHelper(Context context1){
+        super(context1,DATABASE_NAME,null,DATABASE_VERSION);
+        this.context = context1;
     }
 
     @Override
@@ -95,11 +99,11 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     }
 
     private void insertDefaultStatus() {
-        StatusManager.add("Reading", Color.BLUE);
-        StatusManager.add("Completed", Color.GREEN);
-        StatusManager.add("On Hold", Color.YELLOW);
-        StatusManager.add("Dropped", Color.RED);
-        StatusManager.add("Plan to read", Color.GRAY);
+        StatusManager.add(context.getString(R.string.default_status_1), Color.BLUE);
+        StatusManager.add(context.getString(R.string.default_status_2), Color.GREEN);
+        StatusManager.add(context.getString(R.string.default_status_3), Color.YELLOW);
+        StatusManager.add(context.getString(R.string.default_status_4), Color.RED);
+        StatusManager.add(context.getString(R.string.default_status_5), Color.GRAY);
         StatusManager.add(StatusManager.DEFAULT_STATUS, Color.BLACK);
     }
 
