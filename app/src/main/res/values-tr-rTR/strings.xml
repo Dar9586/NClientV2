@@ -314,4 +314,9 @@
     <string name="change_scroll_type">Change scroll type</string>
     <string name="export_data">Export data</string>
     <string name="import_data">Import data</string>
+    <string name="default_status_1">Reading</string>
+    <string name="default_status_2">Completed</string>
+    <string name="default_status_3">On Hold</string>
+    <string name="default_status_5">Plan to read</string>
+    <string name="default_status_4">Dropped</string>
 </resources>

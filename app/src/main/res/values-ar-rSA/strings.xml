@@ -293,5 +293,10 @@
         <item>Japanese</item>
         <item>Pretty</item>
     </string-array>
+    <string name="default_status_1">Reading</string>
+    <string name="default_status_2">Completed</string>
+    <string name="default_status_3">On Hold</string>
+    <string name="default_status_4">Dropped</string>
+    <string name="default_status_5">Plan to read</string>
 
 </resources>

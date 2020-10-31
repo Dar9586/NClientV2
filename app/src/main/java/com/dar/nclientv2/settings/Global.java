@@ -372,6 +372,11 @@ public class Global {
             Locale targetLocale = new Locale(regexSplit[0], regexSplit[1]);
             if (isLocaleAvailable(context, targetLocale)) return targetLocale;
         }
+        else {
+            Locale targetLocale = new Locale(langCode);
+            System.out.println(targetLocale.getCountry());
+            if (isLocaleAvailable(context, targetLocale)) return targetLocale;
+        }
         return new Locale("en", "US");
     }
 
@@ -379,12 +384,14 @@ public class Global {
         Locale[] availableLocales = Locale.getAvailableLocales();
         String[] supportedLangCodes = context.getResources().getStringArray(R.array.language_data);
         // array.stream is not supported on Android <6.0
-        for (Locale availableLocale : availableLocales)
-            if (availableLocale.getCountry().equalsIgnoreCase(targetLocale.getCountry()) &&
-                    availableLocale.getLanguage().equalsIgnoreCase(targetLocale.getLanguage()))
-                for (String supportedLangCode : supportedLangCodes)
-                    if (getLocaleCode(targetLocale).equalsIgnoreCase(supportedLangCode))
-                        return true;
+        for (Locale availableLocale : availableLocales){
+            if ((availableLocale.getCountry().equalsIgnoreCase(targetLocale.getCountry()) &&
+                    availableLocale.getLanguage().equalsIgnoreCase(targetLocale.getLanguage())) || targetLocale.getCountry().equals(""))
+                for (String supportedLangCode : supportedLangCodes) {
+                    if (getLocaleCode(targetLocale).equalsIgnoreCase(supportedLangCode)) return true;
+                    if (targetLocale.getLanguage().equals(supportedLangCode)) return true;
+                }
+        }
         return false;
     }
 
