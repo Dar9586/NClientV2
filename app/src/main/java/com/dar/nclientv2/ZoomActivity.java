@@ -41,14 +41,14 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.io.File;
 
 public class ZoomActivity extends GeneralActivity {
-    @TargetApi(16)
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private final static int hideFlags= View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
             | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
             | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
             | View.SYSTEM_UI_FLAG_FULLSCREEN
             | (Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT?View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY:0);
-    @TargetApi(16)
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private final static int showFlags=View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
     private static final String VOLUME_SIDE_KEY="volumeSide";
     private static final String SCROLL_TYPE_KEY="zoomScrollType";
@@ -303,7 +303,7 @@ public class ZoomActivity extends GeneralActivity {
                 .show();
     }
 
-    @TargetApi(23)
+    @TargetApi(Build.VERSION_CODES.M)
     private void requestStorage(){
         requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},1);
     }
