@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <PreferenceCategory
-        android:title="@string/wifi_data_usage_setting">
+        android:title="@string/wifi_data_usage_setting"
+        app:iconSpaceReserved="false">
         <SeekBarPreference
             android:defaultValue="2"
             android:key="@string/key_wifi_usage"
             android:max="2"
-            />
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
+
     <PreferenceCategory
-        android:title="@string/mobile_data_usage_setting">
+        android:title="@string/mobile_data_usage_setting"
+        app:iconSpaceReserved="false">
         <SeekBarPreference
             android:defaultValue="2"
             android:key="@string/key_mobile_usage"
             android:max="2"
-            />
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
 </PreferenceScreen>
