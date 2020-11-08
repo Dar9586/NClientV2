@@ -1,180 +1,227 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <PreferenceCategory android:title="@string/global_settings">
+
+    <PreferenceCategory
+        android:title="@string/global_settings"
+        app:iconSpaceReserved="false">
         <ListPreference
             android:defaultValue="@string/key_default_value"
             android:entries="@array/language"
             android:entryValues="@array/language_data"
             android:key="@string/key_language"
             android:title="@string/change_language"
-            app:useSimpleSummaryProvider="true"/>
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
         <ListPreference
             android:defaultValue="dark"
             android:entries="@array/theme"
             android:entryValues="@array/theme_data"
             android:key="@string/key_theme_select"
             android:summary="@string/theme_summary"
-            android:title="@string/change_theme" />
+            android:title="@string/change_theme"
+            app:iconSpaceReserved="false" />
         <Preference
             android:key="status_screen"
-            android:title="@string/manage_statuses" />
+            android:title="@string/manage_statuses"
+            app:iconSpaceReserved="false" />
         <ListPreference
             android:defaultValue="pretty"
             android:entries="@array/title_type_array"
             android:entryValues="@array/title_type_array_data"
             android:key="@string/key_title_type"
             android:summary="@string/title_type_summary"
-            android:title="@string/change_title_type" />
-        <SwitchPreference
+            android:title="@string/change_title_type"
+            app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/key_hide_multitasking"
-            android:title="@string/title_hide_multitasking" />
-
+            android:title="@string/title_hide_multitasking"
+            app:iconSpaceReserved="false" />
         <ListPreference
+            android:key="@string/key_save_path"
             android:title="@string/folder_location"
-            android:key="@string/key_save_path" />
-        <SwitchPreference
+            app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="has_pin"
             android:summary="@string/setting_pin"
-            android:title="@string/use_pin" />
+            android:title="@string/use_pin"
+            app:iconSpaceReserved="false" />
         <SeekBarPreference
             android:defaultValue="25"
             android:key="@string/key_maximum_notification"
             android:max="50"
             android:title="@string/maximum_notification_count"
+            app:iconSpaceReserved="false"
             app:showSeekBarValue="true" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/navigation_settings">
+
+    <PreferenceCategory
+        android:title="@string/navigation_settings"
+        app:iconSpaceReserved="false">
         <SeekBarPreference
             android:defaultValue="25"
             android:key="@string/key_max_history_size"
             android:max="100"
             android:summary="@string/history_size_summary"
             android:title="@string/history_size"
+            app:iconSpaceReserved="false"
             app:showSeekBarValue="true" />
         <Preference
             android:key="col_screen"
-            android:title="@string/column_count_select" />
-        <SwitchPreference
+            android:title="@string/column_count_select"
+            app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="@string/key_infinite_scroll"
-            android:title="@string/infinite_scroll" />
+            android:title="@string/infinite_scroll"
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/images_settings">
+    <PreferenceCategory
+        android:title="@string/images_settings"
+        app:iconSpaceReserved="false">
         <Preference
             android:key="data_screen"
-            android:title="@string/data_usage_settings" />
-        <SwitchPreference
+            android:title="@string/data_usage_settings"
+            app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="@string/key_use_rtl"
             android:summaryOff="@string/setting_off_use_rtl"
             android:summaryOn="@string/setting_on_use_rtl"
-            android:title="@string/enable_right_to_left" />
-        <SwitchPreference
+            android:title="@string/enable_right_to_left"
+            app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/key_show_titles"
-            android:title="@string/show_gallery_titles" />
-        <SwitchPreference
+            android:title="@string/show_gallery_titles"
+            app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="@string/key_zoom_one_column"
             android:summary="@string/setting_zoom_one_column"
-            android:title="@string/zoom_one_column" />
+            android:title="@string/zoom_one_column"
+            app:iconSpaceReserved="false" />
         <SeekBarPreference
             android:defaultValue="100"
             android:key="@string/key_default_zoom"
-            app:min="100"
             android:max="400"
-            app:seekBarIncrement="10"
             android:title="@string/default_zoom"
+            app:iconSpaceReserved="false"
+            app:min="100"
+            app:seekBarIncrement="10"
             app:showSeekBarValue="true" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/search_settings">
-        <SwitchPreference
+    <PreferenceCategory
+        android:title="@string/search_settings"
+        app:iconSpaceReserved="false">
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/key_keep_history"
-            android:title="@string/keep_history" />
-        <SwitchPreference
+            android:title="@string/keep_history"
+            app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/key_remove_ignored"
             android:summaryOff="@string/setting_off_remove_ignored"
             android:summaryOn="@string/setting_on_remove_ignored"
-            android:title="@string/remove_ignored_galleries" />
-        <SwitchPreference
+            android:title="@string/remove_ignored_galleries"
+            app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/key_ignore_tags"
             android:summaryOff="@string/setting_off_ignore_tags"
             android:summaryOn="@string/setting_on_ignore_tags"
-            android:title="@string/ignore_tags" />
-        <SwitchPreference
+            android:title="@string/ignore_tags"
+            app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat
             android:defaultValue="false"
             android:enabled="false"
             android:key="@string/key_use_account_tag"
             android:summaryOff="@string/setting_off_use_account_tag"
             android:summaryOn="@string/setting_on_use_account_tag"
-            android:title="@string/use_account_tag" />
+            android:title="@string/use_account_tag"
+            app:iconSpaceReserved="false" />
         <SeekBarPreference
             android:defaultValue="10"
             android:key="@string/key_favorite_limit"
             android:max="20"
             android:summary="@string/popular_tag_count"
             android:title="@string/favorite_count"
+            app:iconSpaceReserved="false"
             app:showSeekBarValue="true" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/miscellaneous">
-        <SwitchPreference
+
+    <PreferenceCategory
+        android:title="@string/miscellaneous"
+        app:iconSpaceReserved="false">
+        <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="@string/key_disable_lock"
-            android:title="@string/disable_lock_title" />
-        <SwitchPreference
+            android:title="@string/disable_lock_title"
+            app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/key_override_volume"
-            android:title="@string/volume_change_setting" />
-        <SwitchPreference
+            android:title="@string/volume_change_setting"
+            app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/key_send_report"
-            android:title="@string/send_crash_report" />
+            android:title="@string/send_crash_report"
+            app:iconSpaceReserved="false" />
         <Preference
             android:key="copy_settings"
-            android:title="@string/copy_settings_to_clipboard" />
+            android:title="@string/copy_settings_to_clipboard"
+            app:iconSpaceReserved="false" />
         <Preference
             android:key="export"
             android:title="@string/export_data"
-            />
+            app:iconSpaceReserved="false" />
         <Preference
             android:key="import"
             android:title="@string/import_data"
-            />
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/update_settings">
-        <SwitchPreference
+    <PreferenceCategory
+        android:title="@string/update_settings"
+        app:iconSpaceReserved="false">
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/key_check_update"
-            android:title="@string/check_for_update_on_startup" />
-        <SwitchPreference
+            android:title="@string/check_for_update_on_startup"
+            app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="@string/key_enable_beta"
-            android:title="@string/check_beta_releases"/>
+            android:title="@string/check_beta_releases"
+            app:iconSpaceReserved="false" />
         <Preference
             android:key="@string/key_update"
-            android:title="@string/check_for_updates" />
+            android:title="@string/check_for_updates"
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
+
     <PreferenceCategory>
         <Preference
             android:key="@string/key_cache"
-            android:title="@string/clear_cache" />
+            android:title="@string/clear_cache"
+            app:iconSpaceReserved="false" />
         <Preference
             android:key="bug"
-            android:title="@string/send_bug_on_github" />
+            android:title="@string/send_bug_on_github"
+            app:iconSpaceReserved="false" />
         <Preference
             android:key="donate"
-            android:title="@string/donate" />
+            android:title="@string/donate"
+            app:iconSpaceReserved="false" />
         <Preference
             android:enabled="false"
-            android:key="version" />
+            android:key="version"
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
 </PreferenceScreen>
