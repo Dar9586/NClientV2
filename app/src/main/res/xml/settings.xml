@@ -26,7 +26,7 @@
             android:key="@string/key_title_type"
             android:summary="@string/title_type_summary"
             android:title="@string/change_title_type" />
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/key_hide_multitasking"
             android:title="@string/title_hide_multitasking" />
@@ -34,7 +34,7 @@
         <ListPreference
             android:title="@string/folder_location"
             android:key="@string/key_save_path" />
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="has_pin"
             android:summary="@string/setting_pin"
@@ -57,7 +57,7 @@
         <Preference
             android:key="col_screen"
             android:title="@string/column_count_select" />
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="@string/key_infinite_scroll"
             android:title="@string/infinite_scroll" />
@@ -67,17 +67,17 @@
         <Preference
             android:key="data_screen"
             android:title="@string/data_usage_settings" />
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="@string/key_use_rtl"
             android:summaryOff="@string/setting_off_use_rtl"
             android:summaryOn="@string/setting_on_use_rtl"
             android:title="@string/enable_right_to_left" />
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/key_show_titles"
             android:title="@string/show_gallery_titles" />
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="@string/key_zoom_one_column"
             android:summary="@string/setting_zoom_one_column"
@@ -93,23 +93,23 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/search_settings">
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/key_keep_history"
             android:title="@string/keep_history" />
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/key_remove_ignored"
             android:summaryOff="@string/setting_off_remove_ignored"
             android:summaryOn="@string/setting_on_remove_ignored"
             android:title="@string/remove_ignored_galleries" />
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/key_ignore_tags"
             android:summaryOff="@string/setting_off_ignore_tags"
             android:summaryOn="@string/setting_on_ignore_tags"
             android:title="@string/ignore_tags" />
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:defaultValue="false"
             android:enabled="false"
             android:key="@string/key_use_account_tag"
@@ -125,15 +125,15 @@
             app:showSeekBarValue="true" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/miscellaneous">
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="@string/key_disable_lock"
             android:title="@string/disable_lock_title" />
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/key_override_volume"
             android:title="@string/volume_change_setting" />
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/key_send_report"
             android:title="@string/send_crash_report" />
@@ -151,11 +151,11 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/update_settings">
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/key_check_update"
             android:title="@string/check_for_update_on_startup" />
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="@string/key_enable_beta"
             android:title="@string/check_beta_releases"/>
