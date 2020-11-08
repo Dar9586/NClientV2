@@ -32,10 +32,14 @@ Search|Random manga
 
 ## Contributors
 
-- [ZerOri](https://github.com/ZerOri) and [linsui](https://github.com/linsui) for Chinese translation
-- [hmaltr](https://github.com/hmaltr) for Turkish translation
-- [herrsunchess](https://github.com/herrsunchess) for German translation
 - [Still34](https://github.com/Still34) for code cleanup & Traditional Chinese translation
+- [TacoTheDank](https://github.com/TacoTheDank) for XML and gradle cleanup
+- [hmaltr](https://github.com/hmaltr) for Turkish translation and issue moderation
+- [ZerOri](https://github.com/ZerOri) and [linsui](https://github.com/linsui) for Chinese translation
+- [herrsunchess](https://github.com/herrsunchess) for German translation
+- [eme22](https://github.com/herrsunchess) for Spanish translation
+
+
 
 ## Libraries
 

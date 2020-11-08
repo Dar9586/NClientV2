@@ -54,6 +54,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         db.execSQL(Queries.StatusMangaTable.CREATE_TABLE);
 
     }
+    // TODO: 28/10/20 Add search history to DB instead of shared
 
     private void insertCategoryTags(){
         Tag[] types = {

@@ -31,6 +31,7 @@ import okhttp3.Response;
 public class VersionChecker{
     private static final String RELEASE_API_URL="https://api.github.com/repos/Dar9586/NClientV2/releases";
     private static final String LATEST_RELEASE_URL="https://github.com/Dar9586/NClientV2/releases/latest";
+    private static final String RELEASE_TYPE=BuildConfig.DEBUG?"Debug":"Release";
     private final AppCompatActivity context;
     private String downloadUrl;
     private static String latest=null;
@@ -126,7 +127,7 @@ public class VersionChecker{
                             continue;
                         }
                         release.downloadUrl=getDownloadUrl(jr);
-                        if(!release.downloadUrl.contains("Release"))
+                        if(!release.downloadUrl.contains(RELEASE_TYPE))
                             release.downloadUrl=null;
                     }
                     jr.endArray();

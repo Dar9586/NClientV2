@@ -121,7 +121,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
             case DATE:return comparatorByDate;
             case TITLE:return comparatorByName;
             case PAGE_COUNT:return comparatorByPageCount;
-            case SIZE:return comparatorBySize;
+            //case SIZE:return comparatorBySize;
         }
         return comparatorByName;
     }
@@ -150,8 +150,8 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         boolean b1=o1 instanceof LocalGallery;
         boolean b2=o2 instanceof LocalGallery;
         //downloading manga are newer
-        if(b1&&!b2) return 1;
-        if(!b1&&b2) return -1;
+        if(b1&&!b2) return -1;
+        if(!b1&&b2) return 1;
         if(b1/*&&b2*/){
             long res=((LocalGallery)o1).getDirectory().lastModified()-((LocalGallery)o2).getDirectory().lastModified();
             if(res!=0) return res<0?-1:1;
