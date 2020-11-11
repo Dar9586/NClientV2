@@ -39,7 +39,7 @@ public class LoadTags extends Thread {
         return x;
     }
 
-    private String extractArray(Element e) {
+    private String extractArray(Element e) throws StringIndexOutOfBoundsException{
         String t = e.toString();
         return t.substring(t.indexOf('['), t.indexOf(';'));
     }
@@ -66,13 +66,13 @@ public class LoadTags extends Thread {
         try {
             Elements scripts = getScripts(url);
             analyzeScripts(scripts);
-        } catch (IOException e) {
+        } catch (IOException|StringIndexOutOfBoundsException e) {
             e.printStackTrace();
         }
 
     }
 
-    private void analyzeScripts(Elements scripts)throws IOException {
+    private void analyzeScripts(Elements scripts)throws IOException,StringIndexOutOfBoundsException {
         if (scripts.size() > 0) {
             Login.clearOnlineTags();
             String array=Utility.unescapeUnicodeString(extractArray(scripts.last()));

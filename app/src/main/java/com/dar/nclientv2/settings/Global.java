@@ -23,6 +23,7 @@ import android.webkit.CookieSyncManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
@@ -633,6 +634,7 @@ public class Global {
     }
 
     public static void initActivity(AppCompatActivity context){
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         initScreenSize(context);
         initGallerySize();
         //Locale locale=new Locale()

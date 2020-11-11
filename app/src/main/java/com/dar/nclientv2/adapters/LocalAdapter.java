@@ -232,6 +232,8 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
     }
 
     public void updateColor(int position){
+        Object o=filter.get(position);
+        if(!(o instanceof LocalGallery))return;
         int id=((LocalGallery)filter.get(position)).getId();
         statuses.put(id,Queries.StatusMangaTable.getStatus(id).color);
         notifyItemChanged(position);
