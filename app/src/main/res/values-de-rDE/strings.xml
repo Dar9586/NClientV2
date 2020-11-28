@@ -321,5 +321,6 @@
     <string name="default_status_5">Plan to read</string>
     <string name="default_status_4">Dropped</string>
     <string name="default_status_3">On Hold</string>
+    <string name="title_site_mirror">Change site mirror</string>
 
 </resources>

@@ -108,6 +108,9 @@ public class FavoriteActivity extends BaseActivity {
                 adapter.setSortByTitle(sortByTitle);
                 item.setTitle(sortByTitle?R.string.sort_by_latest:R.string.sort_by_title);
                 break;
+            case R.id.random_favorite:
+                adapter.randomGallery();
+                break;
 
         }
         return super.onOptionsItemSelected(item);

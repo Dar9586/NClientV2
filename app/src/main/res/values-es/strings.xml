@@ -295,5 +295,6 @@
     <string name="default_status_3">En Espera</string>
     <string name="default_status_4">Dropeado</string>
     <string name="default_status_5">Planeando leer</string>
+    <string name="title_site_mirror">Change site mirror</string>
 
 </resources>

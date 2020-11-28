@@ -24,11 +24,12 @@ import okhttp3.HttpUrl;
 public class Login{
     private static User user;
     private static boolean accountTag;
-    @NonNull public static final HttpUrl BASE_HTTP_URL=HttpUrl.get(Utility.getBaseUrl());
+    public static HttpUrl BASE_HTTP_URL;
     private static SharedPreferences loginShared;
     public static void  initLogin(@NonNull Context context){
         SharedPreferences preferences=context.getSharedPreferences("Settings", 0);
         accountTag=preferences.getBoolean(context.getString(R.string.key_use_account_tag),false);
+        BASE_HTTP_URL=HttpUrl.get(Utility.getBaseUrl());
     }
     public static boolean useAccountTag(){
         return accountTag;

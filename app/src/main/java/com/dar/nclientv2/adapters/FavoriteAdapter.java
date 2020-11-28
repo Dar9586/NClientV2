@@ -21,6 +21,7 @@ import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.utility.ImageDownloadUtility;
 import com.dar.nclientv2.utility.LogUtility;
+import com.dar.nclientv2.utility.Utility;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -87,11 +88,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
         });
         holder.layout.setOnClickListener(v -> {
             //Global.setLoadedGallery(ent);
-            Intent intent = new Intent(activity, GalleryActivity.class);
-            LogUtility.d(ent+"");
-            intent.putExtra(activity.getPackageName()+ ".GALLERY",ent);
-            intent.putExtra(activity.getPackageName()+ ".UNKNOWN",true);
-            activity.startActivity(intent);
+            startGallery(ent);
         });
         holder.layout.setOnLongClickListener(v -> {
             holder.title.animate().alpha(holder.title.getAlpha()==0f?1f:0f).setDuration(100).start();
@@ -105,6 +102,14 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
             statuses.put(ent.getId(),statusColor);
         }
         holder.title.setBackgroundColor(statusColor);
+    }
+
+    private void startGallery(Gallery ent) {
+        Intent intent = new Intent(activity, GalleryActivity.class);
+        LogUtility.d(ent+"");
+        intent.putExtra(activity.getPackageName()+ ".GALLERY",ent);
+        intent.putExtra(activity.getPackageName()+ ".UNKNOWN",true);
+        activity.startActivity(intent);
     }
 
     public void updateColor(int position){
@@ -194,5 +199,10 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
             }while (cursor.moveToNext());
         }
         return galleries;
+    }
+
+    public void randomGallery() {
+        if(cursor==null)return;
+        startGallery(galleryFromPosition(Utility.RANDOM.nextInt(cursor.getCount())));
     }
 }

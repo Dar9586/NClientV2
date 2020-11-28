@@ -385,8 +385,8 @@ public class GalleryActivity extends BaseActivity{
     private void addToFavorite(final MenuItem item) {
 
         boolean wasFavorite=onlineFavoriteItem.getTitle().equals(getString(R.string.remove_from_online_favorites));
-        String url=String.format(Locale.US,"https://nhentai.net/api/gallery/%d/%sfavorite",gallery.getId(),wasFavorite?"un":"");
-        String galleryUrl=String.format(Locale.US,"https://nhentai.net/g/%d/",gallery.getId());
+        String url=String.format(Locale.US,Utility.getHost()+"api/gallery/%d/%sfavorite",gallery.getId(),wasFavorite?"un":"");
+        String galleryUrl=String.format(Locale.US,Utility.getHost()+"g/%d/",gallery.getId());
         LogUtility.d("Calling: "+url);
         new AuthRequest(galleryUrl,url,new Callback() {
             @Override

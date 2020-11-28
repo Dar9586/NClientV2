@@ -30,12 +30,14 @@ import java.util.Random;
 
 public class Utility {
     public static final Random RANDOM=new Random(System.nanoTime());
-    private static final String ORIGINAL_URL ="nhentai.net";
+    public static final String ORIGINAL_URL ="nhentai.net";
     public static String getBaseUrl(){
         return "https://"+Utility.getHost()+"/";
     }
+
+
     public static String getHost(){
-        return  ORIGINAL_URL;
+        return  Global.getMirror();
     }
     private static void parseEscapedCharacter(Reader reader, Writer writer)throws IOException{
         int toCreate,read;

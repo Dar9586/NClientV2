@@ -18,6 +18,7 @@ import com.dar.nclientv2.settings.AuthRequest;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.utility.ImageDownloadUtility;
+import com.dar.nclientv2.utility.Utility;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -64,27 +65,23 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.user.setText(c.getUsername());
         holder.body.setText(c.getComment());
         holder.date.setText(format.format(c.getPostDate()));
-        holder.close.setOnClickListener(new View.OnClickListener() {
+        holder.close.setOnClickListener(v -> {
+            String refererUrl=String.format(Locale.US,Utility.getHost()+"g/%d/",galleryId);
+            String submitUrl=String.format(Locale.US, Utility.getHost()+"api/comments/%d/delete",c.getId());
+            new AuthRequest(refererUrl, submitUrl, new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call,@NonNull IOException e) {
 
-            @Override
-            public void onClick(View v) {
-                String refererUrl=String.format(Locale.US,"https://nhentai.net/g/%d/",galleryId);
-                String submitUrl=String.format(Locale.US,"https://nhentai.net/api/comments/%d/delete",c.getId());
-                new AuthRequest(refererUrl, submitUrl, new Callback() {
-                    @Override
-                    public void onFailure(@NonNull Call call,@NonNull IOException e) {
+                }
 
+                @Override
+                public void onResponse(@NonNull Call call,@NonNull Response response) throws IOException {
+                    if(response.body().string().contains("true")){
+                        comments.remove(position);
+                        context.runOnUiThread(() -> notifyItemRemoved(position));
                     }
-
-                    @Override
-                    public void onResponse(@NonNull Call call,@NonNull Response response) throws IOException {
-                        if(response.body().string().contains("true")){
-                            comments.remove(position);
-                            context.runOnUiThread(() -> notifyItemRemoved(position));
-                        }
-                    }
-                }).setMethod("POST",AuthRequest.EMPTY_BODY).start();
-            }
+                }
+            }).setMethod("POST",AuthRequest.EMPTY_BODY).start();
         });
         if(c.getAvatarUrl()==null||Global.getDownloadPolicy() != Global.DataUsageType.FULL)
             ImageDownloadUtility.loadImage(R.drawable.ic_person,holder.userImage);

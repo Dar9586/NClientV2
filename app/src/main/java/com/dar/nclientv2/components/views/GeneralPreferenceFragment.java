@@ -24,6 +24,7 @@ import com.dar.nclientv2.async.database.Exporter;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.utility.LogUtility;
+import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
@@ -181,6 +182,16 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            return true;
+        });
+
+        ListPreference mirror=findPreference(getString(R.string.key_site_mirror));
+        mirror.setSummary(
+                act.getSharedPreferences("Settings",Context.MODE_PRIVATE)
+                        .getString(getString(R.string.key_site_mirror), Utility.ORIGINAL_URL)
+        );
+        mirror.setOnPreferenceChangeListener((preference, newValue) -> {
+            preference.setSummary(newValue.toString());
             return true;
         });
     }

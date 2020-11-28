@@ -7,8 +7,8 @@ android {
         applicationId "com.dar.nclientv2"
         minSdkVersion 14
         targetSdkVersion 29
-        versionCode 264
-        versionName "2.6.4"
+        versionCode 265
+        versionName "2.6.5"
         vectorDrawables.useSupportLibrary true
     }
     buildTypes {

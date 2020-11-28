@@ -31,6 +31,7 @@
     <string name="key_column_port_stat" translatable="false">column_port_stat</string>
     <string name="key_column_land_stat" translatable="false">column_land_stat</string>
     <string name="key_hide_multitasking" translatable="false">hide_multitasking</string>
+    <string name="key_site_mirror" translatable="false">site_mirror</string>
     <string name="key_language" translatable="false">key_language</string>
     <string name="key_disable_lock" translatable="false">disable_lock</string>
     <string name="key_max_history_size" translatable="false">max_history_size</string>
@@ -326,6 +327,7 @@
     <string name="default_status_3">On Hold</string>
     <string name="default_status_4">Dropped</string>
     <string name="default_status_5">Plan to read</string>
+    <string name="title_site_mirror">Change site mirror</string>
 
     <string-array name="scroll_type">
         <item>Horizontal</item>
@@ -364,7 +366,9 @@
         <item>light</item>
         <item>dark</item>
     </string-array>
-
+    <string-array name="site_mirrors"><!--DO NOT TRANSLATE-->
+        <item>nhentai.net</item>
+    </string-array>
     <string-array name="title_type_array">
         <item>English</item>
         <item>Japanese</item>

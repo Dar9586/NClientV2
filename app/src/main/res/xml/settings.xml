@@ -21,6 +21,14 @@
             android:summary="@string/theme_summary"
             android:title="@string/change_theme"
             app:iconSpaceReserved="false" />
+        <ListPreference
+            app:isPreferenceVisible="false"
+            android:defaultValue="nhentai.net"
+            android:entries="@array/site_mirrors"
+            android:entryValues="@array/site_mirrors"
+            android:key="@string/key_site_mirror"
+            android:title="@string/title_site_mirror"
+            app:iconSpaceReserved="false" />
         <Preference
             android:key="status_screen"
             android:title="@string/manage_statuses"

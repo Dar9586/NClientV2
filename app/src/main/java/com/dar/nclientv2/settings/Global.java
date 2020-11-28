@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.UiModeManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -86,7 +87,7 @@ public class Global {
     private static boolean hideMultitask,enableBeta,volumeOverride,zoomOneColumn,keepHistory,lockScreen,onlyTag,showTitles,infiniteScroll, removeAvoidedGalleries,useRtl;
     private static ThemeScheme theme;
     private static DataUsageType usageMobile, usageWifi;
-    private static String lastVersion;
+    private static String lastVersion,mirror;
     private static int maxHistory,columnCount,maxId,galleryWidth=-1, galleryHeight =-1;
     private static int colPortStat,colLandStat,colPortHist,colLandHist,colPortMain,colLandMain,colPortDownload,colLandDownload,colLandFavorite,colPortFavorite;
     private static int defaultZoom;
@@ -247,6 +248,7 @@ public class Global {
             activity.getWindowManager().getDefaultDisplay().getMetrics(lastDisplay);
     }
     public static void initFromShared(@NonNull Context context){
+        Login.initLogin(context);
         SharedPreferences shared=context.getSharedPreferences("Settings", 0);
         CookieSyncManager.createInstance(context);
         initHttpClient(context);
@@ -254,11 +256,11 @@ public class Global {
         initTheme(context);
         loadNotificationChannel(context);
         NotificationSettings.initializeNotificationManager(context);
-        Login.initLogin(context);
         Global.initStorage(context);
         shared.edit().remove("local_sort").apply();
         localSortType=new LocalSortType(shared.getInt(context.getString(R.string.key_local_sort),0));
         useRtl=shared.getBoolean(context.getString(R.string.key_use_rtl),false);
+        mirror=shared.getString(context.getString(R.string.key_site_mirror),Utility.ORIGINAL_URL);
         keepHistory=shared.getBoolean(context.getString(R.string.key_keep_history),true);
         infiniteScroll=shared.getBoolean(context.getString(R.string.key_infinite_scroll),false);
         removeAvoidedGalleries =shared.getBoolean(context.getString(R.string.key_remove_ignored),true);
@@ -309,6 +311,10 @@ public class Global {
         LogUtility.d("Assegning: "+localSortType);
     }
 
+    public static String getMirror() {
+        return mirror;
+    }
+
     public static DataUsageType getDownloadPolicy(){
         switch (NetworkUtil.getType()){
             case WIFI:return usageWifi;
@@ -335,7 +341,6 @@ public class Global {
                 );
         CustomSSLSocketFactory.enableTls12OnPreLollipop(builder);
         builder.addInterceptor(new CustomInterceptor());
-        builder.addInterceptor(new LoginInterceptor());
         client=builder.build();
         client.dispatcher().setMaxRequests(25);
         client.dispatcher().setMaxRequestsPerHost(25);
@@ -632,17 +637,26 @@ public class Global {
         }
         return null;
     }
+    private static void updateConfigurationNightMode(AppCompatActivity activity, Configuration c){
+        UiModeManager manager=(UiModeManager)activity.getSystemService(Context.UI_MODE_SERVICE);
+        if(manager!=null)manager.setNightMode(UiModeManager.MODE_NIGHT_NO);
 
+        c.uiMode&=(~Configuration.UI_MODE_NIGHT_MASK);//clear night mode bits
+        c.uiMode|=Configuration.UI_MODE_NIGHT_NO; //disable night mode
+    }
     public static void initActivity(AppCompatActivity context){
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
         initScreenSize(context);
         initGallerySize();
         //Locale locale=new Locale()
         Resources resources=context.getResources();
         Locale locale=initLanguage(context);
         Configuration c=new Configuration(context.getResources().getConfiguration());
+        updateConfigurationNightMode(context,c);
         c.locale=locale;
         resources.updateConfiguration(c, resources.getDisplayMetrics());
+
         switch (initTheme(context)){
             case LIGHT:context.setTheme(R.style.LightTheme);break;
             case DARK:context.setTheme(R.style.DarkTheme);break;
