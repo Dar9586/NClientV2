@@ -304,20 +304,20 @@
     <string name="view_statuses">Kategorileri görüntüle</string>
     <string name="status_column_count">Dikeyde gösterilecek kategori sayısını seç</string>
     <string name="status_viewer">Kategori görüntüleyici</string>
-    <string name="title_hide_multitasking">Hide app content in multitasking</string>
-    <string name="title">Title</string>
-    <string name="download_date">Download date</string>
-    <string name="page_count">Page count</string>
-    <string name="size">Size</string>
-    <string name="descending_order">Descending order</string>
-    <string name="minimum_comment_length" formatted="true">The comment must be at least %d characters</string>
-    <string name="change_scroll_type">Change scroll type</string>
-    <string name="export_data">Export data</string>
-    <string name="import_data">Import data</string>
-    <string name="default_status_1">Reading</string>
-    <string name="default_status_2">Completed</string>
-    <string name="default_status_3">On Hold</string>
-    <string name="default_status_5">Plan to read</string>
-    <string name="default_status_4">Dropped</string>
-    <string name="title_site_mirror">Change site mirror</string>
+    <string name="title_hide_multitasking">Uygulama önizlemesini devre dışı bırak</string>
+    <string name="title">Başlık</string>
+    <string name="download_date">İndirme tarihi</string>
+    <string name="page_count">Sayfa sayısı</string>
+    <string name="size">Boyut</string>
+    <string name="descending_order">Azalan</string>
+    <string name="minimum_comment_length" formatted="true">Yorum en az %d karakter olmalıdır.</string>
+    <string name="change_scroll_type">Kaydırma tipini değiştir</string>
+    <string name="export_data">Verileri dışa aktar</string>
+    <string name="import_data">Verileri dışarıdan yükle</string>
+    <string name="default_status_1">Okunuyor</string>
+    <string name="default_status_2">Tamamlandı</string>
+    <string name="default_status_3">Beklemede</string>
+    <string name="default_status_5">Okunması planlanıyor</string>
+    <string name="default_status_4">Okunmayacak</string>
+    <string name="title_site_mirror">Yedek site seçici</string>
 </resources>
