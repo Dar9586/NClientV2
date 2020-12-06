@@ -267,28 +267,22 @@ public class ZoomActivity extends GeneralActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        switch(id){
-            case R.id.rotate:
+            if(id==R.id.rotate){
                 getActualFragment().rotate();
-                break;
-            case R.id.save_page:
+            }else if(id==R.id.save_page){
                 if(Global.hasStoragePermission(this)){
                     downloadPage();
                 }else requestStorage();
-                break;
-            case R.id.share:
+            }else if(id==R.id.share){
                 if(gallery.getId()<=0)sendImage(false);
                 else openSendImageDialog();
-                break;
-            case android.R.id.home:
+            }else if(id==android.R.id.home){
                 finish();
                 return true;
-            case R.id.bookmark:
+            }else if(id==R.id.bookmark){
                 Queries.ResumeTable.insert(gallery.getId(),actualPage+1);
-                break;
-            case R.id.scrollType:
+            }else if(id==R.id.scrollType){
                 changeScrollTypeDialog();
-                break;
         }
 
         return super.onOptionsItemSelected(item);

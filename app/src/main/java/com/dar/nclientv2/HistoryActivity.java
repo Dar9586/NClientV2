@@ -37,16 +37,15 @@ public class HistoryActivity extends BaseActivity {
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:
-                finish();
-                return true;
-            case R.id.cancelAll:
-                Queries.HistoryTable.emptyHistory(Database.getDatabase());
-                adapter.restartDataset(new ArrayList<>(1));
-                return true;
-        }
+        if(item.getItemId()==android.R.id.home){
+            finish();
+            return true;
+        }else if(item.getItemId()==R.id.cancelAll){
+            Queries.HistoryTable.emptyHistory(Database.getDatabase());
+            adapter.restartDataset(new ArrayList<>(1));
+            return true;
 
+        }
         return super.onOptionsItemSelected(item);
     }
     @Override

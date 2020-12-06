@@ -382,17 +382,15 @@ public class SearchActivity extends GeneralActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:
-                finish();
-                return true;
-            case R.id.view_groups:
-                View v=findViewById(R.id.groups);
-                boolean isVisible=v.getVisibility()==View.VISIBLE;
-                v.setVisibility(isVisible?View.GONE:View.VISIBLE);
-                item.setIcon(isVisible?R.drawable.ic_add:R.drawable.ic_close);
-                Global.setTint(item.getIcon());
-                break;
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }else if(item.getItemId()==R.id.view_groups) {
+            View v = findViewById(R.id.groups);
+            boolean isVisible = v.getVisibility() == View.VISIBLE;
+            v.setVisibility(isVisible ? View.GONE : View.VISIBLE);
+            item.setIcon(isVisible ? R.drawable.ic_add : R.drawable.ic_close);
+            Global.setTint(item.getIcon());
         }
         return super.onOptionsItemSelected(item);
     }

@@ -54,20 +54,15 @@ public class StatusViewerActivity extends GeneralActivity {
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:
-                finish();
-                return true;
-            case R.id.sort_by_name:
-                sortByTitle=!sortByTitle;
-                getActualFragment().changeSort(sortByTitle);
-                item.setTitle(sortByTitle?R.string.sort_by_latest:R.string.sort_by_title);
-                item.setIcon(sortByTitle?R.drawable.ic_sort_by_alpha:R.drawable.ic_access_time);
-                Global.setTint(item.getIcon());
-        }
         if (item.getItemId() == android.R.id.home) {
             finish();
             return true;
+        }else if(item.getItemId()==R.id.sort_by_name) {
+            sortByTitle=!sortByTitle;
+            getActualFragment().changeSort(sortByTitle);
+            item.setTitle(sortByTitle?R.string.sort_by_latest:R.string.sort_by_title);
+            item.setIcon(sortByTitle?R.drawable.ic_sort_by_alpha:R.drawable.ic_access_time);
+            Global.setTint(item.getIcon());
         }
         return super.onOptionsItemSelected(item);
     }

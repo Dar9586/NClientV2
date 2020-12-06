@@ -263,50 +263,38 @@ public class GalleryActivity extends BaseActivity{
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         int id = item.getItemId();
-
-        switch (id){
-            case R.id.download_gallery:
-                if(Global.hasStoragePermission(this))
-                    new RangeSelector(this, (Gallery) gallery).show();
-                else
-                    requestStorage();
-                break;
-            case R.id.add_online_gallery:
-                addToFavorite(item);
-                break;
-            case R.id.change_view:updateColumnCount(true); break;
-            case R.id.load_internet:toInternet();break;
-            case R.id.comments:
-                Intent i=new Intent(this, CommentActivity.class);
-                i.putExtra(getPackageName()+".GALLERYID",gallery.getId());
-                startActivity(i);
-                break;
-            case R.id.manage_status:
-                updateStatus();
-                break;
-            case R.id.share:
-                Global.shareGallery(this,gallery);
-                break;
-            case R.id.related:
-                /*Intent intent = new Intent(this, MainActivity.class);
-                intent.putExtra(getPackageName() + ".RELATED", gallery.getId());
-                startActivity(intent);*/
-                recycler.smoothScrollToPosition(recycler.getAdapter().getItemCount());
-                break;
-            case R.id.favorite_manager:
-                if(isLocalFavorite){
-                    if(Favorites.removeFavorite(gallery)) isLocalFavorite =!isLocalFavorite;
-                }else if(Favorites.addFavorite((Gallery) gallery)){
-                    isLocalFavorite =!isLocalFavorite;
-                }else{
-                    Snackbar.make(recycler,getString(R.string.favorite_max_reached,Favorites.MAXFAVORITE),Snackbar.LENGTH_LONG).show();
-                }
-                item.setIcon(isLocalFavorite ?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
-                Global.setTint(item.getIcon());
-            break;
-            case android.R.id.home:
-                onBackPressed();
-                return true;
+        if(id==R.id.download_gallery){
+            if(Global.hasStoragePermission(this))
+                new RangeSelector(this, (Gallery) gallery).show();
+            else
+                requestStorage();
+        }else if(id==R.id.add_online_gallery) addToFavorite(item);
+        else if(id==R.id.change_view)updateColumnCount(true);
+        else if(id==R.id.load_internet)toInternet();
+        else if(id==R.id.manage_status)updateStatus();
+        else if(id==R.id.share)Global.shareGallery(this,gallery);
+        else if(id==R.id.comments){
+            Intent i=new Intent(this, CommentActivity.class);
+            i.putExtra(getPackageName()+".GALLERYID",gallery.getId());
+            startActivity(i);
+        }else if(id==R.id.related){
+            /*Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra(getPackageName() + ".RELATED", gallery.getId());
+            startActivity(intent);*/
+            recycler.smoothScrollToPosition(recycler.getAdapter().getItemCount());
+        }else if(id==R.id.favorite_manager){
+            if(isLocalFavorite){
+                if(Favorites.removeFavorite(gallery)) isLocalFavorite =!isLocalFavorite;
+            }else if(Favorites.addFavorite((Gallery) gallery)){
+                isLocalFavorite =!isLocalFavorite;
+            }else{
+                Snackbar.make(recycler,getString(R.string.favorite_max_reached,Favorites.MAXFAVORITE),Snackbar.LENGTH_LONG).show();
+            }
+            item.setIcon(isLocalFavorite ?R.drawable.ic_favorite:R.drawable.ic_favorite_border);
+            Global.setTint(item.getIcon());
+        }else if(id==android.R.id.home) {
+            onBackPressed();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

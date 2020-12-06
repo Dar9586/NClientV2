@@ -154,19 +154,12 @@ public class TagFilterActivity extends GeneralActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         TagTypePage page = (TagTypePage)getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
-        switch (id){
-            case R.id.reset_tags:createDialog();break;
-            case R.id.set_min_count:minCountBuild(); break;
-            case R.id.sort_by_name:
+            if(id==R.id.reset_tags)createDialog();
+            else if(id==R.id.set_min_count)minCountBuild();
+            else if(id==R.id.sort_by_name){
                 TagV2.updateSortByName(this);
                 updateSortItem(item);
                 page.refilter(searchView.getQuery().toString());
-
-                break;
-            /*case R.id.load_next:
-                if(page.isNormalType())
-                    new ScrapeTags(this,(TagsAdapter)page.recyclerView.getAdapter(),page.type).start();
-                break;*/
         }
 
         return super.onOptionsItemSelected(item);

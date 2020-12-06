@@ -116,28 +116,21 @@ public class LocalActivity extends BaseActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-            case R.id.pauseAll:
-                if(adapter!=null)adapter.pauseAll();
-                break;
-            case R.id.folder_choose:
-                showDialogFolderChoose();
-            case R.id.startAll:
-                if(adapter!=null)adapter.startAll();
-                break;
-            case R.id.cancelAll:
-                if(adapter!=null)adapter.cancellAll();
-                break;
-            case R.id.random_favorite:
-                if(adapter!=null)adapter.viewRandom();
-                break;
-            case R.id.sort_by_name:
-                dialogSortType();
-
-                break;
+        if(item.getItemId()==android.R.id.home){
+            finish();
+            return true;
+        }else if(item.getItemId()==R.id.pauseAll){
+            if(adapter!=null)adapter.pauseAll();
+        }else if(item.getItemId()==R.id.folder_choose){
+            showDialogFolderChoose();
+        }else if(item.getItemId()==R.id.startAll){
+            if(adapter!=null)adapter.startAll();
+        }else if(item.getItemId()==R.id.cancelAll){
+            if(adapter!=null)adapter.cancellAll();
+        }else if(item.getItemId()==R.id.random_favorite){
+            if(adapter!=null)adapter.viewRandom();
+        }else if(item.getItemId()==R.id.sort_by_name){
+            dialogSortType();
         }
         return super.onOptionsItemSelected(item);
     }

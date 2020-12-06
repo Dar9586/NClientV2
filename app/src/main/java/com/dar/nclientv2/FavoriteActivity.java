@@ -95,23 +95,17 @@ public class FavoriteActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent i;
-        switch (item.getItemId()) {
-            case R.id.open_browser:
-                i = new Intent(Intent.ACTION_VIEW, Uri.parse(Utility.getBaseUrl()+"favorites/"));
-                startActivity(i);
-                break;
-            case R.id.download_page:
-                if(adapter!=null)showDialogDownloadAll();
-                break;
-            case R.id.sort_by_name:
-                sortByTitle=!sortByTitle;
-                adapter.setSortByTitle(sortByTitle);
-                item.setTitle(sortByTitle?R.string.sort_by_latest:R.string.sort_by_title);
-                break;
-            case R.id.random_favorite:
-                adapter.randomGallery();
-                break;
-
+        if(item.getItemId()==R.id.open_browser){
+            i = new Intent(Intent.ACTION_VIEW, Uri.parse(Utility.getBaseUrl()+"favorites/"));
+            startActivity(i);
+        }else if(item.getItemId()==R.id.download_page){
+            if(adapter!=null)showDialogDownloadAll();
+        }else if(item.getItemId()==R.id.sort_by_name){
+            sortByTitle=!sortByTitle;
+            adapter.setSortByTitle(sortByTitle);
+            item.setTitle(sortByTitle?R.string.sort_by_latest:R.string.sort_by_title);
+        }else if(item.getItemId()==R.id.random_favorite){
+            adapter.randomGallery();
         }
         return super.onOptionsItemSelected(item);
     }

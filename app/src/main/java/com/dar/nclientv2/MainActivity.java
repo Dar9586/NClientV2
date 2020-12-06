@@ -677,44 +677,34 @@ public class MainActivity extends BaseActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent i;
         LogUtility.d("Pressed item: "+item.getItemId());
-        switch (item.getItemId()){
-            case R.id.by_popular:
+            if(item.getItemId()==R.id.by_popular){
                 updateSortType(item);
-                break;
-            case R.id.only_language:
+            }else if(item.getItemId()==R.id.only_language){
                 changeUsedLanguage(item);
                 showLanguageIcon(item);
-                break;
-            case R.id.search:
+            }else if(item.getItemId()==R.id.search){
                 if(modeType != ModeType.FAVORITE) {//show textbox or start search activity
                     i = new Intent(this, SearchActivity.class);
                     startActivity(i);
                 }
-                break;
-            case R.id.open_browser:
+            }else if(item.getItemId()==R.id.open_browser){
                 if(inspector!=null) {
                     i = new Intent(Intent.ACTION_VIEW,Uri.parse(inspector.getUrl()));
                     startActivity(i);
                 }
-                break;
-            case R.id.random_favorite:
+            }else if(item.getItemId()==R.id.random_favorite){
                 inspector=InspectorV3.randomInspector(this,startGallery,true);
                 inspector.start();
-                break;
-            case R.id.download_page:
+            }else if(item.getItemId()==R.id.download_page){
                 if(inspector.getGalleries()!=null)
                     showDialogDownloadAll();
-                break;
-            case R.id.add_bookmark:
+            }else if(item.getItemId()==R.id.add_bookmark){
                 Queries.BookmarkTable.addBookmark(inspector);
-                break;
-            case R.id.tag_manager:
+            }else if(item.getItemId()==R.id.tag_manager){
                 TagStatus ts=TagV2.updateStatus(inspector.getTag());
                 updateTagStatus(item,ts);
-                break;
-            case android.R.id.home:
+            }else if(item.getItemId()==android.R.id.home){
                 finish();
-                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -771,55 +761,43 @@ public class MainActivity extends BaseActivity
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent;
-        switch (item.getItemId()){
-
-            case R.id.downloaded:
+            if(item.getItemId()==R.id.downloaded){
                 if(Global.hasStoragePermission(this))startLocalActivity();
                 else requestStorage();
-                break;
-            case R.id.bookmarks:
+            }else if(item.getItemId()==R.id.bookmarks){
                 intent=new Intent(this,BookmarkActivity.class);
                 startActivity(intent);
-                break;
-            case R.id.history:
+            }else if(item.getItemId()==R.id.history){
                 intent=new Intent(this,HistoryActivity.class);
                 startActivity(intent);
-                break;
-            case R.id.favorite_manager:
+            }else if(item.getItemId()==R.id.favorite_manager){
                 intent=new Intent(this,FavoriteActivity.class);
                 startActivity(intent);
-                break;
-            case R.id.action_settings:
+            }else if(item.getItemId()==R.id.action_settings){
                 setting=new Setting();
                 intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
-                break;
-            case R.id.online_favorite_manager:
+            }else if(item.getItemId()==R.id.online_favorite_manager){
                 intent=new Intent(this,MainActivity.class);
                 intent.putExtra(getPackageName()+".FAVORITE",true);
                 startActivity(intent);
-                break;
-            case R.id.action_login:
+            }else if(item.getItemId()==R.id.action_login){
                 if(com.dar.nclientv2.settings.Login.isLogged())
                     showLogoutForm();
                 else {
                     intent = new Intent(this, LoginActivity.class);
                     startActivity(intent);
                 }
-                break;
-            case R.id.random:
+            }else if(item.getItemId()==R.id.random){
                 intent = new Intent(this, RandomActivity.class);
                 startActivity(intent);
-                break;
-            case R.id.tag_manager:
+            }else if(item.getItemId()==R.id.tag_manager){
                 intent=new Intent(this, TagFilterActivity.class);
                 filteringTag=true;
                 startActivity(intent);
-                break;
-            case R.id.status_manager:
+            }else if(item.getItemId()==R.id.status_manager){
                 intent=new Intent(this, StatusViewerActivity.class);
                 startActivity(intent);
-                break;
         }
         //drawerLayout.closeDrawer(GravityCompat.START);
         return true;
