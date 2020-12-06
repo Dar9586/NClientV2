@@ -1,12 +1,12 @@
 package com.dar.nclientv2.components.classes;
 
 import android.content.Context;
-import android.os.Build;
 
 import androidx.annotation.NonNull;
 
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.LogUtility;
+import com.dar.nclientv2.utility.Utility;
 
 import org.acra.data.CrashReportData;
 import org.acra.sender.ReportSender;
@@ -30,9 +30,8 @@ public class MySender implements ReportSender{
         }
         try{
             RequestBody requestBody = new FormBody.Builder().add("json", errorContent.toJSON()).build();
-            String protocol=Build.VERSION.SDK_INT<=Build.VERSION_CODES.LOLLIPOP?"http://":"https://";
 
-            Request.Builder request = new Request.Builder().post(requestBody).url(protocol+URL);
+            Request.Builder request = new Request.Builder().post(requestBody).url(Utility.PROTOCOL+URL);
             Response x = Global.getClient().newCall(request.build()).execute();
 
             LogUtility.d( x.code() + x.body().string());

@@ -30,7 +30,6 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.dar.nclientv2.CopyToClipboardActivity;
-import com.dar.nclientv2.MainActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.api.enums.Language;
@@ -38,8 +37,6 @@ import com.dar.nclientv2.api.enums.SortType;
 import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.api.local.LocalSortType;
 import com.dar.nclientv2.components.classes.CustomSSLSocketFactory;
-import com.dar.nclientv2.loginapi.LoadTags;
-import com.dar.nclientv2.loginapi.User;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 import com.dar.nclientv2.utility.network.NetworkUtil;
@@ -347,16 +344,7 @@ public class Global {
         for(Cookie cookie:client.cookieJar().loadForRequest(Login.BASE_HTTP_URL)){
             LogUtility.d("Cookie: "+cookie);
         }
-        if(Login.isLogged()&&Login.getUser()==null){
-            User.createUser(user -> {
-                if(user!=null){
-                    new LoadTags(null).start();
-                    if(context instanceof MainActivity){
-                        ((MainActivity) context).runOnUiThread(() -> ((MainActivity)context).loginItem.setTitle(context.getString(R.string.login_formatted,user.getUsername())));
-                    }
-                }
-            });
-        }
+        Login.isLogged(context);
     }
     private static void initHttpClient(@NonNull Context context){
         if(client!=null)return;
@@ -558,7 +546,7 @@ public class Global {
         context.startActivity(chooserIntent);
     }
     public static void shareGallery(Context context, GenericGallery gallery) {
-        shareURL(context, gallery.getTitle(),"https://"+ Utility.getHost()+"/g/"+gallery.getId());
+        shareURL(context, gallery.getTitle(), Utility.getBaseUrl()+"g/"+gallery.getId());
     }
 
     public static void setTint(Drawable drawable){

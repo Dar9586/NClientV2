@@ -173,7 +173,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> im
         if(!add)writeTag(jw,tag);
         jw.endArray().endObject();
 
-        final String url=String.format(Locale.US,"https://"+ Utility.getHost()+"/users/%d/%s/blacklist",Login.getUser().getId(),Login.getUser().getCodename());
+        final String url=String.format(Locale.US, Utility.getBaseUrl()+"users/%d/%s/blacklist",Login.getUser().getId(),Login.getUser().getCodename());
         final RequestBody ss=RequestBody.create(MediaType.get("application/json"),sw.toString());
         new AuthRequest(url, url, new Callback() {
             @Override

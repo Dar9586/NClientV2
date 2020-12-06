@@ -66,8 +66,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.body.setText(c.getComment());
         holder.date.setText(format.format(c.getPostDate()));
         holder.close.setOnClickListener(v -> {
-            String refererUrl=String.format(Locale.US,Utility.getHost()+"g/%d/",galleryId);
-            String submitUrl=String.format(Locale.US, Utility.getHost()+"api/comments/%d/delete",c.getId());
+            String refererUrl=String.format(Locale.US,Utility.getBaseUrl()+"g/%d/",galleryId);
+            String submitUrl=String.format(Locale.US, Utility.getBaseUrl()+"api/comments/%d/delete",c.getId());
             new AuthRequest(refererUrl, submitUrl, new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call,@NonNull IOException e) {

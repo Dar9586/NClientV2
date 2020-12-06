@@ -63,8 +63,8 @@ public class CommentActivity extends BaseActivity {
                 Toast.makeText(this, getString(R.string.minimum_comment_length,MINIUM_MESSAGE_LENGHT), Toast.LENGTH_SHORT).show();
                 return;
             }
-            String refererUrl=String.format(Locale.US, Utility.getHost()+"g/%d/",id);
-            String submitUrl=String.format(Locale.US,Utility.getHost()+"api/gallery/%d/comments/submit",id);
+            String refererUrl=String.format(Locale.US, Utility.getBaseUrl()+"g/%d/",id);
+            String submitUrl=String.format(Locale.US,Utility.getBaseUrl()+"api/gallery/%d/comments/submit",id);
             String requestString=createRequestString(commentText.getText().toString());
             commentText.setText("");
             RequestBody body=RequestBody.create(MediaType.get("application/json"),requestString);

@@ -8,11 +8,15 @@ import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.dar.nclientv2.MainActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.async.database.Queries;
+import com.dar.nclientv2.loginapi.LoadTags;
 import com.dar.nclientv2.loginapi.User;
+import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 
@@ -73,15 +77,28 @@ public class Login{
         Queries.TagTable.updateBlacklistedTag(tag,false);
     }
 
-    public static boolean isLogged(){
+    public static boolean isLogged(@Nullable Context context){
         List<Cookie>cookies=Global.client.cookieJar().loadForRequest(BASE_HTTP_URL);
+        LogUtility.d("Cookies: "+cookies);
         for(Cookie c:cookies){
-            if(c.name().equals("sessionid"))return true;
+            if(c.name().equals("sessionid")){
+                if(user==null)User.createUser(user -> {
+                    if(user!=null){
+                        new LoadTags(null).start();
+                        if(context instanceof MainActivity){
+                            ((MainActivity) context).runOnUiThread(() -> ((MainActivity)context).loginItem.setTitle(context.getString(R.string.login_formatted,user.getUsername())));
+                        }
+                    }
+                });
+                return true;
+            }
         }
         return false;
         //return sessionId!=null;
     }
-
+    public static boolean isLogged(){
+        return isLogged(null);
+    }
 
 
     public static User getUser() {

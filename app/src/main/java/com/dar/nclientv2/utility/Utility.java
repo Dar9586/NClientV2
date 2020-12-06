@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -31,6 +32,8 @@ import java.util.Random;
 public class Utility {
     public static final Random RANDOM=new Random(System.nanoTime());
     public static final String ORIGINAL_URL ="nhentai.net";
+    public static final String PROTOCOL= Build.VERSION.SDK_INT<=Build.VERSION_CODES.LOLLIPOP?"http://":"https://";
+
     public static String getBaseUrl(){
         return "https://"+Utility.getHost()+"/";
     }
