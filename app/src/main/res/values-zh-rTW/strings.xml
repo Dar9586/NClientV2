@@ -326,6 +326,9 @@
     <string name="default_status_4">Dropped</string>
     <string name="default_status_5">Plan to read</string>
     <string name="title_site_mirror">Change site mirror</string>
+    <string name="disguise_app_in_drawer">Disguise app in drawer</string>
+    <string name="summary_disguise_app">The app will be disguised as a calculator (experimental)</string>
+    <string name="app_name_fake_calculator">Calculator</string>
 
 
 </resources>

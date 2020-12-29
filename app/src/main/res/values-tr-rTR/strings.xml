@@ -320,4 +320,7 @@
     <string name="default_status_5">Okunması planlanıyor</string>
     <string name="default_status_4">Okunmayacak</string>
     <string name="title_site_mirror">Yedek site seçici</string>
+    <string name="disguise_app_in_drawer">Disguise app in drawer</string>
+    <string name="summary_disguise_app">The app will be disguised as a calculator (experimental)</string>
+    <string name="app_name_fake_calculator">Calculator</string>
 </resources>

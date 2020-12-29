@@ -284,9 +284,9 @@
     <string name="descending_order">Ordine decrescente</string>
     <string name="minimum_comment_length" formatted="true">Il commento deve essere di almeno %d caratteri</string>
     <string name="change_scroll_type">Cambia scorrimento</string>
-    <string name="exported_backup_file_toast" formatted="true">Exported backup file in %s</string>
-    <string name="export_data">Export data</string>
-    <string name="import_data">Import data</string>
+    <string name="exported_backup_file_toast" formatted="true">File di backup esportato in %s</string>
+    <string name="export_data">Esporta dati</string>
+    <string name="import_data">Importa dati</string>
 
     <string-array name="scroll_type">
         <item>Orizzontale</item>
@@ -315,11 +315,14 @@
         <item>Giapponese</item>
         <item>Semplice</item>
     </string-array>
-    <string name="default_status_1">Reading</string>
-    <string name="default_status_2">Completed</string>
-    <string name="default_status_5">Plan to read</string>
-    <string name="default_status_4">Dropped</string>
-    <string name="default_status_3">On Hold</string>
-    <string name="title_site_mirror">Change site mirror</string>
+    <string name="default_status_1">Leggendo</string>
+    <string name="default_status_2">Completati</string>
+    <string name="default_status_5">Da leggere</string>
+    <string name="default_status_4">Scartati</string>
+    <string name="default_status_3">In pausa</string>
+    <string name="title_site_mirror">Cambia mirror sito</string>
+    <string name="disguise_app_in_drawer">Nascondi app nel drawer</string>
+    <string name="summary_disguise_app">L\'app verrà trasformata in una calcolatrice (experimental)</string>
+    <string name="app_name_fake_calculator">Calcolatrice</string>
 
 </resources>

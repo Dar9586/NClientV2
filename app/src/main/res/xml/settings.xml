@@ -29,6 +29,13 @@
             android:key="@string/key_site_mirror"
             android:title="@string/title_site_mirror"
             app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="@string/key_fake_icon"
+            android:title="@string/disguise_app_in_drawer"
+            android:summary="@string/summary_disguise_app"
+            app:iconSpaceReserved="false"
+            />
         <Preference
             android:key="status_screen"
             android:title="@string/manage_statuses"

@@ -5,6 +5,7 @@
     <string name="key_default_value" translatable="false">default_value</string>
     <string name="key_enable_beta" translatable="false">enable_beta</string>
     <string name="key_save_path" translatable="false">save_path</string>
+    <string name="key_fake_icon" translatable="false">fake_icon</string>
     <string name="key_local_sort" translatable="false">local_sort_type</string>
     <string name="key_title_type" translatable="false">title_type_str</string>
     <string name="key_by_popular" translatable="false">is_by_popular</string>
@@ -328,6 +329,9 @@
     <string name="default_status_4">Dropped</string>
     <string name="default_status_5">Plan to read</string>
     <string name="title_site_mirror">Change site mirror</string>
+    <string name="disguise_app_in_drawer">Disguise app in drawer</string>
+    <string name="summary_disguise_app">The app will be disguised as a calculator (experimental)</string>
+    <string name="app_name_fake_calculator">Calculator</string>
 
     <string-array name="scroll_type">
         <item>Horizontal</item>

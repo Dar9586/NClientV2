@@ -1,8 +1,10 @@
 package com.dar.nclientv2.components.views;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,6 +23,8 @@ import com.dar.nclientv2.SettingsActivity;
 import com.dar.nclientv2.StatusManagerActivity;
 import com.dar.nclientv2.async.VersionChecker;
 import com.dar.nclientv2.async.database.Exporter;
+import com.dar.nclientv2.components.launcher.LauncherCalculator;
+import com.dar.nclientv2.components.launcher.LauncherReal;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.utility.LogUtility;
@@ -92,6 +96,19 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
             i.putExtra(act.getPackageName()+".TYPE", SettingsActivity.Type.DATA.ordinal());
             act.runOnUiThread(() -> act.startActivity(i));
             return false;
+        });
+        findPreference(getString(R.string.key_fake_icon)).setOnPreferenceChangeListener((preference, newValue) -> {
+            PackageManager pm= act.getPackageManager();
+            ComponentName name1=new ComponentName(act, LauncherReal.class);
+            ComponentName name2=new ComponentName(act, LauncherCalculator.class);
+            if((boolean)newValue) {
+                changeLauncher(pm,name1,false);
+                changeLauncher(pm,name2,true);
+            }else{
+                changeLauncher(pm,name1,true);
+                changeLauncher(pm,name2,false);
+            }
+            return true;
         });
         findPreference(getString(R.string.key_use_account_tag)).setEnabled(Login.isLogged());
 
@@ -194,6 +211,11 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
             preference.setSummary(newValue.toString());
             return true;
         });
+    }
+
+    private void changeLauncher(PackageManager pm, ComponentName name, boolean enabled) {
+        int enableState = enabled?PackageManager.COMPONENT_ENABLED_STATE_ENABLED:PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
+        pm.setComponentEnabledSetting(name,enableState,PackageManager.DONT_KILL_APP);
     }
 
 
