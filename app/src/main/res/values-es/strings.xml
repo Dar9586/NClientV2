@@ -77,14 +77,14 @@
     <string name="status_viewer">Ver Estados</string>
     <string name="prev_page">Página anterior</string>
     <string name="next_page">Página siguiente</string>
-    <string name="downloaded_manga">Descargar manga</string>
+    <string name="downloaded_manga">Descargas</string>
     <string name="download_gallery">Descargar galería</string>
     <string name="delete_gallery_size_format">Borrar galería (%.2fMB)</string>
     <string name="delete_gallery_format">¿Quieres borrar la galería: %s</string>
     <string name="share_with">Compartir con</string>
     <string name="link_copied_to_clipboard">Enlace copiado al portapapeles</string>
     <string name="open_in_browser">Abrir en el navegador</string>
-    <string name="go_online">Entrar en línea</string>
+    <string name="go_online">Ir en línea</string>
     <string name="update_tag_status">Actualizar el estado de la etiqueta</string>
     <string name="change_view">Cambiar vista</string>
     <string name="tag_preference">Preferencia de etiquetas</string>
@@ -295,9 +295,9 @@
     <string name="default_status_3">En Espera</string>
     <string name="default_status_4">Dropeado</string>
     <string name="default_status_5">Planeando leer</string>
-    <string name="title_site_mirror">Change site mirror</string>
-    <string name="disguise_app_in_drawer">Disguise app in drawer</string>
-    <string name="summary_disguise_app">The app will be disguised as a calculator (experimental)</string>
-    <string name="app_name_fake_calculator">Calculator</string>
+    <string name="title_site_mirror">Caombiar fuente de datos</string>
+    <string name="disguise_app_in_drawer">Ocultar aplicacion</string>
+    <string name="summary_disguise_app">La aplicacion se ocultará en la bandeja de aplicaciones (experimental)</string>
+    <string name="app_name_fake_calculator">Calculadora</string>
 
 </resources>
