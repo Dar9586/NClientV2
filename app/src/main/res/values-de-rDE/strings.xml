@@ -7,12 +7,12 @@
     <string name="setting_off_ignore_tags">Andere Tags werden gesucht wenn du einen Tag von einer Galerie auswählst</string>
     <string name="setting_on_use_account_tag">Benutze online Tags in deiner Suche (lokale Tags haben Priorität)</string>
     <string name="setting_off_use_account_tag">Online Tags werden bei deiner Suche ignoriert</string>
-    <string name="theme_summary">Wähle Farbschema</string>
+    <string name="theme_summary">Farbschema wählen</string>
 
     <!--SETTINGS NAME-->
     <string name="send_crash_report">Sende Absturzbericht</string>
-    <string name="change_theme">Ändere Thema</string>
-    <string name="clear_cache">Lösche den Cache</string>
+    <string name="change_theme">Thema ändern</string>
+    <string name="clear_cache">Cache löschen</string>
     <string name="infinite_scroll">Unendlich scrollen</string>
     <string name="ignore_tags">Ignoriere andere Tags</string>
     <string name="use_account_tag">Benutze Account Tags</string>
@@ -198,7 +198,7 @@
     <string name="failed_zip">ZIP erstellen fehlgeschlagen: </string>
     <string name="start_page">Startseite</string>
     <string name="end_page">Endseite</string>
-    <string name="invalid_range_selected">Ungültige Anzahl ausgewählt</string>
+    <string name="invalid_range_selected">Ungültigen Bereich ausgewählt</string>
     <string name="column_count_select">Spaltenanzahl auswählen</string>
     <string name="send_with_title">Mit Titel senden?</string>
     <string name="caption_send_with_title">URL als Beschreibung zum Bild hinzufügen?</string>
@@ -236,66 +236,66 @@
     <string name="copied_to_clipboard">In die Zwischenablage kopiert</string>
     <string name="maximum_notification_count">Maximum Anzahl Benachrichtigungen</string>
     <string name="copy_settings_to_clipboard">Einstellungen in die Zwischenablage kopieren</string>
-    <string name="sort_popular_all_time">Populär</string>
+    <string name="sort_popular_all_time">Beliebt</string>
     <string name="sort_recent">Neu</string>
-    <string name="sort_popular_day">Täglich Populär</string>
-    <string name="sort_popular_week">Wöchentlich Populär</string>
+    <string name="sort_popular_day">Täglich beliebt</string>
+    <string name="sort_popular_week">Wöchentlich beliebt</string>
     <string name="sort_type_title_format" formatted="true">Wähle Sortiertyp (%s)</string>
     <string name="sort_select_type">Wähle Sortiertyp:</string>
     <string name="unable_to_connect_to_the_site">Kann sich nicht mit der Seite verbinden</string>
     <string name="no_entry_found">Kein Eintrag gefunden</string>
     <string name="retry">Wiederholen</string>
-    <string name="folder_location">Ordner Location</string>
+    <string name="folder_location">Speicherort</string>
     <string name="default_zoom">Standard Zoom</string>
     <string name="choose_directory">Ordner auswählen</string>
     <string name="bookmark_here">Lesezeichen hier</string>
     <string name="resume_from_page">Mit Seite %d fortsetzen</string>
     <string name="new_beta_version_found">Neue Beta Version gefunden</string>
     <string name="check_beta_releases">Nach Beta Versionen suchen</string>
-    <string name="page_range">Page range:</string>
-    <string name="upload_time">Upload time:</string>
-    <string name="from_page">From page:</string>
-    <string name="to_page">To page:</string>
-    <string name="from_time">From time:</string>
-    <string name="to_time">To time:</string>
-    <string name="reset">Reset</string>
-    <string name="hours">Hours</string>
-    <string name="years">Years</string>
-    <string name="months">Months</string>
-    <string name="days">Days</string>
-    <string name="weeks">Weeks</string>
-    <string name="choose_unit">Choose unit:</string>
-    <string name="change_status">Change status</string>
-    <string name="create_new_status">Create new status:</string>
-    <string name="invalid_color_selected">Black and white can not be used</string>
-    <string name="change_status_title">Select new status:</string>
-    <string name="remove_status">None</string>
-    <string name="name_too_short">Name too short</string>
-    <string name="duplicated_name">Duplicated name</string>
-    <string name="manage_statuses">Manage statuses</string>
-    <string name="update_status">Update status:</string>
-    <string name="view_statuses">View statuses</string>
-    <string name="status_column_count">Select status column count</string>
-    <string name="status_viewer">Status viewer</string>
-    <string name="title_hide_multitasking">Hide app content in multitasking</string>
-    <string name="title">Title</string>
-    <string name="download_date">Download date</string>
-    <string name="page_count">Page count</string>
-    <string name="size">Size</string>
-    <string name="descending_order">Descending order</string>
-    <string name="minimum_comment_length" formatted="true">The comment must be at least %d characters</string>
-    <string name="change_scroll_type">Change scroll type</string>
-    <string name="exported_backup_file_toast" formatted="true">Exported backup file in %s</string>
-    <string name="export_data">Export data</string>
-    <string name="import_data">Import data</string>
+    <string name="page_range">Seitenbereich:</string>
+    <string name="upload_time">Upload Zeit:</string>
+    <string name="from_page">Von Seite:</string>
+    <string name="to_page">Bis Seite:</string>
+    <string name="from_time">Von Zeit:</string>
+    <string name="to_time">Bis Zeit:</string>
+    <string name="reset">Zurücksetzen</string>
+    <string name="hours">Stunden</string>
+    <string name="years">Jahre</string>
+    <string name="months">Monate</string>
+    <string name="days">Tage</string>
+    <string name="weeks">Wochen</string>
+    <string name="choose_unit">Einheit wählen:</string>
+    <string name="change_status">Status ändern</string>
+    <string name="create_new_status">Neuen Status erstellen:</string>
+    <string name="invalid_color_selected">Schwarz und Weiß kann nicht benutzt werden</string>
+    <string name="change_status_title">Neuen Status auswählen:</string>
+    <string name="remove_status">Keinen</string>
+    <string name="name_too_short">Name zu kurz</string>
+    <string name="duplicated_name">Doppelter Name</string>
+    <string name="manage_statuses">Status bearbeiten</string>
+    <string name="update_status">Status updaten:</string>
+    <string name="view_statuses">Status ansehen</string>
+    <string name="status_column_count">Wähle Status Spaltenanzahl aus</string>
+    <string name="status_viewer">Statusansicht</string>
+    <string name="title_hide_multitasking">Verstecke App Inhalt beim Multitasken</string>
+    <string name="title">Titel</string>
+    <string name="download_date">Download Datum</string>
+    <string name="page_count">Seitenanzahl</string>
+    <string name="size">Größe</string>
+    <string name="descending_order">Absteigende Reihenfolge</string>
+    <string name="minimum_comment_length" formatted="true">Der Kommentar muss mindestens %d Zeichen haben</string>
+    <string name="change_scroll_type">Ändere Scroll Typ</string>
+    <string name="exported_backup_file_toast" formatted="true">Backup nach %s exportiert</string>
+    <string name="export_data">Exportiere Daten</string>
+    <string name="import_data">Importiere Daten</string>
 
     <string-array name="scroll_type">
         <item>Horizontal</item>
-        <item>Vertical</item>
+        <item>Vertikal</item>
     </string-array>
 
     <string-array name="language">
-        <item>System Default</item>
+        <item>Systemstandard</item>
         <item>Englisch</item>
         <item>Chinesisch (Traditionell)</item>
         <item>Chinesisch (Vereinfacht)</item>
@@ -303,7 +303,7 @@
         <item>Italienisch</item>
         <item>Deutsch</item>
         <item>Arabisch</item>
-        <item>Spanish</item>
+        <item>Spanisch</item>
     </string-array>
 
     <string-array name="theme">
@@ -316,11 +316,11 @@
         <item>Japanisch</item>
         <item>Schön</item>
     </string-array>
-    <string name="default_status_1">Reading</string>
-    <string name="default_status_2">Completed</string>
-    <string name="default_status_5">Plan to read</string>
-    <string name="default_status_4">Dropped</string>
-    <string name="default_status_3">On Hold</string>
-    <string name="title_site_mirror">Change site mirror</string>
+    <string name="default_status_1">Lesen</string>
+    <string name="default_status_2">Komplett</string>
+    <string name="default_status_5">Geplant</string>
+    <string name="default_status_4">Lieber nicht</string>
+    <string name="default_status_3">Warten</string>
+    <string name="title_site_mirror">Mirrorseite ändern</string>
 
 </resources>
