@@ -322,8 +322,8 @@
     <string name="default_status_4">Lieber nicht</string>
     <string name="default_status_3">Warten</string>
     <string name="title_site_mirror">Mirrorseite ändern</string>
-    <string name="disguise_app_in_drawer">Disguise app in drawer</string>
-    <string name="summary_disguise_app">The app will be disguised as a calculator (experimental)</string>
-    <string name="app_name_fake_calculator">Calculator</string>
+    <string name="disguise_app_in_drawer">Verstecke die App</string>
+    <string name="summary_disguise_app">Die App versteckt sich als Taschenrechner (experimentell)</string>
+    <string name="app_name_fake_calculator">Rechner</string>
 
 </resources>
