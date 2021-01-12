@@ -24,7 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LocalGallery extends GenericGallery{
-    private static final Pattern FILE_PATTERN=Pattern.compile("^(\\d{3,9})\\.(gif|png|jpg)$",Pattern.CASE_INSENSITIVE);
+    private static final Pattern FILE_PATTERN=Pattern.compile("^(\\d{1,9})\\.(gif|png|jpg)$",Pattern.CASE_INSENSITIVE);
     private static final Pattern DUP_PATTERN=Pattern.compile("^(.*)\\.DUP\\d+$");
     private static final Pattern IDFILE_PATTERN=Pattern.compile("^\\.\\d{1,6}$");
 
@@ -34,7 +34,7 @@ public class LocalGallery extends GenericGallery{
     @NonNull private final File directory;
     private final boolean valid;
     private boolean hasAdvancedData=true;
-    private int id;
+    private final int id;
     @NonNull
     private Size maxSize=new Size(0,0),minSize=new Size(Integer.MAX_VALUE,Integer.MAX_VALUE);
 

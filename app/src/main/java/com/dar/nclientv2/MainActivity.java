@@ -61,8 +61,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.jsoup.Jsoup;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -376,18 +374,6 @@ public class MainActivity extends BaseActivity
         //instantiateWebView();
         inspector=InspectorV3.favoriteInspector(this,null,page,resetDataset);
         modeType = ModeType.FAVORITE;
-    }
-    private void loadWebVewUrl(String url){
-        if(webView==null)return;
-        webView.loadUrl(url);
-    }
-    private void instantiateWebView() {
-        if(webView!=null)return;
-        webView=(CustomWebView) getLayoutInflater().inflate(R.layout.custom_webview,toolbar,false);
-        webView.addFetcher((url, html) -> {
-            inspector.setHtmlDocument(Jsoup.parse(html, Utility.getBaseUrl()));
-            inspector.forceStart();
-        });
     }
 
     private void useSearchMode(Intent intent, String packageName) {
