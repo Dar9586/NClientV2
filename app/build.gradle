@@ -17,10 +17,12 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
+            resValue "string", "app_name", "NClientV2"
         }
         debug {
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
+            resValue "string", "app_name", "NClientV2 Debug"
         }
     }
     compileOptions {
