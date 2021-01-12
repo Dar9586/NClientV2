@@ -220,7 +220,7 @@
         <item>İtalyanca</item>
         <item>Almanca</item>
         <item>Arapça</item>
-        <item>Spanish</item>
+        <item>İspanyolca</item>
     </string-array>
     <string-array name="theme">
         <item>Beyaz Tema</item>
@@ -252,7 +252,7 @@
     <string name="wifi_data_usage_setting">Wi-Fi kullanım ayarları</string>
     <string name="data_usage_thumb">Sadece kapak fotoğraflarını indir</string>
     <string name="data_usage_no">Sayfaları indirme</string>
-    <string name="enable_network_to_continue">Sayfayı açmak için veri kullanım ayarlarını değiştirin ve ya bağlı olduğunuz ağı değiştirin</string>
+    <string name="enable_network_to_continue">Sayfayı açmak için veri kullanım ayarlarını değiştirin veya bağlı olduğunuz ağı değiştirin</string>
     <string name="donate">Geliştiriciyi destekle</string>
     <string name="id_tag">ID:</string>
     <string name="id_copied_to_clipboard">Manga ID`si panoya kopyalandı</string>
@@ -320,7 +320,7 @@
     <string name="default_status_5">Okunması planlanıyor</string>
     <string name="default_status_4">Okunmayacak</string>
     <string name="title_site_mirror">Yedek site seçici</string>
-    <string name="disguise_app_in_drawer">Disguise app in drawer</string>
-    <string name="summary_disguise_app">The app will be disguised as a calculator (experimental)</string>
-    <string name="app_name_fake_calculator">Calculator</string>
+    <string name="disguise_app_in_drawer">Uygulamayı gizle</string>
+    <string name="summary_disguise_app">Uygulama bir Hesap Makinesi olarak gizlenecektir (deneysel)</string>
+    <string name="app_name_fake_calculator">Hesap Makinesi</string>
 </resources>
