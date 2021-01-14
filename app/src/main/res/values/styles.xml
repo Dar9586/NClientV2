@@ -1,12 +1,12 @@
 <resources>
 
-
-    <style name="DarkTheme" parent="Theme.MaterialComponents.NoActionBar" >
+    <style name="DarkTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="colorPrimaryVariant">@color/primary_material_dark</item>
         <item name="colorAccent">@android:color/holo_blue_dark</item>
         <item name="colorPrimary">@android:color/holo_blue_dark</item>
     </style>
+
     <style name="DarkTheme.NoTitle" parent="DarkTheme">
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
@@ -17,6 +17,7 @@
         <item name="colorAccent">@android:color/holo_blue_bright</item>
         <item name="colorPrimary">@android:color/holo_blue_bright</item>
     </style>
+
     <style name="LightTheme.NoTitle" parent="LightTheme">
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>

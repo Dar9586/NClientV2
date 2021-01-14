@@ -10,8 +10,7 @@
         <item
             android:id="@+id/random"
             android:icon="@drawable/ic_shuffle"
-            android:title="@string/random_manga"
-            />
+            android:title="@string/random_manga" />
         <item
             android:id="@+id/favorite_manager"
             android:icon="@drawable/ic_favorite"
@@ -30,22 +29,24 @@
             android:title="@string/status_viewer" />
         <item
             android:id="@+id/bookmarks"
-            android:title="@string/manage_bookmarks"
-            android:icon="@drawable/ic_bookmark" />
+            android:icon="@drawable/ic_bookmark"
+            android:title="@string/manage_bookmarks" />
         <item
             android:id="@+id/history"
-            android:title="@string/view_history"
-            android:icon="@drawable/ic_access_time" />
+            android:icon="@drawable/ic_access_time"
+            android:title="@string/view_history" />
     </group>
     <item android:title="@string/settings">
         <menu>
             <group android:checkableBehavior="none">
-                <item android:title="@string/settings"
-                android:icon="@drawable/ic_settings"
-                android:id="@+id/action_settings"/>
-                <item android:title="@string/login"
+                <item
+                    android:id="@+id/action_settings"
+                    android:icon="@drawable/ic_settings"
+                    android:title="@string/settings" />
+                <item
+                    android:id="@+id/action_login"
                     android:icon="@drawable/ic_person"
-                    android:id="@+id/action_login"/>
+                    android:title="@string/login" />
             </group>
         </menu>
     </item>

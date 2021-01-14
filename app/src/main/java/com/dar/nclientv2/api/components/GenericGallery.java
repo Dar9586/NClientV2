@@ -12,36 +12,48 @@ import com.dar.nclientv2.utility.Utility;
 import java.io.File;
 import java.util.Locale;
 
-public abstract class GenericGallery implements Parcelable{
+public abstract class GenericGallery implements Parcelable {
 
-    public enum Type{COMPLETE,LOCAL,SIMPLE}
     public abstract int getId();
+
     public abstract Type getType();
+
     public abstract int getPageCount();
+
     public abstract boolean isValid();
+
     @NonNull
     public abstract String getTitle();
+
     public abstract Size getMaxSize();
+
     public abstract Size getMinSize();
+
     @Nullable
     public abstract String getPageURI(int page);
+
     public String sharePageUrl(int i) {
-        return String.format(Locale.US,"https://"+ Utility.getHost()+"/g/%d/%d/",getId(),i+1);
+        return String.format(Locale.US, "https://" + Utility.getHost() + "/g/%d/%d/", getId(), i + 1);
     }
-    public boolean isLocal(){
-        return getType()==Type.LOCAL;
+
+    public boolean isLocal() {
+        return getType() == Type.LOCAL;
     }
 
     public abstract boolean hasGalleryData();
+
     public abstract GalleryData getGalleryData();
-    public String getUri(File directory, int page){
-        if(directory==null)
+
+    public String getUri(File directory, int page) {
+        if (directory == null)
             return getPageURI(page);
 
-        File file= LocalGallery.getPage(directory,page);
-        if(file!=null)
+        File file = LocalGallery.getPage(directory, page);
+        if (file != null)
             return file.getAbsolutePath();
 
         return getPageURI(page);
     }
+
+    public enum Type {COMPLETE, LOCAL, SIMPLE}
 }

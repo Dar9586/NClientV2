@@ -28,8 +28,6 @@ public class CustomImageView extends AppCompatImageView {
         invalidate();
     }
 
-
-
     @Override
     protected boolean setFrame(int l, int t, int r, int b) {
         final Matrix matrix = getImageMatrix();

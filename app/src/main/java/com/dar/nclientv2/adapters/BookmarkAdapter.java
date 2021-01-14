@@ -21,16 +21,15 @@ import com.dar.nclientv2.utility.IntentUtility;
 import java.util.List;
 
 public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHolder> {
-    private static final int LAYOUT=R.layout.bookmark_layout;
+    private static final int LAYOUT = R.layout.bookmark_layout;
 
-    private final List<Bookmark>bookmarks;
+    private final List<Bookmark> bookmarks;
     private final BookmarkActivity bookmarkActivity;
 
     public BookmarkAdapter(BookmarkActivity bookmarkActivity) {
         this.bookmarkActivity = bookmarkActivity;
-        this.bookmarks= Queries.BookmarkTable.getBookmarks();
+        this.bookmarks = Queries.BookmarkTable.getBookmarks();
     }
-
 
     @NonNull
     @Override
@@ -38,37 +37,39 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(LAYOUT, parent, false));
     }
 
-
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int pos) {
-        final int position=holder.getAdapterPosition();
-        Bookmark bookmark=bookmarks.get(position);
+        final int position = holder.getAdapterPosition();
+        Bookmark bookmark = bookmarks.get(position);
 
         holder.queryText.setText(bookmark.toString());
-        holder.pageLabel.setText(bookmarkActivity.getString(R.string.bookmark_page_format,bookmark.page));
+        holder.pageLabel.setText(bookmarkActivity.getString(R.string.bookmark_page_format, bookmark.page));
 
         holder.deleteButton.setOnClickListener(v -> removeBookmarkAtPosition(position));
 
         holder.rootLayout.setOnClickListener(v -> loadBookmark(bookmark));
     }
+
     /**
      * Start an {@link MainActivity} with <code>bookmark</code> as query and page
+     *
      * @param bookmark bookmark to load
-     * */
+     */
     private void loadBookmark(Bookmark bookmark) {
-        Intent i=new Intent(bookmarkActivity, MainActivity.class);
-        i.putExtra(bookmarkActivity.getPackageName()+".BYBOOKMARK",true);
-        i.putExtra(bookmarkActivity.getPackageName()+".INSPECTOR",bookmark.createInspector(bookmarkActivity,null));
-        IntentUtility.startAnotherActivity(bookmarkActivity,i);
+        Intent i = new Intent(bookmarkActivity, MainActivity.class);
+        i.putExtra(bookmarkActivity.getPackageName() + ".BYBOOKMARK", true);
+        i.putExtra(bookmarkActivity.getPackageName() + ".INSPECTOR", bookmark.createInspector(bookmarkActivity, null));
+        IntentUtility.startAnotherActivity(bookmarkActivity, i);
     }
 
     /**
      * remove bookmark from the adapter at <code>position</code>
+     *
      * @param position index to delete
-     * */
+     */
     private void removeBookmarkAtPosition(int position) {
-        if(position>=bookmarks.size())return;
-        Bookmark bookmark=bookmarks.get(position);
+        if (position >= bookmarks.size()) return;
+        Bookmark bookmark = bookmarks.get(position);
         bookmark.deleteBookmark();
         bookmarks.remove(bookmark);
         bookmarkActivity.runOnUiThread(() -> notifyItemRemoved(position));
@@ -84,13 +85,13 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
         final TextView queryText;
         final TextView pageLabel;
         final ConstraintLayout rootLayout;
+
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             deleteButton = itemView.findViewById(R.id.remove_button);
-            pageLabel    = itemView.findViewById(R.id.page);
-            queryText    = itemView.findViewById(R.id.title);
-            rootLayout   = itemView.findViewById(R.id.master_layout);
+            pageLabel = itemView.findViewById(R.id.page);
+            queryText = itemView.findViewById(R.id.title);
+            rootLayout = itemView.findViewById(R.id.master_layout);
         }
     }
-
 }

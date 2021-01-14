@@ -14,7 +14,8 @@ import com.google.android.material.chip.Chip;
 
 public class ChipTag extends Chip {
     private Tag tag;
-    private boolean canBeAvoided=true;
+    private boolean canBeAvoided = true;
+
     public ChipTag(Context context) {
         super(context);
     }
@@ -26,13 +27,20 @@ public class ChipTag extends Chip {
     public ChipTag(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
-    public void init(Tag t,boolean close,boolean canBeAvoided){
+
+    public void init(Tag t, boolean close, boolean canBeAvoided) {
         setTag(t);
         setCloseIconVisible(close);
         setCanBeAvoided(canBeAvoided);
     }
+
     private void setCanBeAvoided(boolean canBeAvoided) {
         this.canBeAvoided = canBeAvoided;
+    }
+
+    @Override
+    public Tag getTag() {
+        return tag;
     }
 
     private void setTag(Tag tag) {
@@ -41,25 +49,29 @@ public class ChipTag extends Chip {
         loadStatusIcon();
     }
 
-    @Override
-    public Tag getTag() {
-        return tag;
-    }
-    public void changeStatus(TagStatus status){
+    public void changeStatus(TagStatus status) {
         tag.setStatus(status);
         loadStatusIcon();
     }
-    public void updateStatus(){
-        switch (tag.getStatus()){
-            case DEFAULT:changeStatus(TagStatus.ACCEPTED);break;
-            case ACCEPTED:changeStatus(canBeAvoided?TagStatus.AVOIDED:TagStatus.DEFAULT);break;
-            case AVOIDED:changeStatus(TagStatus.DEFAULT) ;break;
+
+    public void updateStatus() {
+        switch (tag.getStatus()) {
+            case DEFAULT:
+                changeStatus(TagStatus.ACCEPTED);
+                break;
+            case ACCEPTED:
+                changeStatus(canBeAvoided ? TagStatus.AVOIDED : TagStatus.DEFAULT);
+                break;
+            case AVOIDED:
+                changeStatus(TagStatus.DEFAULT);
+                break;
         }
     }
-    private void loadStatusIcon(){
-        Drawable drawable = ContextCompat.getDrawable(getContext(),tag.getStatus()==TagStatus.ACCEPTED?R.drawable.ic_check:tag.getStatus()==TagStatus.AVOIDED?R.drawable.ic_close:R.drawable.ic_void);
-        if(drawable==null){
-            setChipIconResource(tag.getStatus()==TagStatus.ACCEPTED?R.drawable.ic_check:tag.getStatus()==TagStatus.AVOIDED?R.drawable.ic_close:R.drawable.ic_void);
+
+    private void loadStatusIcon() {
+        Drawable drawable = ContextCompat.getDrawable(getContext(), tag.getStatus() == TagStatus.ACCEPTED ? R.drawable.ic_check : tag.getStatus() == TagStatus.AVOIDED ? R.drawable.ic_close : R.drawable.ic_void);
+        if (drawable == null) {
+            setChipIconResource(tag.getStatus() == TagStatus.ACCEPTED ? R.drawable.ic_check : tag.getStatus() == TagStatus.AVOIDED ? R.drawable.ic_close : R.drawable.ic_void);
             return;
         }
         setChipIcon(drawable);

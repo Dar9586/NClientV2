@@ -20,24 +20,25 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class MySender implements ReportSender{
-    private static final String URL="dar9586.altervista.org/php/report.php";
+public class MySender implements ReportSender {
+    private static final String URL = "dar9586.altervista.org/php/report.php";
+
     @Override
-    public void send(@NonNull Context context, @NonNull CrashReportData errorContent){
-        Map<String,Object>m=errorContent.toMap();
-        for (Map.Entry<String,Object> mm:m.entrySet()) {
-            LogUtility.e(mm.getKey()+": "+mm.getValue());
+    public void send(@NonNull Context context, @NonNull CrashReportData errorContent) {
+        Map<String, Object> m = errorContent.toMap();
+        for (Map.Entry<String, Object> mm : m.entrySet()) {
+            LogUtility.e(mm.getKey() + ": " + mm.getValue());
         }
-        try{
+        try {
             RequestBody requestBody = new FormBody.Builder().add("json", errorContent.toJSON()).build();
 
-            Request.Builder request = new Request.Builder().post(requestBody).url(Utility.PROTOCOL+URL);
+            Request.Builder request = new Request.Builder().post(requestBody).url(Utility.PROTOCOL + URL);
             Response x = Global.getClient().newCall(request.build()).execute();
 
-            LogUtility.d( x.code() + x.body().string());
+            LogUtility.d(x.code() + x.body().string());
             x.close();
-        }catch(JSONException | IOException e){
-            LogUtility.e( e.getLocalizedMessage(), e);
+        } catch (JSONException | IOException e) {
+            LogUtility.e(e.getLocalizedMessage(), e);
         }
     }
 }

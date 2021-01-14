@@ -26,10 +26,12 @@ import java.util.Locale;
 public class StatusViewerAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder> {
     private final String statusName;
     private final Activity context;
-    @NonNull private String query="";
-    private boolean sortByTitle=false;
+    @NonNull
+    private String query = "";
+    private boolean sortByTitle = false;
     @Nullable
-    private Cursor galleries=null;
+    private Cursor galleries = null;
+
     public StatusViewerAdapter(Activity context, String statusName) {
         this.statusName = statusName;
         this.context = context;
@@ -39,53 +41,63 @@ public class StatusViewerAdapter extends RecyclerView.Adapter<GenericAdapter.Vie
     @NonNull
     @Override
     public GenericAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(context).inflate(R.layout.entry_layout,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.entry_layout, parent, false);
         return new GenericAdapter.ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull GenericAdapter.ViewHolder holder, int position) {
-        Gallery ent= positionToGallery(holder.getAdapterPosition());
-        if(ent==null)return;
-        ImageDownloadUtility.loadImage(context,ent.getThumbnail(),holder.imgView);
+        Gallery ent = positionToGallery(holder.getAdapterPosition());
+        if (ent == null) return;
+        ImageDownloadUtility.loadImage(context, ent.getThumbnail(), holder.imgView);
         holder.pages.setText(String.format(Locale.US, "%d", ent.getPageCount()));
         holder.title.setText(ent.getTitle());
-        switch (ent.getLanguage()){
-            case CHINESE:  holder.flag.setText("\uD83C\uDDF9\uD83C\uDDFC");break;
-            case ENGLISH:  holder.flag.setText("\uD83C\uDDEC\uD83C\uDDE7");break;
-            case JAPANESE: holder.flag.setText("\uD83C\uDDEF\uD83C\uDDF5");break;
-            case UNKNOWN:  holder.flag.setText("\uD83C\uDFF3");break;
+        switch (ent.getLanguage()) {
+            case CHINESE:
+                holder.flag.setText("\uD83C\uDDF9\uD83C\uDDFC");
+                break;
+            case ENGLISH:
+                holder.flag.setText("\uD83C\uDDEC\uD83C\uDDE7");
+                break;
+            case JAPANESE:
+                holder.flag.setText("\uD83C\uDDEF\uD83C\uDDF5");
+                break;
+            case UNKNOWN:
+                holder.flag.setText("\uD83C\uDFF3");
+                break;
         }
         holder.title.setOnClickListener(v -> {
             Layout layout = holder.title.getLayout();
-            if(Build.VERSION.SDK_INT>Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1){
-                if(layout.getEllipsisCount(layout.getLineCount() - 1) > 0)
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                if (layout.getEllipsisCount(layout.getLineCount() - 1) > 0)
                     holder.title.setMaxLines(7);
-                else if(holder.title.getMaxLines() == 7) holder.title.setMaxLines(3);
+                else if (holder.title.getMaxLines() == 7) holder.title.setMaxLines(3);
                 else holder.layout.performClick();
-            }else holder.layout.performClick();
+            } else holder.layout.performClick();
         });
         holder.layout.setOnClickListener(v -> {
             //Global.setLoadedGallery(ent);
             Intent intent = new Intent(context, GalleryActivity.class);
-            LogUtility.d(ent+"");
-            intent.putExtra(context.getPackageName()+ ".GALLERY",ent);
+            LogUtility.d(ent + "");
+            intent.putExtra(context.getPackageName() + ".GALLERY", ent);
             context.startActivity(intent);
         });
         holder.layout.setOnLongClickListener(v -> {
-            holder.title.animate().alpha(holder.title.getAlpha()==0f?1f:0f).setDuration(100).start();
-            holder.flag.animate().alpha(holder.flag.getAlpha()==0f?1f:0f).setDuration(100).start();
-            holder.pages.animate().alpha(holder.pages.getAlpha()==0f?1f:0f).setDuration(100).start();
+            holder.title.animate().alpha(holder.title.getAlpha() == 0f ? 1f : 0f).setDuration(100).start();
+            holder.flag.animate().alpha(holder.flag.getAlpha() == 0f ? 1f : 0f).setDuration(100).start();
+            holder.pages.animate().alpha(holder.pages.getAlpha() == 0f ? 1f : 0f).setDuration(100).start();
             return true;
         });
     }
+
     @Nullable
     private Gallery positionToGallery(int position) {
         try {
-            if (galleries!=null&&galleries.moveToPosition(position)) {
+            if (galleries != null && galleries.moveToPosition(position)) {
                 return Queries.GalleryTable.cursorToGallery(galleries);
             }
-        }catch (IOException ignore){}
+        } catch (IOException ignore) {
+        }
         return null;
     }
 
@@ -95,29 +107,29 @@ public class StatusViewerAdapter extends RecyclerView.Adapter<GenericAdapter.Vie
     }
 
     public void setGalleries(@Nullable Cursor galleries) {
-        if(this.galleries!=null)this.galleries.close();
+        if (this.galleries != null) this.galleries.close();
         this.galleries = galleries;
         context.runOnUiThread(this::notifyDataSetChanged);
     }
 
     public void reloadGalleries() {
-        setGalleries(Queries.StatusMangaTable.getGalleryOfStatus(statusName,query,sortByTitle));
+        setGalleries(Queries.StatusMangaTable.getGalleryOfStatus(statusName, query, sortByTitle));
     }
 
     public void setQuery(@Nullable String newQuery) {
-        query=newQuery==null?"":newQuery;
+        query = newQuery == null ? "" : newQuery;
         reloadGalleries();
     }
 
     public void updateSort(boolean byTitle) {
-        sortByTitle=byTitle;
+        sortByTitle = byTitle;
         reloadGalleries();
     }
 
     public void update(String newQuery, boolean byTitle) {
-        if(query.equals(newQuery) && byTitle==sortByTitle)return;
-        query=newQuery==null?"":newQuery;
-        sortByTitle=byTitle;
+        if (query.equals(newQuery) && byTitle == sortByTitle) return;
+        query = newQuery == null ? "" : newQuery;
+        sortByTitle = byTitle;
         reloadGalleries();
     }
 }

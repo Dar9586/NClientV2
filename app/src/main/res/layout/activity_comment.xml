@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <include
         layout="@layout/app_bar_main"
@@ -12,49 +13,49 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/card"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="20"
-        >
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-        <EditText
-            android:id="@+id/commentText"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_weight="17"
-            android:ems="10"
-            android:maxLength="1000"
-            android:inputType="textMultiLine"
-            android:maxHeight="250dp"
-            android:hint="@string/send_comment"
-            android:text=""
-            android:importantForAutofill="no" />
+            android:orientation="horizontal"
+            android:weightSum="20">
 
-        <ImageButton
-            android:id="@+id/sendButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="3"
-            android:clickable="true"
-            android:contentDescription="@string/send"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:tint="?android:attr/colorForeground"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
-            app:srcCompat="@android:drawable/ic_menu_send" />
-    </LinearLayout>
+            <EditText
+                android:id="@+id/commentText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_weight="17"
+                android:ems="10"
+                android:hint="@string/send_comment"
+                android:importantForAutofill="no"
+                android:inputType="textMultiLine"
+                android:maxHeight="250dp"
+                android:maxLength="1000"
+                android:text="" />
+
+            <ImageButton
+                android:id="@+id/sendButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:contentDescription="@string/send"
+                android:focusable="true"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:tint="?android:attr/colorForeground"
+                app:srcCompat="@android:drawable/ic_menu_send" />
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

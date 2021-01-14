@@ -9,7 +9,7 @@ import com.dar.nclientv2.settings.Global;
 public abstract class GeneralActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
-        if(Global.hideMultitask())
+        if (Global.hideMultitask())
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         super.onPause();
     }

@@ -7,8 +7,9 @@
         android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always" /-->
-    <item android:id="@+id/view_groups"
+    <item
+        android:id="@+id/view_groups"
         android:icon="@drawable/ic_add"
         android:title="@string/options"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 </menu>

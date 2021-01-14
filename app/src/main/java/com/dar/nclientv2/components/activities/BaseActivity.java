@@ -18,8 +18,8 @@ public abstract class BaseActivity extends GeneralActivity {
     protected ViewGroup masterLayout;
 
     protected abstract int getPortraitColumnCount();
-    protected abstract int getLandscapeColumnCount();
 
+    protected abstract int getLandscapeColumnCount();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,20 +44,20 @@ public abstract class BaseActivity extends GeneralActivity {
         super.onConfigurationChanged(newConfig);
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             changeLayout(true);
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             changeLayout(false);
         }
     }
 
-    protected void changeLayout(boolean landscape){
-        CustomGridLayoutManager manager=(CustomGridLayoutManager)recycler.getLayoutManager();
-        RecyclerView.Adapter adapter=recycler.getAdapter();
-        int count=landscape? getLandscapeColumnCount(): getPortraitColumnCount();
-        int position=0;
+    protected void changeLayout(boolean landscape) {
+        CustomGridLayoutManager manager = (CustomGridLayoutManager) recycler.getLayoutManager();
+        RecyclerView.Adapter adapter = recycler.getAdapter();
+        int count = landscape ? getLandscapeColumnCount() : getPortraitColumnCount();
+        int position = 0;
 
-        if(manager!=null)
-            position=manager.findFirstCompletelyVisibleItemPosition();
-        CustomGridLayoutManager gridLayoutManager=new CustomGridLayoutManager(this,count);
+        if (manager != null)
+            position = manager.findFirstCompletelyVisibleItemPosition();
+        CustomGridLayoutManager gridLayoutManager = new CustomGridLayoutManager(this, count);
         recycler.setLayoutManager(gridLayoutManager);
         recycler.setAdapter(adapter);
         recycler.scrollToPosition(position);

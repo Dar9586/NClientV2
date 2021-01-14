@@ -26,66 +26,93 @@ import org.jsoup.nodes.Element;
 import java.util.Locale;
 
 public class SimpleGallery extends GenericGallery {
-    private Language language=Language.UNKNOWN;
-    private TagList tags;
+    public static final Creator<SimpleGallery> CREATOR = new Creator<SimpleGallery>() {
+        @Override
+        public SimpleGallery createFromParcel(Parcel in) {
+            return new SimpleGallery(in);
+        }
+
+        @Override
+        public SimpleGallery[] newArray(int size) {
+            return new SimpleGallery[size];
+        }
+    };
     private final String title;
     private final ImageExt thumbnail;
-    private final int id,mediaId;
+    private final int id, mediaId;
+    private Language language = Language.UNKNOWN;
+    private TagList tags;
 
     public SimpleGallery(Parcel in) {
-        title=in.readString();
-        id=in.readInt();
-        mediaId=in.readInt();
-        thumbnail=ImageExt.values()[in.readByte()];
-        language=Language.values()[in.readByte()];
+        title = in.readString();
+        id = in.readInt();
+        mediaId = in.readInt();
+        thumbnail = ImageExt.values()[in.readByte()];
+        language = Language.values()[in.readByte()];
     }
+
+    public SimpleGallery(Cursor c) {
+        title = c.getString(c.getColumnIndex(Queries.HistoryTable.TITLE));
+        id = c.getInt(c.getColumnIndex(Queries.HistoryTable.ID));
+        mediaId = c.getInt(c.getColumnIndex(Queries.HistoryTable.MEDIAID));
+        thumbnail = ImageExt.values()[c.getInt(c.getColumnIndex(Queries.HistoryTable.THUMB))];
+    }
+
+    public SimpleGallery(Context context, Element e) {
+        String temp;
+        String tags = e.attr("data-tags").replace(' ', ',');
+        this.tags = Queries.TagTable.getTagsFromListOfInt(tags);
+        language = Gallery.loadLanguage(this.tags);
+        Element a = e.getElementsByTag("a").first();
+        temp = a.attr("href");
+        id = Integer.parseInt(temp.substring(3, temp.length() - 1));
+        a = e.getElementsByTag("img").first();
+        temp = a.hasAttr("data-src") ? a.attr("data-src") : a.attr("src");
+        mediaId = Integer.parseInt(temp.substring(temp.indexOf("galleries") + 10, temp.lastIndexOf('/')));
+        thumbnail = Page.charToExt(temp.charAt(temp.length() - 3));
+        title = e.getElementsByTag("div").first().text();
+        if (context != null && id > Global.getMaxId()) Global.updateMaxId(context, id);
+    }
+
+    public SimpleGallery(Gallery gallery) {
+        title = gallery.getTitle();
+        mediaId = gallery.getMediaId();
+        id = gallery.getId();
+        thumbnail = gallery.getThumb();
+    }
+
+    private static String extToString(ImageExt ext) {
+        switch (ext) {
+            case GIF:
+                return "gif";
+            case PNG:
+                return "png";
+            case JPG:
+                return "jpg";
+        }
+        return null;
+    }
+
     @NonNull
     @Override
     public String getPageURI(int page) {
         return getThumbnail();
     }
 
-    public SimpleGallery(Cursor c) {
-        title=c.getString(c.getColumnIndex(Queries.HistoryTable.TITLE));
-        id=c.getInt(c.getColumnIndex(Queries.HistoryTable.ID));
-        mediaId=c.getInt(c.getColumnIndex(Queries.HistoryTable.MEDIAID));
-        thumbnail=ImageExt.values()[c.getInt(c.getColumnIndex(Queries.HistoryTable.THUMB))];
-    }
-
-    public SimpleGallery(Context context, Element e) {
-        String temp;
-        String tags=e.attr("data-tags").replace(' ',',');
-        this.tags=Queries.TagTable.getTagsFromListOfInt(tags);
-        language= Gallery.loadLanguage(this.tags);
-        Element a=e.getElementsByTag("a").first();
-        temp=a.attr("href");
-        id=Integer.parseInt(temp.substring(3,temp.length()-1));
-        a=e.getElementsByTag("img").first();
-        temp=a.hasAttr("data-src")?a.attr("data-src"):a.attr("src");
-        mediaId=Integer.parseInt(temp.substring(temp.indexOf("galleries")+10,temp.lastIndexOf('/')));
-        thumbnail= Page.charToExt(temp.charAt(temp.length() - 3));
-        title=e.getElementsByTag("div").first().text();
-        if(context!=null&&id>Global.getMaxId())Global.updateMaxId(context,id);
-    }
-
-    public SimpleGallery(Gallery gallery) {
-        title=gallery.getTitle();
-        mediaId=gallery.getMediaId();
-        id=gallery.getId();
-        thumbnail=gallery.getThumb();
-    }
-
     public Language getLanguage() {
         return language;
     }
-    public boolean hasIgnoredTags(String s){
-        if(tags==null)return false;
-        for(Tag t:tags.getAllTagsList())if(s.contains(t.toQueryTag(TagStatus.AVOIDED))){
-            LogUtility.d("Found: "+s+",,"+t.toQueryTag());
-            return true;
-        }
+
+    public boolean hasIgnoredTags(String s) {
+        if (tags == null) return false;
+        for (Tag t : tags.getAllTagsList())
+            if (s.contains(t.toQueryTag(TagStatus.AVOIDED))) {
+                LogUtility.d("Found: " + s + ",," + t.toQueryTag());
+                return true;
+            }
         return false;
     }
+
     @Override
     public int getId() {
         return id;
@@ -96,8 +123,6 @@ public class SimpleGallery extends GenericGallery {
         return Type.SIMPLE;
     }
 
-
-
     @Override
     public int getPageCount() {
         return 0;
@@ -105,7 +130,7 @@ public class SimpleGallery extends GenericGallery {
 
     @Override
     public boolean isValid() {
-        return id>0;
+        return id > 0;
     }
 
     @Override
@@ -134,33 +159,15 @@ public class SimpleGallery extends GenericGallery {
         dest.writeString(title);
         dest.writeInt(id);
         dest.writeInt(mediaId);
-        dest.writeByte((byte)thumbnail.ordinal());
-        dest.writeByte((byte)language.ordinal());
+        dest.writeByte((byte) thumbnail.ordinal());
+        dest.writeByte((byte) language.ordinal());
         //TAGS AREN'T WRITTEN
     }
-    public static final Creator<SimpleGallery> CREATOR = new Creator<SimpleGallery>() {
-        @Override
-        public SimpleGallery createFromParcel(Parcel in) {
-            return new SimpleGallery(in);
-        }
 
-        @Override
-        public SimpleGallery[] newArray(int size) {
-            return new SimpleGallery[size];
-        }
-    };
+    public String getThumbnail() {
+        return String.format(Locale.US, "https://t." + Utility.getHost() + "/galleries/%d/thumb.%s", mediaId, extToString(thumbnail));
+    }
 
-    public String getThumbnail(){
-        return String.format(Locale.US,"https://t."+ Utility.getHost()+"/galleries/%d/thumb.%s",mediaId,extToString(thumbnail));
-    }
-    private static String extToString(ImageExt ext){
-        switch(ext){
-            case GIF:return "gif";
-            case PNG:return "png";
-            case JPG:return "jpg";
-        }
-        return null;
-    }
     public int getMediaId() {
         return mediaId;
     }

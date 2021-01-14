@@ -46,41 +46,44 @@ import java.util.List;
 import java.util.Locale;
 
 public class SearchActivity extends GeneralActivity {
-    public static final int CUSTOM_ID_START=100000000;
-    private final Ranges ranges=new Ranges();
-    private final ArrayList<ChipTag>tags=new ArrayList<>();
+    public static final int CUSTOM_ID_START = 100000000;
+    private static int customId = CUSTOM_ID_START;
+    private final Ranges ranges = new Ranges();
+    private final ArrayList<ChipTag> tags = new ArrayList<>();
+    private final Chip[] addChip = new Chip[TagType.values.length];
     private ChipGroup[] groups;
-    private final Chip[] addChip =new Chip[TagType.values.length];
     private SearchView searchView;
     private AppCompatAutoCompleteTextView autoComplete;
-    private TagType loadedTag=null;
+    private TagType loadedTag = null;
     private HistoryAdapter adapter;
-    private boolean advanced=false;
+    private boolean advanced = false;
     private Ranges.TimeUnit temporaryUnit;
-    private static int customId = CUSTOM_ID_START;
     private InputMethodManager inputMethodManager;
-    public void setQuery(String str,boolean submit){
-        runOnUiThread(() -> searchView.setQuery(str,submit));
+    private AlertDialog alertDialog;
+
+    public void setQuery(String str, boolean submit) {
+        runOnUiThread(() -> searchView.setQuery(str, submit));
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.initActivity(this);
         setContentView(R.layout.activity_search);
         //init toolbar
-        Toolbar toolbar=findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        assert getSupportActionBar()!=null;
+        assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        inputMethodManager =(InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         //find IDs
-        searchView=findViewById(R.id.search);
+        searchView = findViewById(R.id.search);
         RecyclerView recyclerView = findViewById(R.id.recycler);
 
-        groups=new ChipGroup[]{
+        groups = new ChipGroup[]{
                 null,
                 findViewById(R.id.parody_group),
                 findViewById(R.id.character_group),
@@ -91,10 +94,10 @@ public class SearchActivity extends GeneralActivity {
                 findViewById(R.id.category_group),
         };
         initRanges();
-        adapter=new HistoryAdapter(this);
-        autoComplete=(AppCompatAutoCompleteTextView) getLayoutInflater().inflate(R.layout.autocomplete_entry,findViewById(R.id.appbar),false);
+        adapter = new HistoryAdapter(this);
+        autoComplete = (AppCompatAutoCompleteTextView) getLayoutInflater().inflate(R.layout.autocomplete_entry, findViewById(R.id.appbar), false);
         autoComplete.setOnEditorActionListener((v, actionId, event) -> {
-            if(actionId== EditorInfo.IME_ACTION_SEND){
+            if (actionId == EditorInfo.IME_ACTION_SEND) {
                 alertDialog.dismiss();
                 createChip();
                 return true;
@@ -105,26 +108,26 @@ public class SearchActivity extends GeneralActivity {
         //init recyclerview
         recyclerView.setLayoutManager(new CustomLinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
-
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                query=query.trim();
-                if(query.length()==0&&!advanced)return true;
-                if(query.length()>0)adapter.addHistory(query);
-                final Intent i=new Intent(SearchActivity.this,MainActivity.class);
-                i.putExtra(getPackageName()+".SEARCHMODE",true);
-                i.putExtra(getPackageName()+".QUERY",query);
-                i.putExtra(getPackageName()+".ADVANCED",advanced);
-                if(advanced){
-                    ArrayList<Tag>tt=new ArrayList<>(tags.size());
-                    for(ChipTag t:tags)if(t.getTag().getStatus()==TagStatus.ACCEPTED)tt.add(t.getTag());
-                    i.putParcelableArrayListExtra(getPackageName()+".TAGS",tt);
-                    i.putExtra(getPackageName()+".RANGES",ranges);
+                query = query.trim();
+                if (query.length() == 0 && !advanced) return true;
+                if (query.length() > 0) adapter.addHistory(query);
+                final Intent i = new Intent(SearchActivity.this, MainActivity.class);
+                i.putExtra(getPackageName() + ".SEARCHMODE", true);
+                i.putExtra(getPackageName() + ".QUERY", query);
+                i.putExtra(getPackageName() + ".ADVANCED", advanced);
+                if (advanced) {
+                    ArrayList<Tag> tt = new ArrayList<>(tags.size());
+                    for (ChipTag t : tags)
+                        if (t.getTag().getStatus() == TagStatus.ACCEPTED) tt.add(t.getTag());
+                    i.putParcelableArrayListExtra(getPackageName() + ".TAGS", tt);
+                    i.putExtra(getPackageName() + ".RANGES", ranges);
                 }
-                SearchActivity.this.runOnUiThread(()->{
+                SearchActivity.this.runOnUiThread(() -> {
                     startActivity(i);
                     finish();
                 });
@@ -141,9 +144,9 @@ public class SearchActivity extends GeneralActivity {
         searchView.requestFocus();
     }
 
-    private void createPageBuilder(int title,int min,int max,int actual,DefaultDialogs.DialogResults results){
-        min=Math.max(1,min);
-        actual=Math.max(actual,min);
+    private void createPageBuilder(int title, int min, int max, int actual, DefaultDialogs.DialogResults results) {
+        min = Math.max(1, min);
+        actual = Math.max(actual, min);
         DefaultDialogs.pageChangerDialog(new DefaultDialogs.Builder(this)
                 .setTitle(title)
                 .setMax(max)
@@ -157,25 +160,25 @@ public class SearchActivity extends GeneralActivity {
     }
 
     private void initRanges() {
-        LinearLayout pageRangeLayout=findViewById(R.id.page_range);
-        LinearLayout uploadRangeLayout=findViewById(R.id.upload_range);
-        ((TextView)  pageRangeLayout.findViewById(R.id.title)).setText(R.string.page_range);
-        ((TextView)uploadRangeLayout.findViewById(R.id.title)).setText(R.string.upload_time);
-        Button fromPage=pageRangeLayout.findViewById(R.id.fromButton);
-        Button toPage  =pageRangeLayout.findViewById(R.id.toButton);
-        Button fromDate=uploadRangeLayout.findViewById(R.id.fromButton);
-        Button toDate  =uploadRangeLayout.findViewById(R.id.toButton);
+        LinearLayout pageRangeLayout = findViewById(R.id.page_range);
+        LinearLayout uploadRangeLayout = findViewById(R.id.upload_range);
+        ((TextView) pageRangeLayout.findViewById(R.id.title)).setText(R.string.page_range);
+        ((TextView) uploadRangeLayout.findViewById(R.id.title)).setText(R.string.upload_time);
+        Button fromPage = pageRangeLayout.findViewById(R.id.fromButton);
+        Button toPage = pageRangeLayout.findViewById(R.id.toButton);
+        Button fromDate = uploadRangeLayout.findViewById(R.id.fromButton);
+        Button toDate = uploadRangeLayout.findViewById(R.id.toButton);
         fromPage.setOnClickListener(v -> {
-            createPageBuilder(R.string.from_page,0,2000,ranges.getFromPage(),new DefaultDialogs.CustomDialogResults(){
+            createPageBuilder(R.string.from_page, 0, 2000, ranges.getFromPage(), new DefaultDialogs.CustomDialogResults() {
                 @Override
                 public void positive(int actual) {
                     ranges.setFromPage(actual);
-                    fromPage.setText(String.format(Locale.US,"%d",actual));
-                    if(ranges.getFromPage()>ranges.getToPage()){
+                    fromPage.setText(String.format(Locale.US, "%d", actual));
+                    if (ranges.getFromPage() > ranges.getToPage()) {
                         ranges.setToPage(Ranges.UNDEFINED);
                         toPage.setText("");
                     }
-                    advanced=true;
+                    advanced = true;
                 }
 
                 @Override
@@ -186,12 +189,12 @@ public class SearchActivity extends GeneralActivity {
             });
         });
         toPage.setOnClickListener(v -> {
-            createPageBuilder(R.string.to_page,ranges.getFromPage(),2000,ranges.getToPage(),new DefaultDialogs.CustomDialogResults(){
+            createPageBuilder(R.string.to_page, ranges.getFromPage(), 2000, ranges.getToPage(), new DefaultDialogs.CustomDialogResults() {
                 @Override
                 public void positive(int actual) {
                     ranges.setToPage(actual);
-                    toPage.setText(String.format(Locale.US,"%d",actual));
-                    advanced=true;
+                    toPage.setText(String.format(Locale.US, "%d", actual));
+                    advanced = true;
                 }
 
                 @Override
@@ -201,41 +204,41 @@ public class SearchActivity extends GeneralActivity {
                 }
             });
         });
-        fromDate.setOnClickListener(v -> showUnitDialog(fromDate,true));
-        toDate.setOnClickListener(v -> showUnitDialog(toDate,false));
+        fromDate.setOnClickListener(v -> showUnitDialog(fromDate, true));
+        toDate.setOnClickListener(v -> showUnitDialog(toDate, false));
     }
 
     private void showUnitDialog(Button button, boolean from) {
-        int i=0;
-        String[]strings=new String[Ranges.TimeUnit.values().length];
-        for(Ranges.TimeUnit unit:Ranges.TimeUnit.values())
-            strings[i++]=getString(unit.getString());
+        int i = 0;
+        String[] strings = new String[Ranges.TimeUnit.values().length];
+        for (Ranges.TimeUnit unit : Ranges.TimeUnit.values())
+            strings[i++] = getString(unit.getString());
 
-        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(this);
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
         builder.setTitle(R.string.choose_unit);
         builder.setIcon(R.drawable.ic_search);
-        builder.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line,strings), (dialog, which) -> {
-            temporaryUnit= Ranges.TimeUnit.values()[which];
-            createPageBuilder(from?R.string.from_time:R.string.to_time,1,temporaryUnit == Ranges.TimeUnit.YEAR?10:100,1,new DefaultDialogs.CustomDialogResults(){
+        builder.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, strings), (dialog, which) -> {
+            temporaryUnit = Ranges.TimeUnit.values()[which];
+            createPageBuilder(from ? R.string.from_time : R.string.to_time, 1, temporaryUnit == Ranges.TimeUnit.YEAR ? 10 : 100, 1, new DefaultDialogs.CustomDialogResults() {
                 @Override
                 public void positive(int actual) {
-                    if(from){
+                    if (from) {
                         ranges.setFromDateUnit(temporaryUnit);
                         ranges.setFromDate(actual);
-                    }else{
+                    } else {
                         ranges.setToDateUnit(temporaryUnit);
                         ranges.setToDate(actual);
                     }
-                    button.setText(String.format(Locale.US, "%d %c",actual,Character.toUpperCase(temporaryUnit.getVal())));
-                    advanced=true;
+                    button.setText(String.format(Locale.US, "%d %c", actual, Character.toUpperCase(temporaryUnit.getVal())));
+                    advanced = true;
                 }
 
                 @Override
                 public void neutral() {
-                    if(from){
+                    if (from) {
                         ranges.setFromDateUnit(Ranges.UNDEFINED_DATE);
                         ranges.setFromDate(Ranges.UNDEFINED);
-                    }else{
+                    } else {
                         ranges.setToDateUnit(Ranges.UNDEFINED_DATE);
                         ranges.setToDate(Ranges.UNDEFINED);
                     }
@@ -244,10 +247,10 @@ public class SearchActivity extends GeneralActivity {
             });
         });
         builder.setNeutralButton(R.string.reset, (dialog, which) -> {
-            if(from){
+            if (from) {
                 ranges.setFromDateUnit(Ranges.UNDEFINED_DATE);
                 ranges.setFromDate(Ranges.UNDEFINED);
-            }else{
+            } else {
                 ranges.setToDateUnit(Ranges.UNDEFINED_DATE);
                 ranges.setToDate(Ranges.UNDEFINED);
             }
@@ -256,41 +259,47 @@ public class SearchActivity extends GeneralActivity {
         builder.show();
     }
 
-    private void populateGroup(){
+    private void populateGroup() {
         //add top tags
-        for(TagType type:new TagType[]{TagType.TAG,TagType.PARODY,TagType.CHARACTER,TagType.ARTIST,TagType.GROUP}) {
-            for (Tag t : Queries.TagTable.getTopTags(type,Global.getFavoriteLimit(this)))
-                addChipTag(t,true,true);
+        for (TagType type : new TagType[]{TagType.TAG, TagType.PARODY, TagType.CHARACTER, TagType.ARTIST, TagType.GROUP}) {
+            for (Tag t : Queries.TagTable.getTopTags(type, Global.getFavoriteLimit(this)))
+                addChipTag(t, true, true);
         }
         //add already filtered tags
-        for(Tag t:Queries.TagTable.getAllFiltered())if(!tagAlreadyExist(t)) addChipTag(t,true,true);
+        for (Tag t : Queries.TagTable.getAllFiltered())
+            if (!tagAlreadyExist(t)) addChipTag(t, true, true);
         //add categories
-        for(Tag t:Queries.TagTable.getTrueAllType(TagType.CATEGORY)) addChipTag(t,false,false);
+        for (Tag t : Queries.TagTable.getTrueAllType(TagType.CATEGORY)) addChipTag(t, false, false);
         //add languages
-        for(Tag t:Queries.TagTable.getTrueAllType(TagType.LANGUAGE)){
-            if(t.getId()==SpecialTagIds.LANGUAGE_ENGLISH&&Global.getOnlyLanguage()==Language.ENGLISH) t.setStatus(TagStatus.ACCEPTED);
-            else if(t.getId()== SpecialTagIds.LANGUAGE_JAPANESE &&Global.getOnlyLanguage()==Language.JAPANESE)t.setStatus(TagStatus.ACCEPTED);
-            else if(t.getId()==SpecialTagIds.LANGUAGE_CHINESE&&Global.getOnlyLanguage()==Language.CHINESE) t.setStatus(TagStatus.ACCEPTED);
-            addChipTag(t,false,false);
+        for (Tag t : Queries.TagTable.getTrueAllType(TagType.LANGUAGE)) {
+            if (t.getId() == SpecialTagIds.LANGUAGE_ENGLISH && Global.getOnlyLanguage() == Language.ENGLISH)
+                t.setStatus(TagStatus.ACCEPTED);
+            else if (t.getId() == SpecialTagIds.LANGUAGE_JAPANESE && Global.getOnlyLanguage() == Language.JAPANESE)
+                t.setStatus(TagStatus.ACCEPTED);
+            else if (t.getId() == SpecialTagIds.LANGUAGE_CHINESE && Global.getOnlyLanguage() == Language.CHINESE)
+                t.setStatus(TagStatus.ACCEPTED);
+            addChipTag(t, false, false);
         }
         //add online tags
-        if(Login.useAccountTag())for(Tag t:Queries.TagTable.getAllOnlineBlacklisted())if(!tagAlreadyExist(t))
-            addChipTag(t,true,true);
+        if (Login.useAccountTag()) for (Tag t : Queries.TagTable.getAllOnlineBlacklisted())
+            if (!tagAlreadyExist(t))
+                addChipTag(t, true, true);
         //add + button
-        for(TagType type:TagType.values){
+        for (TagType type : TagType.values) {
             //ignore these tags
-            if(type==TagType.UNKNOWN||type==TagType.LANGUAGE||type==TagType.CATEGORY){
-                addChip[type.getId()]=null;
+            if (type == TagType.UNKNOWN || type == TagType.LANGUAGE || type == TagType.CATEGORY) {
+                addChip[type.getId()] = null;
                 continue;
             }
-            ChipGroup cg=getGroup(type);
-            Chip add=createAddChip(type,cg);
-            addChip[type.getId()]=add;
+            ChipGroup cg = getGroup(type);
+            Chip add = createAddChip(type, cg);
+            addChip[type.getId()] = add;
             cg.addView(add);
         }
     }
-    private Chip createAddChip(TagType type,ChipGroup group){
-        Chip c=(Chip)getLayoutInflater().inflate(R.layout.chip_layout,group,false);
+
+    private Chip createAddChip(TagType type, ChipGroup group) {
+        Chip c = (Chip) getLayoutInflater().inflate(R.layout.chip_layout, group, false);
         c.setCloseIconVisible(false);
         c.setChipIconResource(R.drawable.ic_add);
         c.setText(getString(R.string.add));
@@ -298,29 +307,32 @@ public class SearchActivity extends GeneralActivity {
         Global.setTint(c.getChipIcon());
         return c;
     }
-    private boolean tagAlreadyExist(Tag tag){
-        for(ChipTag t:tags){
-            if(t.getTag().getName().equals(tag.getName()))return true;
+
+    private boolean tagAlreadyExist(Tag tag) {
+        for (ChipTag t : tags) {
+            if (t.getTag().getName().equals(tag.getName())) return true;
         }
         return false;
     }
+
     private void addChipTag(Tag t, boolean close, boolean canBeAvoided) {
-        ChipGroup cg=getGroup(t.getType());
-        ChipTag c=(ChipTag)getLayoutInflater().inflate(R.layout.chip_layout_entry,cg,false);
-        c.init(t,close,canBeAvoided);
+        ChipGroup cg = getGroup(t.getType());
+        ChipTag c = (ChipTag) getLayoutInflater().inflate(R.layout.chip_layout_entry, cg, false);
+        c.init(t, close, canBeAvoided);
         c.setOnCloseIconClickListener(v -> {
             cg.removeView(c);
             tags.remove(c);
-            advanced=true;
+            advanced = true;
         });
         c.setOnClickListener(v -> {
             c.updateStatus();
-            advanced=true;
+            advanced = true;
         });
         cg.addView(c);
         tags.add(c);
     }
-    private void loadDropdown(TagType type){
+
+    private void loadDropdown(TagType type) {
         List<Tag> allTags = Queries.TagTable.getAllTagOfType(type);
         String[] tagNames = new String[allTags.size()];
         int i = 0;
@@ -330,46 +342,47 @@ public class SearchActivity extends GeneralActivity {
     }
 
     private void loadTag(TagType type) {
-        if(type != loadedTag)loadDropdown(type);
+        if (type != loadedTag) loadDropdown(type);
         addDialog();
         autoComplete.requestFocus();
-        inputMethodManager.showSoftInput(autoComplete,InputMethodManager.SHOW_IMPLICIT);
+        inputMethodManager.showSoftInput(autoComplete, InputMethodManager.SHOW_IMPLICIT);
     }
 
-    private ChipGroup getGroup(TagType type){
+    private ChipGroup getGroup(TagType type) {
         return groups[type.getId()];
     }
-    private AlertDialog alertDialog;
-    private void addDialog(){
-        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(this);
+
+    private void addDialog() {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
         builder.setView(autoComplete);
         autoComplete.setText("");
         builder.setPositiveButton(R.string.ok, (dialog, which) -> createChip());
-        builder.setCancelable(true).setNegativeButton(R.string.cancel,null);
+        builder.setCancelable(true).setNegativeButton(R.string.cancel, null);
         builder.setTitle(R.string.insert_tag_name);
-        try{
-            alertDialog=builder.show();
-        }catch (IllegalStateException e){//the autoComplete is still attached to another View
-            ((ViewGroup)autoComplete.getParent()).removeView(autoComplete);
-            alertDialog=builder.show();
+        try {
+            alertDialog = builder.show();
+        } catch (IllegalStateException e) {//the autoComplete is still attached to another View
+            ((ViewGroup) autoComplete.getParent()).removeView(autoComplete);
+            alertDialog = builder.show();
         }
-
     }
+
     private void createChip() {
-        String name=autoComplete.getText().toString().toLowerCase(Locale.US);
-        Tag tag = Queries.TagTable.searchTag(name,loadedTag);
-        if(tag==null) tag=new Tag(name,0, customId++,loadedTag,TagStatus.ACCEPTED);
-        LogUtility.d("CREATED WITH ID: "+tag.getId());
-        if(tagAlreadyExist(tag))return;
+        String name = autoComplete.getText().toString().toLowerCase(Locale.US);
+        Tag tag = Queries.TagTable.searchTag(name, loadedTag);
+        if (tag == null) tag = new Tag(name, 0, customId++, loadedTag, TagStatus.ACCEPTED);
+        LogUtility.d("CREATED WITH ID: " + tag.getId());
+        if (tagAlreadyExist(tag)) return;
         //remove add, insert new tag, reinsert add
-        if(getGroup(loadedTag)!=null)getGroup(loadedTag).removeView(addChip[loadedTag.getId()]);
-        addChipTag(tag,true,true);
+        if (getGroup(loadedTag) != null) getGroup(loadedTag).removeView(addChip[loadedTag.getId()]);
+        addChipTag(tag, true, true);
         getGroup(loadedTag).addView(addChip[loadedTag.getId()]);
 
-        inputMethodManager.hideSoftInputFromWindow(searchView.getWindowToken(),InputMethodManager.SHOW_IMPLICIT);
+        inputMethodManager.hideSoftInputFromWindow(searchView.getWindowToken(), InputMethodManager.SHOW_IMPLICIT);
         autoComplete.setText("");
-        advanced=true;
-        if(autoComplete.getParent()!=null)((ViewGroup)autoComplete.getParent()).removeView(autoComplete);
+        advanced = true;
+        if (autoComplete.getParent() != null)
+            ((ViewGroup) autoComplete.getParent()).removeView(autoComplete);
     }
 
     @Override
@@ -377,7 +390,6 @@ public class SearchActivity extends GeneralActivity {
         getMenuInflater().inflate(R.menu.search, menu);
         Utility.tintMenu(menu);
         return super.onCreateOptionsMenu(menu);
-
     }
 
     @Override
@@ -385,7 +397,7 @@ public class SearchActivity extends GeneralActivity {
         if (item.getItemId() == android.R.id.home) {
             finish();
             return true;
-        }else if(item.getItemId()==R.id.view_groups) {
+        } else if (item.getItemId() == R.id.view_groups) {
             View v = findViewById(R.id.groups);
             boolean isVisible = v.getVisibility() == View.VISIBLE;
             v.setVisibility(isVisible ? View.GONE : View.VISIBLE);
@@ -394,6 +406,4 @@ public class SearchActivity extends GeneralActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 }

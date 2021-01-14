@@ -9,27 +9,28 @@ import com.dar.nclientv2.utility.LogUtility;
 import java.io.File;
 import java.util.ArrayList;
 
-public class FakeInspector extends AsyncTask<LocalActivity,LocalActivity,LocalActivity>{
+public class FakeInspector extends AsyncTask<LocalActivity, LocalActivity, LocalActivity> {
     private final ArrayList<LocalGallery> galleries;
     private final ArrayList<String> invalidPaths;
     private final File folder;
-    public FakeInspector(File folder){
-        this.folder=new File(folder,"Download");
-        galleries= new ArrayList<>();
-        invalidPaths=new ArrayList<>();
+
+    public FakeInspector(File folder) {
+        this.folder = new File(folder, "Download");
+        galleries = new ArrayList<>();
+        invalidPaths = new ArrayList<>();
     }
 
 
     @Override
     protected LocalActivity doInBackground(LocalActivity... voids) {
-        if(!this.folder.exists())return voids[0];
+        if (!this.folder.exists()) return voids[0];
         publishProgress(voids[0]);
-        File parent=this.folder;
+        File parent = this.folder;
         parent.mkdirs();
-        File[]files=parent.listFiles();
-        if(files==null)return voids[0];
-        for (File f:files)createGallery(f);
-        for (String x:invalidPaths) LogUtility.d("Invalid path: "+x);
+        File[] files = parent.listFiles();
+        if (files == null) return voids[0];
+        for (File f : files) createGallery(f);
+        for (String x : invalidPaths) LogUtility.d("Invalid path: " + x);
         return voids[0];
     }
 
@@ -41,12 +42,12 @@ public class FakeInspector extends AsyncTask<LocalActivity,LocalActivity,LocalAc
     @Override
     protected void onPostExecute(LocalActivity aVoid) {
         aVoid.getRefresher().setRefreshing(false);
-        aVoid.setAdapter(new LocalAdapter(aVoid,galleries));
+        aVoid.setAdapter(new LocalAdapter(aVoid, galleries));
     }
 
     private void createGallery(final File file) {
-        LocalGallery lg=new LocalGallery(file,true);
-        if(lg.isValid()) {
+        LocalGallery lg = new LocalGallery(file, true);
+        if (lg.isValid()) {
             galleries.add(lg);
         } else {
             LogUtility.e(lg);

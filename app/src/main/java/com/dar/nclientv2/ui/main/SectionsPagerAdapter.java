@@ -17,14 +17,15 @@ import java.util.List;
  * one of the sections/tabs/pages.
  */
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
-    List<String>statuses;
     private final Context mContext;
+    List<String> statuses;
 
     public SectionsPagerAdapter(Context context, FragmentManager fm) {
-        super(fm,FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        statuses= StatusManager.getNames();
+        super(fm, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        statuses = StatusManager.getNames();
         mContext = context;
     }
+
     @NonNull
     @Override
     public Fragment getItem(int position) {

@@ -21,7 +21,7 @@ import com.dar.nclientv2.settings.Global;
  */
 public class PlaceholderFragment extends Fragment {
 
-    private StatusViewerAdapter adapter=null;
+    private StatusViewerAdapter adapter = null;
     private RecyclerView recycler;
     private SwipeRefreshLayout refresher;
 
@@ -33,13 +33,13 @@ public class PlaceholderFragment extends Fragment {
         return fragment;
     }
 
-    private void updateColumnCount(boolean landscape){
-        recycler.setLayoutManager(new CustomGridLayoutManager(getContext(),getColumnCount(landscape)));
+    private void updateColumnCount(boolean landscape) {
+        recycler.setLayoutManager(new CustomGridLayoutManager(getContext(), getColumnCount(landscape)));
         recycler.setAdapter(adapter);
     }
 
-    private int getColumnCount(boolean landscape){
-        return landscape?Global.getColLandStatus():Global.getColPortStatus();
+    private int getColumnCount(boolean landscape) {
+        return landscape ? Global.getColLandStatus() : Global.getColPortStatus();
     }
 
     @Override
@@ -47,7 +47,7 @@ public class PlaceholderFragment extends Fragment {
         super.onConfigurationChanged(newConfig);
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             updateColumnCount(true);
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             updateColumnCount(false);
         }
     }
@@ -57,9 +57,9 @@ public class PlaceholderFragment extends Fragment {
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_status_viewer, container, false);
-        recycler=root.findViewById(R.id.recycler);
-        refresher=root.findViewById(R.id.refresher);
-        adapter=new StatusViewerAdapter(getActivity(),getArguments().getString("STATUS_NAME"));
+        recycler = root.findViewById(R.id.recycler);
+        refresher = root.findViewById(R.id.refresher);
+        adapter = new StatusViewerAdapter(getActivity(), getArguments().getString("STATUS_NAME"));
         refresher.setOnRefreshListener(() -> {
             adapter.reloadGalleries();
             refresher.setRefreshing(false);
@@ -68,16 +68,17 @@ public class PlaceholderFragment extends Fragment {
         return root;
     }
 
-    public void changeQuery(String newQuery){
-        if(adapter!=null)adapter.setQuery(newQuery);
+    public void changeQuery(String newQuery) {
+        if (adapter != null) adapter.setQuery(newQuery);
 
     }
-    public void changeSort(boolean byTitle){
-        if(adapter!=null)adapter.updateSort(byTitle);
+
+    public void changeSort(boolean byTitle) {
+        if (adapter != null) adapter.updateSort(byTitle);
     }
 
     public void reload(String query, boolean sortByTitle) {
-        if(adapter!=null)
-            adapter.update(query,sortByTitle);
+        if (adapter != null)
+            adapter.update(query, sortByTitle);
     }
 }

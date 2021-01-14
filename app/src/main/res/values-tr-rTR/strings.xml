@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--Thanks to hmaltr for the Turkish translation-->
+<?xml version="1.0" encoding="utf-8"?><!--Thanks to hmaltr for the Turkish translation-->
 <resources>
     <!--SUMMARY-->
     <string name="setting_on_ignore_tags">Diğer etiketler manga menüsünden bir etiket seçildiğinde listelenmeyecek (dil hariç)</string>
@@ -87,7 +86,7 @@
     <string name="download_gallery">Bu mangayı indir</string>
 
     <string name="delete_gallery_size_format" formatted="true">Mangayı sil %.2fMB boyutunda</string> <!--Delete manga? Its xMB-->
-    <string name="delete_gallery_format" formatted="true">Bu mangayı silmek istiyor musunuz? %s</string> 
+    <string name="delete_gallery_format" formatted="true">Bu mangayı silmek istiyor musunuz? %s</string>
 
 
     <string name="share_with">Şununla paylaş</string>
@@ -238,7 +237,7 @@
     <string name="navigation_drawer_open">Gezinme çekmecesini aç</string>
     <string name="link_copied_to_clipboard">Link panoya kopyalandı</string>
     <string name="go_online">Online görüntüle</string>
-    <string name="no_updates_found">Zaten en son sürümü kullanıyorsunuz!</string> 
+    <string name="no_updates_found">Zaten en son sürümü kullanıyorsunuz!</string>
     <string name="clear_this_list">Bu listeyi temizle?</string>
     <string name="next_page_volume_up">Ses arttırma tuşuyla sıradaki sayfaya geç</string>
     <string name="comments">Yorumlar</string>

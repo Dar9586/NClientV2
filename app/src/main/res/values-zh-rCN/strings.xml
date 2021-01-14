@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--Thanks to ZerOri and linsui for the Simplified Chinese translation-->
+<?xml version="1.0" encoding="utf-8"?><!--Thanks to ZerOri and linsui for the Simplified Chinese translation-->
 <resources>
     <string name="setting_on_ignore_tags">从画廊菜单中选中一个标签时不再查询其它标签（语言项除外）</string>
     <string name="setting_off_ignore_tags">从画廊菜单中选中一个标签时查询其它标签</string>
@@ -168,9 +167,9 @@
     <string name="navigation_settings">浏览设置</string>
     <string name="stop_download">停止下载</string>
     <string name="start_download">开始下载</string>
-    <string name="create_zip">创建 ZIP</string>												   
-    <string name="created_zip">成功创建 ZIP</string>													   													   
-    <string name="failed_zip">创建 ZIP 失败: </string>																					  
+    <string name="create_zip">创建 ZIP</string>
+    <string name="created_zip">成功创建 ZIP</string>
+    <string name="failed_zip">创建 ZIP 失败: </string>
     <string name="start_page">起始页</string>
     <string name="end_page">结束页</string>
     <string name="invalid_range_selected">选择范围无效</string>
@@ -280,7 +279,7 @@
         <item>中文</item>
         <item>Türkçe</item>
         <item>Italiano</item>
-	<item>Deutsch</item>
+        <item>Deutsch</item>
         <item>اَلْعَرَبِيَّةُ</item>
         <item>Español</item>
     </string-array>
@@ -288,7 +287,7 @@
         <item>亮色</item>
         <item>暗色</item>
     </string-array>
-    
+
     <string-array name="title_type_array">
         <item>英文</item>
         <item>日文</item>

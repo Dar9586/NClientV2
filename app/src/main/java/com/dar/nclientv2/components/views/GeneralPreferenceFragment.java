@@ -46,17 +46,23 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
     }
 
     public void setType(SettingsActivity.Type type) {
-        switch (type){
-            case MAIN:mainMenu();break;
-            case COLUMN:columnMenu();break;
-            case DATA:dataMenu();break;
+        switch (type) {
+            case MAIN:
+                mainMenu();
+                break;
+            case COLUMN:
+                columnMenu();
+                break;
+            case DATA:
+                dataMenu();
+                break;
         }
     }
 
     private void dataMenu() {
         addPreferencesFromResource(R.xml.settings_data);
-        SeekBarPreference mobile=findPreference(getString(R.string.key_mobile_usage));
-        SeekBarPreference wifi=findPreference(getString(R.string.key_wifi_usage));
+        SeekBarPreference mobile = findPreference(getString(R.string.key_mobile_usage));
+        SeekBarPreference wifi = findPreference(getString(R.string.key_wifi_usage));
         mobile.setOnPreferenceChangeListener((preference, newValue) -> {
             mobile.setTitle(getDataUsageString((Integer) newValue));
             return true;
@@ -70,43 +76,48 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
         mobile.setUpdatesContinuously(true);
         wifi.setUpdatesContinuously(true);
     }
-    private int getDataUsageString(int val){
-        switch (val){
-            case 0:return R.string.data_usage_no;
-            case 1:return R.string.data_usage_thumb;
-            case 2:return R.string.data_usage_full;
+
+    private int getDataUsageString(int val) {
+        switch (val) {
+            case 0:
+                return R.string.data_usage_no;
+            case 1:
+                return R.string.data_usage_thumb;
+            case 2:
+                return R.string.data_usage_full;
         }
         return R.string.data_usage_full;
     }
-    private void mainMenu(){
+
+    private void mainMenu() {
         addPreferencesFromResource(R.xml.settings);
         findPreference("status_screen").setOnPreferenceClickListener(preference -> {
-            Intent i=new Intent(act, StatusManagerActivity.class);
+            Intent i = new Intent(act, StatusManagerActivity.class);
             act.runOnUiThread(() -> act.startActivity(i));
             return false;
         });
         findPreference("col_screen").setOnPreferenceClickListener(preference -> {
-            Intent i=new Intent(act,SettingsActivity.class);
-            i.putExtra(act.getPackageName()+".TYPE", SettingsActivity.Type.COLUMN.ordinal());
+            Intent i = new Intent(act, SettingsActivity.class);
+            i.putExtra(act.getPackageName() + ".TYPE", SettingsActivity.Type.COLUMN.ordinal());
             act.runOnUiThread(() -> act.startActivity(i));
             return false;
         });
         findPreference("data_screen").setOnPreferenceClickListener(preference -> {
-            Intent i=new Intent(act,SettingsActivity.class);
-            i.putExtra(act.getPackageName()+".TYPE", SettingsActivity.Type.DATA.ordinal());
+            Intent i = new Intent(act, SettingsActivity.class);
+            i.putExtra(act.getPackageName() + ".TYPE", SettingsActivity.Type.DATA.ordinal());
             act.runOnUiThread(() -> act.startActivity(i));
             return false;
         });
         findPreference(getString(R.string.key_fake_icon)).setOnPreferenceChangeListener((preference, newValue) -> {
-            PackageManager pm= act.getPackageManager();
-            ComponentName name1=new ComponentName(act, LauncherReal.class);
-            ComponentName name2=new ComponentName(act, LauncherCalculator.class);
-            if((boolean)newValue) {
-                changeLauncher(pm,name1,false);
-                changeLauncher(pm,name2,true);
-            }else{
-                changeLauncher(pm,name1,true);
-                changeLauncher(pm,name2,false);
+            PackageManager pm = act.getPackageManager();
+            ComponentName name1 = new ComponentName(act, LauncherReal.class);
+            ComponentName name2 = new ComponentName(act, LauncherCalculator.class);
+            if ((boolean) newValue) {
+                changeLauncher(pm, name1, false);
+                changeLauncher(pm, name2, true);
+            } else {
+                changeLauncher(pm, name1, true);
+                changeLauncher(pm, name2, false);
             }
             return true;
         });
@@ -126,41 +137,41 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
             return true;
         });
         findPreference("has_pin").setOnPreferenceChangeListener((preference, newValue) -> {
-            if(newValue.equals(Boolean.TRUE)) {
+            if (newValue.equals(Boolean.TRUE)) {
                 Intent i = new Intent(act, PINActivity.class);
                 i.putExtra(act.getPackageName() + ".SET", true);
                 startActivity(i);
                 act.finish();
                 return false;
             }
-            act.getSharedPreferences("Settings",0).edit().remove("pin").apply();
+            act.getSharedPreferences("Settings", 0).edit().remove("pin").apply();
             return true;
         });
 
         findPreference("version").setTitle(getString(R.string.app_version_format, Global.getVersionName(getContext())));
         initStoragePaths(findPreference(getString(R.string.key_save_path)));
-        double cacheSize=Global.recursiveSize(act.getCacheDir())/((double)(1<<20));
+        double cacheSize = Global.recursiveSize(act.getCacheDir()) / ((double) (1 << 20));
 
         //clear cache if pressed
-        findPreference(getString(R.string.key_cache)).setSummary(getString(R.string.cache_size_formatted,cacheSize));
+        findPreference(getString(R.string.key_cache)).setSummary(getString(R.string.cache_size_formatted, cacheSize));
         findPreference(getString(R.string.key_cache)).setOnPreferenceClickListener(preference -> {
-            MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(act);
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(act);
             builder.setTitle(R.string.clear_cache);
             builder.setPositiveButton(R.string.yes, (dialog, which) -> {
                 Global.recursiveDelete(act.getCacheDir());
                 act.runOnUiThread(() -> {
                     Toast.makeText(act, act.getString(R.string.cache_cleared), Toast.LENGTH_SHORT).show();
-                    double cSize=Global.recursiveSize(act.getCacheDir())/((double)(2<<20));
-                    findPreference(getString(R.string.key_cache)).setSummary(getString(R.string.cache_size_formatted,cSize));
+                    double cSize = Global.recursiveSize(act.getCacheDir()) / ((double) (2 << 20));
+                    findPreference(getString(R.string.key_cache)).setSummary(getString(R.string.cache_size_formatted, cSize));
                 });
 
-            }).setNegativeButton(R.string.no,null).setCancelable(true);
+            }).setNegativeButton(R.string.no, null).setCancelable(true);
             builder.show();
 
             return true;
         });
         findPreference(getString(R.string.key_update)).setOnPreferenceClickListener(preference -> {
-            new VersionChecker(act,false);
+            new VersionChecker(act, false);
             return true;
         });
         findPreference("bug").setOnPreferenceClickListener(preference -> {
@@ -175,7 +186,7 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
         });
         findPreference("copy_settings").setOnPreferenceClickListener(preference -> {
             try {
-                CopyToClipboardActivity.copyTextToClipboard(getContext(),getDataSettings(getContext()));
+                CopyToClipboardActivity.copyTextToClipboard(getContext(), getDataSettings(getContext()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -183,8 +194,8 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
         });
         findPreference("export").setOnPreferenceClickListener(preference -> {
             try {
-                String path= Exporter.exportData(act);
-                Toast.makeText(act, act.getString(R.string.exported_backup_file_toast,path), Toast.LENGTH_SHORT).show();
+                String path = Exporter.exportData(act);
+                Toast.makeText(act, act.getString(R.string.exported_backup_file_toast, path), Toast.LENGTH_SHORT).show();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -192,9 +203,9 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
         });
         findPreference("import").setOnPreferenceClickListener(preference -> {
             try {
-                Intent intent=new Intent(Intent.ACTION_GET_CONTENT).setType("application/zip");
-                act.startActivityForResult(intent,132);
-                //ExporterV2.importData(act,new File(Global.BACKUPFOLDER,"Backup.zip"));
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT).setType("application/zip");
+                act.startActivityForResult(intent, 132);
+                //ExporterV2.importData(act, new File(Global.BACKUPFOLDER, "Backup.zip"));
                 //System.exit(0);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -202,9 +213,9 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
             return true;
         });
 
-        ListPreference mirror=findPreference(getString(R.string.key_site_mirror));
+        ListPreference mirror = findPreference(getString(R.string.key_site_mirror));
         mirror.setSummary(
-                act.getSharedPreferences("Settings",Context.MODE_PRIVATE)
+                act.getSharedPreferences("Settings", Context.MODE_PRIVATE)
                         .getString(getString(R.string.key_site_mirror), Utility.ORIGINAL_URL)
         );
         mirror.setOnPreferenceChangeListener((preference, newValue) -> {
@@ -214,27 +225,26 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
     }
 
     private void changeLauncher(PackageManager pm, ComponentName name, boolean enabled) {
-        int enableState = enabled?PackageManager.COMPONENT_ENABLED_STATE_ENABLED:PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
-        pm.setComponentEnabledSetting(name,enableState,PackageManager.DONT_KILL_APP);
+        int enableState = enabled ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED : PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
+        pm.setComponentEnabledSetting(name, enableState, PackageManager.DONT_KILL_APP);
     }
 
-
     private void initStoragePaths(ListPreference storagePreference) {
-        if(Build.VERSION.SDK_INT<Build.VERSION_CODES.KITKAT||!Global.hasStoragePermission(act)){
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT || !Global.hasStoragePermission(act)) {
             storagePreference.setVisible(false);
             return;
         }
-        List<File>files=Global.getUsableFolders(act);
-        List<CharSequence>strings=new ArrayList<>(files.size());
-        for(File f:files){
-            if(f!=null)
+        List<File> files = Global.getUsableFolders(act);
+        List<CharSequence> strings = new ArrayList<>(files.size());
+        for (File f : files) {
+            if (f != null)
                 strings.add(f.getAbsolutePath());
         }
         storagePreference.setEntries(strings.toArray(new CharSequence[0]));
         storagePreference.setEntryValues(strings.toArray(new CharSequence[0]));
         storagePreference.setSummary(
-                act.getSharedPreferences("Settings",Context.MODE_PRIVATE)
-                        .getString(getString(R.string.key_save_path),Global.MAINFOLDER.getParent())
+                act.getSharedPreferences("Settings", Context.MODE_PRIVATE)
+                        .getString(getString(R.string.key_save_path), Global.MAINFOLDER.getParent())
         );
         storagePreference.setOnPreferenceChangeListener((preference, newValue) -> {
             preference.setSummary(newValue.toString());
@@ -242,48 +252,49 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
         });
     }
 
-    private String getDataSettings(Context context)throws IOException{
-        String[]names=new String[]{"Settings","ScrapedTags"};
-        StringWriter sw=new StringWriter();
-        JsonWriter writer=new JsonWriter(sw);
+    private String getDataSettings(Context context) throws IOException {
+        String[] names = new String[]{"Settings", "ScrapedTags"};
+        StringWriter sw = new StringWriter();
+        JsonWriter writer = new JsonWriter(sw);
         writer.setIndent("\t");
 
         writer.beginObject();
-        for(String name:names)
-            processSharedFromName(writer,context,name);
+        for (String name : names)
+            processSharedFromName(writer, context, name);
         writer.endObject();
 
         writer.flush();
-        String settings=sw.toString();
+        String settings = sw.toString();
         writer.close();
 
         LogUtility.d(settings);
         return settings;
     }
-    private void processSharedFromName(JsonWriter writer, Context context, String name)throws IOException{
+
+    private void processSharedFromName(JsonWriter writer, Context context, String name) throws IOException {
         writer.name(name);
         writer.beginObject();
-        SharedPreferences preferences=context.getSharedPreferences(name,0);
-        for(Map.Entry<String,?> entry: preferences.getAll().entrySet()){
-            writeEntry(writer,entry);
+        SharedPreferences preferences = context.getSharedPreferences(name, 0);
+        for (Map.Entry<String, ?> entry : preferences.getAll().entrySet()) {
+            writeEntry(writer, entry);
         }
         writer.endObject();
     }
-    private void writeEntry(JsonWriter writer, Map.Entry<String,?> entry)throws IOException {
+
+    private void writeEntry(JsonWriter writer, Map.Entry<String, ?> entry) throws IOException {
         writer.name(entry.getKey());
-             if(entry.getValue() instanceof Integer) writer.value((Integer)entry.getValue());
-        else if(entry.getValue() instanceof Boolean) writer.value((Boolean)entry.getValue());
-        else if(entry.getValue() instanceof String ) writer.value((String) entry.getValue());
-        else if(entry.getValue() instanceof Long   ) writer.value((Long)   entry.getValue());
+        if (entry.getValue() instanceof Integer) writer.value((Integer) entry.getValue());
+        else if (entry.getValue() instanceof Boolean) writer.value((Boolean) entry.getValue());
+        else if (entry.getValue() instanceof String) writer.value((String) entry.getValue());
+        else if (entry.getValue() instanceof Long) writer.value((Long) entry.getValue());
     }
 
     @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey){
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         getPreferenceManager().setSharedPreferencesName("Settings");
     }
 
     private void columnMenu() {
         addPreferencesFromResource(R.xml.settings_column);
     }
-
 }
