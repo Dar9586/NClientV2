@@ -14,7 +14,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 public class LoginWebView extends CustomWebView {
-    private HtmlFetcher fetcher = new HtmlFetcher() {
+    private final HtmlFetcher fetcher = new HtmlFetcher() {
         @Override
         public void fetchUrl(String url, String html) {
             Document jsoup = Jsoup.parse(html);

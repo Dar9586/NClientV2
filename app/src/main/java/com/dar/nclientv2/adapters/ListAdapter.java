@@ -80,7 +80,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
             params.height = Global.getGalleryHeight();
             card.setLayoutParams(params);
         }
-        holder.overlay.setVisibility((queryString != null && ent.hasIgnoredTags(queryString)) ? View.VISIBLE : View.GONE);
+        holder.overlay.setVisibility(queryString != null && ent.hasIgnoredTags(queryString) ? View.VISIBLE : View.GONE);
         loadGallery(holder, ent);
         holder.pages.setVisibility(View.GONE);
         holder.title.setText(ent.getTitle());
@@ -117,7 +117,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
             if (context instanceof MainActivity)
                 ((MainActivity) context).setPositionOpenedGallery(holder.getAdapterPosition());
             downloadGallery(ent);
-            holder.overlay.setVisibility((queryString != null && ent.hasIgnoredTags(queryString)) ? View.VISIBLE : View.GONE);
+            holder.overlay.setVisibility(queryString != null && ent.hasIgnoredTags(queryString) ? View.VISIBLE : View.GONE);
         });
         holder.overlay.setOnClickListener(v -> holder.overlay.setVisibility(View.GONE));
         holder.layout.setOnLongClickListener(v -> {

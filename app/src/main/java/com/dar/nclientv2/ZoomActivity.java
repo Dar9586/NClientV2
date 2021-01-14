@@ -219,7 +219,7 @@ public class ZoomActivity extends GeneralActivity {
     }
 
     private void changeClosePage(boolean next) {
-        if (next && mViewPager.getCurrentItem() < (mViewPager.getAdapter().getCount() - 1))
+        if (next && mViewPager.getCurrentItem() < mViewPager.getAdapter().getCount() - 1)
             changePage(mViewPager.getCurrentItem() + 1);
         if (!next && mViewPager.getCurrentItem() > 0) changePage(mViewPager.getCurrentItem() - 1);
     }

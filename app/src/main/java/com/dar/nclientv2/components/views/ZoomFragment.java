@@ -65,7 +65,7 @@ public class ZoomFragment extends Fragment {
         //float widthTrueSize = width * size;//so also the width has been resized
         //float finalSize = ((float) Global.getDeviceWidth(getActivity()) / widthTrueSize);//scale the width
         float finalSize =
-                ((float) Global.getDeviceWidth(getActivity()) * height) /
+                (float) Global.getDeviceWidth(getActivity()) * height /
                         ((float) Global.getDeviceHeight(getActivity()) * width);
         finalSize = Math.max(finalSize, Global.getDefaultZoom());
         finalSize = Math.min(finalSize, MAX_SCALE);

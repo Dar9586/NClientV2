@@ -208,7 +208,7 @@ public class InspectorV3 extends Thread implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         if (sortType != null)
-            dest.writeByte((byte) (sortType.ordinal()));
+            dest.writeByte((byte) sortType.ordinal());
         else dest.writeByte((byte) SortType.RECENT_ALL_TIME.ordinal());
         dest.writeByte((byte) (custom ? 1 : 0));
         dest.writeInt(page);

@@ -198,7 +198,7 @@ public class Global {
 
     private static void initGallerySize() {
         galleryHeight = screenSize.y / 2;
-        galleryWidth = (galleryHeight * 3) / 4;//the ratio is 3:4
+        galleryWidth = galleryHeight * 3 / 4;//the ratio is 3:4
     }
 
     public static int getScreenHeight() {
@@ -387,8 +387,8 @@ public class Global {
         String[] supportedLangCodes = context.getResources().getStringArray(R.array.language_data);
         // array.stream is not supported on Android <6.0
         for (Locale availableLocale : availableLocales) {
-            if ((availableLocale.getCountry().equalsIgnoreCase(targetLocale.getCountry()) &&
-                    availableLocale.getLanguage().equalsIgnoreCase(targetLocale.getLanguage())) || targetLocale.getCountry().equals(""))
+            if (availableLocale.getCountry().equalsIgnoreCase(targetLocale.getCountry()) &&
+                    availableLocale.getLanguage().equalsIgnoreCase(targetLocale.getLanguage()) || targetLocale.getCountry().equals(""))
                 for (String supportedLangCode : supportedLangCodes) {
                     if (getLocaleCode(targetLocale).equalsIgnoreCase(supportedLangCode))
                         return true;
@@ -421,7 +421,7 @@ public class Global {
     }
 
     public static float getDefaultZoom() {
-        return ((float) defaultZoom) / 100f;
+        return (float) defaultZoom / 100f;
     }
 
     public static TitleType getTitleType() {
@@ -504,7 +504,7 @@ public class Global {
     public static void initStorage(Context context) {
         if (!Global.hasStoragePermission(context)) return;
         Global.initFilesTree(context);
-        boolean[] bools = new boolean[]{
+        boolean[] bools = {
                 Global.MAINFOLDER.mkdirs(),
                 Global.DOWNLOADFOLDER.mkdir(),
                 Global.PDFFOLDER.mkdir(),
@@ -532,22 +532,22 @@ public class Global {
     }
 
     public static void updateOnlyLanguage(@NonNull Context context, @Nullable Language type) {
-        context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_only_language)), type.ordinal()).apply();
+        context.getSharedPreferences("Settings", 0).edit().putInt(context.getString(R.string.key_only_language), type.ordinal()).apply();
         onlyLanguage = type;
     }
 
     public static void updateSortType(@NonNull Context context, @NonNull SortType sortType) {
-        context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_by_popular)), sortType.ordinal()).apply();
+        context.getSharedPreferences("Settings", 0).edit().putInt(context.getString(R.string.key_by_popular), sortType.ordinal()).apply();
         Global.sortType = sortType;
     }
 
     public static void updateColumnCount(@NonNull Context context, int count) {
-        context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_column_count)), count).apply();
+        context.getSharedPreferences("Settings", 0).edit().putInt(context.getString(R.string.key_column_count), count).apply();
         columnCount = count;
     }
 
     public static void updateMaxId(@NonNull Context context, int id) {
-        context.getSharedPreferences("Settings", 0).edit().putInt(context.getString((R.string.key_max_id)), id).apply();
+        context.getSharedPreferences("Settings", 0).edit().putInt(context.getString(R.string.key_max_id), id).apply();
         maxId = id;
     }
 
@@ -669,7 +669,7 @@ public class Global {
         UiModeManager manager = (UiModeManager) activity.getSystemService(Context.UI_MODE_SERVICE);
         if (manager != null) manager.setNightMode(UiModeManager.MODE_NIGHT_NO);
 
-        c.uiMode &= (~Configuration.UI_MODE_NIGHT_MASK);//clear night mode bits
+        c.uiMode &= ~Configuration.UI_MODE_NIGHT_MASK;//clear night mode bits
         c.uiMode |= Configuration.UI_MODE_NIGHT_NO; //disable night mode
     }
 

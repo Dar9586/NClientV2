@@ -85,6 +85,7 @@ public class MainActivity extends BaseActivity
         }
     };
     private final Handler changeLanguageTimeHandler = new Handler();
+    private final CustomWebView webView = null;
     public ListAdapter adapter;
     private final InspectorV3.InspectorResponse addDataset = new MainInspectorResponse() {
         @Override
@@ -121,7 +122,6 @@ public class MainActivity extends BaseActivity
     };
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
-    private CustomWebView webView = null;
     private Setting setting = null;
 
     @Override
@@ -239,7 +239,7 @@ public class MainActivity extends BaseActivity
      * Check if the last gallery has been shown
      **/
     private boolean lastGalleryReached(CustomGridLayoutManager manager) {
-        return manager.findLastVisibleItemPosition() >= (recycler.getAdapter().getItemCount() - 1 - manager.getSpanCount());
+        return manager.findLastVisibleItemPosition() >= recycler.getAdapter().getItemCount() - 1 - manager.getSpanCount();
     }
 
     private void initializeNavigationView() {

@@ -270,7 +270,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                 int cellWidth = holder.itemView.getWidth();// this will give you cell width dynamically
                 LogUtility.d(String.format(Locale.US, "Setting: %d,%s", cellWidth, maxSize.toString()));
                 if (maxSize.getWidth() > 10 && maxSize.getHeight() > 10) {
-                    int hei = (maxSize.getHeight() * cellWidth) / maxSize.getWidth();
+                    int hei = maxSize.getHeight() * cellWidth / maxSize.getWidth();
                     if (hei >= 100)
                         setMaxImageSize(new Size(cellWidth, hei));
                 }

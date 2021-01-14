@@ -39,7 +39,7 @@ public class GalleryData implements Parcelable {
     private Date uploadDate = new Date(0);
     private int favoriteCount, id, pageCount, mediaId;
     @NonNull
-    private String[] titles = new String[]{"", "", ""};
+    private String[] titles = {"", "", ""};
     @NonNull
     private TagList tags = new TagList();
     @NonNull

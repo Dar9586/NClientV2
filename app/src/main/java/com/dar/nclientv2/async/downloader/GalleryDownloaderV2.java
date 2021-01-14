@@ -63,7 +63,7 @@ public class GalleryDownloaderV2 {
         if (usableFolder(folder, id)) return folder;
         int i = 1;
         do {
-            folder = new File(downloadfolder, pathTitle + DUPLICATE_EXTENSION + (i++));
+            folder = new File(downloadfolder, pathTitle + DUPLICATE_EXTENSION + i++);
         } while (!usableFolder(folder, id));
         return folder;
     }
@@ -108,7 +108,7 @@ public class GalleryDownloaderV2 {
 
     public int getPercentage() {
         if (gallery == null || urls.size() == 0) return 0;
-        return ((getTotalPage() - urls.size()) * 100) / getTotalPage();
+        return (getTotalPage() - urls.size()) * 100 / getTotalPage();
     }
 
     private void onStart() {

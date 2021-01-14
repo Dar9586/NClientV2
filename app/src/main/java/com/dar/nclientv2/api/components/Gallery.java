@@ -51,10 +51,10 @@ public class Gallery extends GenericGallery {
     private static final int MAX_COMMENT = 50;
     @NonNull
     private final GalleryData galleryData;
+    private final boolean onlineFavorite;
     private List<SimpleGallery> related = new ArrayList<>();
     private Language language = Language.UNKNOWN;
     private Size maxSize = new Size(0, 0), minSize = new Size(Integer.MAX_VALUE, Integer.MAX_VALUE);
-    private boolean onlineFavorite;
 
     public Gallery(Context context, String json, Elements related, boolean isFavorite) throws IOException {
         LogUtility.d("Found JSON: " + json);

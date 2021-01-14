@@ -150,7 +150,7 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
 
         findPreference("version").setTitle(getString(R.string.app_version_format, Global.getVersionName(getContext())));
         initStoragePaths(findPreference(getString(R.string.key_save_path)));
-        double cacheSize = Global.recursiveSize(act.getCacheDir()) / ((double) (1 << 20));
+        double cacheSize = Global.recursiveSize(act.getCacheDir()) / (double) (1 << 20);
 
         //clear cache if pressed
         findPreference(getString(R.string.key_cache)).setSummary(getString(R.string.cache_size_formatted, cacheSize));
@@ -161,7 +161,7 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
                 Global.recursiveDelete(act.getCacheDir());
                 act.runOnUiThread(() -> {
                     Toast.makeText(act, act.getString(R.string.cache_cleared), Toast.LENGTH_SHORT).show();
-                    double cSize = Global.recursiveSize(act.getCacheDir()) / ((double) (2 << 20));
+                    double cSize = Global.recursiveSize(act.getCacheDir()) / (double) (2 << 20);
                     findPreference(getString(R.string.key_cache)).setSummary(getString(R.string.cache_size_formatted, cSize));
                 });
 
@@ -253,7 +253,7 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
     }
 
     private String getDataSettings(Context context) throws IOException {
-        String[] names = new String[]{"Settings", "ScrapedTags"};
+        String[] names = {"Settings", "ScrapedTags"};
         StringWriter sw = new StringWriter();
         JsonWriter writer = new JsonWriter(sw);
         writer.setIndent("\t");

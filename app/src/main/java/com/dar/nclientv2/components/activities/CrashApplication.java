@@ -95,7 +95,7 @@ public class CrashApplication extends Application {
         //add ALL type for languages and replace null
         int val = preferences.getInt(getString(R.string.key_only_language), Language.ALL.ordinal());
         if (val == -1) val = Language.ALL.ordinal();
-        editor.putInt(getString((R.string.key_only_language)), val);
+        editor.putInt(getString(R.string.key_only_language), val);
         if ("0.0.0".equals(oldVersion))
             editor.putBoolean(getString(R.string.key_check_update), signatureCheck());
         changeByPopularType(preferences, editor);

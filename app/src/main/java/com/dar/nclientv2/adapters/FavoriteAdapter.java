@@ -142,7 +142,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 constraint = constraint.toString().toLowerCase(Locale.US);
-                if ((!force && lastQuery.equals(constraint))) return null;
+                if (!force && lastQuery.equals(constraint)) return null;
                 LogUtility.d("FILTERING");
                 setRefresh(true);
                 FilterResults results = new FilterResults();

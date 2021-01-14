@@ -11,7 +11,7 @@ import java.util.List;
 
 public class StatusManager {
     public static final String DEFAULT_STATUS = "None";
-    private static HashMap<String, Status> statusMap = new HashMap<>();
+    private static final HashMap<String, Status> statusMap = new HashMap<>();
 
     public static Status getByName(String name) {
         return statusMap.get(name);
