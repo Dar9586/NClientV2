@@ -26,11 +26,11 @@ import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.components.TagList;
 import com.dar.nclientv2.api.enums.SpecialTagIds;
 import com.dar.nclientv2.api.enums.TagType;
-import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.GlideX;
 import com.dar.nclientv2.components.classes.Size;
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
+import com.dar.nclientv2.files.GalleryFolder;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.targets.BitmapTarget;
 import com.dar.nclientv2.utility.ImageDownloadUtility;
@@ -91,7 +91,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         }
     }
     private final GenericGallery gallery;
-    private final File directory;
+    private final GalleryFolder directory;
     public GalleryAdapter(GalleryActivity cont, GenericGallery gallery,int colCount) {
         this.context=cont;
         this.gallery=gallery;
@@ -99,8 +99,12 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         minSize =gallery.getMinSize();
         setColCount(colCount);
         if(Global.hasStoragePermission(cont)){
-            if(gallery.getId()!=-1)directory=Global.findGalleryFolder(context, gallery.getId());
-            else directory=new File(Global.DOWNLOADFOLDER,gallery.getTitle());
+            if(gallery.getId()!=-1){
+                File f=Global.findGalleryFolder(context, gallery.getId());
+                if(f!=null)directory=new GalleryFolder(f);
+                else directory=null;
+            }
+            else directory=new GalleryFolder(gallery.getTitle());
         }else directory=null;
         LogUtility.d("Max maxSize: "+maxSize+", min maxSize: "+gallery.getMinSize());
     }
@@ -112,7 +116,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         LogUtility.d("NEW POLICY: "+policy);
     }
 
-    public File getDirectory() {
+    public GalleryFolder getDirectory() {
         return directory;
     }
 
@@ -366,10 +370,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     }
 
     private void loadImageOnPolicy(ImageView imgView, int pos) {
-            final File file;
+            final File file=directory==null?null:directory.getPage(pos);
             int angle=angles.get(pos);
-            if(gallery.isLocal())file=((LocalGallery)gallery).getPage(pos);
-            else file= LocalGallery.getPage(directory,pos);
 
             if(policy==Policy.FULL) {
                 BitmapTarget target=null;

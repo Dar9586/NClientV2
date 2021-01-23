@@ -2,6 +2,7 @@ package com.dar.nclientv2.api.components;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Parcel;
 import android.util.JsonReader;
 import android.util.JsonWriter;
@@ -18,6 +19,8 @@ import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.classes.Size;
+import com.dar.nclientv2.files.GalleryFolder;
+import com.dar.nclientv2.files.PageFile;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
@@ -36,14 +39,13 @@ import java.util.Locale;
 import java.util.Set;
 
 public class Gallery extends GenericGallery{
-    private static final int MAX_COMMENT=50;
     @NonNull
     private final GalleryData galleryData;
     private List<SimpleGallery>related=new ArrayList<>();
     private Language language= Language.UNKNOWN;
     private Size maxSize=new Size(0,0),minSize=new Size(Integer.MAX_VALUE,Integer.MAX_VALUE);
     private boolean onlineFavorite;
-
+    private final @Nullable GalleryFolder folder;
 
     public Gallery(Context context, String json, Elements related, boolean isFavorite) throws IOException{
         LogUtility.d("Found JSON: "+json);
@@ -51,6 +53,7 @@ public class Gallery extends GenericGallery{
         this.related =new ArrayList<>(related.size());
         for(Element e:related) this.related.add(new SimpleGallery(context,e));
         galleryData=new GalleryData(reader);
+        folder=GalleryFolder.fromId(context,galleryData.getId());
         calculateSizes(galleryData);
         language=loadLanguage(getTags());
         onlineFavorite=isFavorite;
@@ -73,6 +76,7 @@ public class Gallery extends GenericGallery{
         minSize.setWidth (cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.MIN_WIDTH)));
         minSize.setHeight(cursor.getInt(Queries.getColumnFromName(cursor,Queries.GalleryTable.MIN_HEIGHT)));
         galleryData=new GalleryData(cursor,tags);
+        folder=GalleryFolder.fromId(null,galleryData.getId());
         this.language=loadLanguage(tags);
         onlineFavorite=false;
         LogUtility.d(toString());
@@ -96,26 +100,37 @@ public class Gallery extends GenericGallery{
     public static String getPathTitle(@Nullable String title){
         return getPathTitle(title,"");
     }
-    public String getCover(){
+    public Uri getCover(){
         if(Global.getDownloadPolicy()== Global.DataUsageType.THUMBNAIL)return getThumbnail();
-        return String.format(Locale.US,"https://t."+Utility.getHost()+"/galleries/%d/cover.%s",getMediaId(),galleryData.getCover().extToString());
+        return Uri.parse(String.format(Locale.US,"https://t."+ Utility.getHost()+"/galleries/%d/cover.%s",getMediaId(),galleryData.getCover().extToString()));
     }
     public ImageExt getThumb(){
         return galleryData.getThumbnail().getImageExt();
     }
-    public String getThumbnail(){
-        return String.format(Locale.US,"https://t."+Utility.getHost()+"/galleries/%d/thumb.%s",getMediaId(),galleryData.getThumbnail().extToString());
+    public Uri getThumbnail(){
+        return Uri.parse(String.format(Locale.US,"https://t."+ Utility.getHost()+"/galleries/%d/thumb.%s",getMediaId(),galleryData.getThumbnail().extToString()));
     }
 
-    public String getPageUrl(int page){
+    private @Nullable Uri getFileUri(int page){
+        if(folder==null)return null;
+        PageFile f=folder.getPage(page+1);
+        if(f==null)return null;
+        return f.toUri();
+    }
+
+    public Uri getPageUrl(int page){
         if(Global.getDownloadPolicy()== Global.DataUsageType.THUMBNAIL)return getLowPage(page);
+        Uri uri=getFileUri(page);
+        if(uri!=null)return uri;
         return getHighPage(page);
     }
-    public String getHighPage(int page){
-        return String.format(Locale.US,"https://i."+Utility.getHost()+"/galleries/%d/%d.%s",getMediaId(),page+1,getPageExtension(page));
+    public Uri getHighPage(int page){
+        return Uri.parse(String.format(Locale.US,"https://i."+ Utility.getHost()+"/galleries/%d/%d.%s",getMediaId(),page+1,getPageExtension(page)));
     }
-    public String getLowPage(int page){
-        return String.format(Locale.US,"https://t."+ Utility.getHost()+"/galleries/%d/%dt.%s",getMediaId(),page+1,getPageExtension(page));
+    public Uri getLowPage(int page){
+        Uri uri=getFileUri(page);
+        if(uri!=null)return uri;
+        return Uri.parse(String.format(Locale.US,"https://t."+ Utility.getHost()+"/galleries/%d/%dt.%s",getMediaId(),page+1,getPageExtension(page)));
     }
 
     public String getPageExtension(int page) {
@@ -125,13 +140,7 @@ public class Gallery extends GenericGallery{
     private Page getPage(int index){
         return galleryData.getPage(index);
     }
-    @Nullable
-    @Override
-    public String getPageURI(int page) {
-        if(page<1||page>getPageCount())
-            return null;
-        return getPageUrl(page-1);
-    }
+
 
     public SimpleGallery toSimpleGallery() {
         return new SimpleGallery(this);
@@ -170,6 +179,11 @@ public class Gallery extends GenericGallery{
     @Override
     public Size getMinSize() {
         return minSize;
+    }
+
+    @Override
+    public GalleryFolder getGalleryFolder() {
+        return folder;
     }
 
     @NonNull
@@ -245,6 +259,7 @@ public class Gallery extends GenericGallery{
     private Gallery(){
         onlineFavorite=false;
         galleryData = GalleryData.fakeData();
+        folder=null;
     }
     public static Gallery emptyGallery(){
         Gallery g=new Gallery();
@@ -322,6 +337,7 @@ public class Gallery extends GenericGallery{
         dest.writeParcelable(maxSize,flags);
         dest.writeParcelable(minSize,flags);
         dest.writeParcelable(galleryData,flags);
+        dest.writeParcelable(folder,flags);
         dest.writeTypedList(related);
         dest.writeByte((byte)(onlineFavorite?1:0));
     }
@@ -329,6 +345,7 @@ public class Gallery extends GenericGallery{
         maxSize=in.readParcelable(Size.class.getClassLoader());
         minSize=in.readParcelable(Size.class.getClassLoader());
         galleryData=in.readParcelable(GalleryData.class.getClassLoader());
+        folder=in.readParcelable(GalleryFolder.class.getClassLoader());
         in.readTypedList(related,SimpleGallery.CREATOR);
         onlineFavorite=in.readByte()==1;
         language=loadLanguage(getTags());
@@ -338,6 +355,7 @@ public class Gallery extends GenericGallery{
         return galleryData.createPagePath();
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Gallery{" +

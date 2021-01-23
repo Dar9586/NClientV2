@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 
 import androidx.core.app.NotificationCompat;
 
@@ -83,7 +84,7 @@ public class GalleryDownloaderManager {
         this.downloaderV2=new GalleryDownloaderV2(context,gallery,start,end);
         this.downloaderV2.addObserver(observer);
     }
-    public GalleryDownloaderManager(Context context,String title,String thumbnail,int id){
+    public GalleryDownloaderManager(Context context, String title, Uri thumbnail, int id){
         this.context=context;
         this.downloaderV2=new GalleryDownloaderV2(context,title,thumbnail,id);
         this.downloaderV2.addObserver(observer);

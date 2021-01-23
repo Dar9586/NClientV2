@@ -1,6 +1,7 @@
 package com.dar.nclientv2.components.views;
 
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,8 +21,8 @@ import com.bumptech.glide.request.transition.Transition;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
-import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.components.GlideX;
+import com.dar.nclientv2.files.GalleryFolder;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.LogUtility;
 import com.github.chrisbanes.photoview.PhotoView;
@@ -33,8 +34,8 @@ public class ZoomFragment extends Fragment {
     private int page,galleryId;
     private PhotoView photoView=null;
     private ImageButton retryButton;
-    private File galleryFolder=null;
-    private String url;
+    private GalleryFolder galleryFolder=null;
+    private Uri url;
     private int degree=0;
     private View.OnClickListener clickListener;
     private CustomTarget<Drawable>target=null;
@@ -45,13 +46,13 @@ public class ZoomFragment extends Fragment {
     }
 
 
-    public static ZoomFragment newInstance(GenericGallery gallery, int page,@Nullable File directory) {
+    public static ZoomFragment newInstance(GenericGallery gallery, int page,@Nullable GalleryFolder directory) {
         Bundle args = new Bundle();
         if(Global.useRtl())page=gallery.getPageCount()-1-page;
         args.putInt("PAGE",page);
         args.putInt("ID",gallery.getId());
-        args.putString("URL",gallery.isLocal()?null:((Gallery)gallery).getPageUrl(page));
-        args.putString("FILE",directory==null?null:directory.getAbsolutePath());
+        args.putString("URL",gallery.isLocal()?null:((Gallery)gallery).getPageUrl(page).toString());
+        args.putParcelable("FOLDER",directory);
         ZoomFragment fragment = new ZoomFragment();
         fragment.setArguments(args);
         return fragment;
@@ -79,12 +80,11 @@ public class ZoomFragment extends Fragment {
         photoView=rootView.findViewById(R.id.image);
         retryButton=rootView.findViewById(R.id.imageView);
         //read arguments
-        String path=getArguments().getString("FILE");
         page=getArguments().getInt("PAGE",0);
         galleryId=getArguments().getInt("ID",0);
-        url=getArguments().getString("URL");
-        LogUtility.d("Requested: "+page);
-        if(path!=null)galleryFolder=new File(path);
+        String str=getArguments().getString("URL");
+        url= str==null?null:Uri.parse(str);
+        galleryFolder=getArguments().getParcelable("FOLDER");
         photoView.setAllowParentInterceptOnEdge(true);
         photoView.setOnClickListener(v -> {
             if(clickListener!=null)clickListener.onClick(v);
@@ -152,9 +152,10 @@ public class ZoomFragment extends Fragment {
         RequestBuilder<Drawable> request;
         RequestManager glide=GlideX.with(photoView);
         if(glide==null)return null;
-        File file=LocalGallery.getPage(galleryFolder,page+1);
+        File file=galleryFolder==null?null:galleryFolder.getPage(page+1);
         if(file!=null){
             request=glide.load(file);
+            LogUtility.d("Requested file glide: "+ file);
         }else {
             if (url==null) request = glide.load(R.mipmap.ic_launcher);
             else {

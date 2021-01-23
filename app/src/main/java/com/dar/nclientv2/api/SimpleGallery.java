@@ -2,6 +2,7 @@ package com.dar.nclientv2.api;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Parcel;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.TagStatus;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.classes.Size;
+import com.dar.nclientv2.files.GalleryFolder;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
@@ -38,11 +40,6 @@ public class SimpleGallery extends GenericGallery {
         mediaId=in.readInt();
         thumbnail=ImageExt.values()[in.readByte()];
         language=Language.values()[in.readByte()];
-    }
-    @NonNull
-    @Override
-    public String getPageURI(int page) {
-        return getThumbnail();
     }
 
     public SimpleGallery(Cursor c) {
@@ -150,8 +147,8 @@ public class SimpleGallery extends GenericGallery {
         }
     };
 
-    public String getThumbnail(){
-        return String.format(Locale.US,"https://t."+ Utility.getHost()+"/galleries/%d/thumb.%s",mediaId,extToString(thumbnail));
+    public Uri getThumbnail(){
+        return Uri.parse(String.format(Locale.US,"https://t."+ Utility.getHost()+"/galleries/%d/thumb.%s",mediaId,extToString(thumbnail)));
     }
     private static String extToString(ImageExt ext){
         switch(ext){
@@ -167,6 +164,11 @@ public class SimpleGallery extends GenericGallery {
 
     public ImageExt getThumb() {
         return thumbnail;
+    }
+
+    @Override
+    public GalleryFolder getGalleryFolder() {
+        return null;
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.dar.nclientv2.async.downloader;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,7 +30,7 @@ public class DownloadGalleryV2 extends JobIntentService {
             }else downloadGallery(context,null,null,gallery.getId());
         }
     }
-    private static void downloadGallery(Context context,String title,String thumbnail, int id){
+    private static void downloadGallery(Context context, String title, Uri thumbnail, int id){
         if(id<1)return;
         DownloadQueue.add(new GalleryDownloaderManager(context,title,thumbnail,id));
         startWork(context);

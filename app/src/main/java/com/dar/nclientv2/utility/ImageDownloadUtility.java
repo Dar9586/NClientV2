@@ -3,6 +3,7 @@ package com.dar.nclientv2.utility;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.widget.ImageView;
 
 import androidx.annotation.DrawableRes;
@@ -18,11 +19,11 @@ import com.dar.nclientv2.targets.BitmapTarget;
 import java.io.File;
 
 public class ImageDownloadUtility {
-    public static void preloadImage(Context context, Object object){
+    public static void preloadImage(Context context, Uri url){
         if(Global.getDownloadPolicy()== Global.DataUsageType.NONE)return;
         RequestManager manager= GlideX.with(context);
-        if(manager!=null)manager.load(object).preload();
-
+        LogUtility.d("Requested url glide: "+ url);
+        if(manager!=null)manager.load(url).preload();
     }
     @Nullable
     public static BitmapTarget loadImageOp(Context context, ImageView view, File file, int angle){
@@ -31,11 +32,12 @@ public class ImageDownloadUtility {
         Drawable logo=Global.getLogo(context.getResources());
         BitmapTarget target=new BitmapTarget(view);
         glide.asBitmap().transform(new Rotate(angle)).error(logo).placeholder(logo).load(file).into(target);
+        LogUtility.d("Requested file glide: "+ file);
         return target;
     }
     @Nullable
     public static BitmapTarget loadImageOp(Context context,ImageView view,Gallery gallery,int page,int angle){
-        String url=getUrlForGallery(gallery, page, true);
+        Uri url=getUrlForGallery(gallery, page, true);
         LogUtility.d("Requested url glide: "+ url);
         if(Global.getDownloadPolicy()== Global.DataUsageType.NONE){loadLogo(view);return null;}
         RequestManager glide=GlideX.with(context);
@@ -50,7 +52,7 @@ public class ImageDownloadUtility {
                 .into(target);
         return target;
     }
-    private static String getUrlForGallery(Gallery gallery, int page, boolean shouldFull){
+    private static Uri getUrlForGallery(Gallery gallery, int page, boolean shouldFull){
         return shouldFull? gallery.getPageUrl(page):gallery.getLowPage(page);
     }
 
@@ -62,7 +64,7 @@ public class ImageDownloadUtility {
         imageView.setImageDrawable(Global.getLogo(imageView.getResources()));
     }
 
-    public static void loadImage(Activity activity,String url,ImageView imageView){
+    public static void loadImage(Activity activity,Uri url,ImageView imageView){
         LogUtility.d("Requested url glide: "+ url);
         if(activity.isFinishing()||Global.isDestroyed(activity))return;
         if(Global.getDownloadPolicy()== Global.DataUsageType.NONE){loadLogo(imageView);return;}
@@ -83,6 +85,7 @@ public class ImageDownloadUtility {
                 .placeholder(logo)
                 .error(logo)
                 .into(imageView);
+        LogUtility.d("Requested file glide: "+ file);
     }
     /**
      * Load Resource using id

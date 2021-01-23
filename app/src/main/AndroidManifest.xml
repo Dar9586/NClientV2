@@ -12,6 +12,8 @@
     <application
         android:name=".components.activities.CrashApplication"
         android:allowBackup="true"
+        android:requestLegacyExternalStorage="true"
+        android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher"
         android:fullBackupContent="@xml/backup_content"

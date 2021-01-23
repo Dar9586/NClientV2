@@ -3,6 +3,7 @@ package com.dar.nclientv2.async.downloader;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -62,7 +63,8 @@ public class GalleryDownloaderV2 {
     private final Context context;
     private Status status=Status.NOT_STARTED;
     private final int id;
-    private String title, thumbnail;
+    private String title;
+    private Uri thumbnail;
 
     private int start=-1,end=-1;
     private Gallery gallery;
@@ -103,7 +105,7 @@ public class GalleryDownloaderV2 {
         for(DownloadObserver observer:observers)observer.triggerPauseDownload(this);
     }
 
-    public GalleryDownloaderV2(Context context, @Nullable String title,@Nullable String thumbnail, int id) {
+    public GalleryDownloaderV2(Context context, @Nullable String title, @Nullable Uri thumbnail, int id) {
         this.context=context;
         this.id = id;
         this.thumbnail = thumbnail;
@@ -187,7 +189,7 @@ public class GalleryDownloaderV2 {
         }
     }
 
-    public String getThumbnail() {
+    public Uri getThumbnail() {
         return thumbnail;
     }
 
@@ -290,7 +292,7 @@ public class GalleryDownloaderV2 {
 
     private void createPages() {
         for(int i=start;i<=end&&i<gallery.getPageCount();i++)
-            urls.add(new PageContainer(i+1,gallery.getHighPage(i),gallery.getPageExtension(i)));
+            urls.add(new PageContainer(i+1,gallery.getHighPage(i).toString(),gallery.getPageExtension(i)));
     }
 
     private void createFolder() {
