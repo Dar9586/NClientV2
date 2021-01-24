@@ -51,7 +51,6 @@
     <string name="hashtag" translatable="false">#</string>
     <string name="page_format" formatted="true" translatable="false">%d/%d</string>
     <string name="percentage_format" formatted="true" translatable="false">%d%%</string>
-    <string name="app_name" translatable="false">NClientV2</string>
     <string name="page_switcher_placeholder" translatable="false">0/0</string>
     <string name="page_placeholder" translatable="false">999/999</string>
     <string name="key_favorite_limit" translatable="false">favorite_limit</string>
