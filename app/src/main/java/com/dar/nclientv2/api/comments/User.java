@@ -1,5 +1,6 @@
 package com.dar.nclientv2.api.comments;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.JsonReader;
@@ -68,8 +69,9 @@ public class User implements Parcelable {
         return id;
     }
 
-    public String getAvatarUrl() {
-        return String.format(Locale.US, "https://i.%s/%s", Utility.getHost(), avatarUrl);
+
+    public Uri getAvatarUrl() {
+        return Uri.parse(String.format(Locale.US,"https://i.%s/%s", Utility.getHost(),avatarUrl));
     }
 
     public String getUsername() {

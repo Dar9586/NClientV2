@@ -60,7 +60,7 @@ Paypal|Liberapay|Bitcoin
 ## License
 
 ```text
-   Copyright 2020 Dar9586
+   Copyright 2021 Dar9586
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

@@ -607,9 +607,9 @@ public class Global {
         }
     }
 
-    public static List<File> getUsableFolders(Context context) {
-        List<File> strings = new ArrayList<>();
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
+    public static List<File>getUsableFolders(Context context){
+        List<File>strings=new ArrayList<>(3);
+        if(Build.VERSION.SDK_INT<Build.VERSION_CODES.R)
             strings.add(Environment.getExternalStorageDirectory());
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
@@ -655,12 +655,17 @@ public class Global {
     }
 
     @Nullable
-    public static File findGalleryFolder(Context context, int id) {
-        for (File dir : getUsableFolders(context)) {
-            dir = new File(dir, MAINFOLDER_NAME);
-            dir = new File(dir, DOWNLOADFOLDER_NAME);
-            File f = findGalleryFolder(dir, id);
-            if (f != null) return f;
+    private static File findGalleryFolder(int id){
+        return findGalleryFolder(Global.DOWNLOADFOLDER,id);
+    }
+    @Nullable
+    public static File findGalleryFolder(Context context, int id){
+        if(context==null)return findGalleryFolder(id);
+        for(File dir:getUsableFolders(context)){
+            dir=new File(dir,MAINFOLDER_NAME);
+            dir=new File(dir,DOWNLOADFOLDER_NAME);
+            File f=findGalleryFolder(dir,id);
+            if(f!=null)return f;
         }
         return null;
     }

@@ -32,6 +32,7 @@ import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.activities.GeneralActivity;
 import com.dar.nclientv2.components.views.VerticalViewPager;
 import com.dar.nclientv2.components.views.ZoomFragment;
+import com.dar.nclientv2.files.GalleryFolder;
 import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.LogUtility;
@@ -61,7 +62,8 @@ public class ZoomActivity extends GeneralActivity {
     private SeekBar seekBar;
     private Toolbar toolbar;
     private View view;
-    private File directory;
+
+    private GalleryFolder directory;
     private ScrollType scrollType = ScrollType.HORIZONTAL, tmpScrollType;
     private boolean up = false, down = false, side;
 
@@ -77,7 +79,8 @@ public class ZoomActivity extends GeneralActivity {
         //read arguments
         gallery = getIntent().getParcelableExtra(getPackageName() + ".GALLERY");
         final int page = getIntent().getExtras().getInt(getPackageName() + ".PAGE", 1) - 1;
-        directory = (File) getIntent().getSerializableExtra(getPackageName() + ".DIRECTORY");
+        directory= gallery.getGalleryFolder();
+
         //toolbar setup
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

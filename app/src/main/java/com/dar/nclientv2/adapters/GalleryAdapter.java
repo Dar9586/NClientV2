@@ -26,11 +26,11 @@ import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.components.TagList;
 import com.dar.nclientv2.api.enums.SpecialTagIds;
 import com.dar.nclientv2.api.enums.TagType;
-import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.GlideX;
 import com.dar.nclientv2.components.classes.Size;
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
+import com.dar.nclientv2.files.GalleryFolder;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.targets.BitmapTarget;
 import com.dar.nclientv2.utility.ImageDownloadUtility;
@@ -97,6 +97,37 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         applyProportionPolicy();
     }
 
+
+    private final GalleryActivity context;
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        final View master;
+        final TextView pageNumber;
+        ViewHolder(View v,Type type) {
+            super(v);
+            master=v.findViewById(R.id.master);
+            pageNumber=v.findViewById(R.id.page_number);
+            if(Global.useRtl())v.setRotationY(180);
+        }
+    }
+    private final GenericGallery gallery;
+    private final GalleryFolder directory;
+    public GalleryAdapter(GalleryActivity cont, GenericGallery gallery,int colCount) {
+        this.context=cont;
+        this.gallery=gallery;
+        maxSize =gallery.getMaxSize();
+        minSize =gallery.getMinSize();
+        setColCount(colCount);
+        if(Global.hasStoragePermission(cont)){
+            if(gallery.getId()!=-1){
+                File f=Global.findGalleryFolder(context, gallery.getId());
+                if(f!=null)directory=new GalleryFolder(f);
+                else directory=null;
+            }
+            else directory=new GalleryFolder(gallery.getTitle());
+        }else directory=null;
+        LogUtility.d("Max maxSize: "+maxSize+", min maxSize: "+gallery.getMinSize());
+    }
+
     private void applyProportionPolicy() {
         if (colCount == 1) policy = Policy.FULL;
         else if (maxSize.getHeight() - minSize.getHeight() < TOLERANCE) policy = Policy.MAX;
@@ -104,7 +135,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         LogUtility.d("NEW POLICY: " + policy);
     }
 
-    public File getDirectory() {
+    public GalleryFolder getDirectory() {
         return directory;
     }
 
@@ -365,27 +396,26 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     }
 
     private void loadImageOnPolicy(ImageView imgView, int pos) {
-        final File file;
-        int angle = angles.get(pos);
-        if (gallery.isLocal()) file = ((LocalGallery) gallery).getPage(pos);
-        else file = LocalGallery.getPage(directory, pos);
 
-        if (policy == Policy.FULL) {
-            BitmapTarget target = null;
-            if (file != null && file.exists())
-                target = ImageDownloadUtility.loadImageOp(context, imgView, file, angle);
-            else if (!gallery.isLocal()) {
-                Gallery ent = (Gallery) gallery;
-                target = ImageDownloadUtility.loadImageOp(context, imgView, ent, pos - 1, angle);
-            } else ImageDownloadUtility.loadImage(R.mipmap.ic_launcher, imgView);
-            if (target != null) map.put(imgView, target);
-        } else {
-            if (file != null && file.exists())
-                ImageDownloadUtility.loadImage(context, file, imgView);
-            else if (!gallery.isLocal()) {
-                Gallery ent = (Gallery) gallery;
-                ImageDownloadUtility.downloadPage(context, imgView, ent, pos - 1, false);
-            } else ImageDownloadUtility.loadImage(R.mipmap.ic_launcher, imgView);
+            final File file=directory==null?null:directory.getPage(pos);
+            int angle=angles.get(pos);
+
+            if(policy==Policy.FULL) {
+                BitmapTarget target=null;
+                if (file != null && file.exists()) target=ImageDownloadUtility.loadImageOp(context, imgView, file,angle);
+                else if (!gallery.isLocal()){
+                    Gallery ent = (Gallery) gallery;
+                    target= ImageDownloadUtility.loadImageOp(context, imgView, ent,pos-1,angle);
+                }else ImageDownloadUtility.loadImage(R.mipmap.ic_launcher, imgView);
+                if(target!=null)map.put(imgView,target);
+            }else{
+                if (file != null && file.exists()) ImageDownloadUtility.loadImage(context, file, imgView);
+                else if (!gallery.isLocal()){
+                    Gallery ent = (Gallery) gallery;
+                    ImageDownloadUtility.downloadPage(context,imgView,ent,pos-1,false);
+                }else ImageDownloadUtility.loadImage(R.mipmap.ic_launcher, imgView);
+            }
+
         }
     }
 

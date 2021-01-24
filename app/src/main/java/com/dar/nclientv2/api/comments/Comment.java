@@ -1,5 +1,6 @@
 package com.dar.nclientv2.api.comments;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.JsonReader;
@@ -92,8 +93,8 @@ public class Comment implements Parcelable {
     public String getUsername() {
         return poster.getUsername();
     }
-
-    public String getAvatarUrl() {
+  
+    public Uri getAvatarUrl(){
         return poster.getAvatarUrl();
     }
 }

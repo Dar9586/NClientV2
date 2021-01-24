@@ -3,6 +3,7 @@ package com.dar.nclientv2.async.downloader;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -88,6 +89,33 @@ public class GalleryDownloaderV2 {
     public File getFolder() {
         return folder;
     }
+  
+    public static class PageContainer{
+        public final int page;
+        public final String url,ext;
+
+        public PageContainer(int page, String url,String ext) {
+            this.page = page;
+            this.url = url;
+            this.ext=ext;
+        }
+        public String getPageName(){
+            return String.format(Locale.US,"%03d.%s",page,ext);
+        }
+    }
+    public enum Status{NOT_STARTED,DOWNLOADING,PAUSED,FINISHED,CANCELED}
+    private final Context context;
+    private Status status=Status.NOT_STARTED;
+    private final int id;
+    private String title;
+    private Uri thumbnail;
+
+    private int start=-1,end=-1;
+    private Gallery gallery;
+    private final CopyOnWriteArraySet<DownloadObserver> observers= new CopyOnWriteArraySet<>();
+    private final List<PageContainer> urls=new ArrayList<>();
+    private File folder;
+    private boolean initialized=false;
 
     public Gallery getGallery() {
         return gallery;
@@ -134,8 +162,11 @@ public class GalleryDownloaderV2 {
         for (DownloadObserver observer : observers) observer.triggerCancelDownload(this);
     }
 
-    private void onPause() {
-        for (DownloadObserver observer : observers) observer.triggerPauseDownload(this);
+    public GalleryDownloaderV2(Context context, @Nullable String title, @Nullable Uri thumbnail, int id) {
+        this.context=context;
+        this.id = id;
+        this.thumbnail = thumbnail;
+        this.title=Gallery.getPathTitle(title,context.getString(R.string.download_gallery));
     }
 
     public LocalGallery localGallery() {
@@ -195,7 +226,7 @@ public class GalleryDownloaderV2 {
         }
     }
 
-    public String getThumbnail() {
+    public Uri getThumbnail() {
         return thumbnail;
     }
 
@@ -321,8 +352,8 @@ public class GalleryDownloaderV2 {
     }
 
     private void createPages() {
-        for (int i = start; i <= end && i < gallery.getPageCount(); i++)
-            urls.add(new PageContainer(i + 1, gallery.getHighPage(i), gallery.getPageExtension(i)));
+        for(int i=start;i<=end&&i<gallery.getPageCount();i++)
+            urls.add(new PageContainer(i+1,gallery.getHighPage(i).toString(),gallery.getPageExtension(i)));
     }
 
     private void createFolder() {
