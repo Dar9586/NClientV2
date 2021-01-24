@@ -19,78 +19,89 @@ import com.dar.nclientv2.targets.BitmapTarget;
 import java.io.File;
 
 public class ImageDownloadUtility {
-    public static void preloadImage(Context context, Uri url){
-        if(Global.getDownloadPolicy()== Global.DataUsageType.NONE)return;
-        RequestManager manager= GlideX.with(context);
-        LogUtility.d("Requested url glide: "+ url);
-        if(manager!=null)manager.load(url).preload();
+    public static void preloadImage(Context context, Uri url) {
+        if (Global.getDownloadPolicy() == Global.DataUsageType.NONE) return;
+        RequestManager manager = GlideX.with(context);
+        LogUtility.d("Requested url glide: " + url);
+        if (manager != null) manager.load(url).preload();
     }
+
     @Nullable
-    public static BitmapTarget loadImageOp(Context context, ImageView view, File file, int angle){
-        RequestManager glide=GlideX.with(context);
-        if(glide==null)return null;
-        Drawable logo=Global.getLogo(context.getResources());
-        BitmapTarget target=new BitmapTarget(view);
+    public static BitmapTarget loadImageOp(Context context, ImageView view, File file, int angle) {
+        RequestManager glide = GlideX.with(context);
+        if (glide == null) return null;
+        Drawable logo = Global.getLogo(context.getResources());
+        BitmapTarget target = new BitmapTarget(view);
         glide.asBitmap().transform(new Rotate(angle)).error(logo).placeholder(logo).load(file).into(target);
-        LogUtility.d("Requested file glide: "+ file);
+        LogUtility.d("Requested file glide: " + file);
         return target;
     }
+
     @Nullable
-    public static BitmapTarget loadImageOp(Context context,ImageView view,Gallery gallery,int page,int angle){
-        Uri url=getUrlForGallery(gallery, page, true);
-        LogUtility.d("Requested url glide: "+ url);
-        if(Global.getDownloadPolicy()== Global.DataUsageType.NONE){loadLogo(view);return null;}
-        RequestManager glide=GlideX.with(context);
-        if(glide==null)return null;
-        Drawable logo=Global.getLogo(context.getResources());
-        BitmapTarget target=new BitmapTarget(view);
+    public static BitmapTarget loadImageOp(Context context, ImageView view, Gallery gallery, int page, int angle) {
+        Uri url = getUrlForGallery(gallery, page, true);
+        LogUtility.d("Requested url glide: " + url);
+        if (Global.getDownloadPolicy() == Global.DataUsageType.NONE) {
+            loadLogo(view);
+            return null;
+        }
+        RequestManager glide = GlideX.with(context);
+        if (glide == null) return null;
+        Drawable logo = Global.getLogo(context.getResources());
+        BitmapTarget target = new BitmapTarget(view);
         glide.asBitmap()
-                .transform(new Rotate(angle))
-                .error(logo)
-                .placeholder(logo)
-                .load(url)
-                .into(target);
+            .transform(new Rotate(angle))
+            .error(logo)
+            .placeholder(logo)
+            .load(url)
+            .into(target);
         return target;
     }
-    private static Uri getUrlForGallery(Gallery gallery, int page, boolean shouldFull){
-        return shouldFull? gallery.getPageUrl(page):gallery.getLowPage(page);
+
+    private static Uri getUrlForGallery(Gallery gallery, int page, boolean shouldFull) {
+        return shouldFull ? gallery.getPageUrl(page) : gallery.getLowPage(page);
     }
 
-    public static void downloadPage(Activity activity, ImageView imageView, Gallery gallery, int page, boolean shouldFull){
-        loadImage(activity,getUrlForGallery(gallery,page,shouldFull),imageView);
+    public static void downloadPage(Activity activity, ImageView imageView, Gallery gallery, int page, boolean shouldFull) {
+        loadImage(activity, getUrlForGallery(gallery, page, shouldFull), imageView);
     }
 
-    private static void loadLogo(ImageView imageView){
+    private static void loadLogo(ImageView imageView) {
         imageView.setImageDrawable(Global.getLogo(imageView.getResources()));
     }
 
-    public static void loadImage(Activity activity,Uri url,ImageView imageView){
-        LogUtility.d("Requested url glide: "+ url);
-        if(activity.isFinishing()||Global.isDestroyed(activity))return;
-        if(Global.getDownloadPolicy()== Global.DataUsageType.NONE){loadLogo(imageView);return;}
-        RequestManager glide=GlideX.with(activity);
-        if(glide==null)return;
-        int logo=Global.getLogo();
+    public static void loadImage(Activity activity, Uri url, ImageView imageView) {
+        LogUtility.d("Requested url glide: " + url);
+        if (activity.isFinishing() || Global.isDestroyed(activity)) return;
+        if (Global.getDownloadPolicy() == Global.DataUsageType.NONE) {
+            loadLogo(imageView);
+            return;
+        }
+        RequestManager glide = GlideX.with(activity);
+        if (glide == null) return;
+        int logo = Global.getLogo();
         glide.load(url)
-                .placeholder(logo)
-                .error(logo)
-                .into(imageView);
+            .placeholder(logo)
+            .error(logo)
+            .into(imageView);
     }
-    public static void loadImage(Activity activity,File file,ImageView imageView){
-        if(activity.isFinishing()||Global.isDestroyed(activity))return;
-        RequestManager glide=GlideX.with(activity);
-        if(glide==null)return;
-        int logo=Global.getLogo();
+
+    public static void loadImage(Activity activity, File file, ImageView imageView) {
+        if (activity.isFinishing() || Global.isDestroyed(activity)) return;
+        RequestManager glide = GlideX.with(activity);
+        if (glide == null) return;
+        int logo = Global.getLogo();
         glide.load(file)
-                .placeholder(logo)
-                .error(logo)
-                .into(imageView);
-        LogUtility.d("Requested file glide: "+ file);
+            .placeholder(logo)
+            .error(logo)
+            .into(imageView);
+        LogUtility.d("Requested file glide: " + file);
     }
+
     /**
      * Load Resource using id
-     * */
-    public static void loadImage(@DrawableRes int resource, ImageView imageView){
+     */
+    public static void loadImage(@DrawableRes int resource, ImageView imageView) {
         imageView.setImageResource(resource);
     }
 }

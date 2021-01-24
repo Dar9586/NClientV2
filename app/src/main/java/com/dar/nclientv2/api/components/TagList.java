@@ -17,13 +17,6 @@ import java.util.Set;
 
 public class TagList implements Parcelable {
 
-    protected TagList(Parcel in) {
-        this();
-        ArrayList<Tag> list=new ArrayList<>();
-        in.readTypedList(list,Tag.CREATOR);
-        addTags(list);
-    }
-
     public static final Creator<TagList> CREATOR = new Creator<TagList>() {
         @Override
         public TagList createFromParcel(Parcel in) {
@@ -35,6 +28,18 @@ public class TagList implements Parcelable {
             return new TagList[size];
         }
     };
+    private final Tags[] tagList = new Tags[TagType.values.length];
+
+    protected TagList(Parcel in) {
+        this();
+        ArrayList<Tag> list = new ArrayList<>();
+        in.readTypedList(list, Tag.CREATOR);
+        addTags(list);
+    }
+
+    public TagList() {
+        for (TagType type : TagType.values) tagList[type.getId()] = new Tags();
+    }
 
     @Override
     public int describeContents() {
@@ -46,59 +51,62 @@ public class TagList implements Parcelable {
         dest.writeTypedList(getAllTagsList());
     }
 
+    public Set<Tag> getAllTagsSet() {
+        HashSet<Tag> tags = new HashSet<>();
+        for (Tags t : tagList) tags.addAll(t);
+        return tags;
+    }
+
+    public List<Tag> getAllTagsList() {
+        List<Tag> tags = new ArrayList<>();
+        for (Tags t : tagList) tags.addAll(t);
+        return tags;
+    }
+
+    public int getCount(TagType type) {
+        return tagList[type.getId()].size();
+    }
+
+    public Tag getTag(TagType type, int index) {
+        return tagList[type.getId()].get(index);
+    }
+
+    public int getTotalCount() {
+        int total = 0;
+        for (Tags t : tagList) total += t.size();
+        return total;
+    }
+
+    public void addTag(Tag tag) {
+        tagList[tag.getType().getId()].add(tag);
+    }
+
+    public void addTags(Collection<? extends Tag> tags) {
+        for (Tag t : tags) addTag(t);
+    }
+
+    public List<Tag> retrieveForType(TagType type) {
+        return tagList[type.getId()];
+    }
+
+    public int getLenght() {
+        return tagList.length;
+    }
+
+    public void sort(Comparator<Tag> comparator) {
+        for (Tags t : tagList) Collections.sort(t, comparator);
+    }
+
     public static class Tags extends ArrayList<Tag> {
         public Tags(int initialCapacity) {
             super(initialCapacity);
         }
-        public Tags() { }
+
+        public Tags() {
+        }
+
         public Tags(@NonNull Collection<? extends Tag> c) {
             super(c);
         }
-    }
-
-    private final Tags[]tagList=new Tags[TagType.values.length];
-
-    public TagList() {
-        for(TagType type:TagType.values)tagList[type.getId()]=new Tags();
-    }
-
-    public Set<Tag> getAllTagsSet(){
-        HashSet<Tag>tags=new HashSet<>();
-        for(Tags t:tagList)tags.addAll(t);
-        return tags;
-    }
-
-    public List<Tag> getAllTagsList(){
-        List<Tag>tags=new ArrayList<>();
-        for(Tags t:tagList)tags.addAll(t);
-        return tags;
-    }
-
-    public int getCount(TagType type){
-        return tagList[type.getId()].size();
-    }
-    public Tag getTag(TagType type,int index){
-        return tagList[type.getId()].get(index);
-    }
-    public int getTotalCount(){
-        int total=0;
-        for(Tags t:tagList) total+=t.size();
-        return total;
-    }
-    public void addTag(Tag tag){
-        tagList[tag.getType().getId()].add(tag);
-    }
-
-    public void addTags(Collection<? extends Tag> tags){
-        for(Tag t:tags)addTag(t);
-    }
-    public List<Tag> retrieveForType(TagType type){
-        return tagList[type.getId()];
-    }
-    public int getLenght(){
-        return tagList.length;
-    }
-    public void sort(Comparator<Tag>comparator){
-        for(Tags t:tagList) Collections.sort(t,comparator);
     }
 }

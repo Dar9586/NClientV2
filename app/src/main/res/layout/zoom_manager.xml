@@ -1,60 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/page_switcher"
-    android:paddingTop="8dp"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:weightSum="9"
-    android:orientation="horizontal">
-    <ImageButton
-        android:id="@+id/prev"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:tint="?android:attr/colorForeground"
-        app:srcCompat="@drawable/ic_arrow_back"
-        android:contentDescription="@string/prev" />
-    <TextView
-        android:text="@string/page_placeholder"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:inputType="none"
-        android:focusable="false"
-        android:id="@+id/pages"
-        android:gravity="center"
-        android:textAlignment="center"
-        android:layout_width="0dp"
-        android:layout_weight="5"
-        android:layout_height="wrap_content" />
-    <TextView
-        android:contentDescription="@string/app_name"
-        android:visibility="gone"
-        android:labelFor="@+id/pages"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <ImageButton
-        android:id="@+id/next"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:tint="?android:attr/colorForeground"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        app:srcCompat="@drawable/ic_arrow_forward"
-        android:contentDescription="@string/next" />
+    android:orientation="vertical"
+    android:paddingTop="8dp">
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="9">
+
+        <ImageButton
+            android:id="@+id/prev"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/prev"
+            android:tint="?android:attr/colorForeground"
+            app:srcCompat="@drawable/ic_arrow_back" />
+
+        <TextView
+            android:id="@+id/pages"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:focusable="false"
+            android:gravity="center"
+            android:inputType="none"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:text="@string/page_placeholder"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/app_name"
+            android:labelFor="@+id/pages"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/next"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/next"
+            android:tint="?android:attr/colorForeground"
+            app:srcCompat="@drawable/ic_arrow_forward" />
+
+    </LinearLayout>
+
     <SeekBar
 
         android:id="@+id/seekBar"
         android:layout_width="match_parent"
-        android:layout_margin="24dp"
         android:layout_height="wrap_content"
-        />
+        android:layout_margin="24dp" />
 </LinearLayout>

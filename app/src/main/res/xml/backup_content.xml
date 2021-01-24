@@ -4,5 +4,7 @@
     ./adb shell bmgr fullbackup com.dar.nclientv2
     ./adb shell bmgr restore com.dar.nclientv2
     -->
-    <include domain="sharedpref" path="."/>
+    <include
+        domain="sharedpref"
+        path="." />
 </full-backup-content>

@@ -10,31 +10,6 @@ import java.io.IOException;
 import java.util.Date;
 
 public class Comment implements Parcelable {
-    private int id;
-    private User poster;
-    private Date postDate;
-    private String body;
-    public Comment(JsonReader reader) throws IOException {
-        reader.beginObject();
-        while(reader.peek()!= JsonToken.END_OBJECT){
-            switch (reader.nextName()){
-                case "id":id=reader.nextInt();break;
-                case "post_date":postDate=new Date(reader.nextLong()*1000);break;
-                case "body":body=reader.nextString();break;
-                case "poster":poster=new User(reader);break;
-                default:reader.skipValue();break;
-            }
-        }
-        reader.endObject();
-    }
-
-    protected Comment(Parcel in) {
-        id = in.readInt();
-        poster = in.readParcelable(User.class.getClassLoader());
-        body = in.readString();
-        postDate=new Date(in.readLong());
-    }
-
     public static final Creator<Comment> CREATOR = new Creator<Comment>() {
         @Override
         public Comment createFromParcel(Parcel in) {
@@ -46,6 +21,41 @@ public class Comment implements Parcelable {
             return new Comment[size];
         }
     };
+    private int id;
+    private User poster;
+    private Date postDate;
+    private String body;
+
+    public Comment(JsonReader reader) throws IOException {
+        reader.beginObject();
+        while (reader.peek() != JsonToken.END_OBJECT) {
+            switch (reader.nextName()) {
+                case "id":
+                    id = reader.nextInt();
+                    break;
+                case "post_date":
+                    postDate = new Date(reader.nextLong() * 1000);
+                    break;
+                case "body":
+                    body = reader.nextString();
+                    break;
+                case "poster":
+                    poster = new User(reader);
+                    break;
+                default:
+                    reader.skipValue();
+                    break;
+            }
+        }
+        reader.endObject();
+    }
+
+    protected Comment(Parcel in) {
+        id = in.readInt();
+        poster = in.readParcelable(User.class.getClassLoader());
+        body = in.readString();
+        postDate = new Date(in.readLong());
+    }
 
     @Override
     public int describeContents() {
@@ -75,6 +85,7 @@ public class Comment implements Parcelable {
     public String getComment() {
         return body;
     }
+
     public int getPosterId() {
         return poster.getId();
     }
@@ -82,7 +93,8 @@ public class Comment implements Parcelable {
     public String getUsername() {
         return poster.getUsername();
     }
-    public Uri getAvatarUrl(){
+
+    public Uri getAvatarUrl() {
         return poster.getAvatarUrl();
     }
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     android:id="@+id/master"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,26 +19,35 @@
             android:text="@string/id_tag" />
 
         <TextView
-            style="@style/TextAppearance.MaterialComponents.Headline5"
             android:id="@+id/id_num"
+            style="@style/TextAppearance.MaterialComponents.Headline5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-             />
+            android:layout_margin="8dp" />
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/tag_master"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    <include layout="@layout/sub_tag_layout"/>
-    <include layout="@layout/sub_tag_layout"/>
-    <include layout="@layout/sub_tag_layout"/>
-    <include layout="@layout/sub_tag_layout"/>
-    <include layout="@layout/sub_tag_layout"/>
-    <include layout="@layout/sub_tag_layout"/>
-    <include layout="@layout/sub_tag_layout"/>
-    <include layout="@layout/sub_tag_layout"/>
-    <include layout="@layout/info_layout"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include layout="@layout/sub_tag_layout" />
+
+        <include layout="@layout/sub_tag_layout" />
+
+        <include layout="@layout/sub_tag_layout" />
+
+        <include layout="@layout/sub_tag_layout" />
+
+        <include layout="@layout/sub_tag_layout" />
+
+        <include layout="@layout/sub_tag_layout" />
+
+        <include layout="@layout/sub_tag_layout" />
+
+        <include layout="@layout/sub_tag_layout" />
+
+        <include layout="@layout/info_layout" />
     </LinearLayout>
 </LinearLayout>

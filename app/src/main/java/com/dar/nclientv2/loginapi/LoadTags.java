@@ -31,7 +31,7 @@ public class LoadTags extends Thread {
         this.adapter = adapter;
     }
 
-    private Elements getScripts(String url)throws IOException{
+    private Elements getScripts(String url) throws IOException {
 
         Response response = Global.getClient().newCall(new Request.Builder().url(url).build()).execute();
         Elements x = Jsoup.parse(response.body().byteStream(), null, Utility.getBaseUrl()).getElementsByTag("script");
@@ -39,12 +39,12 @@ public class LoadTags extends Thread {
         return x;
     }
 
-    private String extractArray(Element e) throws StringIndexOutOfBoundsException{
+    private String extractArray(Element e) throws StringIndexOutOfBoundsException {
         String t = e.toString();
         return t.substring(t.indexOf('['), t.indexOf(';'));
     }
 
-    private void readTags(JsonReader reader) throws IOException{
+    private void readTags(JsonReader reader) throws IOException {
         reader.beginArray();
         while (reader.hasNext()) {
             Tag tt = new Tag(reader);
@@ -59,23 +59,23 @@ public class LoadTags extends Thread {
     public void run() {
         super.run();
         if (Login.getUser() == null) return;
-        String url = String.format(Locale.US, Utility.getBaseUrl()+"users/%s/%s/blacklist",
-                Login.getUser().getId(), Login.getUser().getCodename()
+        String url = String.format(Locale.US, Utility.getBaseUrl() + "users/%s/%s/blacklist",
+            Login.getUser().getId(), Login.getUser().getCodename()
         );
         LogUtility.d(url);
         try {
             Elements scripts = getScripts(url);
             analyzeScripts(scripts);
-        } catch (IOException|StringIndexOutOfBoundsException e) {
+        } catch (IOException | StringIndexOutOfBoundsException e) {
             e.printStackTrace();
         }
 
     }
 
-    private void analyzeScripts(Elements scripts)throws IOException,StringIndexOutOfBoundsException {
+    private void analyzeScripts(Elements scripts) throws IOException, StringIndexOutOfBoundsException {
         if (scripts.size() > 0) {
             Login.clearOnlineTags();
-            String array=Utility.unescapeUnicodeString(extractArray(scripts.last()));
+            String array = Utility.unescapeUnicodeString(extractArray(scripts.last()));
             JsonReader reader = new JsonReader(new StringReader(array));
             readTags(reader);
             reader.close();

@@ -20,10 +20,10 @@ public class CustomSwipe extends SwipeRefreshLayout {
 
     @Override
     public void setEnabled(boolean refreshing) {
-        try{
+        try {
             throw new Exception();
-        }catch (Exception e){
-            LogUtility.e("NEW VALUE: "+refreshing+",,"+e.getLocalizedMessage(),e);
+        } catch (Exception e) {
+            LogUtility.e("NEW VALUE: " + refreshing + ",," + e.getLocalizedMessage(), e);
         }
         super.setRefreshing(refreshing);
     }

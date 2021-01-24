@@ -21,18 +21,18 @@ import java.util.Date;
 import java.util.List;
 
 @SuppressWarnings("deprecation")
-public class DatabaseHelper extends SQLiteOpenHelper{
-    private static final int DATABASE_VERSION = 13;
+public class DatabaseHelper extends SQLiteOpenHelper {
     static final String DATABASE_NAME = "Entries.db";
+    private static final int DATABASE_VERSION = 13;
     private final Context context;
 
-    public DatabaseHelper(Context context1){
-        super(context1,DATABASE_NAME,null,DATABASE_VERSION);
+    public DatabaseHelper(Context context1) {
+        super(context1, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context1;
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db){
+    public void onCreate(SQLiteDatabase db) {
         createAllTables(db);
         Database.setDatabase(db);
         insertLanguageTags();
@@ -56,40 +56,41 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     }
     // TODO: 28/10/20 Add search history to DB instead of shared
 
-    private void insertCategoryTags(){
+    private void insertCategoryTags() {
         Tag[] types = {
-                new Tag("doujinshi", 0, 33172, TagType.CATEGORY, TagStatus.DEFAULT),
-                new Tag("manga", 0, 33173, TagType.CATEGORY, TagStatus.DEFAULT),
-                new Tag("misc", 0, 97152, TagType.CATEGORY, TagStatus.DEFAULT),
-                new Tag("western", 0, 34125, TagType.CATEGORY, TagStatus.DEFAULT),
-                new Tag("non-h", 0, 34065, TagType.CATEGORY, TagStatus.DEFAULT),
-                new Tag("artistcg", 0, 36320, TagType.CATEGORY, TagStatus.DEFAULT),
+            new Tag("doujinshi", 0, 33172, TagType.CATEGORY, TagStatus.DEFAULT),
+            new Tag("manga", 0, 33173, TagType.CATEGORY, TagStatus.DEFAULT),
+            new Tag("misc", 0, 97152, TagType.CATEGORY, TagStatus.DEFAULT),
+            new Tag("western", 0, 34125, TagType.CATEGORY, TagStatus.DEFAULT),
+            new Tag("non-h", 0, 34065, TagType.CATEGORY, TagStatus.DEFAULT),
+            new Tag("artistcg", 0, 36320, TagType.CATEGORY, TagStatus.DEFAULT),
         };
-        for(Tag t:types)Queries.TagTable.insert(t);
+        for (Tag t : types) Queries.TagTable.insert(t);
     }
-    private void insertLanguageTags(){
+
+    private void insertLanguageTags() {
         Tag[] languages = {
             new Tag("english", 0, SpecialTagIds.LANGUAGE_ENGLISH, TagType.LANGUAGE, TagStatus.DEFAULT),
             new Tag("japanese", 0, SpecialTagIds.LANGUAGE_JAPANESE, TagType.LANGUAGE, TagStatus.DEFAULT),
             new Tag("chinese", 0, SpecialTagIds.LANGUAGE_CHINESE, TagType.LANGUAGE, TagStatus.DEFAULT),
         };
-        for(Tag t:languages)Queries.TagTable.insert(t);
+        for (Tag t : languages) Queries.TagTable.insert(t);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Database.setDatabase(db);
-        if(oldVersion==2) insertLanguageTags();
-        if(oldVersion<=3) insertCategoryTags();
-        if(oldVersion<=4)db.execSQL(Queries.BookmarkTable.CREATE_TABLE);
-        if(oldVersion<=5)updateGalleryWithSizes(db);
-        if(oldVersion<=6)db.execSQL(Queries.DownloadTable.CREATE_TABLE);
-        if(oldVersion<=7)db.execSQL(Queries.HistoryTable.CREATE_TABLE);
-        if(oldVersion<=8)insertFavorite(db);
-        if(oldVersion<=9)addRangeColumn(db);
-        if(oldVersion<=10)db.execSQL(Queries.ResumeTable.CREATE_TABLE);
-        if(oldVersion<=11)updateFavoriteTable(db);
-        if(oldVersion<=12)addStatusTables(db);
+        if (oldVersion == 2) insertLanguageTags();
+        if (oldVersion <= 3) insertCategoryTags();
+        if (oldVersion <= 4) db.execSQL(Queries.BookmarkTable.CREATE_TABLE);
+        if (oldVersion <= 5) updateGalleryWithSizes(db);
+        if (oldVersion <= 6) db.execSQL(Queries.DownloadTable.CREATE_TABLE);
+        if (oldVersion <= 7) db.execSQL(Queries.HistoryTable.CREATE_TABLE);
+        if (oldVersion <= 8) insertFavorite(db);
+        if (oldVersion <= 9) addRangeColumn(db);
+        if (oldVersion <= 10) db.execSQL(Queries.ResumeTable.CREATE_TABLE);
+        if (oldVersion <= 11) updateFavoriteTable(db);
+        if (oldVersion <= 12) addStatusTables(db);
 
     }
 
@@ -109,7 +110,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     }
 
     private void updateFavoriteTable(SQLiteDatabase db) {
-        db.execSQL("ALTER TABLE Favorite ADD COLUMN `time` INT NOT NULL DEFAULT "+new Date().getTime());
+        db.execSQL("ALTER TABLE Favorite ADD COLUMN `time` INT NOT NULL DEFAULT " + new Date().getTime());
     }
 
     private void addRangeColumn(SQLiteDatabase db) {
@@ -119,19 +120,20 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     /**
      * Add all item which are favorite into the favorite table
-     * */
+     */
     private int[] getAllFavoriteIndex() {
-        Cursor c=Queries.GalleryTable.getAllFavoriteCursorDeprecated("%",false);
-        int[]favorites=new int[c.getCount()];
-        int i=0;
-        if(c.moveToFirst()){
-            do{
-                favorites[i++]=c.getInt(c.getColumnIndex(Queries.GalleryTable.IDGALLERY));
-            }while(c.moveToNext());
+        Cursor c = Queries.GalleryTable.getAllFavoriteCursorDeprecated("%", false);
+        int[] favorites = new int[c.getCount()];
+        int i = 0;
+        if (c.moveToFirst()) {
+            do {
+                favorites[i++] = c.getInt(c.getColumnIndex(Queries.GalleryTable.IDGALLERY));
+            } while (c.moveToNext());
         }
         c.close();
         return favorites;
     }
+
     /**
      * Create favorite table
      * Get all id of favorite gallery
@@ -139,17 +141,17 @@ public class DatabaseHelper extends SQLiteOpenHelper{
      * delete and recreate table without favorite column
      * insert all galleries again
      * populate favorite
-     * */
+     */
     private void insertFavorite(SQLiteDatabase db) {
         Database.setDatabase(db);
         db.execSQL(Queries.FavoriteTable.CREATE_TABLE);
         try {
-            int[]favorites=getAllFavoriteIndex();
-            List<Gallery> allGalleries= Queries.GalleryTable.getAllGalleries();
+            int[] favorites = getAllFavoriteIndex();
+            List<Gallery> allGalleries = Queries.GalleryTable.getAllGalleries();
             db.execSQL(Queries.GalleryTable.DROP_TABLE);
             db.execSQL(Queries.GalleryTable.CREATE_TABLE);
-            for(Gallery g:allGalleries)Queries.GalleryTable.insert(g);
-            for(int i:favorites)Queries.FavoriteTable.insert(i);
+            for (Gallery g : allGalleries) Queries.GalleryTable.insert(g);
+            for (int i : favorites) Queries.FavoriteTable.insert(i);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -157,7 +159,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     /**
      * Add the columns which contains the sizes of the images
-     * */
+     */
     private void updateGalleryWithSizes(SQLiteDatabase db) {
         db.execSQL("ALTER TABLE Gallery ADD COLUMN `maxW` INT NOT NULL DEFAULT 0");
         db.execSQL("ALTER TABLE Gallery ADD COLUMN `maxH` INT NOT NULL DEFAULT 0");
@@ -166,8 +168,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     }
 
     @Override
-    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion){
-        LogUtility.d("Downgrading database from "+oldVersion+" to "+newVersion);
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        LogUtility.d("Downgrading database from " + oldVersion + " to " + newVersion);
         onCreate(db);
     }
 

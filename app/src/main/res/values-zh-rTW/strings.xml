@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--Thanks to ZerOri & Still34 for the Traditional Chinese translation-->
+<?xml version="1.0" encoding="utf-8"?><!--Thanks to ZerOri & Still34 for the Traditional Chinese translation-->
 <resources>
     <!--SUMMARY-->
     <string name="setting_on_ignore_tags">從圖庫功能表中選中一個標籤時不再查詢其它標籤（語言項除外）</string>
@@ -71,13 +70,13 @@
 
     <string name="create_pdf">建立 PDF</string>
     <string name="create_pdf_format" formatted="true">建立的 PDF："%s"</string>
-	<string name="create_zip_format" formatted="true">建立的 ZIP："%s"</string>																			
+    <string name="create_zip_format" formatted="true">建立的 ZIP："%s"</string>
     <string name="created_pdf">成功建立 PDF</string>
     <string name="error_pdf">建立 PDF 出錯</string>
     <string name="parsing_pages">正在分析頁面</string>
     <string name="writing_pdf">正在寫入 PDF</string>
 
-											  
+
     <string name="navigation_drawer_open">打開側邊欄</string>
     <string name="navigation_drawer_close">關閉側邊欄</string>
     <string name="nav_header_subtitle">NHentai非官方用戶端</string>
@@ -158,7 +157,7 @@
     <string name="bookmark_description">書籤描述</string>
     <string name="enable_right_to_left">從右至左閱讀</string>
     <string name="setting_on_use_rtl">圖像將從右至左顯示</string>
-    <string name="setting_off_use_rtl">圖像將從左至右顯示</string>														
+    <string name="setting_off_use_rtl">圖像將從左至右顯示</string>
     <string name="volume_change_setting">音量鍵換頁</string>
     <string name="popular_tag_count">進階搜尋中顯示熱門標籤數</string>
     <string name="show_gallery_titles">顯示圖庫標題</string>
@@ -306,7 +305,7 @@
         <item>简体中文</item>
         <item>Türkçe</item>
         <item>Italiano</item>
-	<item>Deutsch</item>
+        <item>Deutsch</item>
         <item>اَلْعَرَبِيَّةُ</item>
         <item>Español</item>
     </string-array>
@@ -314,7 +313,7 @@
         <item>淺色</item>
         <item>暗色</item>
     </string-array>
-	
+
     <string-array name="title_type_array">
         <item>英文</item>
         <item>日文</item>

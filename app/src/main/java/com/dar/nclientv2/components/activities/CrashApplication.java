@@ -37,26 +37,27 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 
-@AcraCore(buildConfigClass = BuildConfig.class,reportSenderFactoryClasses = MySenderFactory.class,reportContent={
-        ReportField.PACKAGE_NAME,
-        ReportField.BUILD_CONFIG,
-        ReportField.APP_VERSION_CODE,
-        ReportField.STACK_TRACE,
-        ReportField.ANDROID_VERSION,
-        ReportField.LOGCAT
+@AcraCore(buildConfigClass = BuildConfig.class, reportSenderFactoryClasses = MySenderFactory.class, reportContent = {
+    ReportField.PACKAGE_NAME,
+    ReportField.BUILD_CONFIG,
+    ReportField.APP_VERSION_CODE,
+    ReportField.STACK_TRACE,
+    ReportField.ANDROID_VERSION,
+    ReportField.LOGCAT
 })
-public class CrashApplication extends Application{
-    private static final String SIGNATURE_GITHUB="ce96fdbcc89991f083320140c148db5f";
+public class CrashApplication extends Application {
+    private static final String SIGNATURE_GITHUB = "ce96fdbcc89991f083320140c148db5f";
+
     @Override
-    public void onCreate(){
+    public void onCreate() {
         super.onCreate();
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         Global.initStorage(this);
         Database.setDatabase(new DatabaseHelper(getApplicationContext()).getWritableDatabase());
-        String version=Global.getLastVersion(this),actualVersion=Global.getVersionName(this);
-        SharedPreferences preferences=getSharedPreferences("Settings", 0);
-        if(!actualVersion.equals(version))
-            afterUpdateChecks(preferences,version,actualVersion);
+        String version = Global.getLastVersion(this), actualVersion = Global.getVersionName(this);
+        SharedPreferences preferences = getSharedPreferences("Settings", 0);
+        if (!actualVersion.equals(version))
+            afterUpdateChecks(preferences, version, actualVersion);
 
         Global.initFromShared(this);
         Favorites.countFavorite();
@@ -66,11 +67,11 @@ public class CrashApplication extends Application{
         DownloadGalleryV2.loadDownloads(this);
     }
 
-    private boolean signatureCheck(){
+    private boolean signatureCheck() {
         try {
             @SuppressLint("PackageManagerGetSignatures")
             PackageInfo packageInfo = getPackageManager().getPackageInfo(
-                    getPackageName(), PackageManager.GET_SIGNATURES);
+                getPackageName(), PackageManager.GET_SIGNATURES);
             //note sample just checks the first signature
 
             for (Signature signature : packageInfo.signatures) {
@@ -79,15 +80,16 @@ public class CrashApplication extends Application{
                 m.update(signature.toByteArray());
                 String hash = new BigInteger(1, m.digest()).toString(16);
                 LogUtility.d("Find signature: " + hash);
-                if(SIGNATURE_GITHUB.equals(hash))return true;
+                if (SIGNATURE_GITHUB.equals(hash)) return true;
             }
-        }catch (NullPointerException|PackageManager.NameNotFoundException| NoSuchAlgorithmException e){
+        } catch (NullPointerException | PackageManager.NameNotFoundException | NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
         return false;
     }
-    private void afterUpdateChecks(SharedPreferences preferences, String oldVersion, String actualVersion){
-        SharedPreferences.Editor editor=preferences.edit();
+
+    private void afterUpdateChecks(SharedPreferences preferences, String oldVersion, String actualVersion) {
+        SharedPreferences.Editor editor = preferences.edit();
         removeOldUpdates();
         //update tags
         ScrapeTags.startWork(this);
@@ -95,27 +97,28 @@ public class CrashApplication extends Application{
         int val = preferences.getInt(getString(R.string.key_only_language), Language.ALL.ordinal());
         if (val == -1) val = Language.ALL.ordinal();
         editor.putInt(getString((R.string.key_only_language)), val);
-        if("0.0.0".equals(oldVersion))
-            editor.putBoolean(getString(R.string.key_check_update),signatureCheck());
-        changeByPopularType(preferences,editor);
+        if ("0.0.0".equals(oldVersion))
+            editor.putBoolean(getString(R.string.key_check_update), signatureCheck());
+        changeByPopularType(preferences, editor);
         editor.apply();
         createIdHiddenFiles();
         Global.setLastVersion(this);
     }
 
     private void changeByPopularType(SharedPreferences preferences, SharedPreferences.Editor editor) {
-        String key=getString(R.string.key_by_popular);
-        try{
-            boolean x=preferences.getBoolean(key,false);
+        String key = getString(R.string.key_by_popular);
+        try {
+            boolean x = preferences.getBoolean(key, false);
             editor.remove(key);
-            editor.putInt(key,x? SortType.POPULAR_ALL_TIME.ordinal():SortType.RECENT_ALL_TIME.ordinal());
-        }catch (ClassCastException ignore){}
+            editor.putInt(key, x ? SortType.POPULAR_ALL_TIME.ordinal() : SortType.RECENT_ALL_TIME.ordinal());
+        } catch (ClassCastException ignore) {
+        }
     }
 
-    private void createIdHiddenFile(File folder){
-        LocalGallery gallery=new LocalGallery(folder);
-        if(gallery.getId()<0)return;
-        File hiddenFile=new File(folder,"."+gallery.getId());
+    private void createIdHiddenFile(File folder) {
+        LocalGallery gallery = new LocalGallery(folder);
+        if (gallery.getId() < 0) return;
+        File hiddenFile = new File(folder, "." + gallery.getId());
         try {
             hiddenFile.createNewFile();
         } catch (IOException e) {
@@ -124,25 +127,25 @@ public class CrashApplication extends Application{
     }
 
     private void createIdHiddenFiles() {
-        if(!Global.hasStoragePermission(this))return;
-        File[]files=Global.DOWNLOADFOLDER.listFiles();
-        if(files==null)return;
-        for(File f:files){
-            if(f.isDirectory())
+        if (!Global.hasStoragePermission(this)) return;
+        File[] files = Global.DOWNLOADFOLDER.listFiles();
+        if (files == null) return;
+        for (File f : files) {
+            if (f.isDirectory())
                 createIdHiddenFile(f);
         }
     }
 
     private void removeOldUpdates() {
-        if(!Global.hasStoragePermission(this))return;
+        if (!Global.hasStoragePermission(this)) return;
         Global.recursiveDelete(Global.UPDATEFOLDER);
         Global.UPDATEFOLDER.mkdir();
     }
 
     @Override
-    protected void attachBaseContext(Context newBase){
+    protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(newBase);
         ACRA.init(this);
-        ACRA.getErrorReporter().setEnabled(getSharedPreferences("Settings",0).getBoolean(getString(R.string.key_send_report),true));
+        ACRA.getErrorReporter().setEnabled(getSharedPreferences("Settings", 0).getBoolean(getString(R.string.key_send_report), true));
     }
 }

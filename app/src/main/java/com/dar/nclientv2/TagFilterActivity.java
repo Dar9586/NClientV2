@@ -33,6 +33,7 @@ public class TagFilterActivity extends GeneralActivity {
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
+
     private SearchView searchView;
     private ViewPager mViewPager;
 
@@ -60,9 +61,9 @@ public class TagFilterActivity extends GeneralActivity {
         mViewPager.setOffscreenPageLimit(1);
 
         TabLayout tabLayout = findViewById(R.id.tabs);
-        if(Login.isLogged())tabLayout.addTab(tabLayout.newTab().setText(R.string.online_tags));
+        if (Login.isLogged()) tabLayout.addTab(tabLayout.newTab().setText(R.string.online_tags));
 
-        LogUtility.d("ISNULL?"+(tabLayout==null));
+        LogUtility.d("ISNULL?" + (tabLayout == null));
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -72,9 +73,9 @@ public class TagFilterActivity extends GeneralActivity {
 
             @Override
             public void onPageSelected(int position) {
-                TagTypePage page = (TagTypePage)getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + position);
+                TagTypePage page = (TagTypePage) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + position);
                 if (page != null) {
-                    ((TagsAdapter)page.getRecyclerView().getAdapter()).addItem();
+                    ((TagsAdapter) page.getRecyclerView().getAdapter()).addItem();
                 }
             }
 
@@ -88,35 +89,41 @@ public class TagFilterActivity extends GeneralActivity {
     }
 
 
-    private int getPage(){
+    private int getPage() {
         Uri data = getIntent().getData();
-        if(data != null){
+        if (data != null) {
             List<String> params = data.getPathSegments();
-            for(String x:params) LogUtility.i(x);
-            if(params.size()>0){
-                switch (params.get(0)){
-                    case "tags":return 1;
-                    case "artists":return 2;
-                    case "characters":return 3;
-                    case "parodies":return 4;
-                    case "groups":return 5;
+            for (String x : params) LogUtility.i(x);
+            if (params.size() > 0) {
+                switch (params.get(0)) {
+                    case "tags":
+                        return 1;
+                    case "artists":
+                        return 2;
+                    case "characters":
+                        return 3;
+                    case "parodies":
+                        return 4;
+                    case "groups":
+                        return 5;
                 }
             }
         }
         return 0;
     }
 
-    private void updateSortItem(MenuItem item){
-        item.setIcon(TagV2.isSortedByName()?R.drawable.ic_sort_by_alpha:R.drawable.ic_sort);
-        item.setTitle(TagV2.isSortedByName()?R.string.sort_by_title:R.string.sort_by_popular);
+    private void updateSortItem(MenuItem item) {
+        item.setIcon(TagV2.isSortedByName() ? R.drawable.ic_sort_by_alpha : R.drawable.ic_sort);
+        item.setTitle(TagV2.isSortedByName() ? R.string.sort_by_title : R.string.sort_by_popular);
         Global.setTint(item.getIcon());
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_tag_filter, menu);
         updateSortItem(menu.findItem(R.id.sort_by_name));
-        searchView=(androidx.appcompat.widget.SearchView) menu.findItem(R.id.search).getActionView();
+        searchView = (androidx.appcompat.widget.SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -127,20 +134,21 @@ public class TagFilterActivity extends GeneralActivity {
             public boolean onQueryTextChange(String newText) {
                 Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
                 if (page != null) {
-                    ((TagTypePage)page).refilter(newText);
+                    ((TagTypePage) page).refilter(newText);
                 }
                 return true;
             }
         });
         return true;
     }
-    private void createDialog(){
-        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(this);
+
+    private void createDialog() {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
         builder.setTitle(R.string.are_you_sure).setMessage(getString(R.string.clear_this_list)).setIcon(R.drawable.ic_help);
         builder.setPositiveButton(R.string.yes, (dialog, which) -> {
             Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
             if (page != null) {
-                ((TagTypePage)page).reset();
+                ((TagTypePage) page).reset();
 
             }
         }).setNegativeButton(R.string.no, null).setCancelable(true);
@@ -153,30 +161,30 @@ public class TagFilterActivity extends GeneralActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        TagTypePage page = (TagTypePage)getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
-            if(id==R.id.reset_tags)createDialog();
-            else if(id==R.id.set_min_count)minCountBuild();
-            else if(id==R.id.sort_by_name){
-                TagV2.updateSortByName(this);
-                updateSortItem(item);
-                page.refilter(searchView.getQuery().toString());
+        TagTypePage page = (TagTypePage) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
+        if (id == R.id.reset_tags) createDialog();
+        else if (id == R.id.set_min_count) minCountBuild();
+        else if (id == R.id.sort_by_name) {
+            TagV2.updateSortByName(this);
+            updateSortItem(item);
+            page.refilter(searchView.getQuery().toString());
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void minCountBuild(){
-        int min=TagV2.getMinCount();
-        DefaultDialogs.Builder builder=new DefaultDialogs.Builder(this);
+    private void minCountBuild() {
+        int min = TagV2.getMinCount();
+        DefaultDialogs.Builder builder = new DefaultDialogs.Builder(this);
         builder.setActual(min).setMax(100).setMin(2);
         builder.setYesbtn(R.string.ok).setNobtn(R.string.cancel);
-        builder.setTitle(R.string.set_minimum_count).setDialogs(new DefaultDialogs.CustomDialogResults(){
+        builder.setTitle(R.string.set_minimum_count).setDialogs(new DefaultDialogs.CustomDialogResults() {
             @Override
-            public void positive(int actual){
-                LogUtility.d("ACTUAL: "+actual);
-                TagV2.updateMinCount(TagFilterActivity.this,actual);
-                TagTypePage page =(TagTypePage) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
-                if(page!=null){
+            public void positive(int actual) {
+                LogUtility.d("ACTUAL: " + actual);
+                TagV2.updateMinCount(TagFilterActivity.this, actual);
+                TagTypePage page = (TagTypePage) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
+                if (page != null) {
                     page.changeSize();
                 }
             }
@@ -190,16 +198,17 @@ public class TagFilterActivity extends GeneralActivity {
         super.onConfigurationChanged(newConfig);
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             changeLayout(true);
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             changeLayout(false);
         }
     }
-    private void changeLayout(boolean landscape){
-        final int count=landscape?4:2;
+
+    private void changeLayout(boolean landscape) {
+        final int count = landscape ? 4 : 2;
         Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
         if (page != null) {
-            RecyclerView recycler=((TagTypePage)page).getRecyclerView();
-            if(recycler!=null) {
+            RecyclerView recycler = ((TagTypePage) page).getRecyclerView();
+            if (recycler != null) {
                 RecyclerView.Adapter adapter = recycler.getAdapter();
                 CustomGridLayoutManager gridLayoutManager = new CustomGridLayoutManager(this, count);
                 recycler.setLayoutManager(gridLayoutManager);
@@ -209,27 +218,21 @@ public class TagFilterActivity extends GeneralActivity {
     }
 
 
-
-
-
-
-
-
     static class TagTypePageAdapter extends FragmentPagerAdapter {
 
         TagTypePageAdapter(FragmentManager fm) {
-            super(fm,BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         }
 
         @Override
         public Fragment getItem(int position) {
-            LogUtility.d("creating at: "+position);
+            LogUtility.d("creating at: " + position);
             return TagTypePage.newInstance(position);
         }
 
         @Override
         public int getCount() {
-            return Login.isLogged()?7:6;
+            return Login.isLogged() ? 7 : 6;
         }
     }
 }

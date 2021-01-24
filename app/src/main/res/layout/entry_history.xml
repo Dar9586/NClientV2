@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/master_layout"
     android:layout_width="match_parent"
-    android:focusable="true"
+    android:layout_height="wrap_content"
     android:clickable="true"
-    android:foreground="?attr/selectableItemBackground"
-    android:layout_height="wrap_content">
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground">
 
     <TextView
         android:id="@+id/text"
@@ -35,10 +35,10 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/edit"
         android:tint="?android:attr/colorForeground"
         app:backgroundTint="@android:color/transparent"
-        android:background="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

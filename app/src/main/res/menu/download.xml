@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/search"
         android:icon="@drawable/ic_search"
@@ -11,15 +9,13 @@
         app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/sort_by_name"
-        app:showAsAction="ifRoom|collapseActionView"
         android:icon="@drawable/ic_sort"
         android:title="@string/sort_select_type"
-        />
+        app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/folder_choose"
-        app:showAsAction="ifRoom|collapseActionView"
         android:title="@string/choose_directory"
-        />
+        app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/random_favorite"
         android:icon="@drawable/ic_shuffle"
@@ -27,20 +23,20 @@
         app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/pauseAll"
-        android:orderInCategory="100"
         android:icon="@drawable/ic_pause"
+        android:orderInCategory="100"
         android:title="@string/pause_all_downloads"
         app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/startAll"
-        android:orderInCategory="200"
         android:icon="@drawable/ic_play"
+        android:orderInCategory="200"
         android:title="@string/start_all_downloads"
         app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/cancelAll"
-        android:orderInCategory="300"
         android:icon="@drawable/ic_close"
+        android:orderInCategory="300"
         android:title="@string/cancel_all_downloads"
         app:showAsAction="ifRoom|collapseActionView" />
 </menu>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/search"
@@ -10,8 +9,7 @@
         app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/sort_by_name"
-        app:showAsAction="ifRoom|collapseActionView"
-        android:title="@string/sort_by_title"
         android:icon="@drawable/ic_access_time"
-        />
+        android:title="@string/sort_by_title"
+        app:showAsAction="ifRoom|collapseActionView" />
 </menu>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.dar.nclientv2.components.views.CustomWebView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.dar.nclientv2.components.views.CustomWebView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/webView"
-    android:visibility="gone"
     android:layout_width="0dp"
-    android:layout_height="0dp"/>
+    android:layout_height="0dp"
+    android:visibility="gone" />

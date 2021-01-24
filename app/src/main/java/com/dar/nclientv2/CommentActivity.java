@@ -35,51 +35,52 @@ import okhttp3.Response;
 
 
 public class CommentActivity extends BaseActivity {
-    private static final int MINIUM_MESSAGE_LENGHT=10;
+    private static final int MINIUM_MESSAGE_LENGHT = 10;
     private CommentAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.initActivity(this);
         setContentView(R.layout.activity_comment);
-        Toolbar toolbar=findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setTitle(R.string.comments);
         findViewById(R.id.page_switcher).setVisibility(View.GONE);
-        int id=getIntent().getIntExtra(getPackageName()+".GALLERYID",-1);
-        if(id==-1){
+        int id = getIntent().getIntExtra(getPackageName() + ".GALLERYID", -1);
+        if (id == -1) {
             finish();
             return;
         }
-        recycler=findViewById(R.id.recycler);
-        refresher=findViewById(R.id.refresher);
-        refresher.setOnRefreshListener(() -> new CommentsFetcher(CommentActivity.this,id).start());
-        EditText commentText=findViewById(R.id.commentText);
-        findViewById(R.id.card).setVisibility(Login.isLogged()?View.VISIBLE:View.GONE);
+        recycler = findViewById(R.id.recycler);
+        refresher = findViewById(R.id.refresher);
+        refresher.setOnRefreshListener(() -> new CommentsFetcher(CommentActivity.this, id).start());
+        EditText commentText = findViewById(R.id.commentText);
+        findViewById(R.id.card).setVisibility(Login.isLogged() ? View.VISIBLE : View.GONE);
         findViewById(R.id.sendButton).setOnClickListener(v -> {
-            if(commentText.getText().toString().length()<MINIUM_MESSAGE_LENGHT){
-                Toast.makeText(this, getString(R.string.minimum_comment_length,MINIUM_MESSAGE_LENGHT), Toast.LENGTH_SHORT).show();
+            if (commentText.getText().toString().length() < MINIUM_MESSAGE_LENGHT) {
+                Toast.makeText(this, getString(R.string.minimum_comment_length, MINIUM_MESSAGE_LENGHT), Toast.LENGTH_SHORT).show();
                 return;
             }
-            String refererUrl=String.format(Locale.US, Utility.getBaseUrl()+"g/%d/",id);
-            String submitUrl=String.format(Locale.US,Utility.getBaseUrl()+"api/gallery/%d/comments/submit",id);
-            String requestString=createRequestString(commentText.getText().toString());
+            String refererUrl = String.format(Locale.US, Utility.getBaseUrl() + "g/%d/", id);
+            String submitUrl = String.format(Locale.US, Utility.getBaseUrl() + "api/gallery/%d/comments/submit", id);
+            String requestString = createRequestString(commentText.getText().toString());
             commentText.setText("");
-            RequestBody body=RequestBody.create(MediaType.get("application/json"),requestString);
+            RequestBody body = RequestBody.create(MediaType.get("application/json"), requestString);
             new AuthRequest(refererUrl, submitUrl, new Callback() {
                 @Override
-                public void onFailure(@NonNull Call call,@NonNull IOException e) {
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
 
                 }
 
                 @Override
-                public void onResponse(@NonNull Call call,@NonNull Response response) throws IOException {
-                    JsonReader reader=new JsonReader(response.body().charStream());
-                    Comment comment=null;
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    JsonReader reader = new JsonReader(response.body().charStream());
+                    Comment comment = null;
                     reader.beginObject();
-                    while (reader.peek()!= JsonToken.END_OBJECT){
+                    while (reader.peek() != JsonToken.END_OBJECT) {
                         if ("comment".equals(reader.nextName())) {
                             comment = new Comment(reader);
                         } else {
@@ -87,22 +88,22 @@ public class CommentActivity extends BaseActivity {
                         }
                     }
                     reader.close();
-                    if(comment!=null&&adapter!=null)
+                    if (comment != null && adapter != null)
                         adapter.addComment(comment);
                 }
-            }).setMethod("POST",body).start();
+            }).setMethod("POST", body).start();
         });
-        changeLayout(getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE);
-        recycler.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+        changeLayout(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
+        recycler.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         refresher.setRefreshing(true);
-        new CommentsFetcher(CommentActivity.this,id).start();
+        new CommentsFetcher(CommentActivity.this, id).start();
     }
 
     public void setAdapter(CommentAdapter adapter) {
         this.adapter = adapter;
     }
 
-    private String createRequestString(String text){
+    private String createRequestString(String text) {
         try {
             StringWriter writer = new StringWriter();
             JsonWriter json = new JsonWriter(writer);
@@ -112,7 +113,8 @@ public class CommentActivity extends BaseActivity {
             String finalText = writer.toString();
             json.close();
             return finalText;
-        }catch (IOException ignore){}
+        } catch (IOException ignore) {
+        }
         return "";
     }
 
@@ -125,6 +127,7 @@ public class CommentActivity extends BaseActivity {
     protected int getLandscapeColumnCount() {
         return 2;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {

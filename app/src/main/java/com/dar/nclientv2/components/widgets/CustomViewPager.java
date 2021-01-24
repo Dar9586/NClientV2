@@ -13,6 +13,7 @@ import com.dar.nclientv2.utility.LogUtility;
 
 public class CustomViewPager extends ViewPager {
     private OnItemClickListener mOnItemClickListener;
+
     public CustomViewPager(@NonNull Context context) {
         super(context);
         setup();
@@ -22,13 +23,14 @@ public class CustomViewPager extends ViewPager {
         super(context, attrs);
         setup();
     }
+
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         try {
             performClick();
             return super.onTouchEvent(ev);
         } catch (IllegalArgumentException ex) {
-            LogUtility.e(ex.getLocalizedMessage(),ex);
+            LogUtility.e(ex.getLocalizedMessage(), ex);
         }
         return false;
     }
@@ -38,7 +40,7 @@ public class CustomViewPager extends ViewPager {
         try {
             return super.performClick();
         } catch (IllegalArgumentException ex) {
-            LogUtility.e(ex.getLocalizedMessage(),ex);
+            LogUtility.e(ex.getLocalizedMessage(), ex);
         }
         return false;
     }
@@ -52,8 +54,9 @@ public class CustomViewPager extends ViewPager {
         }
         return false;
     }
+
     private void setup() {
-        final GestureDetector tapGestureDetector = new    GestureDetector(getContext(), new TapGestureListener());
+        final GestureDetector tapGestureDetector = new GestureDetector(getContext(), new TapGestureListener());
         setOnTouchListener((v, event) -> {
             tapGestureDetector.onTouchEvent(event);
             performClick();
@@ -73,7 +76,7 @@ public class CustomViewPager extends ViewPager {
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
-            if(mOnItemClickListener != null) {
+            if (mOnItemClickListener != null) {
                 mOnItemClickListener.onItemClick(getCurrentItem());
             }
             return true;

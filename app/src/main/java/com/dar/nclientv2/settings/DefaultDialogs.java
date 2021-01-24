@@ -18,36 +18,122 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.util.Locale;
 
 public class DefaultDialogs {
-    public interface DialogResults{
+    public static void pageChangerDialog(final Builder builder) {
+        MaterialAlertDialogBuilder build = new MaterialAlertDialogBuilder(builder.context);
+        if (builder.title != 0) build.setTitle(builder.context.getString(builder.title));
+        if (builder.drawable != 0) build.setIcon(builder.drawable);
+        View v = View.inflate(builder.context, R.layout.page_changer, null);
+        build.setView(v);
+        final SeekBar seekBar = v.findViewById(R.id.seekBar);
+        if (Global.useRtl()) seekBar.setRotationY(180);
+        final TextView totalPage = v.findViewById(R.id.page);
+        final EditText actualPage = v.findViewById(R.id.edit_page);
+        v.findViewById(R.id.prev).setOnClickListener(v12 -> {
+            seekBar.setProgress(seekBar.getProgress() - 1);
+            actualPage.setText(String.format(Locale.US, "%d", seekBar.getProgress() + builder.min));
+
+        });
+        v.findViewById(R.id.next).setOnClickListener(v1 -> {
+            seekBar.setProgress(seekBar.getProgress() + 1);
+            actualPage.setText(String.format(Locale.US, "%d", seekBar.getProgress() + builder.min));
+        });
+        seekBar.setMax(builder.max - builder.min);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser)
+                    actualPage.setText(String.format(Locale.US, "%d", progress + builder.min));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+        actualPage.setText(String.format(Locale.US, "%d", builder.actual));
+        seekBar.setProgress(builder.actual - builder.min);
+        totalPage.setText(String.format(Locale.US, "%d", builder.max));
+        InputFilter[] filterArray = new InputFilter[1];
+        filterArray[0] = new InputFilter.LengthFilter(Integer.toString(builder.max).length());
+        actualPage.setFilters(filterArray);
+        actualPage.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int x;
+                try {
+                    x = Integer.parseInt(s.toString());
+                } catch (NumberFormatException e) {
+                    x = -1;
+                }
+                if (x < builder.min) seekBar.setProgress(0);
+                else seekBar.setProgress(x - builder.min);
+            }
+        });
+        if (builder.dialogs != null)
+            build
+                .setPositiveButton(builder.context.getString(builder.yesbtn), (dialog, id) -> builder.dialogs.positive(seekBar.getProgress() + builder.min))
+                .setNegativeButton(builder.context.getString(builder.nobtn), (dialog, which) -> builder.dialogs.negative());
+        if (builder.maybebtn != 0)
+            build.setNeutralButton(builder.context.getString(builder.maybebtn), (dialog, which) -> builder.dialogs.neutral());
+        build.setCancelable(true);
+        build.show();
+    }
+
+    public interface DialogResults {
         void positive(int actual);
+
         void negative();
+
         void neutral();
     }
-    public static class  CustomDialogResults implements DialogResults {
-        @Override public void positive(int actual) {}
-        @Override public void negative() {}
-        @Override public void neutral() {}
+
+    public static class CustomDialogResults implements DialogResults {
+        @Override
+        public void positive(int actual) {
+        }
+
+        @Override
+        public void negative() {
+        }
+
+        @Override
+        public void neutral() {
+        }
     }
+
     @SuppressWarnings("UnusedReturnValue")
-    public static class Builder{
+    public static class Builder {
         private final Context context;
-        private @StringRes int title,yesbtn,nobtn,maybebtn;
-        private @DrawableRes int drawable;
-        private int max,actual,min;
         DialogResults dialogs;
+        private @StringRes
+        int title, yesbtn, nobtn, maybebtn;
+        private @DrawableRes
+        int drawable;
+        private int max, actual, min;
 
         public Builder(Context context) {
             this.context = context;
-            title=drawable=0;
-            yesbtn=R.string.ok;
-            nobtn=R.string.cancel;
-            maybebtn=0;
-            max=actual=1;
-            min=0;
-            dialogs=null;
+            title = drawable = 0;
+            yesbtn = R.string.ok;
+            nobtn = R.string.cancel;
+            maybebtn = 0;
+            max = actual = 1;
+            min = 0;
+            dialogs = null;
         }
 
-        public Builder setMin(int min){
+        public Builder setMin(int min) {
             this.min = min;
             return this;
         }
@@ -91,67 +177,5 @@ public class DefaultDialogs {
             this.dialogs = dialogs;
             return this;
         }
-    }
-    public static void pageChangerDialog(final Builder builder){
-        MaterialAlertDialogBuilder build = new MaterialAlertDialogBuilder(builder.context);
-        if(builder.title!=0)build.setTitle(builder.context.getString(builder.title));
-        if(builder.drawable!=0) build.setIcon(builder.drawable);
-        View v=View.inflate(builder.context, R.layout.page_changer, null);
-        build.setView(v);
-        final SeekBar seekBar=v.findViewById(R.id.seekBar);
-        if(Global.useRtl())seekBar.setRotationY(180);
-        final TextView totalPage=v.findViewById(R.id.page);
-        final EditText actualPage=v.findViewById(R.id.edit_page);
-        v.findViewById(R.id.prev).setOnClickListener(v12 -> {
-            seekBar.setProgress(seekBar.getProgress()-1);
-            actualPage.setText(String.format(Locale.US,"%d",seekBar.getProgress()+builder.min));
-
-        });
-        v.findViewById(R.id.next).setOnClickListener(v1 -> {
-            seekBar.setProgress(seekBar.getProgress()+1);
-            actualPage.setText(String.format(Locale.US,"%d",seekBar.getProgress()+builder.min));
-        });
-        seekBar.setMax(builder.max-builder.min);
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(fromUser)actualPage.setText(String.format(Locale.US,"%d",progress+builder.min));
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
-        actualPage.setText(String.format(Locale.US,"%d",builder.actual));
-        seekBar.setProgress(builder.actual-builder.min);
-        totalPage.setText(String.format(Locale.US,"%d",builder.max));
-        InputFilter[] filterArray = new InputFilter[1];
-        filterArray[0] = new InputFilter.LengthFilter(Integer.toString(builder.max).length());
-        actualPage.setFilters(filterArray);
-        actualPage.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            @Override
-            public void afterTextChanged(Editable s) {
-                int x;
-                try {
-                    x = Integer.parseInt(s.toString());
-                }catch (NumberFormatException e){x=-1;}
-                if(x<builder.min)seekBar.setProgress(0);
-                else seekBar.setProgress(x-builder.min);
-            }
-        });
-        if(builder.dialogs!=null)
-        build
-                .setPositiveButton(builder.context.getString(builder.yesbtn), (dialog, id) -> builder.dialogs.positive(seekBar.getProgress()+builder.min))
-                .setNegativeButton(builder.context.getString(builder.nobtn), (dialog, which) -> builder.dialogs.negative());
-        if(builder.maybebtn!=0)
-            build.setNeutralButton(builder.context.getString(builder.maybebtn), (dialog, which) -> builder.dialogs.neutral());
-        build.setCancelable(true);
-        build.show();
     }
 }

@@ -13,7 +13,8 @@ import com.dar.nclientv2.utility.LogUtility;
 
 public class VerticalViewPager extends ViewPager {
     private CustomViewPager.OnItemClickListener mOnItemClickListener;
-    private boolean verticalMode=true;
+    private boolean verticalMode = true;
+
     public VerticalViewPager(Context context) {
         this(context, null);
         init();
@@ -26,7 +27,7 @@ public class VerticalViewPager extends ViewPager {
 
     @Override
     public boolean canScrollHorizontally(int direction) {
-        if(verticalMode) return false;
+        if (verticalMode) return false;
         else return super.canScrollHorizontally(direction);
     }
 
@@ -37,12 +38,12 @@ public class VerticalViewPager extends ViewPager {
 
     @Override
     public boolean canScrollVertically(int direction) {
-        if(verticalMode) return super.canScrollHorizontally(direction);
+        if (verticalMode) return super.canScrollHorizontally(direction);
         else return super.canScrollVertically(direction);
     }
 
     private void init() {
-        setPageTransformer(true,verticalMode?new VerticalPageTransformer():null);
+        setPageTransformer(true, verticalMode ? new VerticalPageTransformer() : null);
         setOverScrollMode(View.OVER_SCROLL_NEVER);
         setup();
     }
@@ -59,15 +60,17 @@ public class VerticalViewPager extends ViewPager {
         }
         return false;
     }
+
     @Override
     public boolean performClick() {
         try {
             return super.performClick();
         } catch (IllegalArgumentException ex) {
-            LogUtility.e(ex.getLocalizedMessage(),ex);
+            LogUtility.e(ex.getLocalizedMessage(), ex);
         }
         return false;
     }
+
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         try {
@@ -76,20 +79,37 @@ public class VerticalViewPager extends ViewPager {
             flipXY(ev);
             return toHandle;
         } catch (IllegalArgumentException ex) {
-            LogUtility.e(ex.getLocalizedMessage(),ex);
+            LogUtility.e(ex.getLocalizedMessage(), ex);
         }
         return false;
     }
 
 
     private MotionEvent flipXY(MotionEvent ev) {
-        if(!verticalMode)return ev;
+        if (!verticalMode) return ev;
         final float width = getWidth();
         final float height = getHeight();
         final float x = (ev.getY() / height) * width;
         final float y = (ev.getX() / width) * height;
         ev.setLocation(x, y);
         return ev;
+    }
+
+    private void setup() {
+        final GestureDetector tapGestureDetector = new GestureDetector(getContext(), new VerticalViewPager.TapGestureListener());
+        setOnTouchListener((v, event) -> {
+            tapGestureDetector.onTouchEvent(event);
+            performClick();
+            return false;
+        });
+    }
+
+    public void setOnItemClickListener(CustomViewPager.OnItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
     }
 
     private static final class VerticalPageTransformer implements ViewPager.PageTransformer {
@@ -110,28 +130,11 @@ public class VerticalViewPager extends ViewPager {
         }
     }
 
-    private void setup() {
-        final GestureDetector tapGestureDetector = new    GestureDetector(getContext(), new VerticalViewPager.TapGestureListener());
-        setOnTouchListener((v, event) -> {
-            tapGestureDetector.onTouchEvent(event);
-            performClick();
-            return false;
-        });
-    }
-
-    public void setOnItemClickListener(CustomViewPager.OnItemClickListener onItemClickListener) {
-        mOnItemClickListener = onItemClickListener;
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(int position);
-    }
-
     private class TapGestureListener extends GestureDetector.SimpleOnGestureListener {
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
-            if(mOnItemClickListener != null) {
+            if (mOnItemClickListener != null) {
                 mOnItemClickListener.onItemClick(getCurrentItem());
             }
             return true;

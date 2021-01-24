@@ -19,17 +19,27 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class GalleryFolder implements Parcelable,Iterable<PageFile> {
+public class GalleryFolder implements Parcelable, Iterable<PageFile> {
 
-    private static final Pattern FILE_PATTERN=Pattern.compile("^0*(\\d{1,9})\\.(gif|png|jpg)$",Pattern.CASE_INSENSITIVE);
-    private static final Pattern IDFILE_PATTERN=Pattern.compile("^\\.(\\d{1,6})$");
-    private static final String NOMEDIA_FILE=".nomedia";
+    public static final Creator<GalleryFolder> CREATOR = new Creator<GalleryFolder>() {
+        @Override
+        public GalleryFolder createFromParcel(Parcel in) {
+            return new GalleryFolder(in);
+        }
 
-    private final SparseArrayCompat<PageFile> pageArray= new SparseArrayCompat<>();
+        @Override
+        public GalleryFolder[] newArray(int size) {
+            return new GalleryFolder[size];
+        }
+    };
+    private static final Pattern FILE_PATTERN = Pattern.compile("^0*(\\d{1,9})\\.(gif|png|jpg)$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern IDFILE_PATTERN = Pattern.compile("^\\.(\\d{1,6})$");
+    private static final String NOMEDIA_FILE = ".nomedia";
+    private final SparseArrayCompat<PageFile> pageArray = new SparseArrayCompat<>();
     private final File folder;
-    private int id=SpecialTagIds.INVALID_ID;
-    private int max=-1;
-    private int min=Integer.MAX_VALUE;
+    private int id = SpecialTagIds.INVALID_ID;
+    private int max = -1;
+    private int min = Integer.MAX_VALUE;
     private File nomedia;
 
     public GalleryFolder(@NonNull String child) {
@@ -42,43 +52,60 @@ public class GalleryFolder implements Parcelable,Iterable<PageFile> {
     }
 
     public GalleryFolder(File file) {
-        folder=file;
-        if(!folder.isDirectory())
+        folder = file;
+        if (!folder.isDirectory())
             throw new IllegalArgumentException("File is not a folder");
         parseFiles();
     }
-    public static @Nullable GalleryFolder fromId(@Nullable Context context, int id){
-        File f=Global.findGalleryFolder(context,id);
-        if(f==null)return null;
+
+
+    protected GalleryFolder(Parcel in) {
+        folder = new File(Objects.requireNonNull(in.readString()));
+        id = in.readInt();
+        min = in.readInt();
+        max = in.readInt();
+        int pageCount = in.readInt();
+        for (int i = 0; i < pageCount; i++) {
+            int k = in.readInt();
+            PageFile f = in.readParcelable(PageFile.class.getClassLoader());
+            pageArray.put(k, f);
+        }
+    }
+
+    public static @Nullable
+    GalleryFolder fromId(@Nullable Context context, int id) {
+        File f = Global.findGalleryFolder(context, id);
+        if (f == null) return null;
         return new GalleryFolder(f);
     }
 
-
     private void parseFiles() {
-        File[]files=folder.listFiles();
-        if(files==null)return;
-        for(File f:files){
+        File[] files = folder.listFiles();
+        if (files == null) return;
+        for (File f : files) {
             elaborateFile(f);
         }
     }
-    private void elaborateFile(File f){
-        String name=f.getName();
 
-        Matcher matcher=FILE_PATTERN.matcher(name);
-        if(matcher.matches())elaboratePage(f,matcher);
+    private void elaborateFile(File f) {
+        String name = f.getName();
 
-        if(id == SpecialTagIds.INVALID_ID) {
+        Matcher matcher = FILE_PATTERN.matcher(name);
+        if (matcher.matches()) elaboratePage(f, matcher);
+
+        if (id == SpecialTagIds.INVALID_ID) {
             matcher = IDFILE_PATTERN.matcher(name);
             if (matcher.matches()) id = elaborateId(matcher);
         }
 
-        if(nomedia==null && name.equals(NOMEDIA_FILE))nomedia=f;
+        if (nomedia == null && name.equals(NOMEDIA_FILE)) nomedia = f;
     }
 
     private int elaborateId(Matcher matcher) {
         return Integer.parseInt(Objects.requireNonNull(matcher.group(1)));
     }
-    public int getPageCount(){
+
+    public int getPageCount() {
         return pageArray.size();
     }
 
@@ -86,10 +113,10 @@ public class GalleryFolder implements Parcelable,Iterable<PageFile> {
         return nomedia;
     }
 
-    public PageFile[] getPages(){
-        PageFile[]files=new PageFile[pageArray.size()];
-        for(int i=0;i<pageArray.size();i++){
-            files[i]=pageArray.valueAt(i);
+    public PageFile[] getPages() {
+        PageFile[] files = new PageFile[pageArray.size()];
+        for (int i = 0; i < pageArray.size(); i++) {
+            files[i] = pageArray.valueAt(i);
         }
         return files;
     }
@@ -107,28 +134,16 @@ public class GalleryFolder implements Parcelable,Iterable<PageFile> {
     }
 
     private void elaboratePage(File f, Matcher matcher) {
-        int page=Integer.parseInt(Objects.requireNonNull(matcher.group(1)));
-        ImageExt ext= Page.charToExt(Objects.requireNonNull(matcher.group(2)).charAt(0));
-        pageArray.append(page,new PageFile(ext,f,page));
-        if(page>max)max=page;
-        if(page<min)min=page;
+        int page = Integer.parseInt(Objects.requireNonNull(matcher.group(1)));
+        ImageExt ext = Page.charToExt(Objects.requireNonNull(matcher.group(2)).charAt(0));
+        pageArray.append(page, new PageFile(ext, f, page));
+        if (page > max) max = page;
+        if (page < min) min = page;
     }
 
-    public PageFile getPage(int page){
+    public PageFile getPage(int page) {
         return pageArray.get(page);
     }
-
-    public static final Creator<GalleryFolder> CREATOR = new Creator<GalleryFolder>() {
-        @Override
-        public GalleryFolder createFromParcel(Parcel in) {
-            return new GalleryFolder(in);
-        }
-
-        @Override
-        public GalleryFolder[] newArray(int size) {
-            return new GalleryFolder[size];
-        }
-    };
 
     public int getId() {
         return id;
@@ -146,43 +161,9 @@ public class GalleryFolder implements Parcelable,Iterable<PageFile> {
         dest.writeInt(min);
         dest.writeInt(max);
         dest.writeInt(pageArray.size());
-        for(int i=0;i<pageArray.size();i++){
+        for (int i = 0; i < pageArray.size(); i++) {
             dest.writeInt(pageArray.keyAt(i));
             dest.writeParcelable(pageArray.valueAt(i), flags);
-        }
-    }
-    protected GalleryFolder(Parcel in) {
-        folder=new File(Objects.requireNonNull(in.readString()));
-        id = in.readInt();
-        min = in.readInt();
-        max = in.readInt();
-        int pageCount = in.readInt();
-        for(int i=0;i<pageCount;i++){
-            int k=in.readInt();
-            PageFile f=in.readParcelable(PageFile.class.getClassLoader());
-            pageArray.put(k,f);
-        }
-    }
-
-    public static class PageFileIterator implements Iterator<PageFile>{
-        private final SparseArrayCompat<PageFile>files;
-        private int reach=0;
-
-        public PageFileIterator(SparseArrayCompat<PageFile> files) {
-            this.files = files;
-        }
-
-
-        @Override
-        public boolean hasNext() {
-            return reach<files.size();
-        }
-
-        @Override
-        public PageFile next() {
-            PageFile f=files.valueAt(reach);
-            reach++;
-            return f;
         }
     }
 
@@ -211,12 +192,34 @@ public class GalleryFolder implements Parcelable,Iterable<PageFile> {
     @Override
     public String toString() {
         return "GalleryFolder{" +
-                "pageArray=" + pageArray +
-                ", folder=" + folder +
-                ", id=" + id +
-                ", max=" + max +
-                ", min=" + min +
-                ", nomedia=" + nomedia +
-                '}';
+            "pageArray=" + pageArray +
+            ", folder=" + folder +
+            ", id=" + id +
+            ", max=" + max +
+            ", min=" + min +
+            ", nomedia=" + nomedia +
+            '}';
+    }
+
+    public static class PageFileIterator implements Iterator<PageFile> {
+        private final SparseArrayCompat<PageFile> files;
+        private int reach = 0;
+
+        public PageFileIterator(SparseArrayCompat<PageFile> files) {
+            this.files = files;
+        }
+
+
+        @Override
+        public boolean hasNext() {
+            return reach < files.size();
+        }
+
+        @Override
+        public PageFile next() {
+            PageFile f = files.valueAt(reach);
+            reach++;
+            return f;
+        }
     }
 }

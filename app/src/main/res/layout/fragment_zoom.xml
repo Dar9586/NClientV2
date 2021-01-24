@@ -2,8 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/image"
@@ -13,20 +12,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <ImageButton
-        android:visibility="gone"
         android:id="@+id/imageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:fitsSystemWindows="true"
-        android:contentDescription="@string/app_name"
-        app:srcCompat="@drawable/ic_refresh"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:tint="?android:attr/colorForeground"
-        android:scaleType="fitCenter"
+        android:contentDescription="@string/app_name"
+        android:fitsSystemWindows="true"
         android:padding="128dp"
+        android:scaleType="fitCenter"
+        android:tint="?android:attr/colorForeground"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_refresh" />
 </androidx.constraintlayout.widget.ConstraintLayout>

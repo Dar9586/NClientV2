@@ -4,17 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Size implements Parcelable {
-    private int width,height;
-    public Size(int width, int height) {
-        this.width = width;
-        this.height = height;
-    }
-
-    protected Size(Parcel in) {
-        width = in.readInt();
-        height = in.readInt();
-    }
-
     public static final Creator<Size> CREATOR = new Creator<Size>() {
         @Override
         public Size createFromParcel(Parcel in) {
@@ -26,6 +15,17 @@ public class Size implements Parcelable {
             return new Size[size];
         }
     };
+    private int width, height;
+
+    public Size(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+
+    protected Size(Parcel in) {
+        width = in.readInt();
+        height = in.readInt();
+    }
 
     public int getWidth() {
         return width;
@@ -57,8 +57,8 @@ public class Size implements Parcelable {
     @Override
     public String toString() {
         return "Size{" +
-                "width=" + width +
-                ", height=" + height +
-                '}';
+            "width=" + width +
+            ", height=" + height +
+            '}';
     }
 }

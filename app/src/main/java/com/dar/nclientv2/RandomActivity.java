@@ -21,33 +21,34 @@ import com.dar.nclientv2.utility.ImageDownloadUtility;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class RandomActivity extends GeneralActivity {
+    public static Gallery loadedGallery = null;
     private TextView language;
     private ImageButton thumbnail;
     private ImageButton favorite;
     private TextView title;
     private TextView page;
     private View censor;
-    private RandomLoader loader=null;
-    public static Gallery loadedGallery=null;
+    private RandomLoader loader = null;
     private boolean isFavorite;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Global.initActivity(this);
         setContentView(R.layout.activity_random);
-        loader=new RandomLoader(this);
+        loader = new RandomLoader(this);
 
 
         //init components id
-        Toolbar toolbar=findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         FloatingActionButton shuffle = findViewById(R.id.shuffle);
         ImageButton share = findViewById(R.id.share);
-        censor=findViewById(R.id.censor);
-        language=findViewById(R.id.language);
-        thumbnail=findViewById(R.id.thumbnail);
-        favorite=findViewById(R.id.favorite);
-        title=findViewById(R.id.title);
-        page=findViewById(R.id.pages);
+        censor = findViewById(R.id.censor);
+        language = findViewById(R.id.language);
+        thumbnail = findViewById(R.id.thumbnail);
+        favorite = findViewById(R.id.favorite);
+        title = findViewById(R.id.title);
+        page = findViewById(R.id.pages);
 
         //init toolbar
         setSupportActionBar(toolbar);
@@ -56,36 +57,36 @@ public class RandomActivity extends GeneralActivity {
         getSupportActionBar().setTitle(R.string.random_manga);
 
 
-        if(loadedGallery!=null)loadGallery(loadedGallery);
+        if (loadedGallery != null) loadGallery(loadedGallery);
 
         shuffle.setOnClickListener(v -> loader.requestGallery());
 
         thumbnail.setOnClickListener(v -> {
-            if(loadedGallery!=null) {
+            if (loadedGallery != null) {
                 Intent intent = new Intent(RandomActivity.this, GalleryActivity.class);
                 intent.putExtra(RandomActivity.this.getPackageName() + ".GALLERY", loadedGallery);
                 RandomActivity.this.startActivity(intent);
             }
         });
         share.setOnClickListener(v -> {
-            if(loadedGallery!=null)Global.shareGallery(RandomActivity.this,loadedGallery);
+            if (loadedGallery != null) Global.shareGallery(RandomActivity.this, loadedGallery);
         });
         censor.setOnClickListener(v -> censor.setVisibility(View.GONE));
 
         favorite.setOnClickListener(v -> {
-            if(loadedGallery!=null){
-                if(isFavorite){
-                    if(Favorites.removeFavorite(loadedGallery)) isFavorite=false;
-                }else if(Favorites.addFavorite(loadedGallery)) isFavorite=true;
+            if (loadedGallery != null) {
+                if (isFavorite) {
+                    if (Favorites.removeFavorite(loadedGallery)) isFavorite = false;
+                } else if (Favorites.addFavorite(loadedGallery)) isFavorite = true;
             }
             favoriteUpdateButton();
         });
 
-        ColorStateList colorStateList=ColorStateList.valueOf(Global.getTheme()== Global.ThemeScheme.LIGHT? Color.WHITE:Color.BLACK);
+        ColorStateList colorStateList = ColorStateList.valueOf(Global.getTheme() == Global.ThemeScheme.LIGHT ? Color.WHITE : Color.BLACK);
 
-        ImageViewCompat.setImageTintList(shuffle,colorStateList);
-        ImageViewCompat.setImageTintList(share,colorStateList);
-        ImageViewCompat.setImageTintList(favorite,colorStateList);
+        ImageViewCompat.setImageTintList(shuffle, colorStateList);
+        ImageViewCompat.setImageTintList(share, colorStateList);
+        ImageViewCompat.setImageTintList(favorite, colorStateList);
 
         Global.setTint(shuffle.getContentBackground());
         Global.setTint(share.getDrawable());
@@ -102,33 +103,41 @@ public class RandomActivity extends GeneralActivity {
     }
 
 
-    public void loadGallery(Gallery gallery){
-        loadedGallery=gallery;
-        if (Global.isDestroyed(this))return;
-        ImageDownloadUtility.loadImage(this, gallery.getCover(),thumbnail);
-        switch (gallery.getLanguage()){
-            case CHINESE :language.setText("\uD83C\uDDE8\uD83C\uDDF3");break;
-            case ENGLISH :language.setText("\uD83C\uDDEC\uD83C\uDDE7");break;
-            case JAPANESE:language.setText("\uD83C\uDDEF\uD83C\uDDF5");break;
-            case UNKNOWN :language.setText("\uD83C\uDFF3"); break;
+    public void loadGallery(Gallery gallery) {
+        loadedGallery = gallery;
+        if (Global.isDestroyed(this)) return;
+        ImageDownloadUtility.loadImage(this, gallery.getCover(), thumbnail);
+        switch (gallery.getLanguage()) {
+            case CHINESE:
+                language.setText("\uD83C\uDDE8\uD83C\uDDF3");
+                break;
+            case ENGLISH:
+                language.setText("\uD83C\uDDEC\uD83C\uDDE7");
+                break;
+            case JAPANESE:
+                language.setText("\uD83C\uDDEF\uD83C\uDDF5");
+                break;
+            case UNKNOWN:
+                language.setText("\uD83C\uDFF3");
+                break;
         }
-        isFavorite=Favorites.isFavorite(loadedGallery);
+        isFavorite = Favorites.isFavorite(loadedGallery);
         favoriteUpdateButton();
         title.setText(gallery.getTitle());
-        page.setText(getString(R.string.page_count_format,gallery.getPageCount()));
-        censor.setVisibility(gallery.hasIgnoredTags()?View.VISIBLE:View.GONE);
+        page.setText(getString(R.string.page_count_format, gallery.getPageCount()));
+        censor.setVisibility(gallery.hasIgnoredTags() ? View.VISIBLE : View.GONE);
     }
 
     private void favoriteUpdateButton() {
-        runOnUiThread(()->{
-            ImageDownloadUtility.loadImage(isFavorite?R.drawable.ic_favorite:R.drawable.ic_favorite_border,favorite);
+        runOnUiThread(() -> {
+            ImageDownloadUtility.loadImage(isFavorite ? R.drawable.ic_favorite : R.drawable.ic_favorite_border, favorite);
             Global.setTint(favorite.getDrawable());
         });
     }
 
     @Override
     public void onBackPressed() {
-        loadedGallery=null;
+        loadedGallery = null;
         super.onBackPressed();
     }
 }

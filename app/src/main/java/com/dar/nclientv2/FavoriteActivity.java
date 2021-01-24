@@ -19,8 +19,9 @@ import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class FavoriteActivity extends BaseActivity {
-    private FavoriteAdapter adapter=null;
-    private boolean sortByTitle=false;
+    private FavoriteAdapter adapter = null;
+    private boolean sortByTitle = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,30 +96,31 @@ public class FavoriteActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent i;
-        if(item.getItemId()==R.id.open_browser){
-            i = new Intent(Intent.ACTION_VIEW, Uri.parse(Utility.getBaseUrl()+"favorites/"));
+        if (item.getItemId() == R.id.open_browser) {
+            i = new Intent(Intent.ACTION_VIEW, Uri.parse(Utility.getBaseUrl() + "favorites/"));
             startActivity(i);
-        }else if(item.getItemId()==R.id.download_page){
-            if(adapter!=null)showDialogDownloadAll();
-        }else if(item.getItemId()==R.id.sort_by_name){
-            sortByTitle=!sortByTitle;
+        } else if (item.getItemId() == R.id.download_page) {
+            if (adapter != null) showDialogDownloadAll();
+        } else if (item.getItemId() == R.id.sort_by_name) {
+            sortByTitle = !sortByTitle;
             adapter.setSortByTitle(sortByTitle);
-            item.setTitle(sortByTitle?R.string.sort_by_latest:R.string.sort_by_title);
-        }else if(item.getItemId()==R.id.random_favorite){
+            item.setTitle(sortByTitle ? R.string.sort_by_latest : R.string.sort_by_title);
+        } else if (item.getItemId() == R.id.random_favorite) {
             adapter.randomGallery();
         }
         return super.onOptionsItemSelected(item);
     }
+
     private void showDialogDownloadAll() {
-        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(this);
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
         builder
-                .setTitle(R.string.download_all_galleries_in_this_page)
-                .setIcon(R.drawable.ic_file)
-                .setNegativeButton(R.string.cancel,null)
-                .setPositiveButton(R.string.ok, (dialog, which) -> {
-                    for(Gallery g:adapter.getAllGalleries())
-                        DownloadGalleryV2.downloadGallery(this, g);
-                });
+            .setTitle(R.string.download_all_galleries_in_this_page)
+            .setIcon(R.drawable.ic_file)
+            .setNegativeButton(R.string.cancel, null)
+            .setPositiveButton(R.string.ok, (dialog, which) -> {
+                for (Gallery g : adapter.getAllGalleries())
+                    DownloadGalleryV2.downloadGallery(this, g);
+            });
         builder.show();
     }
 }

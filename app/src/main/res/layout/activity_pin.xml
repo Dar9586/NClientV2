@@ -3,27 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:clipChildren="false"
     android:layout_height="match_parent"
+    android:clipChildren="false"
     tools:context=".PINActivity">
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:clipChildren="false"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
+        android:clipChildren="false"
         android:orientation="vertical"
         android:weightSum="4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="HardcodedText"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        tools:ignore="HardcodedText">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,24 +35,23 @@
 
             <Button
                 android:id="@+id/btn1"
+                style="?attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:foreground="?attr/selectableItemBackgroundBorderless"
-                style="?attr/borderlessButtonStyle"
                 android:text="1"
                 android:textColor="?android:attr/colorForeground"
                 android:tint="?android:attr/colorForeground"
-                app:backgroundTint="@android:color/transparent"
-                />
+                app:backgroundTint="@android:color/transparent" />
 
             <Button
                 android:id="@+id/btn2"
+                style="?attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:foreground="?attr/selectableItemBackgroundBorderless"
-                style="?attr/borderlessButtonStyle"
                 android:text="2"
                 android:textColor="?android:attr/colorForeground"
                 android:tint="?android:attr/colorForeground"
@@ -60,11 +59,11 @@
 
             <Button
                 android:id="@+id/btn3"
+                style="?attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:foreground="?attr/selectableItemBackgroundBorderless"
-                style="?attr/borderlessButtonStyle"
                 android:text="3"
                 android:textColor="?android:attr/colorForeground"
                 android:tint="?android:attr/colorForeground"
@@ -81,11 +80,11 @@
 
             <Button
                 android:id="@+id/btn4"
+                style="?attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:foreground="?attr/selectableItemBackgroundBorderless"
-                style="?attr/borderlessButtonStyle"
                 android:text="4"
                 android:textColor="?android:attr/colorForeground"
                 android:tint="?android:attr/colorForeground"
@@ -93,11 +92,11 @@
 
             <Button
                 android:id="@+id/btn5"
+                style="?attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:foreground="?attr/selectableItemBackgroundBorderless"
-                style="?attr/borderlessButtonStyle"
                 android:text="5"
                 android:textColor="?android:attr/colorForeground"
                 android:tint="?android:attr/colorForeground"
@@ -105,12 +104,12 @@
 
             <Button
                 android:id="@+id/btn6"
+                style="?attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
-                style="?attr/borderlessButtonStyle"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
                 android:text="6"
                 android:textColor="?android:attr/colorForeground"
                 android:tint="?android:attr/colorForeground"
@@ -120,18 +119,18 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:clipChildren="false"
             android:layout_weight="1"
+            android:clipChildren="false"
             android:orientation="horizontal"
             android:weightSum="3">
 
             <Button
                 android:id="@+id/btn7"
+                style="?attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:foreground="?attr/selectableItemBackgroundBorderless"
-                style="?attr/borderlessButtonStyle"
                 android:text="7"
                 android:textColor="?android:attr/colorForeground"
                 android:tint="?android:attr/colorForeground"
@@ -139,11 +138,11 @@
 
             <Button
                 android:id="@+id/btn8"
+                style="?attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:foreground="?attr/selectableItemBackgroundBorderless"
-                style="?attr/borderlessButtonStyle"
                 android:text="8"
                 android:textColor="?android:attr/colorForeground"
                 android:tint="?android:attr/colorForeground"
@@ -151,12 +150,12 @@
 
             <Button
                 android:id="@+id/btn9"
+                style="?attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="9"
                 android:foreground="?attr/selectableItemBackgroundBorderless"
-                style="?attr/borderlessButtonStyle"
+                android:text="9"
                 android:textColor="?android:attr/colorForeground"
                 android:tint="?android:attr/colorForeground"
                 app:backgroundTint="@android:color/transparent" />
@@ -166,41 +165,41 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:orientation="horizontal"
             android:clipChildren="false"
+            android:orientation="horizontal"
             android:weightSum="3">
 
             <ImageButton
                 android:id="@+id/utility"
-                android:contentDescription="@string/app_name"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:textColor="?android:attr/colorForeground"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/app_name"
+                android:textColor="?android:attr/colorForeground"
                 android:tint="?android:attr/colorForeground"
                 app:backgroundTint="@android:color/transparent"
                 app:srcCompat="@drawable/ic_arrow_back" />
 
             <Button
                 android:id="@+id/btn0"
+                style="?attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:foreground="?attr/selectableItemBackgroundBorderless"
-                style="?attr/borderlessButtonStyle"
                 android:text="0"
                 android:textColor="?android:attr/colorForeground"
                 app:backgroundTint="@android:color/transparent" />
 
             <ImageButton
                 android:id="@+id/cancelButton"
-                android:contentDescription="@string/app_name"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:textColor="?android:attr/colorForeground"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/app_name"
+                android:textColor="?android:attr/colorForeground"
                 android:tint="?android:attr/colorForeground"
                 app:backgroundTint="@android:color/transparent"
                 app:srcCompat="@drawable/ic_backspace" />
@@ -260,10 +259,10 @@
         android:layout_width="128dp"
         android:layout_height="128dp"
         android:layout_marginTop="16dp"
+        android:contentDescription="@string/app_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/app_name"
         app:srcCompat="@drawable/ic_logo" />
 
     <TextView
