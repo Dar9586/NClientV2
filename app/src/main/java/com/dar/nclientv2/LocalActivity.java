@@ -14,9 +14,11 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.dar.nclientv2.adapters.LocalAdapter;
 import com.dar.nclientv2.api.local.FakeInspector;
+import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.api.local.LocalSortType;
-import com.dar.nclientv2.async.downloader.DownloadQueue;
+import com.dar.nclientv2.async.downloader.GalleryDownloaderV2;
 import com.dar.nclientv2.components.activities.BaseActivity;
+import com.dar.nclientv2.components.classes.MultichoiceAdapter;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.chip.ChipGroup;
@@ -27,6 +29,14 @@ import java.io.File;
 import java.util.List;
 
 public class LocalActivity extends BaseActivity {
+    private Menu optionMenu;
+    private final MultichoiceAdapter.MultichoiceListener listener = new MultichoiceAdapter.DefaultMultichoiceListener() {
+
+        @Override
+        public void choiceChanged() {
+            setMenuVisibility(optionMenu);
+        }
+    };
     private LocalAdapter adapter;
     private Toolbar toolbar;
     private int colCount;
@@ -54,6 +64,7 @@ public class LocalActivity extends BaseActivity {
 
     public void setAdapter(LocalAdapter adapter) {
         this.adapter = adapter;
+        this.adapter.addListener(listener);
         recycler.setAdapter(adapter);
     }
 
@@ -65,12 +76,9 @@ public class LocalActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.download, menu);
-        if (DownloadQueue.isEmpty()) {
-            menu.findItem(R.id.pauseAll).setVisible(false);
-            menu.findItem(R.id.cancelAll).setVisible(false);
-            menu.findItem(R.id.startAll).setVisible(false);
-        }
-        menu.findItem(R.id.folder_choose).setVisible(Global.getUsableFolders(this).size() > 1);
+        getMenuInflater().inflate(R.menu.local_multichoice, menu);
+        this.optionMenu = menu;
+        setMenuVisibility(menu);
         searchView = (androidx.appcompat.widget.SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
@@ -89,6 +97,29 @@ public class LocalActivity extends BaseActivity {
         Utility.tintMenu(menu);
 
         return true;
+    }
+
+    private void setMenuVisibility(Menu menu) {
+        if (menu == null) return;
+        MultichoiceAdapter.Mode mode = adapter == null ? MultichoiceAdapter.Mode.NORMAL : adapter.getMode();
+        boolean hasGallery = false;
+        boolean hasDownloads = false;
+        if (mode == MultichoiceAdapter.Mode.SELECTING) {
+            hasGallery = adapter.hasSelectedClass(LocalGallery.class);
+            hasDownloads = adapter.hasSelectedClass(GalleryDownloaderV2.class);
+        }
+
+        menu.findItem(R.id.search).setVisible(mode == MultichoiceAdapter.Mode.NORMAL);
+        menu.findItem(R.id.sort_by_name).setVisible(mode == MultichoiceAdapter.Mode.NORMAL);
+        menu.findItem(R.id.folder_choose).setVisible(mode == MultichoiceAdapter.Mode.NORMAL && Global.getUsableFolders(this).size() > 1);
+        menu.findItem(R.id.random_favorite).setVisible(mode == MultichoiceAdapter.Mode.NORMAL);
+
+        menu.findItem(R.id.delete_all).setVisible(mode == MultichoiceAdapter.Mode.SELECTING);
+        menu.findItem(R.id.select_all).setVisible(mode == MultichoiceAdapter.Mode.SELECTING);
+        menu.findItem(R.id.pause_all).setVisible(mode == MultichoiceAdapter.Mode.SELECTING && !hasGallery && hasDownloads);
+        menu.findItem(R.id.start_all).setVisible(mode == MultichoiceAdapter.Mode.SELECTING && !hasGallery && hasDownloads);
+        menu.findItem(R.id.pdf_all).setVisible(mode == MultichoiceAdapter.Mode.SELECTING && hasGallery && !hasDownloads);
+        menu.findItem(R.id.zip_all).setVisible(mode == MultichoiceAdapter.Mode.SELECTING && hasGallery && !hasDownloads);
     }
 
     @Override
@@ -119,22 +150,36 @@ public class LocalActivity extends BaseActivity {
 
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            finish();
+            onBackPressed();
             return true;
-        } else if (item.getItemId() == R.id.pauseAll) {
-            if (adapter != null) adapter.pauseAll();
+        } else if (item.getItemId() == R.id.pause_all) {
+            adapter.pauseSelected();
+        } else if (item.getItemId() == R.id.start_all) {
+            adapter.startSelected();
+        } else if (item.getItemId() == R.id.delete_all) {
+            adapter.deleteSelected();
+        } else if (item.getItemId() == R.id.pdf_all) {
+            adapter.pdfSelected();
+        } else if (item.getItemId() == R.id.zip_all) {
+            adapter.zipSelected();
+        } else if (item.getItemId() == R.id.select_all) {
+            adapter.selectAll();
         } else if (item.getItemId() == R.id.folder_choose) {
             showDialogFolderChoose();
-        } else if (item.getItemId() == R.id.startAll) {
-            if (adapter != null) adapter.startAll();
-        } else if (item.getItemId() == R.id.cancelAll) {
-            if (adapter != null) adapter.cancellAll();
         } else if (item.getItemId() == R.id.random_favorite) {
             if (adapter != null) adapter.viewRandom();
         } else if (item.getItemId() == R.id.sort_by_name) {
             dialogSortType();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (adapter.getMode() == MultichoiceAdapter.Mode.SELECTING)
+            adapter.deselectAll();
+        else
+            super.onBackPressed();
     }
 
     private void showDialogFolderChoose() {

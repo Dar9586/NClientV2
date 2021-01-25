@@ -324,5 +324,9 @@
     <string name="disguise_app_in_drawer">Verstecke die App</string>
     <string name="summary_disguise_app">Die App versteckt sich als Taschenrechner (experimentell)</string>
     <string name="app_name_fake_calculator">Rechner</string>
+    <string name="delete_galleries">Delete galleries</string>
+    <string name="delete">Delete</string>
+    <string name="pause_selected_downloads">Pause selected downloads</string>
+    <string name="start_selected_downloads">Start selected downloads</string>
 
 </resources>

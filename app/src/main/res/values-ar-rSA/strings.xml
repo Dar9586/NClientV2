@@ -71,7 +71,7 @@
     <string name="next_page">Next page</string>
     <string name="downloaded_manga">Downloaded manga</string>
     <string name="download_gallery">Download gallery</string>
-    <string name="delete_gallery_size_format" formatted="true">Delete gallery (%.2fMB)</string>
+    <string name="delete_gallery_size_format">Delete gallery (%.2fMB)</string>
     <string name="delete_gallery_format" formatted="true">Do you want to delete the gallery:\n%s</string>
     <string name="share_with">Share with</string>
     <string name="link_copied_to_clipboard">Link copied to clipboard</string>
@@ -302,5 +302,9 @@
     <string name="disguise_app_in_drawer">Disguise app in drawer</string>
     <string name="summary_disguise_app">The app will be disguised as a calculator (experimental)</string>
     <string name="app_name_fake_calculator">Calculator</string>
+    <string name="delete_galleries">Delete galleries</string>
+    <string name="delete">Delete</string>
+    <string name="pause_selected_downloads">Pause selected downloads</string>
+    <string name="start_selected_downloads">Start selected downloads</string>
 
 </resources>

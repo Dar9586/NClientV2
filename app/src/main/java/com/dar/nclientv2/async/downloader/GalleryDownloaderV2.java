@@ -327,7 +327,6 @@ public class GalleryDownloaderV2 {
 
     private void createFolder() {
         folder = findFolder(Global.DOWNLOADFOLDER, title, id);
-        //folder = new File(Global.DOWNLOADFOLDER, gallery.getPathTitle());
         folder.mkdirs();
         try {
             writeNoMedia();
@@ -367,4 +366,21 @@ public class GalleryDownloaderV2 {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GalleryDownloaderV2 that = (GalleryDownloaderV2) o;
+
+        if (id != that.id) return false;
+        return folder != null ? folder.equals(that.folder) : that.folder == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (folder != null ? folder.hashCode() : 0);
+        return result;
+    }
 }

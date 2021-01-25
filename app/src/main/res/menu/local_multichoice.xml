@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/delete_all"
+        android:icon="@drawable/ic_delete"
+        android:title="@string/delete"
+        app:showAsAction="ifRoom|collapseActionView" />
+    <item
+        android:id="@+id/pdf_all"
+        android:icon="@drawable/ic_pdf"
+        android:title="@string/create_pdf"
+        app:showAsAction="ifRoom|collapseActionView" />
+    <item
+        android:id="@+id/zip_all"
+        android:icon="@drawable/ic_archive"
+        android:title="@string/create_zip"
+        app:showAsAction="ifRoom|collapseActionView" />
+    <item
+        android:id="@+id/pause_all"
+        android:icon="@drawable/ic_pause"
+        android:title="@string/pause_selected_downloads"
+        app:showAsAction="ifRoom|collapseActionView" />
+    <item
+        android:id="@+id/start_all"
+        android:icon="@drawable/ic_play"
+        android:title="@string/start_selected_downloads"
+        app:showAsAction="ifRoom|collapseActionView" />
+    <item
+        android:id="@+id/select_all"
+        android:icon="@drawable/ic_select_all"
+        android:title="@android:string/selectAll"
+        app:showAsAction="ifRoom|collapseActionView" />
+</menu>

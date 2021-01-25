@@ -299,5 +299,9 @@
     <string name="disguise_app_in_drawer">Ocultar aplicacion</string>
     <string name="summary_disguise_app">La aplicacion se ocultará en la bandeja de aplicaciones (experimental)</string>
     <string name="app_name_fake_calculator">Calculadora</string>
+    <string name="delete_galleries">Delete galleries</string>
+    <string name="delete">Delete</string>
+    <string name="pause_selected_downloads">Pause selected downloads</string>
+    <string name="start_selected_downloads">Start selected downloads</string>
 
 </resources>

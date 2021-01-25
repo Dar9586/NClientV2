@@ -8,7 +8,6 @@ import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageButton;
@@ -31,6 +30,7 @@ import com.dar.nclientv2.async.downloader.DownloadGalleryV2;
 import com.dar.nclientv2.async.downloader.DownloadObserver;
 import com.dar.nclientv2.async.downloader.DownloadQueue;
 import com.dar.nclientv2.async.downloader.GalleryDownloaderV2;
+import com.dar.nclientv2.components.classes.MultichoiceAdapter;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.ImageDownloadUtility;
 import com.dar.nclientv2.utility.LogUtility;
@@ -38,9 +38,6 @@ import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -49,7 +46,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> implements Filterable {
+public class LocalAdapter extends MultichoiceAdapter<Object, LocalAdapter.ViewHolder> implements Filterable {
     private final SparseIntArray statuses = new SparseIntArray();
     private final LocalActivity context;
     private final List<LocalGallery> dataset;
@@ -89,6 +86,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         String s2 = b2 ? ((LocalGallery) o2).getTitle() : ((GalleryDownloaderV2) o2).getPathTitle();
         return s1.compareTo(s2);
     };
+
     private List<Object> filter;
     @NonNull
     private String lastQuery = "";
@@ -130,6 +128,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         }
     };
     private int colCount;
+
     public LocalAdapter(LocalActivity cont, ArrayList<LocalGallery> myDataset) {
         this.context = cont;
         dataset = new CopyOnWriteArrayList<>(myDataset);
@@ -152,6 +151,16 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
             intent.putExtra(context.getPackageName() + ".ISLOCAL", true);
             context.runOnUiThread(() -> context.startActivity(intent));
         }).start();
+    }
+
+    @Override
+    protected ViewGroup getMaster(ViewHolder holder) {
+        return holder.layout;
+    }
+
+    @Override
+    protected Object getItemAt(int position) {
+        return filter.get(position);
     }
 
     private CopyOnWriteArrayList<Object> createHash(List<GalleryDownloaderV2> galleryDownloaders, List<LocalGallery> dataset) {
@@ -202,7 +211,7 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    protected ViewHolder onCreateMultichoiceViewHolder(@NonNull ViewGroup parent, int viewType) {
         int id = 0;
         switch (viewType) {
             case 0:
@@ -237,14 +246,11 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
                 else holder.layout.performClick();
             } else holder.layout.performClick();
         });
-        holder.layout.setOnClickListener(v -> {
-            startGallery(context, ent.getDirectory());
-            context.setOpenedGalleryPosition(position);
-        });
-        holder.layout.setOnLongClickListener(v -> {
-            createContextualMenu(holder.getAdapterPosition());
+
+        /*holder.layout.setOnLongClickListener(v -> {
+            createContextualMenu(position);
             return true;
-        });
+        });*/
         int statusColor = statuses.get(ent.getId(), 0);
         if (statusColor == 0) {
             statusColor = Queries.StatusMangaTable.getStatus(ent.getId()).color;
@@ -259,6 +265,12 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         int id = ((LocalGallery) filter.get(position)).getId();
         statuses.put(id, Queries.StatusMangaTable.getStatus(id).color);
         notifyItemChanged(position);
+    }
+
+    @Override
+    protected void defaultMasterAction(int position) {
+        startGallery(context, ((LocalGallery) filter.get(position)).getDirectory());
+        context.setOpenedGalleryPosition(position);
     }
 
     private void bindDownload(@NonNull final ViewHolder holder, int position, GalleryDownloaderV2 downloader) {
@@ -307,109 +319,74 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+    public long getItemId(int position) {
+        return filter.get(position).hashCode();
+    }
+
+    @Override
+    public void onBindMultichoiceViewHolder(@NonNull ViewHolder holder, int position) {
         if (filter.get(position) instanceof LocalGallery)
             bindGallery(holder, position, (LocalGallery) filter.get(position));
         else
             bindDownload(holder, position, (GalleryDownloaderV2) filter.get(position));
     }
 
-    private double sizeForGallery(LocalGallery gallery) {
-        double size = Global.recursiveSize(gallery.getDirectory());
-        size /= 2 << 20;
-        return size;
-    }
-
-    private void showDialogDelete(final int pos) {
-        final LocalGallery gallery = (LocalGallery) filter.get(pos);
+    private void showDialogDelete() {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
-        builder.setTitle(context.getString(R.string.delete_gallery_size_format, sizeForGallery(gallery))).setMessage(context.getString(R.string.delete_gallery_format, gallery.getTitle()));
+        builder.setTitle(R.string.delete_galleries).setMessage(getAllGalleries());
         builder.setPositiveButton(R.string.yes, (dialog, which) -> {
-            filter.remove(gallery);
-            dataset.remove(gallery);
-            Global.recursiveDelete(gallery.getDirectory());
-            notifyItemRemoved(pos);
+            ArrayList<Object> coll = new ArrayList<>(getSelected());
+            for (Object o : coll) {
+                filter.remove(o);
+                if (o instanceof LocalGallery) {
+                    dataset.remove(o);
+                    Global.recursiveDelete(((LocalGallery) o).getDirectory());
+                } else if (o instanceof DownloadGalleryV2) {
+                    DownloadQueue.remove((GalleryDownloaderV2) o, true);
+                }
+            }
+            context.runOnUiThread(this::notifyDataSetChanged);
         }).setNegativeButton(R.string.no, null).setCancelable(true);
         builder.show();
     }
 
-    private void showDialogPDF(final int pos) {
-        final LocalGallery gallery = (LocalGallery) filter.get(pos);
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
-        builder.setTitle(R.string.create_pdf).setMessage(context.getString(R.string.create_pdf_format, gallery.getTitle()));
-        builder.setPositiveButton(R.string.yes, (dialog, which) -> CreatePDF.startWork(context, gallery)).setNegativeButton(R.string.no, null).setCancelable(true);
-        builder.show();
-    }
-
-    private void createContextualMenu(final int pos) {
-        LocalGallery gallery = (LocalGallery) filter.get(pos);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.select_dialog_item);
-        adapter.add(context.getString(R.string.delete_gallery_size_format, sizeForGallery(gallery)));
-        adapter.add(context.getString(R.string.create_zip));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-            adapter.add(context.getString(R.string.create_pdf));//api 19
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
-        builder.setTitle(R.string.settings).setIcon(R.drawable.ic_settings);
-        builder.setAdapter(adapter, (dialog, which) -> {
-            switch (which) {
-                case 0:
-                    showDialogDelete(pos);
-                    break;
-                case 1:
-                    createZIP(pos);
-                    break;
-                case 2:
-                    showDialogPDF(pos);
-                    break;
-            }
-        }).show();
-    }
-
-    /*private void changePosition(int pos) {
-        LocalGallery gallery=(LocalGallery) filter.get(pos);
-        List<File>folders=Global.getUsableFolders(context);
-        ArrayAdapter adapter=new ArrayAdapter(context,android.R.layout.select_dialog_singlechoice,folders);
-        folders.remove(gallery.getDirectory().getParentFile().getParentFile());
-        MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(context);
-        builder.setTitle(R.string.choose_directory).setIcon(R.drawable.ic_folder);
-        builder.setAdapter(adapter, (dialog, which) -> {
-            File chosen=folders.get(which);
-            chosen=new File(chosen,gallery.getDirectory().getName());
-            chosen.mkdirs();
-            for(File f:gallery.getDirectory().listFiles()){
-                try {
-                    copy(f,new File(chosen,f.getName()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            int index=filter.indexOf(gallery);
-            filter.remove(gallery);
-            dataset.remove(gallery);
-            context.runOnUiThread(()->notifyItemRemoved(index));
-        }).setNegativeButton(R.string.cancel,null).show();
-
-    }*/
-    private void copy(File from, File to) throws IOException {
-        FileInputStream fromFile = new FileInputStream(from);
-        FileOutputStream toFile = new FileOutputStream(to);
-        int len;
-        byte[] buffer = new byte[1024];
-        while ((len = fromFile.read(buffer)) > 0) {
-            toFile.write(buffer, 0, len);
+    private String getAllGalleries() {
+        StringBuilder builder = new StringBuilder();
+        for (Object o : getSelected()) {
+            if (o instanceof LocalGallery) builder.append(((LocalGallery) o).getTitle());
+            else builder.append(((GalleryDownloaderV2) o).getTitle());
+            builder.append('\n');
         }
-        fromFile.close();
-        toFile.flush();
-        toFile.close();
+        return builder.toString();
     }
 
-    private void createZIP(final int pos) {
-        final LocalGallery gallery = (LocalGallery) filter.get(pos);
+    private void showDialogPDF() {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
-        builder.setTitle(R.string.create_zip).setMessage(context.getString(R.string.create_zip_format, gallery.getTitle()));
-        builder.setPositiveButton(R.string.yes, (dialog, which) -> CreateZIP.startWork(context, gallery)).setNegativeButton(R.string.no, null).setCancelable(true);
+        builder.setTitle(R.string.create_pdf).setMessage(getAllGalleries());
+        builder.setPositiveButton(R.string.yes, (dialog, which) -> {
+            for (Object o : getSelected()) {
+                CreatePDF.startWork(context, (LocalGallery) o);
+            }
+        }).setNegativeButton(R.string.no, null).setCancelable(true);
+        builder.show();
+    }
+
+
+    private void showDialogZip() {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
+        builder.setTitle(R.string.create_zip).setMessage(getAllGalleries());
+        builder.setPositiveButton(R.string.yes, (dialog, which) -> {
+            for (Object o : getSelected()) {
+                CreateZIP.startWork(context, (LocalGallery) o);
+            }
+        }).setNegativeButton(R.string.no, null).setCancelable(true);
         builder.show();
 
+    }
+
+    public boolean hasSelectedClass(Class<?> c) {
+        for (Object x : getSelected()) if (x.getClass() == c) return true;
+        return false;
     }
 
     @Override
@@ -455,32 +432,42 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.ViewHolder> 
         context.runOnUiThread(() -> notifyItemRangeChanged(0, getItemCount()));
     }
 
-    public void startAll() {
-        for (GalleryDownloaderV2 d : galleryDownloaders) {
+    public void startSelected() {
+        for (Object o : getSelected()) {
+            if (!(o instanceof GalleryDownloaderV2)) continue;
+            GalleryDownloaderV2 d = (GalleryDownloaderV2) o;
             if (d.getStatus() == GalleryDownloaderV2.Status.PAUSED)
                 d.setStatus(GalleryDownloaderV2.Status.NOT_STARTED);
         }
         context.runOnUiThread(this::notifyDataSetChanged);
     }
 
-    public void pauseAll() {
-        for (GalleryDownloaderV2 d : galleryDownloaders) {
+    public void pauseSelected() {
+        for (Object o : getSelected()) {
+            if (!(o instanceof GalleryDownloaderV2)) continue;
+            GalleryDownloaderV2 d = (GalleryDownloaderV2) o;
             d.setStatus(GalleryDownloaderV2.Status.PAUSED);
         }
         context.runOnUiThread(this::notifyDataSetChanged);
     }
 
-    public void cancellAll() {
-        pauseAll();
-        DownloadQueue.clear();
-        context.runOnUiThread(this::notifyDataSetChanged);
+    public void deleteSelected() {
+        showDialogDelete();
+    }
+
+    public void zipSelected() {
+        showDialogZip();
+    }
+
+    public void pdfSelected() {
+        showDialogPDF();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         final ImageView imgView;
         final View overlay;
         final TextView title, pages, flag, progress;
-        final View layout;
+        final ViewGroup layout;
         final ImageButton playButton, cancelButton;
         final ProgressBar progressBar;
 

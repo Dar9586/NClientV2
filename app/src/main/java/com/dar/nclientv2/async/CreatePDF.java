@@ -86,7 +86,7 @@ public class CreatePDF extends JobIntentService {
             notification.setProgress(0, 0, false);
             notification.setContentTitle(getString(R.string.created_pdf));
             notification.setContentText(gallery.getTitle());
-            createIntentOpen(finalPath);
+            //createIntentOpen(finalPath);
             NotificationSettings.notify(getString(R.string.channel2_name), notId, notification.build());
             LogUtility.d(finalPath.getAbsolutePath());
         } catch (IOException e) {
@@ -102,6 +102,7 @@ public class CreatePDF extends JobIntentService {
 
     }
 
+    // FIXME: 25/01/21 uri not valid
     private void createIntentOpen(File finalPath) {
         Intent i = new Intent(Intent.ACTION_VIEW);
         Uri apkURI = FileProvider.getUriForFile(
@@ -122,7 +123,7 @@ public class CreatePDF extends JobIntentService {
 
     private void preExecute(File file) {
         notification = new NotificationCompat.Builder(getApplicationContext(), Global.CHANNEL_ID2);
-        notification.setSmallIcon(R.drawable.ic_image)
+        notification.setSmallIcon(R.drawable.ic_pdf)
             .setOnlyAlertOnce(true)
             .setStyle(new NotificationCompat.BigTextStyle().bigText(file.getName()))
             .setContentTitle(getString(R.string.channel2_title))
