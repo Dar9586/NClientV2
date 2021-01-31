@@ -85,7 +85,7 @@
     <string name="downloaded_manga">İndirilmiş Mangalar</string>
     <string name="download_gallery">Bu mangayı indir</string>
 
-    <string name="delete_gallery_size_format" formatted="true">Mangayı sil %.2fMB boyutunda</string> <!--Delete manga? Its xMB-->
+    <string name="delete_gallery_size_format" formatted="true">Mangayı sil? %.2fMB boyutunda</string> <!--Delete manga? Its xMB-->
     <string name="delete_gallery_format" formatted="true">Bu mangayı silmek istiyor musunuz? %s</string>
 
 
@@ -203,7 +203,7 @@
     <string name="use_pin">PIN kullan</string>
     <string name="wrong_pin">Yanlış PIN</string>
     <string name="rotate_image">Fotoğrafı çevir</string>
-    <string name="exported_backup_file_toast" formatted="true">Exported backup file in %s</string>
+    <string name="exported_backup_file_toast" formatted="true">Yedekleme dosyası şuraya çıkartıldı: %s</string>
 
     <string-array name="scroll_type">
         <item>Horizontal</item>
@@ -322,8 +322,8 @@
     <string name="disguise_app_in_drawer">Uygulamayı gizle</string>
     <string name="summary_disguise_app">Uygulama bir Hesap Makinesi olarak gizlenecektir (deneysel)</string>
     <string name="app_name_fake_calculator">Hesap Makinesi</string>
-    <string name="delete_galleries">Delete galleries</string>
-    <string name="delete">Delete</string>
-    <string name="pause_selected_downloads">Pause selected downloads</string>
-    <string name="start_selected_downloads">Start selected downloads</string>
+    <string name="delete_galleries">Mangaları sil</string>
+    <string name="delete">Sil</string>
+    <string name="pause_selected_downloads">Seçili indirmeleri duraklat</string>
+    <string name="start_selected_downloads">Seçili indirmeleri başlat</string>
 </resources>
