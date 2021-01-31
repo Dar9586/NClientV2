@@ -16,3 +16,4 @@ Uygulamaya Özel Özellikler
  - Galerileri Paylaşma
  - Tarayıcıda Açma
  - Yer işaretleri
+ - Uygulamayı hesap makinesi olarak gizleyebilme
