@@ -9,9 +9,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.JsonWriter;
+import android.view.View;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import androidx.preference.ListPreference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SeekBarPreference;
@@ -39,9 +40,9 @@ import java.util.List;
 import java.util.Map;
 
 public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
-    private AppCompatActivity act;
+    private SettingsActivity act;
 
-    public void setAct(AppCompatActivity act) {
+    public void setAct(SettingsActivity act) {
         this.act = act;
     }
 
@@ -151,7 +152,11 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
         findPreference("version").setTitle(getString(R.string.app_version_format, Global.getVersionName(getContext())));
         initStoragePaths(findPreference(getString(R.string.key_save_path)));
         double cacheSize = Global.recursiveSize(act.getCacheDir()) / ((double) (1 << 20));
-
+        findPreference(getString(R.string.key_save_path)).setOnPreferenceChangeListener((preference, newValue) -> {
+            if (!newValue.equals(getString(R.string.custom_path))) return true;
+            manageCustomPath();
+            return false;
+        });
         //clear cache if pressed
         findPreference(getString(R.string.key_cache)).setSummary(getString(R.string.cache_size_formatted, cacheSize));
         findPreference(getString(R.string.key_cache)).setOnPreferenceClickListener(preference -> {
@@ -224,6 +229,23 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
         });
     }
 
+    public void manageCustomPath() {
+        if (!Global.isExternalStorageManager()) {
+            act.requestStorageManager();
+            return;
+        }
+        final String key = getString(R.string.key_save_path);
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(act);
+        AppCompatAutoCompleteTextView edit = (AppCompatAutoCompleteTextView) View.inflate(act, R.layout.autocomplete_entry, null);
+        edit.setHint(R.string.insert_path);
+        builder.setView(edit);
+        builder.setTitle(R.string.insert_path);
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
+            act.getSharedPreferences("Settings", Context.MODE_PRIVATE).edit().putString(key, edit.getText().toString()).apply();
+            findPreference(key).setSummary(edit.getText().toString());
+        }).setNegativeButton(R.string.cancel, null).show();
+    }
+
     private void changeLauncher(PackageManager pm, ComponentName name, boolean enabled) {
         int enableState = enabled ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED : PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
         pm.setComponentEnabledSetting(name, enableState, PackageManager.DONT_KILL_APP);
@@ -236,11 +258,12 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
             return;
         }
         List<File> files = Global.getUsableFolders(act);
-        List<CharSequence> strings = new ArrayList<>(files.size());
+        List<CharSequence> strings = new ArrayList<>(files.size() + 1);
         for (File f : files) {
             if (f != null)
                 strings.add(f.getAbsolutePath());
         }
+        strings.add(getString(R.string.custom_path));
         storagePreference.setEntries(strings.toArray(new CharSequence[0]));
         storagePreference.setEntryValues(strings.toArray(new CharSequence[0]));
         storagePreference.setSummary(

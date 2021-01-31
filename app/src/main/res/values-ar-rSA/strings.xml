@@ -306,5 +306,9 @@
     <string name="delete">Delete</string>
     <string name="pause_selected_downloads">Pause selected downloads</string>
     <string name="start_selected_downloads">Start selected downloads</string>
+    <string name="custom_path">Custom path</string>
+    <string name="insert_path">Insert path:</string>
+    <string name="requesting_storage_access">Requesting storage access</string>
+    <string name="request_storage_manager_summary">Due to some restriction in Android R to the storage access this app will require you to give additional permission to use custom paths.\nIf you want to give those permission please enable the setting in the next dialog.</string>
 
 </resources>

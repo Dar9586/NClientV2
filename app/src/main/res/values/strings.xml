@@ -89,7 +89,7 @@
     <string name="channel3_description">Used to show progress of the creation of the ZIP</string>
     <string name="channel2_title">Creating PDF:</string>
     <string name="channel3_title">Creating ZIP:</string>
-    <string name="favorite_max_reached" formatted="true">You can have a maximum of %d favorite manga.</string>
+    <string name="favorite_max_reached" formatted="true">You can have a maximum of %d favorite galleries.</string>
     <string name="tags_max_reached" formatted="true">You can have a maximum of %d selected tags.</string>
     <string name="only_english">Only english</string>
     <string name="only_japanese">Only japanese</string>
@@ -98,7 +98,7 @@
     <string name="login">Log in</string>
     <string name="login_formatted" formatted="true">Logged as %s</string>
     <string name="logout">Logout</string>
-    <string name="favorite_online_manga">Favorite online manga</string>
+    <string name="favorite_online_manga">Favorite online galleries</string>
     <string name="online_tags">Online tags</string>
     <string name="add_to_online_favorite">Add to online favorites</string>
     <string name="remove_from_online_favorites">Remove from online favorites</string>
@@ -127,7 +127,7 @@
     <string name="change_page">Change page:</string>
     <string name="prev_page">Previous page</string>
     <string name="next_page">Next page</string>
-    <string name="downloaded_manga">Downloaded manga</string>
+    <string name="downloaded_manga">Downloaded galleries</string>
     <string name="download_gallery">Download gallery</string>
     <string name="delete_gallery_size_format" formatted="true">Delete gallery (%.2fMB)</string>
     <string name="delete_gallery_format" formatted="true">Do you want to delete the gallery:\n%s</string>
@@ -141,12 +141,12 @@
     <string name="manage_tags">Manage tags</string>
     <string name="applied_filters">Applied filters</string>
     <string name="show_related">Show related galleries</string>
-    <string name="random_manga">Random manga</string>
+    <string name="random_manga">Random gallery</string>
     <string name="save_page">Save page</string>
     <string name="page_count_format" formatted="true">%d pages</string>
     <string name="upload_date_format" formatted="true">Uploaded on %s at %s</string>
     <string name="favorite_count_format" formatted="true">%d favorites</string>
-    <string name="favorite_manga">Favorite manga</string>
+    <string name="favorite_manga">Favorite galleries</string>
     <string name="setting_on_remove_ignored">The galleries with ignored tags will not be shown</string>
     <string name="setting_off_remove_ignored">The galleries with ignored tags will be blurred</string>
     <string name="remove_ignored_galleries">Remove ignored galleries</string>
@@ -170,7 +170,7 @@
     <string name="images_settings">Images settings</string>
     <string name="miscellaneous">Miscellaneous</string>
     <string name="update_settings">Update settings</string>
-    <string name="online_favorite_manga">Online favorite manga</string>
+    <string name="online_favorite_manga">Online favorite galleries</string>
     <string name="cache_size_formatted">Cache size: %.2f MB</string>
     <string name="cache_cleared">Cache cleared</string>
     <string name="sort_by_latest">Sort by latest</string>
@@ -335,6 +335,10 @@
     <string name="delete">Delete</string>
     <string name="pause_selected_downloads">Pause selected downloads</string>
     <string name="start_selected_downloads">Start selected downloads</string>
+    <string name="custom_path">Custom path</string>
+    <string name="insert_path">Insert path:</string>
+    <string name="requesting_storage_access">Requesting storage access</string>
+    <string name="request_storage_manager_summary">Due to some restriction in Android R to the storage access this app will require you to give additional permission to use custom paths.\nIf you want to give those permission please enable the setting in the next dialog.</string>
 
     <string-array name="scroll_type">
         <item>Horizontal</item>

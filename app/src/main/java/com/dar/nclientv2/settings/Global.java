@@ -154,7 +154,7 @@ public class Global {
 
     public static String getDefaultFileParent(Context context) {
         File f;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             f = context.getExternalFilesDir(null);
         } else {
             f = Environment.getExternalStorageDirectory();
@@ -163,9 +163,14 @@ public class Global {
     }
 
     private static void initFilesTree(Context context) {
+        List<File> files = getUsableFolders(context);
         String path = context.getSharedPreferences("Settings", Context.MODE_PRIVATE).getString(context.getString(R.string.key_save_path), getDefaultFileParent(context));
         assert path != null;
-        MAINFOLDER = new File(path, MAINFOLDER_NAME);
+        File ROOTFOLDER = new File(path);
+        //in case the permission is removed
+        if (!files.contains(ROOTFOLDER) && !isExternalStorageManager())
+            ROOTFOLDER = new File(getDefaultFileParent(context));
+        MAINFOLDER = new File(ROOTFOLDER, MAINFOLDER_NAME);
         OLD_GALLERYFOLDER = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), MAINFOLDER_NAME);
         DOWNLOADFOLDER = new File(MAINFOLDER, DOWNLOADFOLDER_NAME);
         SCREENFOLDER = new File(MAINFOLDER, SCREENFOLDER_NAME);
@@ -722,6 +727,10 @@ public class Global {
             e.printStackTrace();
         }
         return "0.0.0";
+    }
+
+    public static boolean isExternalStorageManager() {
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.R || Environment.isExternalStorageManager();
     }
 
     public enum ThemeScheme {LIGHT, DARK}

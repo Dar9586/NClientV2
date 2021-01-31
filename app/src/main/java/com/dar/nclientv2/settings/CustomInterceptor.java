@@ -17,7 +17,6 @@ public class CustomInterceptor implements Interceptor {
         Request request = chain.request();
         LogUtility.d("Requested url: " + request.url());
         Request.Builder r = request.newBuilder();
-        //r.addHeader("Cookie","sessionid=o43fjyx8vwlt9452ka0oxids12l6a6r5");
         r.addHeader("User-Agent", Global.getUserAgent());
         return chain.proceed(r.build());
     }
