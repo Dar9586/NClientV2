@@ -329,5 +329,5 @@
     <string name="custom_path">Özel Dizin</string>
     <string name="insert_path">Dizin Gir:</string>
     <string name="requesting_storage_access">Depolamaya erişim izni isteniyor</string>
-    <string name="request_storage_manager_summary">Android R\'de depolama erişimine yönelik bazı kısıtlamalar nedeniyle, bu uygulama özel yolları kullanmak için ek izin vermenizi gerektirecektir. \nBu izinleri vermek istiyorsanız, lütfen sonraki iletişim kutusunda uygulamaya izin verin.</string>
+    <string name="request_storage_manager_summary">Android 11\'de depolama erişimine yönelik bazı kısıtlamalar nedeniyle, bu uygulama özel yolları kullanmak için ek izin vermenizi gerektirecektir. \nBu izinleri vermek istiyorsanız, lütfen sonraki iletişim kutusunda uygulamaya izin verin.</string>
 </resources>

@@ -324,13 +324,13 @@
     <string name="disguise_app_in_drawer">Nascondi app nel drawer</string>
     <string name="summary_disguise_app">L\'app verrà trasformata in una calcolatrice (experimental)</string>
     <string name="app_name_fake_calculator">Calcolatrice</string>
-    <string name="delete_galleries">Delete galleries</string>
-    <string name="delete">Delete</string>
-    <string name="pause_selected_downloads">Pause selected downloads</string>
-    <string name="start_selected_downloads">Start selected downloads</string>
-    <string name="custom_path">Custom path</string>
-    <string name="insert_path">Insert path:</string>
-    <string name="requesting_storage_access">Requesting storage access</string>
-    <string name="request_storage_manager_summary">Due to some restriction in Android R to the storage access this app will require you to give additional permission to use custom paths.\nIf you want to give those permission please enable the setting in the next dialog.</string>
+    <string name="delete_galleries">Cancella gallerie</string>
+    <string name="delete">Cancella</string>
+    <string name="pause_selected_downloads">Metti in pausa i download</string>
+    <string name="start_selected_downloads">Riprendi i download</string>
+    <string name="custom_path">Percorso personalizzato</string>
+    <string name="insert_path">Inserisci percorso</string>
+    <string name="requesting_storage_access">Richiesta accesso alla memoria</string>
+    <string name="request_storage_manager_summary">Per via di alcune restrizioni sull\'accesso alla memoria su Android 11 sono richiesti ulteriori permessi per usare i percorsi personalizzati.\nSe vuoi dare questi permessi abilitali nella prossima schermata.</string>
 
 </resources>
