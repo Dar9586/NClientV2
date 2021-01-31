@@ -31,8 +31,8 @@
     <string name="channel2_name">PDF oluştur</string>
     <string name="channel3_name">ZIP oluştur</string>
     <string name="channel1_description">Galerinin indirme sürecinin ne kadar tamamlandığını gösterir</string>
-    <string name="channel2_description">PDF'nin oluşturulma sürecinin ne kadar tamamlandığını gösterir</string>
-    <string name="channel3_description">ZIP'in oluşturulma sürecinin ne kadar tamamlandığını gösterir</string>
+    <string name="channel2_description">PDF\'nin oluşturulma sürecinin ne kadar tamamlandığını gösterir</string>
+    <string name="channel3_description">ZIP\'in oluşturulma sürecinin ne kadar tamamlandığını gösterir</string>
     <string name="channel2_title">PDF Oluşturuluyor:</string>
     <string name="channel3_title">ZIP oluşturuluyor:</string>
 
@@ -69,8 +69,8 @@
     <string name="next">Sıradaki</string>
 
     <string name="create_pdf">PDF oluştur</string>
-    <string name="create_pdf_format" formatted="true">%s PDF'ini oluştur</string>
-    <string name="create_zip_format" formatted="true">%s ZIP'ini oluştur</string>
+    <string name="create_pdf_format" formatted="true">%s PDF\'ini oluştur</string>
+    <string name="create_zip_format" formatted="true">%s ZIP\'ini oluştur</string>
     <string name="error_pdf">PDF oluşturulurken bir hata meydana geldi</string>
     <string name="parsing_pages">Sayfalar ayrıştırılıyor</string>
     <string name="writing_pdf">PDF yazılıyor</string>
@@ -140,7 +140,7 @@
     <string name="send_bug_on_github">Github üzerinden hata gönder</string>
     <string name="github">Github</string>
     <string name="download_update_failed">Güncellenmiş sürüm indirilemedi</string>
-    <string name="copyURL">URL'yi kopyala</string>
+    <string name="copyURL">URL\'yi kopyala</string>
     <string name="add_bookmark">Yer imi ekle</string>
     <string name="manage_bookmarks">Yer imlerini yönet</string>
     <string name="bookmark_page_format">Sayfa %d</string>
@@ -199,7 +199,7 @@
     <string name="setting_zoom_one_column">Yakınlaştırmayı galeride tek sütun modunda aktifleştir</string>
     <string name="zoom_one_column">Yakınlaştırmayı etkinleştir</string>
     <string name="insert_pin">PIN gir</string>
-    <string name="confirm_pin">PIN'i doğrula</string>
+    <string name="confirm_pin">PIN\'i doğrula</string>
     <string name="use_pin">PIN kullan</string>
     <string name="wrong_pin">Yanlış PIN</string>
     <string name="rotate_image">Fotoğrafı çevir</string>
@@ -254,7 +254,7 @@
     <string name="enable_network_to_continue">Sayfayı açmak için veri kullanım ayarlarını değiştirin veya bağlı olduğunuz ağı değiştirin</string>
     <string name="donate">Geliştiriciyi destekle</string>
     <string name="id_tag">ID:</string>
-    <string name="id_copied_to_clipboard">Galeri ID'si panoya kopyalandı</string>
+    <string name="id_copied_to_clipboard">Galeri ID\'si panoya kopyalandı</string>
     <string name="copied_to_clipboard">Panoya kopyalandı</string>
     <string name="maximum_notification_count">Maksimum bildirim sayısı</string>
 
