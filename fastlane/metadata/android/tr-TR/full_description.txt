@@ -5,14 +5,14 @@ API Özellikleri
 
  - Ana sayfada gezinme
  - Etiket ve ya kelimelerle arama
- - Etiketketleri dahil edip dahil etmeme
+ - Etiketleri dahil edip dahil etmeme
  - Dahil edilmeyen etiketleri bulanıklaştırma ve ya gizleme
- - Manga indirme
- - Mangaları favoriye ekleme
+ - Galeri indirme
+ - Galerileri favoriye ekleme
  - PIN kilidi
 
-Özel Özellikler
+Uygulamaya Özel Özellikler
 
- - Mangaları Paylaşma
+ - Galerileri Paylaşma
  - Tarayıcıda Açma
  - Yer işaretleri
