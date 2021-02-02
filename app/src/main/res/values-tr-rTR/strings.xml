@@ -82,10 +82,10 @@
     <string name="prev_page">Önceki sayfa</string>
     <string name="next_page">Sıradaki sayfa</string>
 
-    <string name="downloaded_manga">İndirilmiş Galeriler</string>
+    <string name="downloaded_manga">İndirilenler</string>
     <string name="download_gallery">Bu galeriyi indir</string>
 
-    <string name="delete_gallery_size_format" formatted="true">Galeriyi sil? %.2fMB boyutunda</string> <!--Delete manga? Its xMB-->
+    <string name="delete_gallery_size_format" formatted="true">Galeriyi sil? (%.2fMB)</string>
     <string name="delete_gallery_format" formatted="true">Bu galeriyi silmek istiyor musunuz? %s</string>
 
 
