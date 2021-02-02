@@ -29,7 +29,7 @@ public class FakeInspector extends AsyncTask<LocalActivity, LocalActivity, Local
         parent.mkdirs();
         File[] files = parent.listFiles();
         if (files == null) return voids[0];
-        for (File f : files) createGallery(f);
+        for (File f : files) if (f.isDirectory()) createGallery(f);
         for (String x : invalidPaths) LogUtility.d("Invalid path: " + x);
         return voids[0];
     }

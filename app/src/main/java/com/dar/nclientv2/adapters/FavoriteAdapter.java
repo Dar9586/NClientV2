@@ -218,7 +218,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
     }
 
     public void randomGallery() {
-        if (cursor == null) return;
+        if (cursor == null || cursor.getCount() < 1) return;
         startGallery(galleryFromPosition(Utility.RANDOM.nextInt(cursor.getCount())));
     }
 }

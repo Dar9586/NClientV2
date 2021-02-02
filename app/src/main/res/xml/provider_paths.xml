@@ -3,6 +3,12 @@
     <external-path
         name="external_files"
         path="." />
+    <files-path
+        name="files"
+        path="." />
+    <external-files-path
+        name="external"
+        path="." />
     <cache-path
         name="temp"
         path="." />

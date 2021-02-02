@@ -40,7 +40,7 @@ public class LocalActivity extends BaseActivity {
     private LocalAdapter adapter;
     private Toolbar toolbar;
     private int colCount;
-    private int openedGalleryPosition = -1;
+    private int idGalleryPosition = -1;
     private File folder = Global.MAINFOLDER;
     private androidx.appcompat.widget.SearchView searchView;
 
@@ -68,8 +68,8 @@ public class LocalActivity extends BaseActivity {
         recycler.setAdapter(adapter);
     }
 
-    public void setOpenedGalleryPosition(int openedGalleryPosition) {
-        this.openedGalleryPosition = openedGalleryPosition;
+    public void setIdGalleryPosition(int idGalleryPosition) {
+        this.idGalleryPosition = idGalleryPosition;
     }
 
     @Override
@@ -142,9 +142,9 @@ public class LocalActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (openedGalleryPosition != -1) {
-            adapter.updateColor(openedGalleryPosition);
-            openedGalleryPosition = -1;
+        if (idGalleryPosition != -1) {
+            adapter.updateColor(idGalleryPosition);
+            idGalleryPosition = -1;
         }
     }
 
@@ -176,7 +176,7 @@ public class LocalActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (adapter.getMode() == MultichoiceAdapter.Mode.SELECTING)
+        if (adapter != null && adapter.getMode() == MultichoiceAdapter.Mode.SELECTING)
             adapter.deselectAll();
         else
             super.onBackPressed();

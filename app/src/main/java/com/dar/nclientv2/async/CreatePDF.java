@@ -48,6 +48,7 @@ public class CreatePDF extends JobIntentService {
         notId = NotificationSettings.getNotificationId();
         System.gc();
         LocalGallery gallery = intent.getParcelableExtra(getPackageName() + ".GALLERY");
+        if (gallery == null) return;
         totalPage = gallery.getPageCount();
         preExecute(gallery.getDirectory());
         PdfDocument document = new PdfDocument();
@@ -86,7 +87,7 @@ public class CreatePDF extends JobIntentService {
             notification.setProgress(0, 0, false);
             notification.setContentTitle(getString(R.string.created_pdf));
             notification.setContentText(gallery.getTitle());
-            //createIntentOpen(finalPath);
+            createIntentOpen(finalPath);
             NotificationSettings.notify(getString(R.string.channel2_name), notId, notification.build());
             LogUtility.d(finalPath.getAbsolutePath());
         } catch (IOException e) {
@@ -102,7 +103,6 @@ public class CreatePDF extends JobIntentService {
 
     }
 
-    // FIXME: 25/01/21 uri not valid
     private void createIntentOpen(File finalPath) {
         Intent i = new Intent(Intent.ACTION_VIEW);
         Uri apkURI = FileProvider.getUriForFile(

@@ -221,7 +221,7 @@ public class VersionChecker {
 
     private void installApp(File f) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Uri apkUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", f);
+            Uri apkUri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", f);
             Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
             intent.setData(apkUri);
             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);

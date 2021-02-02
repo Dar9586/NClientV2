@@ -2,7 +2,6 @@ package com.dar.nclientv2;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -21,7 +20,6 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -100,7 +98,7 @@ public class MainActivity extends BaseActivity
     private NavigationView navigationView;
     private ModeType modeType = ModeType.UNKNOWN;
     private int actualPage = 1, totalPage;
-    private int positionOpenedGallery = -1;//Position in the recycler of the opened gallery
+    private int idOpenedGallery = -1;//Position in the recycler of the opened gallery
     private boolean inspecting = false, filteringTag = false;
     private SortType temporaryType;
     private Snackbar snackbar = null;
@@ -252,8 +250,8 @@ public class MainActivity extends BaseActivity
         onlineFavoriteManager.setVisible(com.dar.nclientv2.settings.Login.isLogged());
     }
 
-    public void setPositionOpenedGallery(int positionOpenedGallery) {
-        this.positionOpenedGallery = positionOpenedGallery;
+    public void setIdOpenedGallery(int idOpenedGallery) {
+        this.idOpenedGallery = idOpenedGallery;
     }
 
     private void findUsefulViews() {
@@ -533,9 +531,9 @@ public class MainActivity extends BaseActivity
         super.onResume();
         Global.updateACRAReportStatus(this);
         com.dar.nclientv2.settings.Login.initLogin(this);
-        if (positionOpenedGallery != -1) {
-            adapter.updateColor(positionOpenedGallery);
-            positionOpenedGallery = -1;
+        if (idOpenedGallery != -1) {
+            adapter.updateColor(idOpenedGallery);
+            idOpenedGallery = -1;
         }
         loadStringLogin();
         onlineFavoriteManager.setVisible(com.dar.nclientv2.settings.Login.isLogged());
@@ -751,12 +749,8 @@ public class MainActivity extends BaseActivity
             intent = new Intent(this, BookmarkActivity.class);
             startActivity(intent);
         } else if (item.getItemId() == R.id.history) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                startActivityForResult(intent, 666);
-            }
+            intent = new Intent(this, HistoryActivity.class);
+            startActivity(intent);
 
         } else if (item.getItemId() == R.id.favorite_manager) {
             intent = new Intent(this, FavoriteActivity.class);
@@ -809,26 +803,6 @@ public class MainActivity extends BaseActivity
     private void startLocalActivity() {
         Intent i = new Intent(this, LocalActivity.class);
         startActivity(i);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        if (requestCode == 666
-            && resultCode == Activity.RESULT_OK) {
-
-            if (intent != null) {
-                Uri uri = intent.getData();
-                // Perform operations on the document using its URI.
-                final int takeFlags = intent.getFlags()
-                    & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                // Check for the freshest data.
-                getContentResolver().takePersistableUriPermission(uri, takeFlags);
-            }
-        }
-
-
     }
 
     /**

@@ -40,6 +40,7 @@ public class CreateZIP extends JobIntentService {
     protected void onHandleWork(@Nullable Intent intent) {
         System.gc();
         LocalGallery gallery = intent.getParcelableExtra(getPackageName() + ".GALLERY");
+        if (gallery == null) return;
         preExecute(gallery.getDirectory());
         int allPage = gallery.getPageCount();
         try {

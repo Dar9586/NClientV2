@@ -667,6 +667,7 @@ public class Global {
 
     @Nullable
     public static File findGalleryFolder(Context context, int id) {
+        if (id < 1) return null;
         if (context == null) return findGalleryFolder(id);
         for (File dir : getUsableFolders(context)) {
             dir = new File(dir, MAINFOLDER_NAME);

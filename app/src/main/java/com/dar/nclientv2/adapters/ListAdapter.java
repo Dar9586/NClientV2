@@ -115,7 +115,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
               intent.putExtra(context.getPackageName() + ".ID", ent.getId());
               context.startActivity(intent);*/
             if (context instanceof MainActivity)
-                ((MainActivity) context).setPositionOpenedGallery(holder.getAdapterPosition());
+                ((MainActivity) context).setIdOpenedGallery(ent.getId());
             downloadGallery(ent);
             holder.overlay.setVisibility((queryString != null && ent.hasIgnoredTags(queryString)) ? View.VISIBLE : View.GONE);
         });
@@ -134,10 +134,17 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         holder.title.setBackgroundColor(statusColor);
     }
 
-    public void updateColor(int position) {
-        int id = mDataset.get(position).getId();
+    public void updateColor(int id) {
+        if (id < 0) return;
+        int position = -1;
         statuses.put(id, Queries.StatusMangaTable.getStatus(id).color);
-        notifyItemChanged(position);
+        for (int i = 0; i < mDataset.size(); i++) {
+            if (mDataset.get(i).getId() == id) {
+                position = id;
+                break;
+            }
+        }
+        if (position >= 0) notifyItemChanged(position);
     }
 
     private void downloadGallery(final SimpleGallery ent) {

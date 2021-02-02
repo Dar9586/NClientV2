@@ -65,7 +65,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     private final SparseIntArray angles = new SparseIntArray();
     private final GalleryActivity context;
     private final GenericGallery gallery;
-    private final GalleryFolder directory;
+    private GalleryFolder directory;
     private final HashMap<ImageView, BitmapTarget> map = new HashMap<>(5);
     private final HashSet<BitmapTarget> toDelete = new HashSet<>();
     private Size maxImageSize = null;
@@ -78,13 +78,19 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         maxSize = gallery.getMaxSize();
         minSize = gallery.getMinSize();
         setColCount(colCount);
-        if (Global.hasStoragePermission(cont)) {
-            if (gallery.getId() != -1) {
-                File f = Global.findGalleryFolder(context, gallery.getId());
-                if (f != null) directory = new GalleryFolder(f);
-                else directory = null;
-            } else directory = new GalleryFolder(gallery.getTitle());
-        } else directory = null;
+        try {
+            if (Global.hasStoragePermission(cont)) {
+                if (gallery.getId() != -1) {
+                    File f = Global.findGalleryFolder(context, gallery.getId());
+                    if (f != null) directory = new GalleryFolder(f);
+                    else directory = null;
+                } else {
+                    directory = new GalleryFolder(gallery.getTitle());
+                }
+            } else directory = null;
+        } catch (IllegalArgumentException ignore) {
+            directory = null;
+        }
         LogUtility.d("Max maxSize: " + maxSize + ", min maxSize: " + gallery.getMinSize());
     }
 

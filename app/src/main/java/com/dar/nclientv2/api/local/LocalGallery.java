@@ -47,7 +47,14 @@ public class LocalGallery extends GenericGallery {
     private Size maxSize = new Size(0, 0), minSize = new Size(Integer.MAX_VALUE, Integer.MAX_VALUE);
 
     public LocalGallery(@NonNull File file, boolean jumpDataRetrieve) {
-        folder = new GalleryFolder(file);
+        GalleryFolder folder1;
+        try {
+            folder1 = new GalleryFolder(file);
+        } catch (IllegalArgumentException ignore) {
+            folder1 = null;
+
+        }
+        folder = folder1;
         trueTitle = file.getName();
         title = createTitle(file);
         if (jumpDataRetrieve) {
