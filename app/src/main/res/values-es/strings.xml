@@ -307,6 +307,6 @@
     <string name="insert_path">Inserte ruta:</string>
     <string name="requesting_storage_access">Solicitando acceso a almacenamiento</string>
     <string name="request_storage_manager_summary">Debido a las restricciones de Android 11 debes de dar permisos adicionales para que las rutas funcionen.\nSi quieres conceder los permisos acepta en la siguiente ventana.</string>
-    <string name="summary_beta">Actualizar a una version beta puede provocar errores, Además de no poder volver a una version estable</string>
+    <string name="summary_beta">Actualizar a una version beta puede provocar errores, además de no poder volver a una version estable sin desinstalar.</string>
 
 </resources>
