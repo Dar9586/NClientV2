@@ -336,6 +336,7 @@
     <string name="insert_path">Insert path:</string>
     <string name="requesting_storage_access">Requesting storage access</string>
     <string name="request_storage_manager_summary">Due to some restriction in Android 11 to the storage access this app will require you to give additional permission to use custom paths.\nIf you want to give those permission please enable the setting in the next dialog.</string>
+    <string name="summary_beta">Updating to a beta version can make you unable to return to a stable version without uninstalling</string>
 
 
 </resources>

@@ -26,6 +26,7 @@ import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.components.TagList;
 import com.dar.nclientv2.api.enums.SpecialTagIds;
 import com.dar.nclientv2.api.enums.TagType;
+import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.GlideX;
 import com.dar.nclientv2.components.classes.Size;
@@ -65,7 +66,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     private final SparseIntArray angles = new SparseIntArray();
     private final GalleryActivity context;
     private final GenericGallery gallery;
-    private GalleryFolder directory;
+    private GalleryFolder directory=null;
     private final HashMap<ImageView, BitmapTarget> map = new HashMap<>(5);
     private final HashSet<BitmapTarget> toDelete = new HashSet<>();
     private Size maxImageSize = null;
@@ -79,15 +80,16 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         minSize = gallery.getMinSize();
         setColCount(colCount);
         try {
-            if (Global.hasStoragePermission(cont)) {
+            if(gallery instanceof LocalGallery){
+                directory=gallery.getGalleryFolder();
+            }else if (Global.hasStoragePermission(cont)) {
                 if (gallery.getId() != -1) {
                     File f = Global.findGalleryFolder(context, gallery.getId());
                     if (f != null) directory = new GalleryFolder(f);
-                    else directory = null;
                 } else {
                     directory = new GalleryFolder(gallery.getTitle());
                 }
-            } else directory = null;
+            }
         } catch (IllegalArgumentException ignore) {
             directory = null;
         }

@@ -40,6 +40,7 @@ import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class ZoomActivity extends GeneralActivity {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -53,6 +54,8 @@ public class ZoomActivity extends GeneralActivity {
     private final static int showFlags = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
     private static final String VOLUME_SIDE_KEY = "volumeSide";
     private static final String SCROLL_TYPE_KEY = "zoomScrollType";
+    private static final int CHANGE_VISIBILITY_DELAY=150;
+    private final AtomicLong aLong=new AtomicLong(System.currentTimeMillis());
     private GenericGallery gallery;
     private int actualPage = 0;
     private boolean isHidden = false;
@@ -86,7 +89,6 @@ public class ZoomActivity extends GeneralActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         setTitle(gallery.getTitle());
 
-        //getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         getWindow().setFlags(
             WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                 | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
@@ -125,8 +127,8 @@ public class ZoomActivity extends GeneralActivity {
             public void onPageSelected(int newPage) {
                 int oldPage = actualPage;
                 actualPage = newPage;
-                setPageText(Global.useRtl() ? gallery.getPageCount() - newPage : newPage + 1);
-                seekBar.setProgress(Global.useRtl() ? gallery.getPageCount() - 1 - newPage : newPage);
+                setPageText(offsetPage(newPage)+1);
+                seekBar.setProgress(offsetPage(newPage));
                 clearFarRequests(oldPage, newPage);
             }
 
@@ -169,7 +171,7 @@ public class ZoomActivity extends GeneralActivity {
 
         changePage(offsetPage(page));
         setPageText(page + 1);
-        seekBar.setProgress(Global.useRtl() ? gallery.getPageCount() - 1 - offsetPage(page) : offsetPage(page));
+        seekBar.setProgress(offsetPage(offsetPage(page)));
     }
 
     private void setPageText(int page) {
@@ -178,7 +180,11 @@ public class ZoomActivity extends GeneralActivity {
     }
 
     int offsetPage(int page) {
-        return Global.useRtl() ? gallery.getPageCount() - 1 - page : page;
+        return invertDirection() ? gallery.getPageCount() - 1 - page : page;
+    }
+
+    private boolean invertDirection(){
+        return Global.useRtl()&&scrollType==ScrollType.HORIZONTAL;
     }
 
     @Override
@@ -221,19 +227,16 @@ public class ZoomActivity extends GeneralActivity {
     }
 
     private void changeClosePage(boolean next) {
+        if(scrollType==ScrollType.VERTICAL)next=!next;
         if (next && mViewPager.getCurrentItem() < (mViewPager.getAdapter().getCount() - 1))
             changePage(mViewPager.getCurrentItem() + 1);
         if (!next && mViewPager.getCurrentItem() > 0) changePage(mViewPager.getCurrentItem() - 1);
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            changeLayout(true);
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            changeLayout(false);
-        }
+        changeLayout(newConfig.orientation==Configuration.ORIENTATION_LANDSCAPE);
     }
 
     private boolean hardwareKeys() {
@@ -242,7 +245,7 @@ public class ZoomActivity extends GeneralActivity {
 
     private void applyMargin(boolean landscape, View view) {
         ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams) view.getLayoutParams();
-        lp.setMargins(0, 0, landscape || hardwareKeys() ? Global.getNavigationBarHeight(this) : 0, 0);
+        lp.setMargins(0, 0, landscape && !hardwareKeys() ? Global.getNavigationBarHeight(this) : 0, 0);
         view.setLayoutParams(lp);
     }
 
@@ -267,6 +270,7 @@ public class ZoomActivity extends GeneralActivity {
                 scrollType = tmpScrollType;
                 mViewPager.setVerticalMode(scrollType == ScrollType.VERTICAL);
                 getSharedPreferences("Settings", 0).edit().putInt(SCROLL_TYPE_KEY, scrollType.ordinal()).apply();
+                changePage(gallery.getPageCount()-1-mViewPager.getCurrentItem());
             }
         }).setNegativeButton(R.string.cancel, null);
         builder.show();
@@ -403,7 +407,7 @@ public class ZoomActivity extends GeneralActivity {
         @NonNull
         @Override
         public Fragment getItem(int position) {
-            ZoomFragment f = ZoomFragment.newInstance(gallery, position, directory);
+            ZoomFragment f = ZoomFragment.newInstance(gallery, offsetPage(position), directory);
             f.setClickListener(v -> {
                 isHidden = !isHidden;
                 LogUtility.d("Clicked " + isHidden);

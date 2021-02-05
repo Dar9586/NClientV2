@@ -7,8 +7,8 @@ android {
         applicationId "com.dar.nclientv2"
         minSdkVersion 14
         targetSdkVersion 30
-        versionCode 272
-        versionName "2.7.2"
+        versionCode 273
+        versionName "2.7.3-stable"
         vectorDrawables.useSupportLibrary true
         proguardFiles 'proguard-rules.pro'
     }
@@ -17,6 +17,7 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
+            versionNameSuffix "-release"
             resValue "string", "app_name", "NClientV2"
         }
         debug {

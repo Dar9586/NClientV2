@@ -6,6 +6,8 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
 
 import com.dar.nclientv2.components.widgets.CustomViewPager;
@@ -14,10 +16,11 @@ import com.dar.nclientv2.utility.LogUtility;
 public class VerticalViewPager extends ViewPager {
     private CustomViewPager.OnItemClickListener mOnItemClickListener;
     private boolean verticalMode = true;
+    @Nullable
+    private OnClickListener onClickListener;
 
     public VerticalViewPager(Context context) {
         this(context, null);
-        init();
     }
 
     public VerticalViewPager(Context context, AttributeSet attrs) {
@@ -46,6 +49,11 @@ public class VerticalViewPager extends ViewPager {
         setPageTransformer(true, verticalMode ? new VerticalPageTransformer() : null);
         setOverScrollMode(View.OVER_SCROLL_NEVER);
         setup();
+    }
+
+    @Override
+    public void setOnClickListener(@Nullable final OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
     }
 
     @Override
@@ -97,8 +105,12 @@ public class VerticalViewPager extends ViewPager {
 
     private void setup() {
         final GestureDetector tapGestureDetector = new GestureDetector(getContext(), new VerticalViewPager.TapGestureListener());
+        final GestureDetector onSingleTapConfirmedGestureDetector =
+            new GestureDetector(getContext(), new OnSingleTapConfirmedGestureListener(this));
+
         setOnTouchListener((v, event) -> {
             tapGestureDetector.onTouchEvent(event);
+            onSingleTapConfirmedGestureDetector.onTouchEvent(event);
             performClick();
             return false;
         });
@@ -140,6 +152,22 @@ public class VerticalViewPager extends ViewPager {
             return true;
         }
     }
+    private class OnSingleTapConfirmedGestureListener extends GestureDetector.SimpleOnGestureListener {
 
+        @NonNull
+        private final View view;
+
+        public OnSingleTapConfirmedGestureListener(@NonNull final View view) {
+            this.view = view;
+        }
+
+        @Override
+        public boolean onSingleTapConfirmed(final MotionEvent e) {
+            if (onClickListener != null) {
+                onClickListener.onClick(view);
+            }
+            return true;
+        }
+    }
 
 }

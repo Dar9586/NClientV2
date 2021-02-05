@@ -45,7 +45,6 @@ public class ZoomFragment extends Fragment {
 
     public static ZoomFragment newInstance(GenericGallery gallery, int page, @Nullable GalleryFolder directory) {
         Bundle args = new Bundle();
-        if (Global.useRtl()) page = gallery.getPageCount() - 1 - page;
         args.putInt("PAGE", page);
         args.putInt("ID", gallery.getId());
         args.putString("URL", gallery.isLocal() ? null : ((Gallery) gallery).getPageUrl(page).toString());

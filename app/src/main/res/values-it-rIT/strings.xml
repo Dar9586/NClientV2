@@ -332,5 +332,6 @@
     <string name="insert_path">Inserisci percorso</string>
     <string name="requesting_storage_access">Richiesta accesso alla memoria</string>
     <string name="request_storage_manager_summary">Per via di alcune restrizioni sull\'accesso alla memoria su Android 11 sono richiesti ulteriori permessi per usare i percorsi personalizzati.\nSe vuoi dare questi permessi abilitali nella prossima schermata.</string>
+    <string name="summary_beta">Updating to a beta version can make you unable to return to a stable version without uninstalling</string>
 
 </resources>

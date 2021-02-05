@@ -213,6 +213,7 @@
             android:defaultValue="false"
             android:key="@string/key_enable_beta"
             android:title="@string/check_beta_releases"
+            android:summary="@string/summary_beta"
             app:iconSpaceReserved="false" />
         <Preference
             android:key="@string/key_update"
