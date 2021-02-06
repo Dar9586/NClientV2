@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--Thanks to ZerOri and linsui for the Simplified Chinese translation-->
+
 <resources>
     <string name="setting_on_ignore_tags">从画廊菜单中选中一个标签时不再查询其它标签（语言项除外）</string>
     <string name="setting_off_ignore_tags">从画廊菜单中选中一个标签时查询其它标签</string>
@@ -253,7 +254,6 @@
     <string name="view_statuses">查看状态</string>
     <string name="status_column_count">选择状态列数</string>
     <string name="status_viewer">状态查看器</string>
-
     <string name="title_hide_multitasking">在多任务界面中隐藏该应用的内容预览</string>
     <string name="title">标题</string>
     <string name="download_date">下载日期</string>
@@ -262,26 +262,42 @@
     <string name="descending_order">降序排列</string>
     <string name="minimum_comment_length" formatted="true">评论不得少于 %d 个字符</string>
     <string name="change_scroll_type">切换滚动类型</string>
-    <string name="exported_backup_file_toast" formatted="true">Exported backup file in %s</string>
-    <string name="export_data">Export data</string>
-    <string name="import_data">Import data</string>
-
+    <string name="exported_backup_file_toast" formatted="true">已将备份文件导出到 %s</string>
+    <string name="export_data">导出数据</string>
+    <string name="import_data">导入数据</string>
+    <string name="default_status_1">正在阅读</string>
+    <string name="default_status_2">已完成</string>
+    <string name="default_status_3">搁置</string>
+    <string name="default_status_4">已放弃</string>
+    <string name="default_status_5">计划阅读</string>
+    <string name="title_site_mirror">更改站点镜像</string>
+    <string name="disguise_app_in_drawer">在启动器中伪装应用</string>
+    <string name="summary_disguise_app">应用将被伪装为计算器（实验性）</string>
+    <string name="app_name_fake_calculator">计算器</string>
+    <string name="delete_galleries">删除画廊</string>
+    <string name="delete">删除</string>
+    <string name="pause_selected_downloads">暂停所选下载</string>
+    <string name="start_selected_downloads">开始所选下载</string>
+    <string name="custom_path">自定义路径</string>
+    <string name="insert_path">插入路径：</string>
+    <string name="requesting_storage_access">请求存储权限</string>
+    <string name="request_storage_manager_summary">由于 Android 11 中的一些存储权限限制应用将向您请求额外的权限以使用自定义路径。\n如果您想要授予这些权限请在下一对话框中启用此设置。</string>
+    <string name="summary_beta">更新到 beta 版将使您无法回到稳定版，除非卸载</string>
 
     <string-array name="scroll_type">
         <item>水平</item>
         <item>垂直</item>
     </string-array>
-
     <string-array name="language">
-        <item>默认</item>
-        <item>English</item>
+        <item>系统默认</item>
+        <item>英语</item>
         <item>繁体中文</item>
-        <item>中文</item>
-        <item>Türkçe</item>
-        <item>Italiano</item>
-        <item>Deutsch</item>
-        <item>اَلْعَرَبِيَّةُ</item>
-        <item>Español</item>
+        <item>简体中文</item>
+        <item>土耳其语</item>
+        <item>意大利语</item>
+        <item>德语</item>
+        <item>阿拉伯语</item>
+        <item>西班牙语</item>
     </string-array>
     <string-array name="theme">
         <item>亮色</item>
@@ -293,24 +309,5 @@
         <item>日文</item>
         <item>简约</item>
     </string-array>
-    <string name="default_status_1">Reading</string>
-    <string name="default_status_2">Completed</string>
-    <string name="default_status_3">On Hold</string>
-    <string name="default_status_4">Dropped</string>
-    <string name="default_status_5">Plan to read</string>
-    <string name="title_site_mirror">Change site mirror</string>
-    <string name="disguise_app_in_drawer">Disguise app in drawer</string>
-    <string name="summary_disguise_app">The app will be disguised as a calculator (experimental)</string>
-    <string name="app_name_fake_calculator">Calculator</string>
-    <string name="delete_galleries">Delete galleries</string>
-    <string name="delete">Delete</string>
-    <string name="pause_selected_downloads">Pause selected downloads</string>
-    <string name="start_selected_downloads">Start selected downloads</string>
-    <string name="custom_path">Custom path</string>
-    <string name="insert_path">Insert path:</string>
-    <string name="requesting_storage_access">Requesting storage access</string>
-    <string name="request_storage_manager_summary">Due to some restriction in Android 11 to the storage access this app will require you to give additional permission to use custom paths.\nIf you want to give those permission please enable the setting in the next dialog.</string>
-    <string name="summary_beta">Updating to a beta version can make you unable to return to a stable version without uninstalling</string>
-
 
 </resources>
