@@ -18,6 +18,7 @@ import com.dar.nclientv2.utility.LogUtility;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import okhttp3.Request;
 import okhttp3.Response;
@@ -66,7 +67,9 @@ public class ScrapeTags extends JobIntentService {
         try {
             newVersion = getNewVersionCode();
             if (lastVersion > -1 && lastVersion >= newVersion) return;
+            List<Tag> tags = Queries.TagTable.getAllFiltered();
             fetchTags();
+            for (Tag t : tags) Queries.TagTable.updateStatus(t.getId(), t.getStatus());
         } catch (IOException e) {
             e.printStackTrace();
         }

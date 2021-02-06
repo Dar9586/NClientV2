@@ -47,7 +47,7 @@ public class VerticalViewPager extends ViewPager {
 
     private void init() {
         setPageTransformer(true, verticalMode ? new VerticalPageTransformer() : null);
-        setOverScrollMode(View.OVER_SCROLL_NEVER);
+        setOverScrollMode(View.OVER_SCROLL_IF_CONTENT_SCROLLS);
         setup();
     }
 
@@ -95,11 +95,7 @@ public class VerticalViewPager extends ViewPager {
 
     private MotionEvent flipXY(MotionEvent ev) {
         if (!verticalMode) return ev;
-        final float width = getWidth();
-        final float height = getHeight();
-        final float x = (ev.getY() / height) * width;
-        final float y = (ev.getX() / width) * height;
-        ev.setLocation(x, y);
+        ev.setLocation(ev.getY(), ev.getX());
         return ev;
     }
 

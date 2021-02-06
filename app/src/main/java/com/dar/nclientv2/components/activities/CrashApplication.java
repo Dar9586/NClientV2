@@ -12,8 +12,6 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import com.dar.nclientv2.BuildConfig;
 import com.dar.nclientv2.R;
-import com.dar.nclientv2.api.enums.Language;
-import com.dar.nclientv2.api.enums.SortType;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.ScrapeTags;
 import com.dar.nclientv2.async.database.DatabaseHelper;
@@ -93,27 +91,12 @@ public class CrashApplication extends Application {
         removeOldUpdates();
         //update tags
         ScrapeTags.startWork(this);
-        //add ALL type for languages and replace null
-        int val = preferences.getInt(getString(R.string.key_only_language), Language.ALL.ordinal());
-        if (val == -1) val = Language.ALL.ordinal();
-        editor.putInt(getString((R.string.key_only_language)), val);
         if ("0.0.0".equals(oldVersion))
             editor.putBoolean(getString(R.string.key_check_update), signatureCheck());
-        changeByPopularType(preferences, editor);
         editor.apply();
-        createIdHiddenFiles();
         Global.setLastVersion(this);
     }
 
-    private void changeByPopularType(SharedPreferences preferences, SharedPreferences.Editor editor) {
-        String key = getString(R.string.key_by_popular);
-        try {
-            boolean x = preferences.getBoolean(key, false);
-            editor.remove(key);
-            editor.putInt(key, x ? SortType.POPULAR_ALL_TIME.ordinal() : SortType.RECENT_ALL_TIME.ordinal());
-        } catch (ClassCastException ignore) {
-        }
-    }
 
     private void createIdHiddenFile(File folder) {
         LocalGallery gallery = new LocalGallery(folder);

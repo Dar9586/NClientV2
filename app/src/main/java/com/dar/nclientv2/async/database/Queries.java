@@ -404,6 +404,12 @@ public class Queries {
             return t;
         }
 
+        public static int updateStatus(int id, TagStatus status) {
+            ContentValues values = new ContentValues(1);
+            values.put(STATUS, status.ordinal());
+            return db.updateWithOnConflict(TABLE_NAME, values, IDTAG + "=?", new String[]{"" + id}, SQLiteDatabase.CONFLICT_IGNORE);
+        }
+
         /**
          * Update status and count of a specific tag
          */
