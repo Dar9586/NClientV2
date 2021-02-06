@@ -299,14 +299,14 @@
     <string name="disguise_app_in_drawer">Ocultar aplicacion</string>
     <string name="summary_disguise_app">La aplicacion se ocultará en la bandeja de aplicaciones (experimental)</string>
     <string name="app_name_fake_calculator">Calculadora</string>
-    <string name="delete_galleries">Delete galleries</string>
-    <string name="delete">Delete</string>
-    <string name="pause_selected_downloads">Pause selected downloads</string>
-    <string name="start_selected_downloads">Start selected downloads</string>
-    <string name="custom_path">Custom path</string>
-    <string name="insert_path">Insert path:</string>
-    <string name="requesting_storage_access">Requesting storage access</string>
-    <string name="request_storage_manager_summary">Due to some restriction in Android 11 to the storage access this app will require you to give additional permission to use custom paths.\nIf you want to give those permission please enable the setting in the next dialog.</string>
-    <string name="summary_beta">Updating to a beta version can make you unable to return to a stable version without uninstalling</string>
+    <string name="delete_galleries">Borrar Galerías</string>
+    <string name="delete">Borrar</string>
+    <string name="pause_selected_downloads">Pausa las descargas seleccionadas</string>
+    <string name="start_selected_downloads">Inicia las descargas seleccionadas</string>
+    <string name="custom_path">Ruta personalizada</string>
+    <string name="insert_path">Inserte ruta:</string>
+    <string name="requesting_storage_access">Solicitando acceso a almacenamiento</string>
+    <string name="request_storage_manager_summary">Debido a las restricciones de Android 11 debes de dar permisos adicionales para que las rutas funcionen.\nSi quieres conceder los permisos acepta en la siguiente ventana.</string>
+    <string name="summary_beta">Actualizar a una version beta puede provocar errores, además de no poder volver a una version estable sin desinstalar.</string>
 
 </resources>
