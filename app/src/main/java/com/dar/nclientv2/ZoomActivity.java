@@ -40,7 +40,6 @@ import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class ZoomActivity extends GeneralActivity {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -54,8 +53,6 @@ public class ZoomActivity extends GeneralActivity {
     private final static int showFlags = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
     private static final String VOLUME_SIDE_KEY = "volumeSide";
     private static final String SCROLL_TYPE_KEY = "zoomScrollType";
-    private static final int CHANGE_VISIBILITY_DELAY=150;
-    private final AtomicLong aLong=new AtomicLong(System.currentTimeMillis());
     private GenericGallery gallery;
     private int actualPage = 0;
     private boolean isHidden = false;

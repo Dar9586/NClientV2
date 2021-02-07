@@ -167,10 +167,12 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
 
             @Override
             public void onSuccess(List<GenericGallery> galleries) {
-                if (context.getMasterLayout() != null && galleries.size() != 1) {
-                    context.runOnUiThread(() ->
-                        Snackbar.make(context.getMasterLayout(), R.string.no_entry_found, Snackbar.LENGTH_SHORT).show()
-                    );
+                if(galleries.size() != 1){
+                    if (context.getMasterLayout() != null) {
+                        context.runOnUiThread(() ->
+                            Snackbar.make(context.getMasterLayout(), R.string.no_entry_found, Snackbar.LENGTH_SHORT).show()
+                        );
+                    }
                     return;
                 }
                 Intent intent = new Intent(context, GalleryActivity.class);

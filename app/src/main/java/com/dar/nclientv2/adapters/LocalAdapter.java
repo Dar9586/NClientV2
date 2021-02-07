@@ -273,6 +273,7 @@ public class LocalAdapter extends MultichoiceAdapter<Object, LocalAdapter.ViewHo
 
     @Override
     protected void defaultMasterAction(int position) {
+        if(filter.size()<=position)return;
         if (!(filter.get(position) instanceof LocalGallery)) return;
         LocalGallery lg = (LocalGallery) filter.get(position);
         startGallery(context, lg.getDirectory());

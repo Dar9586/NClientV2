@@ -23,18 +23,17 @@ import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.components.GlideX;
 import com.dar.nclientv2.files.GalleryFolder;
+import com.dar.nclientv2.files.PageFile;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.LogUtility;
 import com.github.chrisbanes.photoview.PhotoView;
-
-import java.io.File;
 
 public class ZoomFragment extends Fragment {
     private static final float MAX_SCALE = 4f;
     private int page, galleryId;
     private PhotoView photoView = null;
     private ImageButton retryButton;
-    private GalleryFolder galleryFolder = null;
+    private PageFile pageFile = null;
     private Uri url;
     private int degree = 0;
     private View.OnClickListener clickListener;
@@ -48,7 +47,7 @@ public class ZoomFragment extends Fragment {
         args.putInt("PAGE", page);
         args.putInt("ID", gallery.getId());
         args.putString("URL", gallery.isLocal() ? null : ((Gallery) gallery).getPageUrl(page).toString());
-        args.putParcelable("FOLDER", directory);
+        args.putParcelable("FOLDER", directory==null?null:directory.getPage(page+1));
         ZoomFragment fragment = new ZoomFragment();
         fragment.setArguments(args);
         return fragment;
@@ -86,7 +85,7 @@ public class ZoomFragment extends Fragment {
         galleryId = getArguments().getInt("ID", 0);
         String str = getArguments().getString("URL");
         url = str == null ? null : Uri.parse(str);
-        galleryFolder = getArguments().getParcelable("FOLDER");
+        pageFile = getArguments().getParcelable("FOLDER");
         photoView.setAllowParentInterceptOnEdge(true);
         photoView.setOnClickListener(v -> {
             if (clickListener != null) clickListener.onClick(v);
@@ -155,10 +154,9 @@ public class ZoomFragment extends Fragment {
         RequestBuilder<Drawable> request;
         RequestManager glide = GlideX.with(photoView);
         if (glide == null) return null;
-        File file = galleryFolder == null ? null : galleryFolder.getPage(page + 1);
-        if (file != null) {
-            request = glide.load(file);
-            LogUtility.d("Requested file glide: " + file);
+        if (pageFile != null) {
+            request = glide.load(pageFile);
+            LogUtility.d("Requested file glide: " + pageFile);
         } else {
             if (url == null) request = glide.load(R.mipmap.ic_launcher);
             else {
