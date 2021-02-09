@@ -330,5 +330,7 @@
     <string name="insert_path">Dizin Gir:</string>
     <string name="requesting_storage_access">Depolamaya erişim izni isteniyor</string>
     <string name="request_storage_manager_summary">Android 11\'de depolama erişimine yönelik bazı kısıtlamalar nedeniyle, bu uygulama özel yolları kullanmak için ek izin vermenizi gerektirecektir. \nBu izinleri vermek istiyorsanız, lütfen sonraki iletişim kutusunda uygulamaya izin verin.</string>
-    <string name="summary_beta">Beta sürümüne geçerseniz, uygulamayı kaldırmadan kararlı sürümlere dönemezsiniz</string> <!-- If you switch to a beta version, you won't be able to return to stable versions without uninstalling -->
+    <string name="summary_beta">Beta sürümüne geçerseniz, uygulamayı kaldırmadan kararlı sürümlere dönemezsiniz</string>
+    <string name="fix_inverted_title">Fix inverted images</string>
+    <string name="fix_inverted_summary">Enable if the images are shown with inverted colors (in some devices can cause the system theme to be changed to light, disabling it will fix this issue)</string> <!-- If you switch to a beta version, you won't be able to return to stable versions without uninstalling -->
 </resources>

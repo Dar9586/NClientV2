@@ -333,5 +333,7 @@
     <string name="requesting_storage_access">Richiesta accesso alla memoria</string>
     <string name="request_storage_manager_summary">Per via di alcune restrizioni sull\'accesso alla memoria su Android 11 sono richiesti ulteriori permessi per usare i percorsi personalizzati.\nSe vuoi dare questi permessi abilitali nella prossima schermata.</string>
     <string name="summary_beta">Updating to a beta version can make you unable to return to a stable version without uninstalling</string>
+    <string name="fix_inverted_title">Fix inverted images</string>
+    <string name="fix_inverted_summary">Enable if the images are shown with inverted colors (in some devices can cause the system theme to be changed to light, disabling it will fix this issue)</string>
 
 </resources>

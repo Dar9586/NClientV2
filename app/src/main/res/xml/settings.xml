@@ -173,6 +173,12 @@
         android:title="@string/miscellaneous"
         app:iconSpaceReserved="false">
         <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="@string/key_inverted_fix"
+            android:summary="@string/fix_inverted_summary"
+            android:title="@string/fix_inverted_title"
+            app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="@string/key_disable_lock"
             android:title="@string/disable_lock_title"

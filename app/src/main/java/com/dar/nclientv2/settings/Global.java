@@ -82,7 +82,7 @@ public class Global {
     private static TitleType titleType;
     private static SortType sortType;
     private static LocalSortType localSortType;
-    private static boolean hideMultitask, enableBeta, volumeOverride, zoomOneColumn, keepHistory, lockScreen, onlyTag, showTitles, infiniteScroll, removeAvoidedGalleries, useRtl;
+    private static boolean invertFix, hideMultitask, enableBeta, volumeOverride, zoomOneColumn, keepHistory, lockScreen, onlyTag, showTitles, infiniteScroll, removeAvoidedGalleries, useRtl;
     private static ThemeScheme theme;
     private static DataUsageType usageMobile, usageWifi;
     private static String lastVersion, mirror;
@@ -273,6 +273,7 @@ public class Global {
         keepHistory = shared.getBoolean(context.getString(R.string.key_keep_history), true);
         infiniteScroll = shared.getBoolean(context.getString(R.string.key_infinite_scroll), false);
         removeAvoidedGalleries = shared.getBoolean(context.getString(R.string.key_remove_ignored), true);
+        invertFix = shared.getBoolean(context.getString(R.string.key_inverted_fix), true);
         onlyTag = shared.getBoolean(context.getString(R.string.key_ignore_tags), true);
         volumeOverride = shared.getBoolean(context.getString(R.string.key_override_volume), true);
         enableBeta = shared.getBoolean(context.getString(R.string.key_enable_beta), true);
@@ -681,6 +682,7 @@ public class Global {
     }
 
     private static void updateConfigurationNightMode(AppCompatActivity activity, Configuration c) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         UiModeManager manager = (UiModeManager) activity.getSystemService(Context.UI_MODE_SERVICE);
         if (manager != null) manager.setNightMode(UiModeManager.MODE_NIGHT_NO);
 
@@ -689,15 +691,12 @@ public class Global {
     }
 
     public static void initActivity(AppCompatActivity context) {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-
         initScreenSize(context);
         initGallerySize();
-        //Locale locale=new Locale()
         Resources resources = context.getResources();
         Locale locale = initLanguage(context);
         Configuration c = new Configuration(context.getResources().getConfiguration());
-        updateConfigurationNightMode(context, c);
+        if (invertFix) updateConfigurationNightMode(context, c);
         c.locale = locale;
         resources.updateConfiguration(c, resources.getDisplayMetrics());
 

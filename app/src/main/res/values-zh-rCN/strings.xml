@@ -283,6 +283,8 @@
     <string name="requesting_storage_access">请求存储权限</string>
     <string name="request_storage_manager_summary">由于 Android 11 中的一些存储权限限制应用将向您请求额外的权限以使用自定义路径。\n如果您想要授予这些权限请在下一对话框中启用此设置。</string>
     <string name="summary_beta">更新到 beta 版将使您无法回到稳定版，除非卸载</string>
+    <string name="fix_inverted_title">Fix inverted images</string>
+    <string name="fix_inverted_summary">Enable if the images are shown with inverted colors (in some devices can cause the system theme to be changed to light, disabling it will fix this issue)</string>
 
     <string-array name="scroll_type">
         <item>水平</item>
