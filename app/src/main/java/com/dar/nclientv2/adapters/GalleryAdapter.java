@@ -441,6 +441,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             master = v.findViewById(R.id.master);
             pageNumber = v.findViewById(R.id.page_number);
             if (Global.useRtl()) v.setRotationY(180);
+            if (type == Type.RELATED) Global.applyFastScroller(master.findViewById(R.id.recycler));
         }
     }
 

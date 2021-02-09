@@ -28,6 +28,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.dar.nclientv2.CopyToClipboardActivity;
 import com.dar.nclientv2.R;
@@ -54,6 +55,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import me.zhanghai.android.fastscroll.FastScrollerBuilder;
 import okhttp3.Cookie;
 import okhttp3.OkHttpClient;
 
@@ -732,6 +734,14 @@ public class Global {
 
     public static boolean isExternalStorageManager() {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.R || Environment.isExternalStorageManager();
+    }
+
+    public static void applyFastScroller(RecyclerView recycler) {
+        if (recycler == null) return;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
+        Drawable drawable = ContextCompat.getDrawable(recycler.getContext(), R.drawable.thumb);
+        if (drawable == null) return;
+        new FastScrollerBuilder(recycler).setThumbDrawable(drawable).build();
     }
 
     public enum ThemeScheme {LIGHT, DARK}

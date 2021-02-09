@@ -64,6 +64,7 @@ public class PlaceholderFragment extends Fragment {
             adapter.reloadGalleries();
             refresher.setRefreshing(false);
         });
+        Global.applyFastScroller(recycler);
         updateColumnCount(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
         return root;
     }
