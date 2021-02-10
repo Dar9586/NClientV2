@@ -1,54 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/master_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_alignParentStart="true"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentBottom="true"
+    android:alpha="0.75"
+    android:background="?android:attr/colorBackground"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:weightSum="9">
 
-    <LinearLayout
-        android:id="@+id/master_layout"
-        android:layout_width="match_parent"
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/prev"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/prev_page"
+        android:tint="?android:attr/colorForeground"
+        app:srcCompat="@drawable/ic_arrow_back" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/page_index"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:alpha="0.75"
-        android:background="?android:attr/colorBackground"
+        android:layout_weight="5"
+        android:focusable="false"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:weightSum="9">
+        android:hint="@string/hashtag"
+        android:inputType="none"
+        android:text="@string/page_switcher_placeholder"
+        android:textAlignment="center"
+        tools:ignore="Autofill" />
 
-        <ImageButton
-            android:id="@+id/prev"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/prev_page"
-            android:tint="?android:attr/colorForeground"
-            app:srcCompat="@drawable/ic_arrow_back" />
-
-        <EditText
-            android:id="@+id/page_index"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="5"
-            android:focusable="false"
-            android:gravity="center"
-            android:hint="@string/hashtag"
-            android:inputType="none"
-            android:text="@string/page_switcher_placeholder"
-            android:textAlignment="center"
-            tools:ignore="Autofill" />
-
-        <ImageButton
-            android:id="@+id/next"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/next_page"
-            android:tint="?android:attr/colorForeground"
-            app:srcCompat="@drawable/ic_arrow_forward" />
-    </LinearLayout>
-</androidx.cardview.widget.CardView>
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/next"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/next_page"
+        android:tint="?android:attr/colorForeground"
+        app:srcCompat="@drawable/ic_arrow_forward" />
+</LinearLayout>

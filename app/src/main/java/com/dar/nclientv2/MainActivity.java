@@ -14,8 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -49,8 +47,8 @@ import com.dar.nclientv2.async.downloader.DownloadGalleryV2;
 import com.dar.nclientv2.components.GlideX;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.components.views.CustomWebView;
+import com.dar.nclientv2.components.views.PageSwitcher;
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
-import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.settings.TagV2;
@@ -97,14 +95,11 @@ public class MainActivity extends BaseActivity
     private InspectorV3 inspector = null;
     private NavigationView navigationView;
     private ModeType modeType = ModeType.UNKNOWN;
-    private int actualPage = 1, totalPage;
     private int idOpenedGallery = -1;//Position in the recycler of the opened gallery
     private boolean inspecting = false, filteringTag = false;
     private SortType temporaryType;
     private Snackbar snackbar = null;
-    private ImageButton prevPageButton, nextPageButton;
-    private EditText pageIndexText;
-    private View pageSwitcher;
+    private PageSwitcher pageSwitcher;
     private final InspectorV3.InspectorResponse
         resetDataset = new MainInspectorResponse() {
         @Override
@@ -141,7 +136,7 @@ public class MainActivity extends BaseActivity
         loadStringLogin();
         refresher.setOnRefreshListener(() -> {
             inspector = inspector.cloneInspector(MainActivity.this, resetDataset);
-            if (Global.isInfiniteScroll()) inspector.setPage(1);
+            if (Global.isInfiniteScrollMain()) inspector.setPage(1);
             inspector.start();
         });
 
@@ -194,21 +189,14 @@ public class MainActivity extends BaseActivity
     }
 
     private void initializePageSwitcherActions() {
-        prevPageButton.setOnClickListener(v -> {
-            if (actualPage > 1) {
+        pageSwitcher.setChanger(new PageSwitcher.DefaultPageChanger() {
+            @Override
+            public void pageChanged(PageSwitcher switcher, int page) {
                 inspector = inspector.cloneInspector(MainActivity.this, resetDataset);
-                inspector.setPage(inspector.getPage() - 1);
+                inspector.setPage(pageSwitcher.getActualPage());
                 inspector.start();
             }
         });
-        nextPageButton.setOnClickListener(v -> {
-            if (actualPage < totalPage) {
-                inspector = inspector.cloneInspector(MainActivity.this, resetDataset);
-                inspector.setPage(inspector.getPage() + 1);
-                inspector.start();
-            }
-        });
-        pageIndexText.setOnClickListener(v -> loadDialog());
     }
 
     private void initializeRecyclerView() {
@@ -220,11 +208,12 @@ public class MainActivity extends BaseActivity
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 if (inspecting) return;
-                if (!Global.isInfiniteScroll()) return;
+                if (!Global.isInfiniteScrollMain()) return;
                 if (refresher.isRefreshing()) return;
 
                 CustomGridLayoutManager manager = (CustomGridLayoutManager) recycler.getLayoutManager();
-                if (actualPage < totalPage && lastGalleryReached(manager)) {
+                assert manager != null;
+                if (!pageSwitcher.lastPageReached() && lastGalleryReached(manager)) {
                     inspecting = true;
                     inspector = inspector.cloneInspector(MainActivity.this, addDataset);
                     inspector.setPage(inspector.getPage() + 1);
@@ -260,9 +249,6 @@ public class MainActivity extends BaseActivity
         navigationView = findViewById(R.id.nav_view);
         recycler = findViewById(R.id.recycler);
         refresher = findViewById(R.id.refresher);
-        prevPageButton = findViewById(R.id.prev);
-        nextPageButton = findViewById(R.id.next);
-        pageIndexText = findViewById(R.id.page_index);
         pageSwitcher = findViewById(R.id.page_switcher);
         drawerLayout = findViewById(R.id.drawer_layout);
         loginItem = navigationView.getMenu().findItem(R.id.action_login);
@@ -478,43 +464,15 @@ public class MainActivity extends BaseActivity
     }
 
     public void showPageSwitcher(final int actualPage, final int totalPage) {
-        this.actualPage = actualPage;
-        this.totalPage = totalPage;
+        pageSwitcher.setPages(totalPage, actualPage);
 
-        if (Global.isInfiniteScroll()) {
+
+        if (Global.isInfiniteScrollMain()) {
             hidePageSwitcher();
-            return;
         }
 
-        runOnUiThread(() -> {
-            pageSwitcher.setVisibility(totalPage <= 1 ? View.GONE : View.VISIBLE);
-            prevPageButton.setAlpha(actualPage > 1 ? 1f : .5f);
-            prevPageButton.setEnabled(actualPage > 1);
-            nextPageButton.setAlpha(actualPage < totalPage ? 1f : .5f);
-            nextPageButton.setEnabled(actualPage < totalPage);
-            pageIndexText.setText(String.format(Locale.US, "%d/%d", actualPage, totalPage));
-        });
-
     }
 
-    private void loadDialog() {
-        DefaultDialogs.pageChangerDialog(
-            new DefaultDialogs.Builder(this)
-                .setActual(actualPage)
-                .setMin(1)
-                .setMax(totalPage)
-                .setTitle(R.string.change_page)
-                .setDrawable(R.drawable.ic_find_in_page)
-                .setDialogs(new DefaultDialogs.CustomDialogResults() {
-                    @Override
-                    public void positive(int actual) {
-                        inspector = inspector.cloneInspector(MainActivity.this, resetDataset);
-                        inspector.setPage(actual);
-                        inspector.start();
-                    }
-                })
-        );
-    }
 
     private void showLogoutForm() {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);

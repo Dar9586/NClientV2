@@ -30,7 +30,9 @@ import java.util.List;
 import java.util.Locale;
 
 public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder> implements Filterable {
+    private final int perPage = FavoriteActivity.getEntryPerPage();
     private final SparseIntArray statuses = new SparseIntArray();
+    private Gallery[] galleries;
     private final FavoriteActivity activity;
     private CharSequence lastQuery;
     private Cursor cursor;
@@ -58,9 +60,12 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
 
     @Nullable
     private Gallery galleryFromPosition(int position) {
+        if (galleries[position] != null) return galleries[position];
         cursor.moveToPosition(position);
         try {
-            return Queries.GalleryTable.cursorToGallery(cursor);
+            Gallery g = Queries.GalleryTable.cursorToGallery(cursor);
+            galleries[position] = g;
+            return g;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -123,6 +128,10 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
         activity.startActivity(intent);
     }
 
+    public void changePage() {
+        forceReload();
+    }
+
     public void updateColor(int position) {
         Gallery ent = galleryFromPosition(position);
         if (ent == null) return;
@@ -149,7 +158,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
                 lastQuery = constraint.toString();
                 LogUtility.d(lastQuery + "LASTQERY");
                 force = false;
-                Cursor c = Queries.FavoriteTable.getAllFavoriteGalleriesCursor(lastQuery, sortByTitle);
+                Cursor c = Queries.FavoriteTable.getAllFavoriteGalleriesCursor(lastQuery, sortByTitle, perPage, (activity.getActualPage() - 1) * perPage);
                 results.count = c.getCount();
                 results.values = c;
                 LogUtility.d("FILTERING3");
@@ -198,6 +207,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
 
     private void updateCursor(Cursor c) {
         if (cursor != null) cursor.close();
+        galleries = new Gallery[c.getCount()];
         cursor = c;
         statuses.clear();
     }

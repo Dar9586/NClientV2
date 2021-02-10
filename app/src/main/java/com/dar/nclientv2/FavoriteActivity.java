@@ -6,21 +6,32 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 
 import com.dar.nclientv2.adapters.FavoriteAdapter;
 import com.dar.nclientv2.api.components.Gallery;
+import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.async.downloader.DownloadGalleryV2;
 import com.dar.nclientv2.components.activities.BaseActivity;
+import com.dar.nclientv2.components.views.PageSwitcher;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+
 public class FavoriteActivity extends BaseActivity {
+    private static final int ENTRY_PER_PAGE = 24;
     private FavoriteAdapter adapter = null;
     private boolean sortByTitle = false;
+    private PageSwitcher pageSwitcher;
+    private SearchView searchView;
+
+    public static int getEntryPerPage() {
+        return Global.isInfiniteScrollFavorite() ? Integer.MAX_VALUE : ENTRY_PER_PAGE;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,18 +44,32 @@ public class FavoriteActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setTitle(R.string.favorite_manga);
+        pageSwitcher = findViewById(R.id.page_switcher);
         recycler = findViewById(R.id.recycler);
         refresher = findViewById(R.id.refresher);
         refresher.setRefreshing(true);
         adapter = new FavoriteAdapter(this);
 
-        findViewById(R.id.page_switcher).setVisibility(View.GONE);
 
         refresher.setOnRefreshListener(adapter::forceReload);
         changeLayout(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
         recycler.setAdapter(adapter);
+        pageSwitcher.setPages(1, 1);
+        pageSwitcher.setChanger(new PageSwitcher.DefaultPageChanger() {
+            @Override
+            public void pageChanged(PageSwitcher switcher, int page) {
+                if (adapter != null) adapter.changePage();
+            }
+        });
 
+    }
 
+    public int getActualPage() {
+        return pageSwitcher.getActualPage();
+    }
+
+    public void changePages(int totalPages, int actualPages) {
+        pageSwitcher.setPages(totalPages, actualPages);
     }
 
     @Override
@@ -57,10 +82,20 @@ public class FavoriteActivity extends BaseActivity {
         return Global.getColPortFavorite();
     }
 
+    private int calculatePages(@Nullable String text) {
+        int perPage = getEntryPerPage();
+        int totalEntries = Queries.FavoriteTable.countFavorite(text);
+        int div = totalEntries / perPage;
+        int mod = totalEntries % perPage;
+        return div + (mod == 0 ? 0 : 1);
+    }
+
     @Override
     protected void onResume() {
         refresher.setEnabled(true);
         refresher.setRefreshing(true);
+        String query = searchView == null ? null : searchView.getQuery().toString();
+        pageSwitcher.setTotalPage(calculatePages(query));
         adapter.forceReload();
         super.onResume();
     }
@@ -74,7 +109,7 @@ public class FavoriteActivity extends BaseActivity {
         menu.findItem(R.id.only_language).setVisible(false);
         menu.findItem(R.id.add_bookmark).setVisible(false);
 
-        final androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) menu.findItem(R.id.search).getActionView();
+        searchView = (androidx.appcompat.widget.SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -83,6 +118,7 @@ public class FavoriteActivity extends BaseActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                pageSwitcher.setTotalPage(calculatePages(newText));
                 if (adapter != null)
                     adapter.getFilter().filter(newText);
                 return true;

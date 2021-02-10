@@ -335,5 +335,6 @@
     <string name="summary_beta">Updating to a beta version can make you unable to return to a stable version without uninstalling</string>
     <string name="fix_inverted_title">Fix inverted images</string>
     <string name="fix_inverted_summary">Enable if the images are shown with inverted colors (in some devices can cause the system theme to be changed to light, disabling it will fix this issue)</string>
+    <string name="navigation_settings_per_screen">Navigation settings per screen</string>
 
 </resources>

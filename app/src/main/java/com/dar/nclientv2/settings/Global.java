@@ -82,12 +82,13 @@ public class Global {
     private static TitleType titleType;
     private static SortType sortType;
     private static LocalSortType localSortType;
-    private static boolean invertFix, hideMultitask, enableBeta, volumeOverride, zoomOneColumn, keepHistory, lockScreen, onlyTag, showTitles, infiniteScroll, removeAvoidedGalleries, useRtl;
+    private static boolean invertFix, hideMultitask, enableBeta, volumeOverride, zoomOneColumn, keepHistory, lockScreen, onlyTag, showTitles, removeAvoidedGalleries, useRtl;
     private static ThemeScheme theme;
     private static DataUsageType usageMobile, usageWifi;
     private static String lastVersion, mirror;
     private static int maxHistory, columnCount, maxId, galleryWidth = -1, galleryHeight = -1;
     private static int colPortStat, colLandStat, colPortHist, colLandHist, colPortMain, colLandMain, colPortDownload, colLandDownload, colLandFavorite, colPortFavorite;
+    private static boolean infiniteScrollMain, infiniteScrollFavorite;
     private static int defaultZoom;
     private static Point screenSize;
 
@@ -225,6 +226,15 @@ public class Global {
         return maxHistory;
     }
 
+    public static boolean isInfiniteScrollMain() {
+        return infiniteScrollMain;
+    }
+
+    public static boolean isInfiniteScrollFavorite() {
+        return infiniteScrollFavorite;
+    }
+
+
     private static void initTitleType(@NonNull Context context) {
         String s = context.getSharedPreferences("Settings", 0).getString(context.getString(R.string.key_title_type), "pretty");
         assert s != null;
@@ -271,7 +281,6 @@ public class Global {
         useRtl = shared.getBoolean(context.getString(R.string.key_use_rtl), false);
         mirror = shared.getString(context.getString(R.string.key_site_mirror), Utility.ORIGINAL_URL);
         keepHistory = shared.getBoolean(context.getString(R.string.key_keep_history), true);
-        infiniteScroll = shared.getBoolean(context.getString(R.string.key_infinite_scroll), false);
         removeAvoidedGalleries = shared.getBoolean(context.getString(R.string.key_remove_ignored), true);
         invertFix = shared.getBoolean(context.getString(R.string.key_inverted_fix), true);
         onlyTag = shared.getBoolean(context.getString(R.string.key_ignore_tags), true);
@@ -281,6 +290,8 @@ public class Global {
         showTitles = shared.getBoolean(context.getString(R.string.key_show_titles), true);
         lockScreen = shared.getBoolean(context.getString(R.string.key_disable_lock), false);
         hideMultitask = shared.getBoolean(context.getString(R.string.key_hide_multitasking), true);
+        infiniteScrollFavorite = shared.getBoolean(context.getString(R.string.key_infinite_scroll_favo), false);
+        infiniteScrollMain = shared.getBoolean(context.getString(R.string.key_infinite_scroll_main), false);
         maxId = shared.getInt(context.getString(R.string.key_max_id), 300000);
         maxHistory = shared.getInt(context.getString(R.string.key_max_history_size), 2);
         defaultZoom = shared.getInt(context.getString(R.string.key_default_zoom), 100);
@@ -498,9 +509,6 @@ public class Global {
         return sortType;
     }
 
-    public static boolean isInfiniteScroll() {
-        return infiniteScroll;
-    }
 
     public static int getColumnCount() {
         return columnCount;

@@ -24,9 +24,8 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <include
+    <com.dar.nclientv2.components.views.PageSwitcher
         android:id="@+id/page_switcher"
-        layout="@layout/page_switcher"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:visibility="gone"

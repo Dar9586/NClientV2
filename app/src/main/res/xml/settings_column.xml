@@ -21,6 +21,11 @@
             app:iconSpaceReserved="false"
             app:min="1"
             app:showSeekBarValue="true" />
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="@string/key_infinite_scroll_main"
+            android:title="@string/infinite_scroll"
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -63,6 +68,11 @@
             app:iconSpaceReserved="false"
             app:min="1"
             app:showSeekBarValue="true" />
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="@string/key_infinite_scroll_favo"
+            android:title="@string/infinite_scroll"
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
 
     <PreferenceCategory

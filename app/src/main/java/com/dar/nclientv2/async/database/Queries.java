@@ -760,6 +760,19 @@ public class Queries {
         static final String ID_GALLERY = "id_gallery";
         static final String TIME = "time";
 
+        private static final String TITLE_CLAUSE = String.format(Locale.US, "%s LIKE ? OR %s LIKE ? OR %s LIKE ?",
+            GalleryTable.TITLE_ENG,
+            GalleryTable.TITLE_JP,
+            GalleryTable.TITLE_PRETTY
+        );
+
+        private static final String FAVORITE_JOIN_GALLERY = String.format(Locale.US, "%s INNER JOIN %s ON %s=%s",
+            FavoriteTable.TABLE_NAME,
+            GalleryTable.TABLE_NAME,
+            FavoriteTable.ID_GALLERY,
+            GalleryTable.IDGALLERY
+        );
+
         public static void addFavorite(Gallery gallery) {
             GalleryTable.insert(gallery);
             FavoriteTable.insert(gallery.getId());
@@ -784,20 +797,11 @@ public class Queries {
          * @param orderByTitle true if order by title, false order by latest
          * @return cursor which points to the galleries
          */
-        public static Cursor getAllFavoriteGalleriesCursor(CharSequence query, boolean orderByTitle) {
-            String q = String.format(Locale.US, "SELECT * FROM %s INNER JOIN %s ON %s=%s WHERE %s LIKE ? OR %s LIKE ? OR %s LIKE ?",
-                FavoriteTable.TABLE_NAME,
-                GalleryTable.TABLE_NAME,
-                FavoriteTable.ID_GALLERY,
-                GalleryTable.IDGALLERY,
-                GalleryTable.TITLE_ENG,
-                GalleryTable.TITLE_JP,
-                GalleryTable.TITLE_PRETTY
-            );
-            if (orderByTitle) q += "ORDER BY " + titleTypeToColumn(Global.getTitleType());
-            else q += "ORDER BY " + FavoriteTable.TIME + " DESC";
+        public static Cursor getAllFavoriteGalleriesCursor(CharSequence query, boolean orderByTitle, int limit, int offset) {
+            String order = orderByTitle ? titleTypeToColumn(Global.getTitleType()) : FavoriteTable.TIME + " DESC";
             String param = "%" + query + "%";
-            return db.rawQuery(q, new String[]{param, param, param});
+            String limitString = String.format(Locale.US, "%d OFFSET %d", limit, offset);
+            return db.query(FAVORITE_JOIN_GALLERY, null, TITLE_CLAUSE, new String[]{param, param, param}, null, null, order, limitString);
         }
 
         /**
@@ -836,10 +840,25 @@ public class Queries {
             db.delete(TABLE_NAME, ID_GALLERY + "=?", new String[]{"" + id});
         }
 
+        public static int countFavorite(@Nullable String text) {
+            if (text == null || text.trim().isEmpty()) return countFavorite();
+            int totalFavorite = 0;
+            String param = "%" + text + "%";
+            Cursor c = db.query(FAVORITE_JOIN_GALLERY, new String[]{"COUNT(*)"}, TITLE_CLAUSE, new String[]{param, param, param}, null, null, null);
+            if (c.moveToFirst()) {
+                totalFavorite = c.getInt(0);
+            }
+            c.close();
+            return totalFavorite;
+        }
+
         public static int countFavorite() {
-            String query = "SELECT * FROM " + TABLE_NAME;
+            int totalFavorite = 0;
+            String query = "SELECT COUNT(*) FROM " + TABLE_NAME;
             Cursor c = db.rawQuery(query, null);
-            int totalFavorite = c.getCount();
+            if (c.moveToFirst()) {
+                totalFavorite = c.getInt(0);
+            }
             c.close();
             return totalFavorite;
         }
