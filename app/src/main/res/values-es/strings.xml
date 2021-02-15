@@ -308,8 +308,8 @@
     <string name="requesting_storage_access">Solicitando acceso a almacenamiento</string>
     <string name="request_storage_manager_summary">Debido a las restricciones de Android 11 debes de dar permisos adicionales para que las rutas funcionen.\nSi quieres conceder los permisos acepta en la siguiente ventana.</string>
     <string name="summary_beta">Actualizar a una version beta puede provocar errores, además de no poder volver a una version estable sin desinstalar.</string>
-    <string name="fix_inverted_title">Fix inverted images</string>
-    <string name="fix_inverted_summary">Enable if the images are shown with inverted colors (in some devices can cause the system theme to be changed to light, disabling it will fix this issue)</string>
-    <string name="navigation_settings_per_screen">Navigation settings per screen</string>
+    <string name="fix_inverted_title">Arreglar colores invertidos</string>
+    <string name="fix_inverted_summary">Activa esto si ves los colores invertidos (en algunos dispositivos puede causar que el tema del dispositivo se cambie a claro, desactivando eso puede solucionar el problema.)</string>
+    <string name="navigation_settings_per_screen">Opciones de navegacion por pantalla</string>
 
 </resources>
