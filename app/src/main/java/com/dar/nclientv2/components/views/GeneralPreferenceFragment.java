@@ -22,6 +22,7 @@ import com.dar.nclientv2.PINActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.SettingsActivity;
 import com.dar.nclientv2.StatusManagerActivity;
+import com.dar.nclientv2.async.MetadataFetcher;
 import com.dar.nclientv2.async.VersionChecker;
 import com.dar.nclientv2.async.database.Exporter;
 import com.dar.nclientv2.components.launcher.LauncherCalculator;
@@ -108,6 +109,11 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
             i.putExtra(act.getPackageName() + ".TYPE", SettingsActivity.Type.DATA.ordinal());
             act.runOnUiThread(() -> act.startActivity(i));
             return false;
+        });
+        findPreference("fetch_metadata").setVisible(Global.hasStoragePermission(act));
+        findPreference("fetch_metadata").setOnPreferenceClickListener(preference -> {
+            new Thread(new MetadataFetcher(act)).start();
+            return true;
         });
         findPreference(getString(R.string.key_fake_icon)).setOnPreferenceChangeListener((preference, newValue) -> {
             PackageManager pm = act.getPackageManager();

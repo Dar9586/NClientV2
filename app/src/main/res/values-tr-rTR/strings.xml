@@ -334,4 +334,5 @@
     <string name="fix_inverted_title">Ters renkli resimleri düzelt</string>
     <string name="fix_inverted_summary">Eğer resimlerin renkleri ters görünüyorsa aktifleştirin (Bazı cihazlarda sistem temasının açık temaya geçmesine yol açabilir, Bunu kapatarak düzeltebilirsiniz)</string>
     <string name="navigation_settings_per_screen">Sayfa Ayarları</string>
+    <string name="downloaded_update_at" formatted="true">Downloaded update at %s</string>
 </resources>

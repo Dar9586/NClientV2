@@ -128,12 +128,13 @@ public abstract class MultichoiceAdapter<D, T extends RecyclerView.ViewHolder> e
     }
 
     private void updateLayoutParams(View master, View multichoiceHolder, boolean isSelected) {
+        if (master == null) return;
         int margin = isSelected ? 8 : 0;
-
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) master.getLayoutParams();
         params.setMargins(margin, margin, margin, margin);
         master.setLayoutParams(params);
-        if (isSelected) {
+
+        if (isSelected && multichoiceHolder != null) {
             master.post(() -> {
                 ViewGroup.LayoutParams multiParam = multichoiceHolder.getLayoutParams();
                 multiParam.width = master.getWidth();

@@ -173,6 +173,11 @@
             android:summary="@string/fix_inverted_summary"
             android:title="@string/fix_inverted_title"
             app:iconSpaceReserved="false" />
+        <Preference
+            android:key="fetch_metadata"
+            android:summary="Download metadata for galleries downloaded before 2.3.0 which didn't have metadata like tags included"
+            android:title="Fetch metadata for old galleries"
+            app:iconSpaceReserved="false" />
         <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="@string/key_disable_lock"

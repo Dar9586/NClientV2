@@ -751,6 +751,21 @@ public class Global {
         new FastScrollerBuilder(recycler).setThumbDrawable(drawable).build();
     }
 
+    @NonNull
+    public static String getLanguageFlag(Language language) {
+        switch (language) {
+            case CHINESE:
+                return "\uD83C\uDDE8\uD83C\uDDF3";
+            case ENGLISH:
+                return "\uD83C\uDDEC\uD83C\uDDE7";
+            case JAPANESE:
+                return "\uD83C\uDDEF\uD83C\uDDF5";
+            case UNKNOWN:
+                return "\uD83C\uDFF3";
+        }
+        return "";
+    }
+
     public enum ThemeScheme {LIGHT, DARK}
 
     public enum DataUsageType {NONE, THUMBNAIL, FULL}

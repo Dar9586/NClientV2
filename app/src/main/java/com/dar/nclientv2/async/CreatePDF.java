@@ -104,21 +104,24 @@ public class CreatePDF extends JobIntentService {
     }
 
     private void createIntentOpen(File finalPath) {
-        Intent i = new Intent(Intent.ACTION_VIEW);
-        Uri apkURI = FileProvider.getUriForFile(
-            getApplicationContext(), getApplicationContext().getPackageName() + ".provider", finalPath);
-        i.setDataAndType(apkURI, "application/pdf");
-        i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        i.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        List<ResolveInfo> resInfoList = getApplicationContext().getPackageManager().queryIntentActivities(i, PackageManager.MATCH_DEFAULT_ONLY);
-        for (ResolveInfo resolveInfo : resInfoList) {
-            String packageName = resolveInfo.activityInfo.packageName;
-            getApplicationContext().grantUriPermission(packageName, apkURI, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        try {
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            Uri apkURI = FileProvider.getUriForFile(
+                getApplicationContext(), getApplicationContext().getPackageName() + ".provider", finalPath);
+            i.setDataAndType(apkURI, "application/pdf");
+            i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            i.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            List<ResolveInfo> resInfoList = getApplicationContext().getPackageManager().queryIntentActivities(i, PackageManager.MATCH_DEFAULT_ONLY);
+            for (ResolveInfo resolveInfo : resInfoList) {
+                String packageName = resolveInfo.activityInfo.packageName;
+                getApplicationContext().grantUriPermission(packageName, apkURI, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            }
+
+            notification.setContentIntent(PendingIntent.getActivity(getApplicationContext(), 0, i, 0));
+            LogUtility.d(apkURI.toString());
+        } catch (IllegalArgumentException ignore) {//sometimes the uri isn't available
+
         }
-
-        notification.setContentIntent(PendingIntent.getActivity(getApplicationContext(), 0, i, 0));
-        LogUtility.d(apkURI.toString());
-
     }
 
     private void preExecute(File file) {

@@ -66,8 +66,9 @@ public class LocalGallery extends GenericGallery {
         }
         //Start search pages
         //Find page with max number
-        galleryData.setPageCount(folder.getMax());
-        valid = folder.getPageCount() > 0;
+        if (folder != null)
+            galleryData.setPageCount(folder.getMax());
+        valid = folder != null && folder.getPageCount() > 0;
     }
 
     public LocalGallery(@NonNull File file) {
@@ -121,6 +122,7 @@ public class LocalGallery extends GenericGallery {
 
     @NonNull
     private GalleryData readGalleryData() {
+        if (folder == null) return GalleryData.fakeData();
         File nomedia = folder.getGalleryDataFile();
         try (JsonReader reader = new JsonReader(new FileReader(nomedia))) {
             return new GalleryData(reader);

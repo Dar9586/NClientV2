@@ -286,6 +286,7 @@
     <string name="fix_inverted_title">Fix inverted images</string>
     <string name="fix_inverted_summary">Enable if the images are shown with inverted colors (in some devices can cause the system theme to be changed to light, disabling it will fix this issue)</string>
     <string name="navigation_settings_per_screen">Navigation settings per screen</string>
+    <string name="downloaded_update_at" formatted="true">Downloaded update at %s</string>
 
     <string-array name="scroll_type">
         <item>水平</item>

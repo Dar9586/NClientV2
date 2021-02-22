@@ -157,7 +157,10 @@ public class GalleryDownloaderManager {
 
 
     private void notificationUpdate() {
-        NotificationSettings.notify(context.getString(R.string.channel1_name), notificationId, notification.build());
+        try {
+            NotificationSettings.notify(context.getString(R.string.channel1_name), notificationId, notification.build());
+        } catch (NullPointerException ignore) {
+        }
     }
 
 }
