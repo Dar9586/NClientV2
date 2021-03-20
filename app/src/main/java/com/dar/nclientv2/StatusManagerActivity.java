@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dar.nclientv2.adapters.StatusManagerAdapter;
 import com.dar.nclientv2.components.activities.GeneralActivity;
 import com.dar.nclientv2.components.widgets.CustomLinearLayoutManager;
-import com.dar.nclientv2.settings.Global;
 
 public class StatusManagerActivity extends GeneralActivity {
 
@@ -19,7 +18,7 @@ public class StatusManagerActivity extends GeneralActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.initActivity(this);
+        //Global.initActivity(this);
         setContentView(R.layout.activity_bookmark);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

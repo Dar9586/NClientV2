@@ -21,7 +21,6 @@ import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.settings.Global;
-import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 
@@ -179,7 +178,7 @@ public class InspectorV3 extends Thread implements Parcelable {
         tags.addAll(getLanguageTags(Global.getOnlyLanguage()));
         if (Global.removeAvoidedGalleries())
             tags.addAll(Queries.TagTable.getAllStatus(TagStatus.AVOIDED));
-        if (Login.isLogged()) tags.addAll(Queries.TagTable.getAllOnlineBlacklisted());
+        tags.addAll(Queries.TagTable.getAllOnlineBlacklisted());
         return tags;
     }
 

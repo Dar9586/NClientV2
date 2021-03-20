@@ -55,10 +55,10 @@ public class Gallery extends GenericGallery {
     private final GalleryData galleryData;
     @Nullable
     private final GalleryFolder folder;
+    private final boolean onlineFavorite;
     private List<SimpleGallery> related = new ArrayList<>();
     private Language language = Language.UNKNOWN;
     private Size maxSize = new Size(0, 0), minSize = new Size(Integer.MAX_VALUE, Integer.MAX_VALUE);
-    private final boolean onlineFavorite;
 
     public Gallery(Context context, String json, Elements related, boolean isFavorite) throws IOException {
         LogUtility.d("Found JSON: " + json);

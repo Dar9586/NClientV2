@@ -35,8 +35,9 @@ public class ImageDownloadUtility {
 
     public static void loadImageOp(Context context, ImageView view, Gallery gallery, int page, int angle) {
         Uri url = getUrlForGallery(gallery, page, true);
-        loadImageOp(context,view,url,angle);
+        loadImageOp(context, view, url, angle);
     }
+
     public static void loadImageOp(Context context, ImageView view, Uri url, int angle) {
         LogUtility.d("Requested url glide: " + url);
         if (Global.getDownloadPolicy() == Global.DataUsageType.NONE) {
@@ -46,9 +47,9 @@ public class ImageDownloadUtility {
         RequestManager glide = GlideX.with(context);
         if (glide == null) return;
         Drawable logo = Global.getLogo(context.getResources());
-        RequestBuilder<Drawable>dra= glide.load(url);
-        if(angle!=0)
-            dra=dra.transform(new Rotate(angle));
+        RequestBuilder<Drawable> dra = glide.load(url);
+        if (angle != 0)
+            dra = dra.transform(new Rotate(angle));
         dra.error(logo)
             .placeholder(logo)
             .into(view);
@@ -59,8 +60,8 @@ public class ImageDownloadUtility {
     }
 
     public static void downloadPage(Activity activity, ImageView imageView, Gallery gallery, int page, boolean shouldFull) {
-        shouldFull=gallery.getPageExtension(page).equals("gif")||shouldFull;
-        loadImageOp(activity,imageView,getUrlForGallery(gallery, page, shouldFull),0);
+        shouldFull = gallery.getPageExtension(page).equals("gif") || shouldFull;
+        loadImageOp(activity, imageView, getUrlForGallery(gallery, page, shouldFull), 0);
     }
 
     private static void loadLogo(ImageView imageView) {
@@ -68,11 +69,11 @@ public class ImageDownloadUtility {
     }
 
     public static void loadImage(Activity activity, Uri url, ImageView imageView) {
-        loadImageOp(activity,imageView,url,0);
+        loadImageOp(activity, imageView, url, 0);
     }
 
     public static void loadImage(Activity activity, File file, ImageView imageView) {
-        loadImage(activity,Uri.fromFile(file),imageView);
+        loadImage(activity, Uri.fromFile(file), imageView);
     }
 
     /**

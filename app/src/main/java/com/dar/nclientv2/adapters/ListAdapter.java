@@ -154,7 +154,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
 
             @Override
             public void onSuccess(List<GenericGallery> galleries) {
-                if(galleries.size() != 1){
+                if (galleries.size() != 1) {
                     if (context.getMasterLayout() != null) {
                         context.runOnUiThread(() ->
                             Snackbar.make(context.getMasterLayout(), R.string.no_entry_found, Snackbar.LENGTH_SHORT).show()

@@ -30,6 +30,7 @@ import java.util.List;
 
 public class LocalActivity extends BaseActivity {
     private Menu optionMenu;
+    private LocalAdapter adapter;
     private final MultichoiceAdapter.MultichoiceListener listener = new MultichoiceAdapter.DefaultMultichoiceListener() {
 
         @Override
@@ -37,7 +38,6 @@ public class LocalActivity extends BaseActivity {
             setMenuVisibility(optionMenu);
         }
     };
-    private LocalAdapter adapter;
     private Toolbar toolbar;
     private int colCount;
     private int idGalleryPosition = -1;
@@ -47,7 +47,7 @@ public class LocalActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.initActivity(this);
+        //Global.initActivity(this);
         setContentView(R.layout.app_bar_main);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

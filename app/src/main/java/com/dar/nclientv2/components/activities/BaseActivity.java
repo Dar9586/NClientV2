@@ -1,16 +1,13 @@
 package com.dar.nclientv2.components.activities;
 
 import android.content.res.Configuration;
-import android.os.Bundle;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
-import com.dar.nclientv2.settings.Global;
 
 public abstract class BaseActivity extends GeneralActivity {
     protected RecyclerView recycler;
@@ -21,12 +18,6 @@ public abstract class BaseActivity extends GeneralActivity {
 
     protected abstract int getLandscapeColumnCount();
 
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Global.initActivity(this);
-    }
 
     public SwipeRefreshLayout getRefresher() {
         return refresher;

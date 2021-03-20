@@ -98,7 +98,7 @@ public class Login {
                 return true;
             }
         }
-        if(context!=null)logout(context);
+        if (context != null) logout(context);
         return false;
         //return sessionId!=null;
     }

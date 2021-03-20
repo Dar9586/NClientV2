@@ -46,7 +46,7 @@ public class ZoomFragment extends Fragment {
     public static ZoomFragment newInstance(GenericGallery gallery, int page, @Nullable GalleryFolder directory) {
         Bundle args = new Bundle();
         args.putString("URL", gallery.isLocal() ? null : ((Gallery) gallery).getPageUrl(page).toString());
-        args.putParcelable("FOLDER", directory==null?null:directory.getPage(page+1));
+        args.putParcelable("FOLDER", directory == null ? null : directory.getPage(page + 1));
         ZoomFragment fragment = new ZoomFragment();
         fragment.setArguments(args);
         return fragment;
@@ -91,12 +91,13 @@ public class ZoomFragment extends Fragment {
     }
 
     private void createTarget() {
-        target=new ImageViewTarget<Drawable>(photoView){
+        target = new ImageViewTarget<Drawable>(photoView) {
 
             @Override
             protected void setResource(@Nullable Drawable resource) {
                 photoView.setImageDrawable(resource);
             }
+
             void applyDrawable(ImageView toShow, ImageView toHide, Drawable drawable) {
                 toShow.setVisibility(View.VISIBLE);
                 toHide.setVisibility(View.GONE);
@@ -120,7 +121,7 @@ public class ZoomFragment extends Fragment {
             @Override
             public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                 applyDrawable(photoView, retryButton, resource);
-                if(resource instanceof Animatable)
+                if (resource instanceof Animatable)
                     ((GifDrawable) resource).start();
             }
 

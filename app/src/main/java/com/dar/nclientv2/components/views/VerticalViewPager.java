@@ -148,6 +148,7 @@ public class VerticalViewPager extends ViewPager {
             return true;
         }
     }
+
     private class OnSingleTapConfirmedGestureListener extends GestureDetector.SimpleOnGestureListener {
 
         @NonNull

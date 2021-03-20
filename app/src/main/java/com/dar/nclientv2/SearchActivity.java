@@ -68,7 +68,7 @@ public class SearchActivity extends GeneralActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.initActivity(this);
+        //Global.initActivity(this);
         setContentView(R.layout.activity_search);
         //init toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);

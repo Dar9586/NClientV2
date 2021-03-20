@@ -46,7 +46,6 @@ import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.async.downloader.DownloadGalleryV2;
 import com.dar.nclientv2.components.GlideX;
 import com.dar.nclientv2.components.activities.BaseActivity;
-import com.dar.nclientv2.components.views.CustomWebView;
 import com.dar.nclientv2.components.views.PageSwitcher;
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
 import com.dar.nclientv2.settings.Global;
@@ -116,13 +115,11 @@ public class MainActivity extends BaseActivity
     };
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
-    private CustomWebView webView = null;
     private Setting setting = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.initActivity(this);
         setContentView(R.layout.activity_main);
         //load inspector
         selectStartMode(getIntent(), getPackageName());

@@ -45,12 +45,14 @@ public class GalleryDownloaderV2 {
     private Gallery gallery;
     private File folder;
     private boolean initialized = false;
+
     public GalleryDownloaderV2(Context context, @Nullable String title, @Nullable Uri thumbnail, int id) {
         this.context = context;
         this.id = id;
         this.thumbnail = thumbnail;
         this.title = Gallery.getPathTitle(title, context.getString(R.string.download_gallery));
     }
+
     public GalleryDownloaderV2(Context context, Gallery gallery, int start, int end) {
         this(context, gallery.getTitle(), gallery.getCover(), gallery.getId());
         this.start = start;
@@ -349,23 +351,6 @@ public class GalleryDownloaderV2 {
         writer.close();
     }
 
-    public enum Status {NOT_STARTED, DOWNLOADING, PAUSED, FINISHED, CANCELED}
-
-    public static class PageContainer {
-        public final int page;
-        public final String url, ext;
-
-        public PageContainer(int page, String url, String ext) {
-            this.page = page;
-            this.url = url;
-            this.ext = ext;
-        }
-
-        public String getPageName() {
-            return String.format(Locale.US, "%03d.%s", page, ext);
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -382,5 +367,22 @@ public class GalleryDownloaderV2 {
         int result = id;
         result = 31 * result + (folder != null ? folder.hashCode() : 0);
         return result;
+    }
+
+    public enum Status {NOT_STARTED, DOWNLOADING, PAUSED, FINISHED, CANCELED}
+
+    public static class PageContainer {
+        public final int page;
+        public final String url, ext;
+
+        public PageContainer(int page, String url, String ext) {
+            this.page = page;
+            this.url = url;
+            this.ext = ext;
+        }
+
+        public String getPageName() {
+            return String.format(Locale.US, "%03d.%s", page, ext);
+        }
     }
 }

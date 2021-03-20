@@ -12,6 +12,7 @@ public class CSRFGet extends Thread {
     @Nullable
     private final Response response;
     private final String url;
+
     public CSRFGet(@Nullable Response response, String url) {
         this.response = response;
         this.url = url;

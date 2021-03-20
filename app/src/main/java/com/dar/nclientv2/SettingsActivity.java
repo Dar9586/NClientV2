@@ -21,12 +21,13 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.io.IOException;
 
 public class SettingsActivity extends AppCompatActivity {
-    GeneralPreferenceFragment fragment;
     private static final int STORAGE_MANAGER_REQUEST = 987;
+    GeneralPreferenceFragment fragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.initActivity(this);
+        //Global.initActivity(this);
         setContentView(R.layout.activity_settings);
 
         Toolbar toolbar = findViewById(R.id.toolbar);

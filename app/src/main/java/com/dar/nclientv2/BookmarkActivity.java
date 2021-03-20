@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dar.nclientv2.adapters.BookmarkAdapter;
 import com.dar.nclientv2.components.activities.GeneralActivity;
 import com.dar.nclientv2.components.widgets.CustomLinearLayoutManager;
-import com.dar.nclientv2.settings.Global;
 
 public class BookmarkActivity extends GeneralActivity {
     BookmarkAdapter adapter;
@@ -18,7 +17,7 @@ public class BookmarkActivity extends GeneralActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.initActivity(this);
+        //Global.initActivity(this);
         setContentView(R.layout.activity_bookmark);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

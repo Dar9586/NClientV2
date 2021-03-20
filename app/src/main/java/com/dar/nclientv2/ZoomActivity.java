@@ -69,7 +69,7 @@ public class ZoomActivity extends GeneralActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.initActivity(this);
+        //Global.initActivity(this);
         SharedPreferences preferences = getSharedPreferences("Settings", 0);
         side = preferences.getBoolean(VOLUME_SIDE_KEY, true);
         scrollType = ScrollType.values()[preferences.getInt(SCROLL_TYPE_KEY, ScrollType.HORIZONTAL.ordinal())];
@@ -124,7 +124,7 @@ public class ZoomActivity extends GeneralActivity {
             public void onPageSelected(int newPage) {
                 int oldPage = actualPage;
                 actualPage = newPage;
-                setPageText(offsetPage(newPage)+1);
+                setPageText(offsetPage(newPage) + 1);
                 seekBar.setProgress(offsetPage(newPage));
                 clearFarRequests(oldPage, newPage);
             }
@@ -180,8 +180,8 @@ public class ZoomActivity extends GeneralActivity {
         return invertDirection() ? gallery.getPageCount() - 1 - page : page;
     }
 
-    private boolean invertDirection(){
-        return Global.useRtl()&&scrollType==ScrollType.HORIZONTAL;
+    private boolean invertDirection() {
+        return Global.useRtl() && scrollType == ScrollType.HORIZONTAL;
     }
 
     @Override
@@ -224,7 +224,7 @@ public class ZoomActivity extends GeneralActivity {
     }
 
     private void changeClosePage(boolean next) {
-        if(scrollType==ScrollType.VERTICAL)next=!next;
+        if (scrollType == ScrollType.VERTICAL) next = !next;
         if (next && mViewPager.getCurrentItem() < (mViewPager.getAdapter().getCount() - 1))
             changePage(mViewPager.getCurrentItem() + 1);
         if (!next && mViewPager.getCurrentItem() > 0) changePage(mViewPager.getCurrentItem() - 1);
@@ -233,7 +233,7 @@ public class ZoomActivity extends GeneralActivity {
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        changeLayout(newConfig.orientation==Configuration.ORIENTATION_LANDSCAPE);
+        changeLayout(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE);
     }
 
     private boolean hardwareKeys() {
@@ -267,7 +267,7 @@ public class ZoomActivity extends GeneralActivity {
                 scrollType = tmpScrollType;
                 mViewPager.setVerticalMode(scrollType == ScrollType.VERTICAL);
                 getSharedPreferences("Settings", 0).edit().putInt(SCROLL_TYPE_KEY, scrollType.ordinal()).apply();
-                changePage(gallery.getPageCount()-1-mViewPager.getCurrentItem());
+                changePage(gallery.getPageCount() - 1 - mViewPager.getCurrentItem());
             }
         }).setNegativeButton(R.string.cancel, null);
         builder.show();

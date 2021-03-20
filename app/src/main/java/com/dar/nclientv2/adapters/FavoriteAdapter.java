@@ -33,8 +33,8 @@ import java.util.Locale;
 public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder> implements Filterable {
     private final int perPage = FavoriteActivity.getEntryPerPage();
     private final SparseIntArray statuses = new SparseIntArray();
-    private Gallery[] galleries;
     private final FavoriteActivity activity;
+    private Gallery[] galleries;
     private CharSequence lastQuery;
     private Cursor cursor;
     private boolean force = false;

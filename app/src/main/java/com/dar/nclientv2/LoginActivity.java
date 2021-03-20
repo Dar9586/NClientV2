@@ -33,7 +33,7 @@ public class LoginActivity extends GeneralActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.initActivity(this);
+        //Global.initActivity(this);
         setContentView(R.layout.activity_login);
         final Toolbar toolbar = findViewById(R.id.toolbar);
         webView = findViewById(R.id.webView);

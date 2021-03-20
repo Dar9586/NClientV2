@@ -81,8 +81,8 @@ public class VersionChecker {
     }
 
     private static int extractVersion(String version) {
-        int index=version.indexOf('-');
-        if(index>=0)version=version.substring(0,index);
+        int index = version.indexOf('-');
+        if (index >= 0) version = version.substring(0, index);
         return Integer.parseInt(version.replace(".", ""));
     }
 
