@@ -37,11 +37,11 @@ import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.SortType;
 import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.api.local.LocalSortType;
+import com.dar.nclientv2.components.CustomCookieJar;
 import com.dar.nclientv2.components.classes.CustomSSLSocketFactory;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 import com.dar.nclientv2.utility.network.NetworkUtil;
-import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 
@@ -359,7 +359,7 @@ public class Global {
         Login.setLoginShared(preferences);
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
             .cookieJar(
-                new PersistentCookieJar(
+                new CustomCookieJar(
                     new SetCookieCache(),
                     new SharedPrefsCookiePersistor(preferences)
                 )

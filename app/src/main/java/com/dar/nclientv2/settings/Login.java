@@ -14,11 +14,11 @@ import com.dar.nclientv2.MainActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.async.database.Queries;
+import com.dar.nclientv2.components.CustomCookieJar;
 import com.dar.nclientv2.loginapi.LoadTags;
 import com.dar.nclientv2.loginapi.User;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
-import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class Login {
     }
 
     public static void logout(Context context) {
-        PersistentCookieJar cookieJar = (PersistentCookieJar) Global.client.cookieJar();
+        CustomCookieJar cookieJar = (CustomCookieJar) Global.client.cookieJar();
         cookieJar.clear();
         cookieJar.clearSession();
         updateUser(null);//remove user
@@ -98,6 +98,7 @@ public class Login {
                 return true;
             }
         }
+        if(context!=null)logout(context);
         return false;
         //return sessionId!=null;
     }
