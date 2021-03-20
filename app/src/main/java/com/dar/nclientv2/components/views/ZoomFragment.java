@@ -1,5 +1,6 @@
 package com.dar.nclientv2.components.views;
 
+import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,7 +17,8 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.resource.bitmap.Rotate;
-import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Gallery;
@@ -30,22 +32,19 @@ import com.github.chrisbanes.photoview.PhotoView;
 
 public class ZoomFragment extends Fragment {
     private static final float MAX_SCALE = 4f;
-    private int page, galleryId;
     private PhotoView photoView = null;
     private ImageButton retryButton;
     private PageFile pageFile = null;
     private Uri url;
     private int degree = 0;
     private View.OnClickListener clickListener;
-    private CustomTarget<Drawable> target = null;
+    private ImageViewTarget<Drawable> target = null;
 
     public ZoomFragment() {
     }
 
     public static ZoomFragment newInstance(GenericGallery gallery, int page, @Nullable GalleryFolder directory) {
         Bundle args = new Bundle();
-        args.putInt("PAGE", page);
-        args.putInt("ID", gallery.getId());
         args.putString("URL", gallery.isLocal() ? null : ((Gallery) gallery).getPageUrl(page).toString());
         args.putParcelable("FOLDER", directory==null?null:directory.getPage(page+1));
         ZoomFragment fragment = new ZoomFragment();
@@ -59,10 +58,6 @@ public class ZoomFragment extends Fragment {
 
     private float calculateScaleFactor(int width, int height) {
         if (height < width * 2) return Global.getDefaultZoom();
-        //width:1=dWidth:x
-        //float size=((float) Global.getDeviceHeight(getActivity()))/height;//the image has been resized size times
-        //float widthTrueSize=width*size;//so also the width has been resized
-        //float finalSize=((float)Global.getDeviceWidth(getActivity())/widthTrueSize);//scale the width
         float finalSize =
             ((float) Global.getDeviceWidth(getActivity()) * height) /
                 ((float) Global.getDeviceHeight(getActivity()) * width);
@@ -81,8 +76,6 @@ public class ZoomFragment extends Fragment {
         photoView = rootView.findViewById(R.id.image);
         retryButton = rootView.findViewById(R.id.imageView);
         //read arguments
-        page = getArguments().getInt("PAGE", 0);
-        galleryId = getArguments().getInt("ID", 0);
         String str = getArguments().getString("URL");
         url = str == null ? null : Uri.parse(str);
         pageFile = getArguments().getParcelable("FOLDER");
@@ -98,7 +91,12 @@ public class ZoomFragment extends Fragment {
     }
 
     private void createTarget() {
-        target = new CustomTarget<Drawable>() {
+        target=new ImageViewTarget<Drawable>(photoView){
+
+            @Override
+            protected void setResource(@Nullable Drawable resource) {
+                photoView.setImageDrawable(resource);
+            }
             void applyDrawable(ImageView toShow, ImageView toHide, Drawable drawable) {
                 toShow.setVisibility(View.VISIBLE);
                 toHide.setVisibility(View.GONE);
@@ -122,10 +120,13 @@ public class ZoomFragment extends Fragment {
             @Override
             public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                 applyDrawable(photoView, retryButton, resource);
+                if(resource instanceof Animatable)
+                    ((GifDrawable) resource).start();
             }
 
             @Override
             public void onLoadCleared(@Nullable Drawable placeholder) {
+                super.onLoadCleared(placeholder);
                 applyDrawable(photoView, retryButton, placeholder);
             }
         };
