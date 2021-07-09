@@ -185,8 +185,12 @@ public class LocalAdapter extends MultichoiceAdapter<Object, LocalAdapter.ViewHo
 
     private void sortItems(ArrayList<Object> arr) {
         LocalSortType type = Global.getLocalSortType();
-        Collections.sort(arr, getComparator(type.type));
-        if (type.descending) Collections.reverse(arr);
+        if (type.type == LocalSortType.Type.RANDOM) {
+            Collections.shuffle(arr, Utility.RANDOM);
+        } else {
+            Collections.sort(arr, getComparator(type.type));
+            if (type.descending) Collections.reverse(arr);
+        }
     }
 
     private Comparator<Object> getComparator(LocalSortType.Type type) {

@@ -315,5 +315,6 @@
     <string name="summary_offscreen_limit">Set the number of images to preload offscreen when reading a gallery</string>
     <string name="title_offscreen_limit">Image to preload</string>
     <string name="sort_popoular_month">Monthly popular</string>
+    <string name="random">Random</string>
 
 </resources>

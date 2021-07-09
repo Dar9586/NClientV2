@@ -340,5 +340,6 @@
     <string name="summary_offscreen_limit">Imposta il numero di immagini da preacricare quando si sta leggendo una galleria</string>
     <string name="title_offscreen_limit">Immagini da precaricare</string>
     <string name="sort_popoular_month">Popolarità mensile</string>
+    <string name="random">Random</string>
 
 </resources>

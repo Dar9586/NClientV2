@@ -46,5 +46,5 @@ public class LocalSortType {
             '}';
     }
 
-    public enum Type {TITLE, DATE, PAGE_COUNT}
+    public enum Type {TITLE, DATE, PAGE_COUNT, RANDOM}
 }
