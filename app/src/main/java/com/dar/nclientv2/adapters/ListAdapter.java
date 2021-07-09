@@ -56,6 +56,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         if (context.isFinishing()) return;
         try {
             if (Global.isDestroyed(context)) return;
+
             ImageDownloadUtility.loadImage(context, ent.getThumbnail(), holder.imgView);
         } catch (VerifyError ignore) {
         }
