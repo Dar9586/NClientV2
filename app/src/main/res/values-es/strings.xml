@@ -312,5 +312,8 @@
     <string name="fix_inverted_summary">Activa esto si ves los colores invertidos (en algunos dispositivos puede causar que el tema del dispositivo se cambie a claro, desactivando eso puede solucionar el problema.)</string>
     <string name="navigation_settings_per_screen">Opciones de navegacion por pantalla</string>
     <string name="downloaded_update_at" formatted="true">Downloaded update at %s</string>
+    <string name="summary_offscreen_limit">Set the number of images to preload offscreen when reading a gallery</string>
+    <string name="title_offscreen_limit">Image to preload</string>
+    <string name="sort_popoular_month">Monthly popular</string>
 
 </resources>

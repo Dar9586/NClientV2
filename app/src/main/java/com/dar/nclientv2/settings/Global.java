@@ -89,7 +89,7 @@ public class Global {
     private static int maxHistory, columnCount, maxId, galleryWidth = -1, galleryHeight = -1;
     private static int colPortStat, colLandStat, colPortHist, colLandHist, colPortMain, colLandMain, colPortDownload, colLandDownload, colLandFavorite, colPortFavorite;
     private static boolean infiniteScrollMain, infiniteScrollFavorite;
-    private static int defaultZoom;
+    private static int defaultZoom,offscreenLimit;
     private static Point screenSize;
 
     public static long recursiveSize(File path) {
@@ -293,6 +293,7 @@ public class Global {
         infiniteScrollFavorite = shared.getBoolean(context.getString(R.string.key_infinite_scroll_favo), false);
         infiniteScrollMain = shared.getBoolean(context.getString(R.string.key_infinite_scroll_main), false);
         maxId = shared.getInt(context.getString(R.string.key_max_id), 300000);
+        offscreenLimit = shared.getInt(context.getString(R.string.key_offscreen_limit), 5);
         maxHistory = shared.getInt(context.getString(R.string.key_max_history_size), 2);
         defaultZoom = shared.getInt(context.getString(R.string.key_default_zoom), 100);
         colPortMain = shared.getInt(context.getString(R.string.key_column_port_main), 2);
@@ -416,6 +417,10 @@ public class Global {
                 }
         }
         return false;
+    }
+
+    public static int getOffscreenLimit() {
+        return offscreenLimit;
     }
 
     private static String getLocaleCode(Locale locale) {

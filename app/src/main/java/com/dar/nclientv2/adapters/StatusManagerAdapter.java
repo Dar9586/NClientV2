@@ -48,7 +48,7 @@ public class StatusManagerAdapter extends RecyclerView.Adapter<StatusManagerAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        if (holder.getAdapterPosition() == statusList.size()) {
+        if (holder.getBindingAdapterPosition() == statusList.size()) {
             holder.name.setText(R.string.add);
             holder.color.setVisibility(View.INVISIBLE);
             holder.color.setBackgroundColor(Color.TRANSPARENT);
@@ -58,7 +58,7 @@ public class StatusManagerAdapter extends RecyclerView.Adapter<StatusManagerAdap
             holder.master.setOnClickListener(v -> updateStatus(null));
             return;
         }
-        Status status = statusList.get(holder.getAdapterPosition());
+        Status status = statusList.get(holder.getBindingAdapterPosition());
         holder.name.setText(status.name);
         holder.color.setVisibility(View.VISIBLE);
         holder.color.setBackgroundColor(status.opaqueColor());

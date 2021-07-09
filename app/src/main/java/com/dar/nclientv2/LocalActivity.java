@@ -16,6 +16,7 @@ import com.dar.nclientv2.adapters.LocalAdapter;
 import com.dar.nclientv2.api.local.FakeInspector;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.api.local.LocalSortType;
+import com.dar.nclientv2.async.CreatePDF;
 import com.dar.nclientv2.async.downloader.GalleryDownloaderV2;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.components.classes.MultichoiceAdapter;
@@ -118,7 +119,7 @@ public class LocalActivity extends BaseActivity {
         menu.findItem(R.id.select_all).setVisible(mode == MultichoiceAdapter.Mode.SELECTING);
         menu.findItem(R.id.pause_all).setVisible(mode == MultichoiceAdapter.Mode.SELECTING && !hasGallery && hasDownloads);
         menu.findItem(R.id.start_all).setVisible(mode == MultichoiceAdapter.Mode.SELECTING && !hasGallery && hasDownloads);
-        menu.findItem(R.id.pdf_all).setVisible(mode == MultichoiceAdapter.Mode.SELECTING && hasGallery && !hasDownloads);
+        menu.findItem(R.id.pdf_all).setVisible(mode == MultichoiceAdapter.Mode.SELECTING && hasGallery && !hasDownloads && CreatePDF.hasPDFCapabilities());
         menu.findItem(R.id.zip_all).setVisible(mode == MultichoiceAdapter.Mode.SELECTING && hasGallery && !hasDownloads);
     }
 

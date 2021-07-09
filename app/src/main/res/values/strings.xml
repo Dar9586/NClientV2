@@ -2,6 +2,7 @@
 
 <resources>
     <!--DO NOT TRANSLATE-->
+    <string name="key_offscreen_limit" translatable="false">offscreen_limit</string>
     <string name="key_default_value" translatable="false">default_value</string>
     <string name="key_enable_beta" translatable="false">enable_beta</string>
     <string name="key_save_path" translatable="false">save_path</string>
@@ -346,6 +347,9 @@
     <string name="fix_inverted_summary">Enable if the images are shown with inverted colors (in some devices can cause the system theme to be changed to light, disabling it will fix this issue)</string>
     <string name="navigation_settings_per_screen">Navigation settings per screen</string>
     <string name="downloaded_update_at" formatted="true">Downloaded update at %s</string>
+    <string name="summary_offscreen_limit">Set the number of images to preload offscreen when reading a gallery</string>
+    <string name="title_offscreen_limit">Image to preload</string>
+    <string name="sort_popoular_month">Monthly popular</string>
 
     <string-array name="scroll_type">
         <item>Horizontal</item>

@@ -86,6 +86,15 @@
             android:key="col_screen"
             android:title="@string/navigation_settings_per_screen"
             app:iconSpaceReserved="false" />
+        <SeekBarPreference
+            android:defaultValue="5"
+            android:key="@string/key_offscreen_limit"
+            app:min="1"
+            android:max="20"
+            android:summary="@string/summary_offscreen_limit"
+            android:title="@string/title_offscreen_limit"
+            app:iconSpaceReserved="false"
+            app:showSeekBarValue="true" />
     </PreferenceCategory>
 
     <PreferenceCategory

@@ -48,7 +48,7 @@ public class StatusViewerAdapter extends RecyclerView.Adapter<GenericAdapter.Vie
 
     @Override
     public void onBindViewHolder(@NonNull GenericAdapter.ViewHolder holder, int position) {
-        Gallery ent = positionToGallery(holder.getAdapterPosition());
+        Gallery ent = positionToGallery(holder.getBindingAdapterPosition());
         if (ent == null) return;
         ImageDownloadUtility.loadImage(context, ent.getThumbnail(), holder.imgView);
         holder.pages.setText(String.format(Locale.US, "%d", ent.getPageCount()));

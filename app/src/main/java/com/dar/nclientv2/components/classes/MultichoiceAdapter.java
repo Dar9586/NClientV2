@@ -101,30 +101,30 @@ public abstract class MultichoiceAdapter<D, T extends RecyclerView.ViewHolder> e
 
     @Override
     public final void onBindViewHolder(@NonNull MultichoiceViewHolder<T> holder, final int position) {
-        boolean isSelected = map.containsKey(getItemId(holder.getAdapterPosition()));
+        boolean isSelected = map.containsKey(getItemId(holder.getBindingAdapterPosition()));
         View master = getMaster(holder.innerHolder);
         updateLayoutParams(master, holder.censor, isSelected);
 
         master.setOnClickListener(v -> {
             switch (mode) {
                 case SELECTING:
-                    toggleSelection(holder.getAdapterPosition());
+                    toggleSelection(holder.getBindingAdapterPosition());
                     break;
                 case NORMAL:
-                    defaultMasterAction(holder.getAdapterPosition());
+                    defaultMasterAction(holder.getBindingAdapterPosition());
                     break;
             }
         });
         master.setOnLongClickListener(v -> {
-            map.put(getItemId(holder.getAdapterPosition()), getItemAt(holder.getAdapterPosition()));
-            notifyItemChanged(holder.getAdapterPosition());
+            map.put(getItemId(holder.getBindingAdapterPosition()), getItemAt(holder.getBindingAdapterPosition()));
+            notifyItemChanged(holder.getBindingAdapterPosition());
             return true;
         });
 
         holder.censor.setVisibility(isSelected ? View.VISIBLE : View.GONE);
         holder.checkmark.setVisibility(isSelected ? View.VISIBLE : View.GONE);
-        holder.censor.setOnClickListener(v -> toggleSelection(holder.getAdapterPosition()));
-        onBindMultichoiceViewHolder(holder.innerHolder, holder.getAdapterPosition());
+        holder.censor.setOnClickListener(v -> toggleSelection(holder.getBindingAdapterPosition()));
+        onBindMultichoiceViewHolder(holder.innerHolder, holder.getBindingAdapterPosition());
     }
 
     private void updateLayoutParams(View master, View multichoiceHolder, boolean isSelected) {

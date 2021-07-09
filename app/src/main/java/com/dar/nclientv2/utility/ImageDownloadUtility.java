@@ -7,10 +7,12 @@ import android.net.Uri;
 import android.widget.ImageView;
 
 import androidx.annotation.DrawableRes;
+import androidx.annotation.Nullable;
 
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.resource.bitmap.Rotate;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.components.GlideX;
 import com.dar.nclientv2.settings.Global;
@@ -52,7 +54,12 @@ public class ImageDownloadUtility {
             dra = dra.transform(new Rotate(angle));
         dra.error(logo)
             .placeholder(logo)
-            .into(view);
+            .into(new ImageViewTarget<Drawable>(view) {
+                @Override
+                protected void setResource(@Nullable Drawable resource) {
+                    this.view.setImageDrawable(resource);
+                }
+            });
     }
 
     private static Uri getUrlForGallery(Gallery gallery, int page, boolean shouldFull) {

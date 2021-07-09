@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.Build;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.JobIntentService;
@@ -43,8 +44,21 @@ public class CreatePDF extends JobIntentService {
         enqueueWork(context, CreatePDF.class, 444, i);
     }
 
+    public static boolean hasPDFCapabilities(){
+        try {
+            Class.forName("android.graphics.pdf.PdfDocument");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+
     @Override
     protected void onHandleWork(@Nullable Intent intent) {
+        if(!hasPDFCapabilities()){
+            Toast.makeText(this, R.string.error_pdf, Toast.LENGTH_SHORT).show();
+            return;
+        }
         notId = NotificationSettings.getNotificationId();
         System.gc();
         LocalGallery gallery = intent.getParcelableExtra(getPackageName() + ".GALLERY");
@@ -56,9 +70,7 @@ public class CreatePDF extends JobIntentService {
         for (int a = 0; a < gallery.getPageCount(); a++) {
             page = gallery.getPage(a);
             if (page == null) continue;
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = 2;
-            Bitmap bitmap = BitmapFactory.decodeFile(page.getAbsolutePath(), options);
+            Bitmap bitmap = BitmapFactory.decodeFile(page.getAbsolutePath());
             if (bitmap != null) {
                 PdfDocument.PageInfo info = new PdfDocument.PageInfo.Builder(bitmap.getWidth(), bitmap.getHeight(), a).create();
                 PdfDocument.Page p = document.startPage(info);
@@ -107,7 +119,7 @@ public class CreatePDF extends JobIntentService {
         try {
             Intent i = new Intent(Intent.ACTION_VIEW);
             Uri apkURI = FileProvider.getUriForFile(
-                getApplicationContext(), getApplicationContext().getPackageName() + ".provider", finalPath);
+                getApplicationContext(), getPackageName() + ".provider", finalPath);
             i.setDataAndType(apkURI, "application/pdf");
             i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             i.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);

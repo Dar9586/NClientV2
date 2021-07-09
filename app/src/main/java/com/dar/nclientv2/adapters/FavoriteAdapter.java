@@ -75,7 +75,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
 
     @Override
     public void onBindViewHolder(@NonNull final GenericAdapter.ViewHolder holder, int position) {
-        final Gallery ent = galleryFromPosition(holder.getAdapterPosition());
+        final Gallery ent = galleryFromPosition(holder.getBindingAdapterPosition());
         if (ent == null) return;
         ImageDownloadUtility.loadImage(activity, ent.getThumbnail(), holder.imgView);
         holder.pages.setText(String.format(Locale.US, "%d", ent.getPageCount()));

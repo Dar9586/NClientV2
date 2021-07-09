@@ -187,7 +187,7 @@ public class LocalGallery extends GenericGallery {
 
     @Override
     public int getId() {
-        return folder.getId();
+        return folder==null?SpecialTagIds.INVALID_ID:folder.getId();
     }
 
     @Override

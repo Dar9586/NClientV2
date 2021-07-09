@@ -68,7 +68,7 @@ public class VersionChecker {
                 downloadUrl = release.downloadUrl;
                 GitHubRelease finalRelease = release;
                 context.runOnUiThread(() -> {
-                    if (extractVersion(actualVersionName) >= extractVersion(finalRelease.versionCode)) {
+                    if (downloadUrl==null||extractVersion(actualVersionName) >= extractVersion(finalRelease.versionCode)) {
                         if (!silent)
                             Toast.makeText(context, R.string.no_updates_found, Toast.LENGTH_SHORT).show();
                     } else {
@@ -193,6 +193,7 @@ public class VersionChecker {
             }
             f.delete();
         }
+        if(downloadUrl==null)return;
         LogUtility.d(f.getAbsolutePath());
         Global.getClient(context).newCall(new Request.Builder().url(downloadUrl).build()).enqueue(new Callback() {
             @Override
@@ -222,23 +223,17 @@ public class VersionChecker {
     }
 
     private void installApp(File f) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            try {
-                Uri apkUri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", f);
-                Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
-                intent.setData(apkUri);
-                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                context.startActivity(intent);
-            } catch (IllegalArgumentException ignore) {
-                Toast.makeText(context, context.getString(R.string.downloaded_update_at, f.getAbsolutePath()), Toast.LENGTH_SHORT).show();
-            }
+        Uri apkUri;
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            apkUri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", f);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         } else {
-            Uri apkUri = Uri.fromFile(f);
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
+            apkUri = Uri.fromFile(f);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
+        intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+        context.startActivity(intent);
     }
 
     public static class GitHubRelease {

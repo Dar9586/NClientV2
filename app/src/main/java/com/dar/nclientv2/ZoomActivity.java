@@ -100,6 +100,7 @@ public class ZoomActivity extends GeneralActivity {
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setVerticalMode(scrollType == ScrollType.VERTICAL);
+        mViewPager.setOffscreenPageLimit(Global.getOffscreenLimit());
         pageSwitcher = findViewById(R.id.page_switcher);
         pageManagerLabel = findViewById(R.id.pages);
         cornerPageViewer = findViewById(R.id.page_text);
