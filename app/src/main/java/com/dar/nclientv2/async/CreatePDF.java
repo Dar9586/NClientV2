@@ -44,7 +44,7 @@ public class CreatePDF extends JobIntentService {
         enqueueWork(context, CreatePDF.class, 444, i);
     }
 
-    public static boolean hasPDFCapabilities(){
+    public static boolean hasPDFCapabilities() {
         try {
             Class.forName("android.graphics.pdf.PdfDocument");
             return true;
@@ -55,7 +55,7 @@ public class CreatePDF extends JobIntentService {
 
     @Override
     protected void onHandleWork(@Nullable Intent intent) {
-        if(!hasPDFCapabilities()){
+        if (!hasPDFCapabilities()) {
             Toast.makeText(this, R.string.error_pdf, Toast.LENGTH_SHORT).show();
             return;
         }

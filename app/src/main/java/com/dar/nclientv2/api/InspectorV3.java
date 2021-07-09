@@ -331,7 +331,7 @@ public class InspectorV3 extends Thread implements Parcelable {
 
     @Override
     public synchronized void start() {
-        if(getState()!=State.NEW)return;
+        if (getState() != State.NEW) return;
         if (forceStart || response.shouldStart(this))
             super.start();
     }

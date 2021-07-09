@@ -89,7 +89,7 @@ public class Global {
     private static int maxHistory, columnCount, maxId, galleryWidth = -1, galleryHeight = -1;
     private static int colPortStat, colLandStat, colPortHist, colLandHist, colPortMain, colLandMain, colPortDownload, colLandDownload, colLandFavorite, colPortFavorite;
     private static boolean infiniteScrollMain, infiniteScrollFavorite;
-    private static int defaultZoom,offscreenLimit;
+    private static int defaultZoom, offscreenLimit;
     private static Point screenSize;
 
     public static long recursiveSize(File path) {

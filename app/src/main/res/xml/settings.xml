@@ -89,11 +89,11 @@
         <SeekBarPreference
             android:defaultValue="5"
             android:key="@string/key_offscreen_limit"
-            app:min="1"
             android:max="20"
             android:summary="@string/summary_offscreen_limit"
             android:title="@string/title_offscreen_limit"
             app:iconSpaceReserved="false"
+            app:min="1"
             app:showSeekBarValue="true" />
     </PreferenceCategory>
 

@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 import com.dar.nclientv2.R;
 
 public enum SortType {
-    RECENT_ALL_TIME (R.string.sort_recent, null),
+    RECENT_ALL_TIME(R.string.sort_recent, null),
     POPULAR_ALL_TIME(R.string.sort_popular_all_time, "popular"),
     POPULAR_WEEKLY(R.string.sort_popular_week, "popular-week"),
     POPULAR_DAILY(R.string.sort_popular_day, "popular-today"),

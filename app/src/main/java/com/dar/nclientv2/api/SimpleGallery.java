@@ -161,7 +161,7 @@ public class SimpleGallery extends GenericGallery {
     }
 
     public Uri getThumbnail() {
-        if(thumbnail==ImageExt.GIF){
+        if (thumbnail == ImageExt.GIF) {
             return Uri.parse(String.format(Locale.US, "https://i." + Utility.getHost() + "/galleries/%d/1.gif", mediaId));
         }
         return Uri.parse(String.format(Locale.US, "https://t." + Utility.getHost() + "/galleries/%d/thumb.%s", mediaId, extToString(thumbnail)));

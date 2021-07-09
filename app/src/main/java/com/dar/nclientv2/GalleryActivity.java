@@ -405,8 +405,8 @@ public class GalleryActivity extends BaseActivity {
 
     private void updateColumnCount(boolean increase) {
         int x = Global.getColumnCount();
-        CustomGridLayoutManager manager= (CustomGridLayoutManager) recycler.getLayoutManager();
-        if(manager==null)return;
+        CustomGridLayoutManager manager = (CustomGridLayoutManager) recycler.getLayoutManager();
+        if (manager == null) return;
         MenuItem item = ((Toolbar) findViewById(R.id.toolbar)).getMenu().findItem(R.id.change_view);
         if (increase || manager.getSpanCount() != x) {
             if (increase) x = x % 4 + 1;

@@ -68,7 +68,7 @@ public class VersionChecker {
                 downloadUrl = release.downloadUrl;
                 GitHubRelease finalRelease = release;
                 context.runOnUiThread(() -> {
-                    if (downloadUrl==null||extractVersion(actualVersionName) >= extractVersion(finalRelease.versionCode)) {
+                    if (downloadUrl == null || extractVersion(actualVersionName) >= extractVersion(finalRelease.versionCode)) {
                         if (!silent)
                             Toast.makeText(context, R.string.no_updates_found, Toast.LENGTH_SHORT).show();
                     } else {
@@ -193,7 +193,7 @@ public class VersionChecker {
             }
             f.delete();
         }
-        if(downloadUrl==null)return;
+        if (downloadUrl == null) return;
         LogUtility.d(f.getAbsolutePath());
         Global.getClient(context).newCall(new Request.Builder().url(downloadUrl).build()).enqueue(new Callback() {
             @Override

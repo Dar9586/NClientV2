@@ -68,7 +68,8 @@ public class Login {
                 cookieSyncMngr.stopSync();
                 cookieSyncMngr.sync();
             }
-        }catch (Throwable ignore){}//catch InvocationTargetException randomly thrown
+        } catch (Throwable ignore) {
+        }//catch InvocationTargetException randomly thrown
     }
 
     public static void clearOnlineTags() {
