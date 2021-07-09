@@ -21,7 +21,7 @@
     <string name="parodies">Parodiler</string>
     <string name="characters">Karakterler</string>
     <string name="tags">Etiketler</string>
-    <string name="artists">Sanatçılar</string>
+    <string name="artists">Çizerler</string>
     <string name="groups">Çeviri Grupları</string>
     <string name="languages">Diller</string>
     <string name="categories">Kategoriler</string>
@@ -117,7 +117,7 @@
     <string name="sort_by_popular">Popülerliğe göre sırala</string>
     <string name="next_page_volume_down">Ses azaltma tuşuyla sıradaki sayfaya geç</string>
     <string name="change_title_type">Başlık dilini değiştir</string>
-    <string name="title_type_summary">Tüm galeriler için varsayılan başlığı seç</string>
+    <string name="title_type_summary">Tüm galeriler için varsayılan dili seç</string>
 
     <string name="search_settings">Arama ayarları</string>
     <string name="global_settings">Uygulama ayarları</string>
@@ -152,7 +152,7 @@
     <string name="show_gallery_titles">Galeri başlıklarını göster</string>
     <string name="change_language">Dil değiştir</string>
 
-    <string name="tag_artist_gallery">Sanatçı:</string>
+    <string name="tag_artist_gallery">Çizer:</string>
     <string name="tag_character_gallery">Karakter:</string>
     <string name="tag_parody_gallery">Parodi:</string>
     <string name="tag_language_gallery">Dil:</string>
@@ -166,7 +166,7 @@
     <string name="start_all_downloads">Tüm indirmeleri başlat</string>
     <string name="pause_all_downloads">Tüm indirmeleri duraklat</string>
     <string name="cancel_all_downloads">Tüm indirmeleri durdur</string>
-    <string name="disable_lock_title">Ekranın otomatik kapanmasını devre dışı bırak</string>
+    <string name="disable_lock_title">Ekranı açık tut</string>
     <string name="download_all_galleries_in_this_page">Bu sayfadaki tüm galerileri indir</string>
     <string name="download_all_galleries">Tüm galerileri indir</string>
     <string name="favorite_column_count">Favori sütun sayısını seç</string>
@@ -244,14 +244,14 @@
     <string name="install">Yükle</string>
     <string name="bookmark_description">Yer imi açıklaması</string>
     <string name="history_column_count">Tarihçe sütun sayısını seç</string>
-    <string name="setting_pin">Uygulamaya girmek için PIN`i aktifleştir</string>
+    <string name="setting_pin">Uygulamaya girmek için PIN\'i aktifleştir</string>
     <string name="toggle_online_favorite">Online favori aç/kapa</string>
     <string name="data_usage_settings">Veri kullanım ayarları</string>
     <string name="mobile_data_usage_setting">Mobil veri kullanım ayarları</string>
     <string name="wifi_data_usage_setting">Wi-Fi kullanım ayarları</string>
     <string name="data_usage_thumb">Sadece kapak fotoğraflarını indir</string>
     <string name="data_usage_no">Sayfaları indirme</string>
-    <string name="enable_network_to_continue">Sayfayı açmak için veri kullanım ayarlarını değiştirin veya bağlı olduğunuz ağı değiştirin</string>
+    <string name="enable_network_to_continue">Sayfayı görmek için veri kullanım ayarlarını değiştirin veya bağlı olduğunuz ağı değiştirin</string>
     <string name="donate">Geliştiriciyi destekle</string>
     <string name="id_tag">ID:</string>
     <string name="id_copied_to_clipboard">Galeri ID\'si panoya kopyalandı</string>
@@ -264,8 +264,8 @@
     <string name="copy_settings_to_clipboard">Ayarları panoya kopyala</string>
     <string name="sort_popular_all_time">Popülerlik</string>
     <string name="sort_recent">Eklenme tarihi</string>
-    <string name="sort_popular_day">Günlük popülerlik</string>
-    <string name="sort_popular_week">Haftalık popülerlik</string>
+    <string name="sort_popular_day">Günlük Popülerlik</string>
+    <string name="sort_popular_week">Haftalık Popülerlik</string>
     <string name="sort_select_type">Sıralama tipi seç:</string>
     <string name="sort_type_title_format" formatted="true">Sıralama tipi seç (%s)</string>
     <string name="unable_to_connect_to_the_site">Siteyle bağlantı kurulamadı</string>
@@ -316,8 +316,8 @@
     <string name="default_status_1">Okunuyor</string>
     <string name="default_status_2">Tamamlandı</string>
     <string name="default_status_3">Beklemede</string>
-    <string name="default_status_5">Okunması planlanıyor</string>
-    <string name="default_status_4">Okunmayacak</string>
+    <string name="default_status_5">Planlanıyor</string>
+    <string name="default_status_4">Bırakıldı</string>
     <string name="title_site_mirror">Yedek site seçici</string>
     <string name="disguise_app_in_drawer">Uygulamayı gizle</string>
     <string name="summary_disguise_app">Uygulama bir Hesap Makinesi olarak gizlenecektir (deneysel)</string>
@@ -332,10 +332,10 @@
     <string name="request_storage_manager_summary">Android 11\'de depolama erişimine yönelik bazı kısıtlamalar nedeniyle, bu uygulama özel yolları kullanmak için ek izin vermenizi gerektirecektir. \nBu izinleri vermek istiyorsanız, lütfen sonraki iletişim kutusunda uygulamaya izin verin.</string>
     <string name="summary_beta">Beta sürümüne geçerseniz, uygulamayı kaldırmadan kararlı sürümlere dönemezsiniz</string>
     <string name="fix_inverted_title">Ters renkli resimleri düzelt</string>
-    <string name="fix_inverted_summary">Eğer resimlerin renkleri ters görünüyorsa aktifleştirin (Bazı cihazlarda sistem temasının açık temaya geçmesine yol açabilir, Bunu kapatarak düzeltebilirsiniz)</string>
+    <string name="fix_inverted_summary">Eğer resimlerin renkleri ters görünüyorsa aktifleştirin (Cihaz temasını değiştirebilir)</string>
     <string name="navigation_settings_per_screen">Sayfa Ayarları</string>
-    <string name="downloaded_update_at" formatted="true">Downloaded update at %s</string>
-    <string name="summary_offscreen_limit">Set the number of images to preload offscreen when reading a gallery</string>
-    <string name="title_offscreen_limit">Image to preload</string>
-    <string name="sort_popoular_month">Monthly popular</string>
+    <string name="downloaded_update_at" formatted="true">Güncelleme %s konumuna indirildi</string>
+    <string name="summary_offscreen_limit">Bir galeriyi okurken önyüklenecek sayfa sayısını seçin</string>
+    <string name="title_offscreen_limit">Resimleri Önyükleme</string>
+    <string name="sort_popoular_month">Aylık Popülerlik</string>
 </resources>
