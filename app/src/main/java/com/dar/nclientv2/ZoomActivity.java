@@ -23,14 +23,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
+import com.bumptech.glide.Priority;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.activities.GeneralActivity;
-import com.dar.nclientv2.components.views.VerticalViewPager;
 import com.dar.nclientv2.components.views.ZoomFragment;
 import com.dar.nclientv2.files.GalleryFolder;
 import com.dar.nclientv2.settings.DefaultDialogs;
@@ -56,14 +55,15 @@ public class ZoomActivity extends GeneralActivity {
     private GenericGallery gallery;
     private int actualPage = 0;
     private boolean isHidden = false;
-    private VerticalViewPager mViewPager;
+    private ViewPager2 mViewPager;
     private TextView pageManagerLabel, cornerPageViewer;
     private View pageSwitcher;
     private SeekBar seekBar;
     private Toolbar toolbar;
     private View view;
     private GalleryFolder directory;
-    private ScrollType scrollType = ScrollType.HORIZONTAL, tmpScrollType;
+    @ViewPager2.Orientation
+    private int tmpScrollType;
     private boolean up = false, down = false, side;
 
     @Override
@@ -72,7 +72,6 @@ public class ZoomActivity extends GeneralActivity {
         //Global.initActivity(this);
         SharedPreferences preferences = getSharedPreferences("Settings", 0);
         side = preferences.getBoolean(VOLUME_SIDE_KEY, true);
-        scrollType = ScrollType.values()[preferences.getInt(SCROLL_TYPE_KEY, ScrollType.HORIZONTAL.ordinal())];
         setContentView(R.layout.activity_zoom);
 
         //read arguments
@@ -96,10 +95,10 @@ public class ZoomActivity extends GeneralActivity {
 
 
         //find views
-        SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(this);
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        mViewPager.setVerticalMode(scrollType == ScrollType.VERTICAL);
+        mViewPager.setOrientation(preferences.getInt(SCROLL_TYPE_KEY, ScrollType.HORIZONTAL.ordinal()));
         mViewPager.setOffscreenPageLimit(Global.getOffscreenLimit());
         pageSwitcher = findViewById(R.id.page_switcher);
         pageManagerLabel = findViewById(R.id.pages);
@@ -113,30 +112,29 @@ public class ZoomActivity extends GeneralActivity {
         findViewById(R.id.prev).setOnClickListener(v -> changeClosePage(false));
         findViewById(R.id.next).setOnClickListener(v -> changeClosePage(true));
         seekBar.setMax(gallery.getPageCount() - 1);
-        if (Global.useRtl()) seekBar.setRotationY(180);
+        if (Global.useRtl()) {
+            seekBar.setRotationY(180);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                mViewPager.setLayoutDirection(ViewPager2.LAYOUT_DIRECTION_RTL);
+            }
+        }
 
         //Adding listeners
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
+        mViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int newPage) {
                 int oldPage = actualPage;
                 actualPage = newPage;
-                setPageText(offsetPage(newPage) + 1);
-                seekBar.setProgress(offsetPage(newPage));
+                LogUtility.d("Page selected: " + newPage + " from page " + oldPage);
+                setPageText(newPage + 1);
+                seekBar.setProgress(newPage);
                 clearFarRequests(oldPage, newPage);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
+                makeNearRequests(newPage);
             }
         });
         pageManagerLabel.setOnClickListener(v -> DefaultDialogs.pageChangerDialog(
             new DefaultDialogs.Builder(this)
-                .setActual(offsetPage(actualPage) + 1)
+                .setActual(actualPage + 1)
                 .setMin(1)
                 .setMax(gallery.getPageCount())
                 .setTitle(R.string.change_page)
@@ -144,7 +142,7 @@ public class ZoomActivity extends GeneralActivity {
                 .setDialogs(new DefaultDialogs.CustomDialogResults() {
                     @Override
                     public void positive(int actual) {
-                        changePage(offsetPage(actual - 1));
+                        changePage(actual - 1);
                     }
                 })
         ));
@@ -162,28 +160,23 @@ public class ZoomActivity extends GeneralActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                changePage(offsetPage(seekBar.getProgress()));
+                changePage(seekBar.getProgress());
             }
         });
 
 
-        changePage(offsetPage(page));
+        changePage(page);
         setPageText(page + 1);
-        seekBar.setProgress(offsetPage(offsetPage(page)));
+        seekBar.setProgress(page);
     }
+
 
     private void setPageText(int page) {
         pageManagerLabel.setText(getString(R.string.page_format, page, gallery.getPageCount()));
         cornerPageViewer.setText(getString(R.string.page_format, page, gallery.getPageCount()));
     }
 
-    int offsetPage(int page) {
-        return invertDirection() ? gallery.getPageCount() - 1 - page : page;
-    }
 
-    private boolean invertDirection() {
-        return Global.useRtl() && scrollType == ScrollType.HORIZONTAL;
-    }
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
@@ -225,8 +218,8 @@ public class ZoomActivity extends GeneralActivity {
     }
 
     private void changeClosePage(boolean next) {
-        if (scrollType == ScrollType.VERTICAL) next = !next;
-        if (next && mViewPager.getCurrentItem() < (mViewPager.getAdapter().getCount() - 1))
+        if (Global.useRtl()) next = !next;
+        if (next && mViewPager.getCurrentItem() < (mViewPager.getAdapter().getItemCount() - 1))
             changePage(mViewPager.getCurrentItem() + 1);
         if (!next && mViewPager.getCurrentItem() > 0) changePage(mViewPager.getCurrentItem() - 1);
     }
@@ -260,15 +253,17 @@ public class ZoomActivity extends GeneralActivity {
 
     private void changeScrollTypeDialog() {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
-        tmpScrollType = scrollType;
+        int scrollType = mViewPager.getOrientation();
+        tmpScrollType = mViewPager.getOrientation();
         builder.setTitle(getString(R.string.change_scroll_type) + ":");
-        builder.setSingleChoiceItems(R.array.scroll_type, scrollType.ordinal(), (dialog, which) -> tmpScrollType = ScrollType.values()[which]);
+        builder.setSingleChoiceItems(R.array.scroll_type, scrollType, (dialog, which) -> tmpScrollType = which);
         builder.setPositiveButton(R.string.ok, (dialog, which) -> {
             if (tmpScrollType != scrollType) {
-                scrollType = tmpScrollType;
-                mViewPager.setVerticalMode(scrollType == ScrollType.VERTICAL);
-                getSharedPreferences("Settings", 0).edit().putInt(SCROLL_TYPE_KEY, scrollType.ordinal()).apply();
-                changePage(gallery.getPageCount() - 1 - mViewPager.getCurrentItem());
+                mViewPager.setOrientation(tmpScrollType);
+                getSharedPreferences("Settings", 0).edit().putInt(SCROLL_TYPE_KEY, tmpScrollType).apply();
+                int page = actualPage;
+                changePage(page + 1);
+                changePage(page);
             }
         }).setNegativeButton(R.string.cancel, null);
         builder.show();
@@ -336,10 +331,22 @@ public class ZoomActivity extends GeneralActivity {
         return getActualFragment(mViewPager.getCurrentItem());
     }
 
+    private void makeNearRequests(int newPage) {
+        ZoomFragment fragment;
+        int offScreenLimit = Global.getOffscreenLimit();
+        for (int i = newPage - offScreenLimit; i <= newPage + offScreenLimit; i++) {
+            fragment = getActualFragment(i);
+            if (fragment == null) continue;
+            if (i == newPage) fragment.loadImage(Priority.IMMEDIATE);
+            else fragment.loadImage();
+        }
+    }
+
     private void clearFarRequests(int oldPage, int newPage) {
         ZoomFragment fragment;
-        for (int i = oldPage - 1; i <= oldPage + 1; i++) {
-            if (i == newPage || i == newPage - 1 || i == newPage + 1) continue;
+        int offScreenLimit = Global.getOffscreenLimit();
+        for (int i = oldPage - offScreenLimit; i <= oldPage + offScreenLimit; i++) {
+            if (i >= newPage - offScreenLimit && i <= newPage + offScreenLimit) continue;
             fragment = getActualFragment(i);
             if (fragment == null) continue;
             fragment.cancelRequest();
@@ -348,7 +355,7 @@ public class ZoomActivity extends GeneralActivity {
     }
 
     private ZoomFragment getActualFragment(int position) {
-        return (ZoomFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + position);
+        return (ZoomFragment) getSupportFragmentManager().findFragmentByTag("f" + position);
     }
 
     private void sendImage(boolean withText) {
@@ -396,16 +403,17 @@ public class ZoomActivity extends GeneralActivity {
 
     private enum ScrollType {HORIZONTAL, VERTICAL}
 
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-        public SectionsPagerAdapter(@NonNull FragmentManager fm) {
-            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+    public class SectionsPagerAdapter extends FragmentStateAdapter {
+        public SectionsPagerAdapter(ZoomActivity activity) {
+            super(activity.getSupportFragmentManager(), activity.getLifecycle());
 
         }
 
+
         @NonNull
         @Override
-        public Fragment getItem(int position) {
-            ZoomFragment f = ZoomFragment.newInstance(gallery, offsetPage(position), directory);
+        public Fragment createFragment(int position) {
+            ZoomFragment f = ZoomFragment.newInstance(gallery, position, directory);
             f.setClickListener(v -> {
                 isHidden = !isHidden;
                 LogUtility.d("Clicked " + isHidden);
@@ -416,7 +424,7 @@ public class ZoomActivity extends GeneralActivity {
         }
 
         @Override
-        public int getCount() {
+        public int getItemCount() {
             return gallery.getPageCount();
         }
     }

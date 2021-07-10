@@ -6,7 +6,7 @@ import android.view.MenuItem;
 
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.dar.nclientv2.components.activities.GeneralActivity;
 import com.dar.nclientv2.settings.Global;
@@ -14,11 +14,12 @@ import com.dar.nclientv2.ui.main.PlaceholderFragment;
 import com.dar.nclientv2.ui.main.SectionsPagerAdapter;
 import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 public class StatusViewerActivity extends GeneralActivity {
     private boolean sortByTitle = false;
     private String query;
-    private ViewPager viewPager;
+    private ViewPager2 viewPager;
     private Toolbar toolbar;
     private SectionsPagerAdapter sectionsPagerAdapter;
 
@@ -31,27 +32,21 @@ public class StatusViewerActivity extends GeneralActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setTitle(R.string.manage_statuses);
-        sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         viewPager = findViewById(R.id.view_pager);
-        viewPager.setAdapter(sectionsPagerAdapter);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        sectionsPagerAdapter = new SectionsPagerAdapter(this);
 
-            }
+        viewPager.setAdapter(sectionsPagerAdapter);
+
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
 
             @Override
             public void onPageSelected(int position) {
                 getPositionFragment(position).reload(query, sortByTitle);
             }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
         });
+
         TabLayout tabs = findViewById(R.id.tabs);
-        tabs.setupWithViewPager(viewPager);
+        new TabLayoutMediator(tabs, viewPager, (tab, position) -> tab.setText(sectionsPagerAdapter.getPageTitle(position))).attach();
     }
 
     @Override
@@ -74,7 +69,7 @@ public class StatusViewerActivity extends GeneralActivity {
     }
 
     private PlaceholderFragment getPositionFragment(int position) {
-        return (PlaceholderFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.view_pager + ":" + position);
+        return (PlaceholderFragment) getSupportFragmentManager().findFragmentByTag("f" + position);
     }
 
     @Override

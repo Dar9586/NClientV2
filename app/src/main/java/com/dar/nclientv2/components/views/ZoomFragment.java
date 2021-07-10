@@ -14,11 +14,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Priority;
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.bitmap.Rotate;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.ImageViewTarget;
+import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Gallery;
@@ -37,6 +42,7 @@ public class ZoomFragment extends Fragment {
     private PageFile pageFile = null;
     private Uri url;
     private int degree = 0;
+    private boolean completedDownload = false;
     private View.OnClickListener clickListener;
     private ImageViewTarget<Drawable> target = null;
 
@@ -140,7 +146,12 @@ public class ZoomFragment extends Fragment {
         ), 0, 0, false);
     }
 
-    private void loadImage() {
+    public void loadImage() {
+        loadImage(Priority.NORMAL);
+    }
+
+    public void loadImage(Priority priority) {
+        if (completedDownload) return;
         cancelRequest();
         RequestBuilder<Drawable> dra = loadPage();
         if (dra == null) return;
@@ -148,6 +159,19 @@ public class ZoomFragment extends Fragment {
             .transform(new Rotate(degree))
             .placeholder(R.drawable.ic_launcher_foreground)
             .error(R.drawable.ic_refresh)
+            .priority(priority)
+            .addListener(new RequestListener<Drawable>() {
+                @Override
+                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                    return false;
+                }
+
+                @Override
+                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                    completedDownload = true;
+                    return false;
+                }
+            })
             .into(target);
     }
 
@@ -174,6 +198,7 @@ public class ZoomFragment extends Fragment {
     }
 
     public void cancelRequest() {
+        if (completedDownload) return;
         if (photoView != null && target != null) {
             RequestManager manager = GlideX.with(photoView);
             if (manager != null) manager.clear(target);

@@ -382,6 +382,19 @@ public class Global {
     }
 
     public static Locale initLanguage(Context context) {
+        Resources resources = context.getResources();
+        Locale l = getLanguage(context);
+        Configuration c = new Configuration(resources.getConfiguration());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            c.setLocale(l);
+        } else {
+            c.locale = l;
+        }
+        resources.updateConfiguration(c, resources.getDisplayMetrics());
+        return l;
+    }
+
+    public static Locale getLanguage(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("Settings", 0);
         String prefLangKey = context.getString(R.string.key_language);
         String defaultValue = context.getString(R.string.key_default_value);
@@ -703,15 +716,19 @@ public class Global {
         c.uiMode |= Configuration.UI_MODE_NIGHT_NO; //disable night mode
     }
 
+    private static void invertFix(AppCompatActivity context) {
+        if (!invertFix) return;
+        Resources resources = context.getResources();
+        Configuration c = new Configuration(resources.getConfiguration());
+        updateConfigurationNightMode(context, c);
+        resources.updateConfiguration(c, resources.getDisplayMetrics());
+    }
+
     public static void initActivity(AppCompatActivity context) {
         initScreenSize(context);
         initGallerySize();
-        Resources resources = context.getResources();
-        Locale locale = initLanguage(context);
-        Configuration c = new Configuration(context.getResources().getConfiguration());
-        if (invertFix) updateConfigurationNightMode(context, c);
-        c.locale = locale;
-        resources.updateConfiguration(c, resources.getDisplayMetrics());
+        initLanguage(context);
+        invertFix(context);
 
         switch (initTheme(context)) {
             case LIGHT:

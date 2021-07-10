@@ -5,9 +5,9 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.dar.nclientv2.StatusViewerActivity;
 import com.dar.nclientv2.components.status.StatusManager;
 
 import java.util.List;
@@ -16,32 +16,28 @@ import java.util.List;
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
  * one of the sections/tabs/pages.
  */
-public class SectionsPagerAdapter extends FragmentPagerAdapter {
-    private final Context mContext;
+public class SectionsPagerAdapter extends FragmentStateAdapter {
     List<String> statuses;
 
-    public SectionsPagerAdapter(Context context, FragmentManager fm) {
-        super(fm, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+    public SectionsPagerAdapter(StatusViewerActivity context) {
+        super(context.getSupportFragmentManager(), context.getLifecycle());
         statuses = StatusManager.getNames();
-        mContext = context;
     }
 
-    @NonNull
-    @Override
-    public Fragment getItem(int position) {
-        // getItem is called to instantiate the fragment for the given page.
-        // Return a PlaceholderFragment (defined as a static inner class below).
-        return PlaceholderFragment.newInstance(statuses.get(position));
-    }
 
     @Nullable
-    @Override
     public CharSequence getPageTitle(int position) {
         return statuses.get(position);
     }
 
+    @NonNull
     @Override
-    public int getCount() {
+    public Fragment createFragment(int position) {
+        return PlaceholderFragment.newInstance(statuses.get(position));
+    }
+
+    @Override
+    public int getItemCount() {
         return statuses.size();
     }
 }

@@ -115,6 +115,9 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
             new Thread(new MetadataFetcher(act)).start();
             return true;
         });
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            findPreference(getString(R.string.key_use_rtl)).setVisible(false);
+        }
         findPreference(getString(R.string.key_fake_icon)).setOnPreferenceChangeListener((preference, newValue) -> {
             PackageManager pm = act.getPackageManager();
             ComponentName name1 = new ComponentName(act, LauncherReal.class);
