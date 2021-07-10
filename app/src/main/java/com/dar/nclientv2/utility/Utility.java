@@ -96,7 +96,6 @@ public class Utility {
         int x = menu.size();
         for (int i = 0; i < x; i++) {
             MenuItem item = menu.getItem(i);
-            LogUtility.d("Item " + i + ": " + item.getItemId() + "; " + item.getTitle());
             Global.setTint(item.getIcon());
         }
     }

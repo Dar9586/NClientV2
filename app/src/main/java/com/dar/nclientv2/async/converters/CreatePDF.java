@@ -1,4 +1,4 @@
-package com.dar.nclientv2.async;
+package com.dar.nclientv2.async.converters;
 
 import android.annotation.TargetApi;
 import android.app.PendingIntent;
@@ -67,7 +67,7 @@ public class CreatePDF extends JobIntentService {
         preExecute(gallery.getDirectory());
         PdfDocument document = new PdfDocument();
         File page;
-        for (int a = 0; a < gallery.getPageCount(); a++) {
+        for (int a = 1; a <= gallery.getPageCount(); a++) {
             page = gallery.getPage(a);
             if (page == null) continue;
             Bitmap bitmap = BitmapFactory.decodeFile(page.getAbsolutePath());

@@ -199,12 +199,12 @@
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
-            android:name=".async.CreatePDF"
+            android:name=".async.converters.CreatePDF"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
-            android:name=".async.CreateZIP"
+            android:name=".async.converters.CreateZIP"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />

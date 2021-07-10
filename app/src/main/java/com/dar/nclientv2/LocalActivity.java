@@ -16,7 +16,7 @@ import com.dar.nclientv2.adapters.LocalAdapter;
 import com.dar.nclientv2.api.local.FakeInspector;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.api.local.LocalSortType;
-import com.dar.nclientv2.async.CreatePDF;
+import com.dar.nclientv2.async.converters.CreatePDF;
 import com.dar.nclientv2.async.downloader.GalleryDownloaderV2;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.components.classes.MultichoiceAdapter;

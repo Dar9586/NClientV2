@@ -49,6 +49,7 @@ public class CrashApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Global.initLanguage(this);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         Global.initStorage(this);
         Database.setDatabase(new DatabaseHelper(getApplicationContext()).getWritableDatabase());
