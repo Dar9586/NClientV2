@@ -291,6 +291,8 @@
     <string name="title_offscreen_limit">Image to preload</string>
     <string name="sort_popoular_month">Monthly popular</string>
     <string name="random">Random</string>
+    <string name="summary_fetch_metadata">Download metadata for galleries downloaded before 2.3.0 which didn\'t have metadata like tags included</string>
+    <string name="title_fetch_metadata">Fetch metadata for old galleries</string>
 
     <string-array name="scroll_type">
         <item>水平</item>

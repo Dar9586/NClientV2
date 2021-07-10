@@ -184,8 +184,8 @@
             app:iconSpaceReserved="false" />
         <Preference
             android:key="fetch_metadata"
-            android:summary="Download metadata for galleries downloaded before 2.3.0 which didn't have metadata like tags included"
-            android:title="Fetch metadata for old galleries"
+            android:summary="@string/summary_fetch_metadata"
+            android:title="@string/title_fetch_metadata"
             app:iconSpaceReserved="false" />
         <SwitchPreferenceCompat
             android:defaultValue="false"
