@@ -154,6 +154,7 @@ public class Gallery extends GenericGallery {
 
     public Uri getCover() {
         if (Global.getDownloadPolicy() == Global.DataUsageType.THUMBNAIL) return getThumbnail();
+        if (galleryData.getCover().getImageExt() == ImageExt.GIF) return getHighPage(0);
         return Uri.parse(String.format(Locale.US, "https://t." + Utility.getHost() + "/galleries/%d/cover.%s", getMediaId(), galleryData.getCover().extToString()));
     }
 
@@ -162,6 +163,7 @@ public class Gallery extends GenericGallery {
     }
 
     public Uri getThumbnail() {
+        if (galleryData.getCover().getImageExt() == ImageExt.GIF) return getHighPage(0);
         return Uri.parse(String.format(Locale.US, "https://t." + Utility.getHost() + "/galleries/%d/thumb.%s", getMediaId(), galleryData.getThumbnail().extToString()));
     }
 
