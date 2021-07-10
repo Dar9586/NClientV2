@@ -338,7 +338,7 @@
     <string name="summary_offscreen_limit">Bir galeriyi okurken önyüklenecek sayfa sayısını seçin</string>
     <string name="title_offscreen_limit">Resimleri Önyükleme</string>
     <string name="sort_popoular_month">Aylık Popülerlik</string>
-    <string name="random">Random</string>
-    <string name="summary_fetch_metadata">Download metadata for galleries downloaded before 2.3.0 which didn\'t have metadata like tags included</string>
-    <string name="title_fetch_metadata">Fetch metadata for old galleries</string>
+    <string name="random">Rastgele</string>
+    <string name="summary_fetch_metadata">2.3.0\'dan önce indirilen galerilerde etiketler gibi metaveriler yoktu. Bu galeriler için metaverileri indirebilirsiniz</string>
+    <string name="title_fetch_metadata">Eski galeriler için metaverileri indir</string>
 </resources>
