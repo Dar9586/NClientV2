@@ -311,12 +311,12 @@
     <string name="fix_inverted_title">Arreglar colores invertidos</string>
     <string name="fix_inverted_summary">Activa esto si ves los colores invertidos (en algunos dispositivos puede causar que el tema del dispositivo se cambie a claro, desactivando eso puede solucionar el problema.)</string>
     <string name="navigation_settings_per_screen">Opciones de navegacion por pantalla</string>
-    <string name="downloaded_update_at" formatted="true">Downloaded update at %s</string>
-    <string name="summary_offscreen_limit">Set the number of images to preload offscreen when reading a gallery</string>
-    <string name="title_offscreen_limit">Image to preload</string>
-    <string name="sort_popoular_month">Monthly popular</string>
-    <string name="random">Random</string>
-    <string name="summary_fetch_metadata">Download metadata for galleries downloaded before 2.3.0 which didn\'t have metadata like tags included</string>
-    <string name="title_fetch_metadata">Fetch metadata for old galleries</string>
+    <string name="downloaded_update_at" formatted="true">Actualización descargada en la ruta: %s</string>
+    <string name="summary_offscreen_limit">Establece el número de imágenes precargadas fuera de la pantalla</string>
+    <string name="title_offscreen_limit">Imagen a precargar</string>
+    <string name="sort_popoular_month">Populares por mes</string>
+    <string name="random">Aleatorio</string>
+    <string name="summary_fetch_metadata">Descarga los datos de galerías descargadas antes de la versión 2.3.0 las cuales no tenian etiquetas.</string>
+    <string name="title_fetch_metadata">Reconocer los datos de las galerías antiguas</string>
 
 </resources>
