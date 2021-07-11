@@ -2,12 +2,13 @@ package com.dar.nclientv2.async.database;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.text.format.DateFormat;
 
 import androidx.annotation.NonNull;
 
+import com.dar.nclientv2.SettingsActivity;
 import com.dar.nclientv2.settings.Database;
-import com.dar.nclientv2.settings.Global;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -66,13 +67,15 @@ public class Exporter {
         outputStream.flush();
     }
 
-    public static String exportData(Context context) throws IOException {
+    public static String defaultExportName(SettingsActivity context) {
         Date actualTime = new Date();
         String date = DateFormat.getDateFormat(context).format(actualTime).replaceAll("[^0-9]*", "");
         String time = DateFormat.getTimeFormat(context).format(actualTime).replaceAll("[^0-9]*", "");
-        String filename = String.format("Backup_%s_%s.zip", date, time);
-        File file = new File(Global.BACKUPFOLDER, filename);
-        FileOutputStream outputStream = new FileOutputStream(file);
+        return String.format("Backup_%s_%s.zip", date, time);
+    }
+
+    public static void exportData(SettingsActivity context, Uri selectedFile) throws IOException {
+        OutputStream outputStream = context.getContentResolver().openOutputStream(selectedFile);
         ZipOutputStream zip = new ZipOutputStream(outputStream);
         zip.setLevel(Deflater.BEST_COMPRESSION);
         ZipEntry dbEntry = new ZipEntry(DB_ZIP_FILE);
@@ -87,7 +90,6 @@ public class Exporter {
         zip.closeEntry();
 
         zip.close();
-        return file.getAbsolutePath();
     }
 
     public static void importData(@NonNull Context context, InputStream stream) throws IOException {

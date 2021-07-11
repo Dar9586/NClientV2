@@ -1,6 +1,7 @@
 package com.dar.nclientv2;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -8,25 +9,32 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.MenuItem;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 
 import com.dar.nclientv2.async.database.Exporter;
+import com.dar.nclientv2.components.activities.GeneralActivity;
 import com.dar.nclientv2.components.views.GeneralPreferenceFragment;
 import com.dar.nclientv2.settings.Global;
-import com.dar.nclientv2.utility.LogUtility;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.IOException;
 
-public class SettingsActivity extends AppCompatActivity {
-    private static final int STORAGE_MANAGER_REQUEST = 987;
+public class SettingsActivity extends GeneralActivity {
+    private ActivityResultLauncher<String> IMPORT_ZIP;
+    private ActivityResultLauncher<String> SAVE_SETTINGS;
+    private ActivityResultLauncher<Object> REQUEST_STORAGE_MANAGER;
     GeneralPreferenceFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        registerActivities();
         //Global.initActivity(this);
         setContentView(R.layout.activity_settings);
 
@@ -41,22 +49,62 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 132 && data != null) {
-            Uri selectedfile = data.getData(); //The uri with the location of the file
-            LogUtility.d("DATA: " + selectedfile);
+    private void registerActivities() {
+        IMPORT_ZIP = registerForActivityResult(new ActivityResultContracts.GetContent(), selectedfile -> {
             if (selectedfile == null) return;
             try {
                 Exporter.importData(this, getContentResolver().openInputStream(selectedfile));
-                System.exit(0);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else if (requestCode == STORAGE_MANAGER_REQUEST && Global.isExternalStorageManager()) {
-            fragment.manageCustomPath();
+        });
+        SAVE_SETTINGS = registerForActivityResult(new ActivityResultContracts.CreateDocument() {
+            @NonNull
+            @Override
+            public Intent createIntent(@NonNull Context context, @NonNull String input) {
+                Intent i = super.createIntent(context, input);
+                i.setType("application/zip");
+                return i;
+            }
+        }, selectedFile -> {
+            try {
+                Exporter.exportData(this, selectedFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            REQUEST_STORAGE_MANAGER = registerForActivityResult(new ActivityResultContract<Object, Object>() {
+
+                @RequiresApi(api = Build.VERSION_CODES.R)
+                @NonNull
+                @Override
+                public Intent createIntent(@NonNull Context context, Object input) {
+                    Intent i = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                    i.setData(Uri.parse("package:" + getPackageName()));
+                    return i;
+                }
+
+                @Override
+                public Object parseResult(int resultCode, @Nullable Intent intent) {
+                    return null;
+                }
+            }, result -> {
+                if (Global.isExternalStorageManager()) {
+                    fragment.manageCustomPath();
+                }
+            });
         }
+    }
+
+    public void importSettings() {
+        IMPORT_ZIP.launch("application/zip");
+    }
+
+    public void exportSettings() {
+        String name = Exporter.defaultExportName(this);
+        SAVE_SETTINGS.launch(name);
     }
 
     @Override
@@ -75,9 +123,7 @@ public class SettingsActivity extends AppCompatActivity {
         builder.setTitle(R.string.requesting_storage_access);
         builder.setMessage(R.string.request_storage_manager_summary);
         builder.setPositiveButton(R.string.ok, (dialog, which) -> {
-            Intent i = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-            i.setData(Uri.parse("package:" + getPackageName()));
-            startActivityForResult(i, STORAGE_MANAGER_REQUEST);
+            REQUEST_STORAGE_MANAGER.launch(null);
         }).setNegativeButton(R.string.cancel, null).show();
     }
 
