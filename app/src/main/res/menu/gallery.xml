@@ -28,7 +28,7 @@
         app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/download_gallery"
-        android:icon="@drawable/ic_file_download"
+        android:icon="@drawable/ic_file"
         android:orderInCategory="400"
         android:title="@string/download_gallery"
         app:showAsAction="ifRoom|collapseActionView" />

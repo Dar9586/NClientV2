@@ -26,10 +26,10 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.io.IOException;
 
 public class SettingsActivity extends GeneralActivity {
+    GeneralPreferenceFragment fragment;
     private ActivityResultLauncher<String> IMPORT_ZIP;
     private ActivityResultLauncher<String> SAVE_SETTINGS;
     private ActivityResultLauncher<Object> REQUEST_STORAGE_MANAGER;
-    GeneralPreferenceFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

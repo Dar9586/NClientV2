@@ -168,7 +168,7 @@ public class VersionChecker {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
         LogUtility.d("" + context);
         builder.setTitle(beta ? R.string.new_beta_version_found : R.string.new_version_found);
-        builder.setIcon(R.drawable.ic_file_download);
+        builder.setIcon(R.drawable.ic_file);
         builder.setMessage(context.getString(R.string.update_version_format, versionName, latestVersion, finalBody));
         builder.setPositiveButton(R.string.install, (dialog, which) -> {
             if (Global.hasStoragePermission(context)) downloadVersion(latestVersion);

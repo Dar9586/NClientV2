@@ -17,7 +17,6 @@ import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.NotificationSettings;
 import com.dar.nclientv2.utility.LogUtility;
-import com.dar.nclientv2.utility.Utility;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -74,7 +73,7 @@ public class CreateZIP extends JobIntentService {
             }
             out.flush();
             out.close();
-            postExecute(true, gallery, null,file);
+            postExecute(true, gallery, null, file);
         } catch (IOException e) {
             LogUtility.e(e.getLocalizedMessage(), e);
             postExecute(false, gallery, e.getLocalizedMessage(), null);
@@ -89,12 +88,13 @@ public class CreateZIP extends JobIntentService {
             notification.setStyle(new NotificationCompat.BigTextStyle()
                 .bigText(gallery.getTitle())
                 .setSummaryText(localizedMessage));
-        }else{
+        } else {
             createIntentOpen(file);
         }
         NotificationSettings.notify(getString(R.string.channel3_name), notId, notification.build());
 
     }
+
     private void createIntentOpen(File finalPath) {
         try {
             Intent i = new Intent(Intent.ACTION_VIEW);
@@ -115,6 +115,7 @@ public class CreateZIP extends JobIntentService {
 
         }
     }
+
     private void preExecute(File file) {
         notId = NotificationSettings.getNotificationId();
         notification = new NotificationCompat.Builder(getApplicationContext(), Global.CHANNEL_ID3);

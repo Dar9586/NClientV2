@@ -9,7 +9,7 @@ public class LogUtility {
 
     public static void d(Object... message) {
         if (message == null) return;
-        if(message.length==1)Log.d(LogUtility.LOGTAG,message[0].toString());
+        if (message.length == 1) Log.d(LogUtility.LOGTAG, message[0].toString());
         else Log.d(LogUtility.LOGTAG, Arrays.toString(message));
     }
 
@@ -20,7 +20,7 @@ public class LogUtility {
 
     public static void i(Object... message) {
         if (message == null) return;
-        if(message.length==1)Log.i(LogUtility.LOGTAG,message[0].toString());
+        if (message.length == 1) Log.i(LogUtility.LOGTAG, message[0].toString());
         else Log.i(LogUtility.LOGTAG, Arrays.toString(message));
     }
 
@@ -31,7 +31,7 @@ public class LogUtility {
 
     public static void e(Object... message) {
         if (message == null) return;
-        if(message.length==1)Log.e(LogUtility.LOGTAG,message[0].toString());
+        if (message.length == 1) Log.e(LogUtility.LOGTAG, message[0].toString());
         else Log.e(LogUtility.LOGTAG, Arrays.toString(message));
     }
 

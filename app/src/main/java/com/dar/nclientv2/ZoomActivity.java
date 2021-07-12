@@ -23,7 +23,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -176,7 +175,6 @@ public class ZoomActivity extends GeneralActivity {
         pageManagerLabel.setText(getString(R.string.page_format, page, gallery.getPageCount()));
         cornerPageViewer.setText(getString(R.string.page_format, page, gallery.getPageCount()));
     }
-
 
 
     @Override

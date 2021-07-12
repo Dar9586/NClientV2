@@ -80,7 +80,7 @@ public class ImageDownloadUtility {
     }
 
     public static void loadImage(Activity activity, File file, ImageView imageView) {
-        loadImage(activity, Uri.fromFile(file), imageView);
+        loadImage(activity, file == null ? null : Uri.fromFile(file), imageView);
     }
 
     /**

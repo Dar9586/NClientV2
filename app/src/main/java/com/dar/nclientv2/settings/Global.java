@@ -82,7 +82,7 @@ public class Global {
     private static TitleType titleType;
     private static SortType sortType;
     private static LocalSortType localSortType;
-    private static boolean invertFix,buttonChangePage, hideMultitask, enableBeta, volumeOverride, zoomOneColumn, keepHistory, lockScreen, onlyTag, showTitles, removeAvoidedGalleries, useRtl;
+    private static boolean invertFix, buttonChangePage, hideMultitask, enableBeta, volumeOverride, zoomOneColumn, keepHistory, lockScreen, onlyTag, showTitles, removeAvoidedGalleries, useRtl;
     private static ThemeScheme theme;
     private static DataUsageType usageMobile, usageWifi;
     private static String lastVersion, mirror;
