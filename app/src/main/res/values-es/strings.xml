@@ -318,5 +318,6 @@
     <string name="random">Aleatorio</string>
     <string name="summary_fetch_metadata">Descarga los datos de galerías descargadas antes de la versión 2.3.0 las cuales no tenian etiquetas.</string>
     <string name="title_fetch_metadata">Reconocer los datos de las galerías antiguas</string>
+    <string name="title_change_page_buttons">Change page clicking on the image</string>
 
 </resources>

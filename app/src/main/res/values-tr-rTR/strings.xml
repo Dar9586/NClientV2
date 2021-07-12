@@ -341,4 +341,5 @@
     <string name="random">Rastgele</string>
     <string name="summary_fetch_metadata">2.3.0\'dan önce indirilen galerilerde etiketler gibi metaveriler yoktu. Bu galeriler için metaverileri indirebilirsiniz</string>
     <string name="title_fetch_metadata">Eski galeriler için metaverileri indir</string>
+    <string name="title_change_page_buttons">Change page clicking on the image</string>
 </resources>

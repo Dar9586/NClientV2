@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.RequestBuilder;
@@ -26,14 +27,18 @@ import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.dar.nclientv2.R;
+import com.dar.nclientv2.ZoomActivity;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.components.GlideX;
 import com.dar.nclientv2.files.GalleryFolder;
 import com.dar.nclientv2.files.PageFile;
+import com.dar.nclientv2.github.chrisbanes.photoview.OnPhotoTapListener;
+import com.dar.nclientv2.github.chrisbanes.photoview.OnScaleChangedListener;
+import com.dar.nclientv2.github.chrisbanes.photoview.PhotoViewAttacher;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.LogUtility;
-import com.github.chrisbanes.photoview.PhotoView;
+import com.dar.nclientv2.github.chrisbanes.photoview.PhotoView;
 
 public class ZoomFragment extends Fragment {
     private static final float MAX_SCALE = 4f;
@@ -45,6 +50,16 @@ public class ZoomFragment extends Fragment {
     private boolean completedDownload = false;
     private View.OnClickListener clickListener;
     private ImageViewTarget<Drawable> target = null;
+    private static final float CHANGE_PAGE_THRESHOLD=.2f;
+    private boolean isZoomed=false;
+    private float cumulScaleFactor = 1;
+
+
+    private boolean isValueApproximate(final float expectedValue, final float value) {
+        final float errorMargin = 0.01f;
+        return Math.abs(expectedValue - value) < errorMargin;
+    }
+
 
     public ZoomFragment() {
     }
@@ -63,10 +78,11 @@ public class ZoomFragment extends Fragment {
     }
 
     private float calculateScaleFactor(int width, int height) {
+        FragmentActivity activity= getActivity();
         if (height < width * 2) return Global.getDefaultZoom();
         float finalSize =
-            ((float) Global.getDeviceWidth(getActivity()) * height) /
-                ((float) Global.getDeviceHeight(getActivity()) * width);
+            ((float) Global.getDeviceWidth(activity) * height) /
+                ((float) Global.getDeviceHeight(activity) * width);
         finalSize = Math.max(finalSize, Global.getDefaultZoom());
         finalSize = Math.min(finalSize, MAX_SCALE);
         LogUtility.d("Final scale: " + finalSize);
@@ -77,7 +93,9 @@ public class ZoomFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_zoom, container, false);
+        ZoomActivity activity= (ZoomActivity) getActivity();
         assert getArguments() != null;
+        assert activity != null;
         //find views
         photoView = rootView.findViewById(R.id.image);
         retryButton = rootView.findViewById(R.id.imageView);
@@ -86,8 +104,22 @@ public class ZoomFragment extends Fragment {
         url = str == null ? null : Uri.parse(str);
         pageFile = getArguments().getParcelable("FOLDER");
         photoView.setAllowParentInterceptOnEdge(true);
-        photoView.setOnClickListener(v -> {
-            if (clickListener != null) clickListener.onClick(v);
+        photoView.setOnPhotoTapListener((view, x, y) -> {
+            boolean prev=x<CHANGE_PAGE_THRESHOLD;
+            boolean next=x>1f-CHANGE_PAGE_THRESHOLD;
+            if(!isZoomed &&(prev||next) && Global.isButtonChangePage()) {
+                activity.changeClosePage(next);
+            }else if (clickListener != null) {
+                clickListener.onClick(view);
+            }
+            LogUtility.d(view,x,y,prev,next);
+        });
+        photoView.setOnScaleChangeListener((scaleFactor, focusX, focusY) -> {
+            cumulScaleFactor = cumulScaleFactor * scaleFactor;
+
+            isZoomed=!isValueApproximate(1.0f, cumulScaleFactor);
+            LogUtility.d(scaleFactor,cumulScaleFactor,isZoomed);
+            activity.geViewPager().setUserInputEnabled(!isZoomed);
         });
         photoView.setMaximumScale(MAX_SCALE);
         retryButton.setOnClickListener(v -> loadImage());

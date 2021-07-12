@@ -2,12 +2,15 @@ package com.dar.nclientv2.utility;
 
 import android.util.Log;
 
+import java.util.Arrays;
+
 public class LogUtility {
     public static final String LOGTAG = "NCLIENTLOG";
 
-    public static void d(Object message) {
+    public static void d(Object... message) {
         if (message == null) return;
-        Log.d(LogUtility.LOGTAG, message.toString());
+        if(message.length==1)Log.d(LogUtility.LOGTAG,message[0].toString());
+        else Log.d(LogUtility.LOGTAG, Arrays.toString(message));
     }
 
     public static void d(Object message, Throwable throwable) {
@@ -15,9 +18,10 @@ public class LogUtility {
         Log.d(LogUtility.LOGTAG, message.toString(), throwable);
     }
 
-    public static void i(Object message) {
+    public static void i(Object... message) {
         if (message == null) return;
-        Log.i(LogUtility.LOGTAG, message.toString());
+        if(message.length==1)Log.i(LogUtility.LOGTAG,message[0].toString());
+        else Log.i(LogUtility.LOGTAG, Arrays.toString(message));
     }
 
     public static void i(Object message, Throwable throwable) {
@@ -25,9 +29,10 @@ public class LogUtility {
         Log.i(LogUtility.LOGTAG, message.toString(), throwable);
     }
 
-    public static void e(Object message) {
+    public static void e(Object... message) {
         if (message == null) return;
-        Log.e(LogUtility.LOGTAG, message.toString());
+        if(message.length==1)Log.e(LogUtility.LOGTAG,message[0].toString());
+        else Log.e(LogUtility.LOGTAG, Arrays.toString(message));
     }
 
     public static void e(Object message, Throwable throwable) {

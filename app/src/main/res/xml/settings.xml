@@ -74,6 +74,11 @@
     <PreferenceCategory
         android:title="@string/navigation_settings"
         app:iconSpaceReserved="false">
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="@string/key_change_page_buttons"
+            android:title="@string/title_change_page_buttons"
+            app:iconSpaceReserved="false"/>
         <SeekBarPreference
             android:defaultValue="25"
             android:key="@string/key_max_history_size"

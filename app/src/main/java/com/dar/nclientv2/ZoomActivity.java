@@ -23,6 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -217,7 +218,7 @@ public class ZoomActivity extends GeneralActivity {
         Toast.makeText(this, side ? R.string.next_page_volume_up : R.string.next_page_volume_down, Toast.LENGTH_SHORT).show();
     }
 
-    private void changeClosePage(boolean next) {
+    public void changeClosePage(boolean next) {
         if (Global.useRtl()) next = !next;
         if (next && mViewPager.getCurrentItem() < (mViewPager.getAdapter().getItemCount() - 1))
             changePage(mViewPager.getCurrentItem() + 1);
@@ -238,6 +239,10 @@ public class ZoomActivity extends GeneralActivity {
         ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams) view.getLayoutParams();
         lp.setMargins(0, 0, landscape && !hardwareKeys() ? Global.getNavigationBarHeight(this) : 0, 0);
         view.setLayoutParams(lp);
+    }
+
+    public ViewPager2 geViewPager() {
+        return mViewPager;
     }
 
     private void changeLayout(boolean landscape) {

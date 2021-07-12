@@ -82,7 +82,7 @@ public class Global {
     private static TitleType titleType;
     private static SortType sortType;
     private static LocalSortType localSortType;
-    private static boolean invertFix, hideMultitask, enableBeta, volumeOverride, zoomOneColumn, keepHistory, lockScreen, onlyTag, showTitles, removeAvoidedGalleries, useRtl;
+    private static boolean invertFix,buttonChangePage, hideMultitask, enableBeta, volumeOverride, zoomOneColumn, keepHistory, lockScreen, onlyTag, showTitles, removeAvoidedGalleries, useRtl;
     private static ThemeScheme theme;
     private static DataUsageType usageMobile, usageWifi;
     private static String lastVersion, mirror;
@@ -288,6 +288,7 @@ public class Global {
         enableBeta = shared.getBoolean(context.getString(R.string.key_enable_beta), true);
         columnCount = shared.getInt(context.getString(R.string.key_column_count), 2);
         showTitles = shared.getBoolean(context.getString(R.string.key_show_titles), true);
+        buttonChangePage = shared.getBoolean(context.getString(R.string.key_change_page_buttons), true);
         lockScreen = shared.getBoolean(context.getString(R.string.key_disable_lock), false);
         hideMultitask = shared.getBoolean(context.getString(R.string.key_hide_multitasking), true);
         infiniteScrollFavorite = shared.getBoolean(context.getString(R.string.key_infinite_scroll_favo), false);
@@ -317,6 +318,10 @@ public class Global {
         }
         onlyLanguage = Language.values()[x];
 
+    }
+
+    public static boolean isButtonChangePage() {
+        return buttonChangePage;
     }
 
     public static boolean hideMultitask() {
