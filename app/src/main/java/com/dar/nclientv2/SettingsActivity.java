@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContract;
@@ -67,6 +68,7 @@ public class SettingsActivity extends GeneralActivity {
                 return i;
             }
         }, selectedFile -> {
+            if (selectedFile == null) return;
             try {
                 Exporter.exportData(this, selectedFile);
             } catch (IOException e) {
@@ -118,6 +120,10 @@ public class SettingsActivity extends GeneralActivity {
 
     @TargetApi(Build.VERSION_CODES.R)
     public void requestStorageManager() {
+        if (REQUEST_STORAGE_MANAGER == null) {
+            Toast.makeText(this, R.string.failed, Toast.LENGTH_SHORT).show();
+            return;
+        }
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
         builder.setIcon(R.drawable.ic_file);
         builder.setTitle(R.string.requesting_storage_access);
