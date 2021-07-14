@@ -65,7 +65,7 @@ public class ZoomFragment extends Fragment {
     }
 
     private boolean isValueApproximate(final float expectedValue, final float value) {
-        final float errorMargin = 0.01f;
+        final float errorMargin = 0.05f;
         return Math.abs(expectedValue - value) < errorMargin;
     }
 
