@@ -1,65 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <!--DO NOT TRANSLATE-->
-    <string name="key_offscreen_limit" translatable="false">offscreen_limit</string>
-    <string name="key_default_value" translatable="false">default_value</string>
-    <string name="key_enable_beta" translatable="false">enable_beta</string>
-    <string name="key_save_path" translatable="false">save_path</string>
-    <string name="key_fake_icon" translatable="false">fake_icon</string>
-    <string name="key_local_sort" translatable="false">local_sort_type</string>
-    <string name="key_title_type" translatable="false">title_type_str</string>
-    <string name="key_by_popular" translatable="false">is_by_popular</string>
-    <string name="key_column_count" translatable="false">column_count</string>
-    <string name="key_only_language" translatable="false">only_language</string>
-    <string name="key_default_zoom" translatable="false">default_zoom</string>
-    <string name="key_theme_select" translatable="false">theme_select</string>
-    <string name="key_max_id" translatable="false">max_id</string>
-    <string name="key_cache" translatable="false">cache</string>
-    <string name="key_inverted_fix" translatable="false">fix_inverted_image</string>
-    <string name="key_ignore_tags" translatable="false">ignore_tags</string>
-    <string name="key_use_account_tag" translatable="false">use_account_tags</string>
-    <string name="key_send_report" translatable="false">send_report</string>
-    <string name="key_use_rtl" translatable="false">use_rtl</string>
-    <string name="key_show_titles" translatable="false">show_titles</string>
-    <string name="key_column_port_hist" translatable="false">column_port_hist</string>
-    <string name="key_column_land_hist" translatable="false">column_land_hist</string>
-    <string name="key_column_port_main" translatable="false">column_port_main</string>
-    <string name="key_column_land_main" translatable="false">column_land_main</string>
-    <string name="key_column_port_down" translatable="false">column_port_down</string>
-    <string name="key_column_land_down" translatable="false">column_land_down</string>
-    <string name="key_column_port_favo" translatable="false">column_port_favo</string>
-    <string name="key_column_land_favo" translatable="false">column_land_favo</string>
-    <string name="key_column_port_stat" translatable="false">column_port_stat</string>
-    <string name="key_column_land_stat" translatable="false">column_land_stat</string>
-    <string name="key_infinite_scroll_main" translatable="false">key_infinite_scroll</string>
-    <string name="key_infinite_scroll_favo" translatable="false">infinite_scroll_favo</string>
-    <string name="key_hide_multitasking" translatable="false">hide_multitasking</string>
-    <string name="key_site_mirror" translatable="false">site_mirror</string>
-    <string name="key_language" translatable="false">key_language</string>
-    <string name="key_disable_lock" translatable="false">disable_lock</string>
-    <string name="key_max_history_size" translatable="false">max_history_size</string>
-    <string name="key_zoom_one_column" translatable="false">zoom_one_column</string>
-    <string name="empty_circle" translatable="false">○</string>
-    <string name="full_circle" translatable="false">◉</string>
-    <string name="key_mobile_usage" translatable="false">mobile_usage</string>
-    <string name="key_wifi_usage" translatable="false">wifi_usage</string>
-    <string name="key_maximum_notification" translatable="false">maximum_notification</string>
-    <string name="key_keep_history" translatable="false">keep_history</string>
-    <string name="app_version_format" formatted="true" translatable="false">NClientV2 %s</string>
-    <string name="key_override_volume" translatable="false">volume_override</string>
-    <string name="key_remove_ignored" translatable="false">remove_ignored</string>
-    <string name="key_check_update" translatable="false">check_update</string>
-    <string name="key_update" translatable="false">update</string>
-    <string name="hashtag" translatable="false">#</string>
-    <string name="page_format" formatted="true" translatable="false">%d/%d</string>
-    <string name="percentage_format" formatted="true" translatable="false">%d%%</string>
-    <string name="page_switcher_placeholder" translatable="false">0/0</string>
-    <string name="page_placeholder" translatable="false">999/999</string>
-    <string name="key_favorite_limit" translatable="false">favorite_limit</string>
-    <string name="key_change_page_buttons" translatable="false">change_page_buttons</string>
-    <string name="dash" translatable="false">-</string>
-    <string name="slash" translatable="false">/</string>
 
 
     <string name="setting_on_ignore_tags">Other tags won\'t be queried when a tag is selected from the gallery menu (except language)</string>
@@ -372,40 +313,17 @@
         <item>Spanish</item>
     </string-array>
 
-    <string-array name="language_data"><!--DO NOT TRANSLATE-->
-        <item>@string/key_default_value</item>
-        <item>en-US</item>
-        <item>zh-TW</item>
-        <item>zh-CN</item>
-        <item>tr-TR</item>
-        <item>it-IT</item>
-        <item>de-DE</item>
-        <item>ar-SA</item>
-        <item>es</item>
-    </string-array>
 
     <string-array name="theme">
         <item>Light</item>
         <item>Dark</item>
     </string-array>
 
-    <string-array name="theme_data"><!--DO NOT TRANSLATE-->
-        <item>light</item>
-        <item>dark</item>
-    </string-array>
-    <string-array name="site_mirrors"><!--DO NOT TRANSLATE-->
-        <item>nhentai.net</item>
-    </string-array>
     <string-array name="title_type_array">
         <item>English</item>
         <item>Japanese</item>
         <item>Pretty</item>
     </string-array>
 
-    <string-array name="title_type_array_data"><!--DO NOT TRANSLATE-->
-        <item>english</item>
-        <item>japanese</item>
-        <item>pretty</item>
-    </string-array>
 
 </resources>
