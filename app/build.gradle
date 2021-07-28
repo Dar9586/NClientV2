@@ -7,8 +7,8 @@ android {
         applicationId "com.dar.nclientv2"
         minSdkVersion 14
         targetSdkVersion 30
-        versionCode 283
-        versionName "2.8.3-stable"
+        versionCode 284
+        versionName "2.8.4-stable"
         vectorDrawables.useSupportLibrary true
         proguardFiles 'proguard-rules.pro'
     }

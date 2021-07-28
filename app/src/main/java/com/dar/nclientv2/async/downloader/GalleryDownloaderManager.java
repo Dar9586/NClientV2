@@ -14,6 +14,7 @@ import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.NotificationSettings;
 
+import java.util.ConcurrentModificationException;
 import java.util.Locale;
 
 public class GalleryDownloaderManager {
@@ -159,7 +160,7 @@ public class GalleryDownloaderManager {
     private synchronized void notificationUpdate() {
         try {
             NotificationSettings.notify(context.getString(R.string.channel1_name), notificationId, notification.build());
-        } catch (NullPointerException ignore) {
+        } catch (NullPointerException| ConcurrentModificationException ignore) {
         }
     }
 
