@@ -48,8 +48,6 @@ public class ZoomFragment extends Fragment {
     private boolean completedDownload = false;
     private View.OnClickListener clickListener;
     private ImageViewTarget<Drawable> target = null;
-    private boolean isZoomed = false;
-    private float cumulScaleFactor = 1;
 
 
     public ZoomFragment() {
@@ -103,20 +101,14 @@ public class ZoomFragment extends Fragment {
         photoView.setOnPhotoTapListener((view, x, y) -> {
             boolean prev = x < CHANGE_PAGE_THRESHOLD;
             boolean next = x > 1f - CHANGE_PAGE_THRESHOLD;
-            if (!isZoomed && (prev || next) && Global.isButtonChangePage()) {
+            if ((prev || next) && Global.isButtonChangePage()) {
                 activity.changeClosePage(next);
             } else if (clickListener != null) {
                 clickListener.onClick(view);
             }
             LogUtility.d(view, x, y, prev, next);
         });
-        photoView.setOnScaleChangeListener((scaleFactor, focusX, focusY) -> {
-            cumulScaleFactor = cumulScaleFactor * scaleFactor;
 
-            isZoomed = !isValueApproximate(1.0f, cumulScaleFactor);
-            LogUtility.d(scaleFactor, cumulScaleFactor, isZoomed);
-            activity.geViewPager().setUserInputEnabled(!isZoomed);
-        });
         photoView.setMaximumScale(MAX_SCALE);
         retryButton.setOnClickListener(v -> loadImage());
         createTarget();
