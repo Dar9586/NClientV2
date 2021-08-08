@@ -264,7 +264,7 @@
     <string name="descending_order">В убывающем порядке</string>
     <string name="minimum_comment_length" formatted="true">Коментарий должен быть хоят бы %d символов</string>
     <string name="change_scroll_type">Изменить тип прилистывания</string>
-    <string name="exported_backup_file_toast" formatted="true">Exported backup file in %s</string>
+    <string name="exported_backup_file_toast" formatted="true">Файл бэкапа экспортирован в %s</string>
     <string name="export_data">Выгрузить данные</string>
     <string name="import_data">Загрузить данные</string>
     <string name="default_status_1">Читается</string>
@@ -288,7 +288,7 @@
     <string name="fix_inverted_title">Исправить инвертированные изображения</string>
     <string name="fix_inverted_summary">Включить, если изображения показываются с инвертированными цветами(на некоторых девайсах при включении может вызвать смену темы на светлую, отключение исправит эту проблему) </string>
     <string name="navigation_settings_per_screen">Настройки навигации при помощи экрана</string>
-    <string name="downloaded_update_at" formatted="true">Downloaded update at %s</string>
+    <string name="downloaded_update_at" formatted="true">Обновление загружено в %s</string>
     <string name="summary_offscreen_limit">Установите количество предзагружамых изображений во время чтения галереи</string>
     <string name="title_offscreen_limit">Изображение предзагрузки</string>
     <string name="sort_popoular_month">Популярные за месяц</string>
