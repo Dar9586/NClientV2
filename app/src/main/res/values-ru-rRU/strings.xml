@@ -3,44 +3,44 @@
 <resources>
 
 
-    <string name="setting_on_ignore_tags">Other tags won\'t be queried when a tag is selected from the gallery menu (except language)</string>
-    <string name="setting_off_ignore_tags">Other tags will be queried when a tag is selected from the gallery menu</string>
-    <string name="setting_on_use_account_tag">Use the account tags into the search query (Local tags will have priority)</string>
-    <string name="setting_off_use_account_tag">Account tags will be ignored for the query</string>
-    <string name="theme_summary">Select theme colors</string>
-    <string name="send_crash_report">Send crash report</string>
-    <string name="change_theme">Change theme</string>
-    <string name="clear_cache">Clear cache</string>
-    <string name="infinite_scroll">Infinite scroll</string>
-    <string name="ignore_tags">Ignore other tags</string>
-    <string name="use_account_tag">Use tags from account</string>
-    <string name="title_activity_gallery">Gallery</string>
+    <string name="setting_on_ignore_tags">Другие тэги не будут применены, когда тэг выбран из меню галереи(кроме языка)</string>
+    <string name="setting_off_ignore_tags">Другие тэги будут применены, когда тэг выбран из меню галереи</string>
+    <string name="setting_on_use_account_tag">Использовать тэги аккаунта в поисковом запросе(Локальные тэги будут иметь больший приоритет)</string>
+    <string name="setting_off_use_account_tag">Тэги Аккаунта будут игнорироваться в запросе</string>
+    <string name="theme_summary">Выбрать цвета темы</string>
+    <string name="send_crash_report">Отправить отчёт о сбое</string>
+    <string name="change_theme">Сменить тему</string>
+    <string name="clear_cache">Очистить кэш</string>
+    <string name="infinite_scroll">Бесконечное пролистывание</string>
+    <string name="ignore_tags">Игнорировать другие тэги</string>
+    <string name="use_account_tag">Использовать тэги из аккаунта</string>
+    <string name="title_activity_gallery">Галерея</string>
     <string name="title_activity_zoom">Zoom Activity</string>
-    <string name="title_activity_tag_filter">Tag Filter</string>
-    <string name="title_activity_login">Log in</string>
-    <string name="parodies">Parodies</string>
-    <string name="characters">Characters</string>
-    <string name="tags">Tags</string>
-    <string name="artists">Artists</string>
-    <string name="groups">Groups</string>
-    <string name="languages">Languages</string>
-    <string name="categories">Categories</string>
-    <string name="unknown">Unknown</string>
-    <string name="channel1_name">Download Gallery</string>
-    <string name="channel2_name">Create PDF</string>
-    <string name="channel3_name">Create ZIP</string>
-    <string name="channel1_description">Used to show progress of the download of a gallery</string>
-    <string name="channel2_description">Used to show progress of the creation of the PDF</string>
-    <string name="channel3_description">Used to show progress of the creation of the ZIP</string>
-    <string name="channel2_title">Creating PDF:</string>
-    <string name="channel3_title">Creating ZIP:</string>
-    <string name="favorite_max_reached" formatted="true">You can have a maximum of %d favorite galleries.</string>
-    <string name="tags_max_reached" formatted="true">You can have a maximum of %d selected tags.</string>
-    <string name="only_english">Only english</string>
-    <string name="only_japanese">Only japanese</string>
-    <string name="only_chinese">Only chinese</string>
-    <string name="all_languages">All languages</string>
-    <string name="login">Log in</string>
+    <string name="title_activity_tag_filter">Фильтр тэгов</string>
+    <string name="title_activity_login">Войти</string>
+    <string name="parodies">Пародии</string>
+    <string name="characters">Персонажи</string>
+    <string name="tags">Тэги</string>
+    <string name="artists">Художники</string>
+    <string name="groups">Группы</string>
+    <string name="languages">Языки</string>
+    <string name="categories">Категории</string>
+    <string name="unknown">Неизвесный</string>
+    <string name="channel1_name">Загрузить галерею</string>
+    <string name="channel2_name">Создать PDF</string>
+    <string name="channel3_name">Создать ZIP</string>
+    <string name="channel1_description">Использован чтобы показать прогресс загруки галереи</string>
+    <string name="channel2_description">Использован чтобы показать прогресс создания PDF</string>
+    <string name="channel3_description">Использован чтобы показать прогресс создания ZIP</string>
+    <string name="channel2_title">Создание PDF:</string>
+    <string name="channel3_title">Создание ZIP:</string>
+    <string name="favorite_max_reached" formatted="true">У вас может быть максимум %d любимых галерей.</string>
+    <string name="tags_max_reached" formatted="true">У вас может быть максимум %d выбранных тэгов.</string>
+    <string name="only_english">Только английский</string>
+    <string name="only_japanese">Только японский</string>
+    <string name="only_chinese">Только китайский</string>
+    <string name="all_languages">Все языки</string>
+    <string name="login">Войти</string>
     <string name="login_formatted" formatted="true">Logged as %s</string>
     <string name="logout">Logout</string>
     <string name="favorite_online_manga">Favorite online galleries</string>
@@ -272,56 +272,56 @@
     <string name="default_status_3">On Hold</string>
     <string name="default_status_4">Dropped</string>
     <string name="default_status_5">Plan to read</string>
-    <string name="title_site_mirror">Change site mirror</string>
-    <string name="disguise_app_in_drawer">Disguise app in drawer</string>
-    <string name="summary_disguise_app">The app will be disguised as a calculator (experimental)</string>
-    <string name="app_name_fake_calculator">Calculator</string>
-    <string name="delete_galleries">Delete galleries</string>
-    <string name="delete">Delete</string>
-    <string name="pause_selected_downloads">Pause selected downloads</string>
-    <string name="start_selected_downloads">Start selected downloads</string>
-    <string name="custom_path">Custom path</string>
-    <string name="insert_path">Insert path:</string>
-    <string name="requesting_storage_access">Requesting storage access</string>
-    <string name="request_storage_manager_summary">Due to some restriction in Android 11 to the storage access this app will require you to give additional permission to use custom paths.\nIf you want to give those permission please enable the setting in the next dialog.</string>
-    <string name="summary_beta">Switching to a beta version will make you unable to return to stable versions without uninstalling</string>
-    <string name="fix_inverted_title">Fix inverted images</string>
-    <string name="fix_inverted_summary">Enable if the images are shown with inverted colors (in some devices can cause the system theme to be changed to light, disabling it will fix this issue)</string>
-    <string name="navigation_settings_per_screen">Navigation settings per screen</string>
+    <string name="title_site_mirror">Изменить зеркало сайта</string>
+    <string name="disguise_app_in_drawer">Скрыть это приложение в базе данных</string>
+    <string name="summary_disguise_app">Это приложение будет замаскировано под калькулятор(Экспериментально)</string>
+    <string name="app_name_fake_calculator">Калькулятор</string>
+    <string name="delete_galleries">Удалить галереи</string>
+    <string name="delete">Удалить</string>
+    <string name="pause_selected_downloads">Приостановить выбранные загрузки</string>
+    <string name="start_selected_downloads">Начать выбранные загрузки</string>
+    <string name="custom_path">Кастомный путь</string>
+    <string name="insert_path">Введите путь:</string>
+    <string name="requesting_storage_access">Запрос доступа к хранилищу</string>
+    <string name="request_storage_manager_summary">Из-за некоторых ограничений в Android 11 для доступа к хранилищу это приложение потребует выдать дополнительные разрешения для использования кастомных путей.\nЕсли вы хотите выдать эти разрешения, пожалуйста, разрешите настройки в следующем диалоге</string>
+    <string name="summary_beta">Переключение на бета версию сделает невозможным возвращение к стабильной версии без удаления приложения</string>
+    <string name="fix_inverted_title">Исправить инвертированные изображения</string>
+    <string name="fix_inverted_summary">Включить, если изображения показываются с инвертированными цветами(на некоторых девайсах при включении может вызвать смену темы на светлую, отключение исправит эту проблему) </string>
+    <string name="navigation_settings_per_screen">Настройки навигации при помощи экрана</string>
     <string name="downloaded_update_at" formatted="true">Downloaded update at %s</string>
-    <string name="summary_offscreen_limit">Set the number of images to preload offscreen when reading a gallery</string>
-    <string name="title_offscreen_limit">Image to preload</string>
-    <string name="sort_popoular_month">Monthly popular</string>
-    <string name="random">Random</string>
-    <string name="summary_fetch_metadata">Download metadata for galleries downloaded before 2.3.0 which didn\'t have metadata like tags included</string>
-    <string name="title_fetch_metadata">Fetch metadata for old galleries</string>
-    <string name="title_change_page_buttons">Change page clicking on the image</string>
+    <string name="summary_offscreen_limit">Установите количество предзагружамых изображений во время чтения галереи</string>
+    <string name="title_offscreen_limit">Изображение предзагрузки</string>
+    <string name="sort_popoular_month">Популярные за месяц</string>
+    <string name="random">Случайная</string>
+    <string name="summary_fetch_metadata">Загрузить метаданные для галерей, загруженных до 2.3.0, которые не имеют метаданных, по типу применённых тэгов</string>
+    <string name="title_fetch_metadata">Извлечь метаданные для старых галерей</string>
+    <string name="title_change_page_buttons">Перелистывание страницы нажатием на изображение</string>
 
     <string-array name="scroll_type">
-        <item>Horizontal</item>
-        <item>Vertical</item>
+        <item>Горизонтальный</item>
+        <item>Вертикальный</item>
     </string-array>
     <string-array name="language">
-        <item>System Default</item>
-        <item>English</item>
-        <item>Chinese (Traditional)</item>
-        <item>Chinese (Simplified)</item>
-        <item>Turkish</item>
-        <item>Italian</item>
-        <item>German</item>
-        <item>Arabic</item>
-        <item>Spanish</item>
+        <item>Системное значение по умолчанию</item>
+        <item>Английский</item>
+        <item>Китайский (Традиционный)</item>
+        <item>Китайский (Упрощённый)</item>
+        <item>Турецкий</item>
+        <item>Итальянский</item>
+        <item>Немецкий</item>
+        <item>Арабский</item>
+        <item>Испанский</item>
     </string-array>
 
 
     <string-array name="theme">
-        <item>Light</item>
-        <item>Dark</item>
+        <item>Светлая</item>
+        <item>Тёмная</item>
     </string-array>
 
     <string-array name="title_type_array">
-        <item>English</item>
-        <item>Japanese</item>
+        <item>Английский</item>
+        <item>Японский</item>
         <item>Pretty</item>
     </string-array>
 
