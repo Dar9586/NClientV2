@@ -15,7 +15,7 @@
     <string name="ignore_tags">Игнорировать другие тэги</string>
     <string name="use_account_tag">Использовать тэги из аккаунта</string>
     <string name="title_activity_gallery">Галерея</string>
-    <string name="title_activity_zoom">Zoom Activity</string>
+    <string name="title_activity_zoom">Работа зума</string>
     <string name="title_activity_tag_filter">Фильтр тэгов</string>
     <string name="title_activity_login">Войти</string>
     <string name="parodies">Пародии</string>
@@ -83,7 +83,7 @@
     <string name="update_tag_status">Обновить статус тэгов</string>
     <string name="change_view">Сменить вид</string>
     <string name="tag_preference">Предпочтения тэгов</string>
-    <string name="manage_tags">Manage tags</string>
+    <string name="manage_tags">Управлять тэгами</string>
     <string name="applied_filters">Применённые фильтры</string>
     <string name="show_related">Показать схожие галереи</string>
     <string name="random_manga">Случайная галерея</string>
