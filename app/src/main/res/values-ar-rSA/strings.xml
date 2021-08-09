@@ -30,7 +30,7 @@
     <string name="channel2_description">تُستخدم لإظهار مدى تقدُّم إنشاء المستند المحمول PDF</string>
     <string name="channel3_description">تُستخدم لإظهار مدى تقدُّم إنشاء الملف المضغوط ZIP</string>
     <string name="channel2_title">جارٍ إنشاء المستند المحمول:</string>
-    <string name="channel3_title">جارٍ إنشاء  الملف المضغوط:</string>
+    <string name="channel3_title">جارٍ إنشاء الملف المضغوط:</string>
     <string name="favorite_max_reached" formatted="true">يمكنك الحصول على %d كعددِ أعمالٍ مفضَّلةٍ قصويٍّ.</string>
     <string name="tags_max_reached" formatted="true">يمكنك الحصول على %d كعددِ وسومٍ مختارةٍ قصويٍّ.</string>
     <string name="only_english">الإنجليزية فقط</string>
