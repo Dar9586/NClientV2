@@ -370,6 +370,7 @@
         <item>German</item>
         <item>Arabic</item>
         <item>Spanish</item>
+        <item>Russian</item>
     </string-array>
 
     <string-array name="language_data"><!--DO NOT TRANSLATE-->
@@ -382,6 +383,7 @@
         <item>de-DE</item>
         <item>ar-SA</item>
         <item>es</item>
+        <item>ru-RU</item>
     </string-array>
 
     <string-array name="theme">

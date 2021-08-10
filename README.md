@@ -38,6 +38,8 @@ Search|Random manga
 - [ZerOri](https://github.com/ZerOri) and [linsui](https://github.com/linsui) for Chinese translation
 - [herrsunchess](https://github.com/herrsunchess) for German translation
 - [eme22](https://github.com/herrsunchess) for Spanish translation
+- [velosipedistufa](https://github.com/velosipedistufa) for Russian translation
+- [bottomtextboy](https://github.com/bottomtextboy) for Arabic translation
 
 
 

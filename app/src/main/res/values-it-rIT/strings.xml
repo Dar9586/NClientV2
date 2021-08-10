@@ -303,6 +303,7 @@
         <item>Tedesco</item>
         <item>Arabo</item>
         <item>Spagnolo</item>
+        <item>Russo</item>
     </string-array>
 
     <string-array name="theme">
@@ -332,17 +333,17 @@
     <string name="insert_path">Inserisci percorso</string>
     <string name="requesting_storage_access">Richiesta accesso alla memoria</string>
     <string name="request_storage_manager_summary">Per via di alcune restrizioni sull\'accesso alla memoria su Android 11 sono richiesti ulteriori permessi per usare i percorsi personalizzati.\nSe vuoi dare questi permessi abilitali nella prossima schermata.</string>
-    <string name="summary_beta">Updating to a beta version can make you unable to return to a stable version without uninstalling</string>
-    <string name="fix_inverted_title">Fix inverted images</string>
-    <string name="fix_inverted_summary">Enable if the images are shown with inverted colors (in some devices can cause the system theme to be changed to light, disabling it will fix this issue)</string>
-    <string name="navigation_settings_per_screen">Navigation settings per screen</string>
-    <string name="downloaded_update_at" formatted="true">Downloaded update at %s</string>
+    <string name="summary_beta">Aggiornare ad una versione beta può impedirti di ritornare ad una versione stabile senza disinstallare</string>
+    <string name="fix_inverted_title">Ripara immagini invertite</string>
+    <string name="fix_inverted_summary">Abilita se le immagini sonoo msotrate a colori invertiti (in qualche dispositivo può cambiare il tema di sistema in chiaro, disabilitarlo riparerà il problema)</string>
+    <string name="navigation_settings_per_screen">Impostazioni di navigazione per schermata</string>
+    <string name="downloaded_update_at" formatted="true">Scaricamento aggiornamento al %s</string>
     <string name="summary_offscreen_limit">Imposta il numero di immagini da preacricare quando si sta leggendo una galleria</string>
     <string name="title_offscreen_limit">Immagini da precaricare</string>
     <string name="sort_popoular_month">Popolarità mensile</string>
-    <string name="random">Random</string>
-    <string name="summary_fetch_metadata">Download metadata for galleries downloaded before 2.3.0 which didn\'t have metadata like tags included</string>
-    <string name="title_fetch_metadata">Fetch metadata for old galleries</string>
-    <string name="title_change_page_buttons">Change page clicking on the image</string>
+    <string name="random">Casuale</string>
+    <string name="summary_fetch_metadata">Scarica metadati per gallerie scaricate prima della versione 2.3.0 che non avevano metadati come i tag inclusi</string>
+    <string name="title_fetch_metadata">Ottieni metadati per le vecchie gallerie</string>
+    <string name="title_change_page_buttons">Cambia pagina cliccando sull\'immagine</string>
 
 </resources>
