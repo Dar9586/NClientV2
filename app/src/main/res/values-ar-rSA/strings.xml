@@ -23,10 +23,10 @@
     <string name="languages">لغات</string>
     <string name="categories">أصناف</string>
     <string name="unknown">مجهول</string>
-    <string name="channel1_name">حمِّل العمل</string>
+    <string name="channel1_name">نزِّل العمل</string>
     <string name="channel2_name">أَنشئ مستندًا محمولًا PDF</string>
     <string name="channel3_name">أَنشئ ملفًّا مضغوطًا ZIP</string>
-    <string name="channel1_description">تُستخدم لإظهار مدى تقدُّم تحميل العمل</string>
+    <string name="channel1_description">تُستخدم لإظهار مدى تقدُّم تنزيل العمل</string>
     <string name="channel2_description">تُستخدم لإظهار مدى تقدُّم إنشاء المستند المحمول PDF</string>
     <string name="channel3_description">تُستخدم لإظهار مدى تقدُّم إنشاء الملف المضغوط ZIP</string>
     <string name="channel2_title">جارٍ إنشاء المستند المحمول:</string>
@@ -69,26 +69,26 @@
     <string name="change_page">غيِّر الصفحة:</string>
     <string name="prev_page">الصفحة السابقة</string>
     <string name="next_page">الصفحة التالية</string>
-    <string name="downloaded_manga">الأعمال المُحمَّلة</string>
-    <string name="download_gallery">حمِّل العمل</string>
+    <string name="downloaded_manga">الأعمال المُنزَّلة</string>
+    <string name="download_gallery">نزِّل العمل</string>
     <string name="delete_gallery_size_format" formatted="true">اِحذف العمل (%.2fMB)</string>
     <string name="delete_gallery_format" formatted="true">أتودّ حذف العمل:\n%s ؟</string>
     <string name="share_with">شاركه مع</string>
     <string name="link_copied_to_clipboard">تم نسخ الرابط إلى الحافظة</string>
     <string name="open_in_browser">افتح في المُتصفِّح</string>
     <string name="go_online">اتَّصل بالشابكة</string>
-    <string name="update_tag_status">حدِّث حالة الوسم</string>
+    <string name="update_tag_status">حدِّث وضعية الوسم</string>
     <string name="change_view">غيِّر المنظر</string>
     <string name="tag_preference">إعداد الوسم</string>
     <string name="manage_tags">سيِّر الوسوم</string>
     <string name="applied_filters">التصفيات المُطبَّقة</string>
-    <string name="show_related">إظهار أعمال ذات صلة</string>
+    <string name="show_related">أَظهر أعمال ذات صلة</string>
     <string name="random_manga">عمل عشوائي</string>
     <string name="save_page">اِحفظ الصفحة</string>
     <string name="page_count_format" formatted="true">%d صفحةً(صفحاتٍ)</string>
-    <string name="upload_date_format" formatted="true">حُمِّل بتاريخ %s عند الـ %s</string>
-    <string name="favorite_count_format" formatted="true">%d مُفضَّلةً(مُفضَّلاتٍ)</string>
-    <string name="favorite_manga">أعمال مُفضَّلة</string>
+    <string name="upload_date_format" formatted="true">رُفِع بتاريخ %s عند الـ %s</string>
+    <string name="favorite_count_format" formatted="true">مُفضَّل عند %d أشخاص(شخصًا)</string>
+    <string name="favorite_manga">الأعمال المُفضَّلة</string>
     <string name="setting_on_remove_ignored">الأعمال ذات الوسوم المُتجاهَلة لن تُعرض</string>
     <string name="setting_off_remove_ignored">الأعمال ذات الوسوم المُتجاهَلة ستُضبَّب</string>
     <string name="remove_ignored_galleries">اِحذف الأعمال المُتجاهلة</string>
@@ -185,7 +185,7 @@
     <string name="cancelled_format">مُلغى: %s</string>
     <string name="completed_format">تام: %s</string>
     <string name="downloading_format">قيد التنزيل: %s</string>
-    <string name="toggle_favorite">بدِّل التفضيل</string>
+    <string name="toggle_favorite">بدِّل التفضيل من عدمه</string>
     <string name="resume">اِستأنِف</string>
     <string name="pause">أَوقِف</string>
     <string name="title_copied_to_clipboard">نُسخ العنوان إلى الحافظة</string>
@@ -197,7 +197,7 @@
     <string name="use_pin">اِستخدم الرقم السري</string>
     <string name="wrong_pin">الرقم المُدخَل خاطئ</string>
     <string name="rotate_image">أَدر الصورة</string>
-    <string name="toggle_online_favorite">بدِّل التفضيل عبر الشابكة</string>
+    <string name="toggle_online_favorite">بدِّل التفضيل من عدمه عبر الشابكة</string>
     <string name="data_usage_settings">غيِّر إعدادات استخدام البيانات</string>
     <string name="mobile_data_usage_setting">إعدادات استخدام بيانات الجوال</string>
     <string name="wifi_data_usage_setting">إعدادات استخدام بيانات الشبكة اللاسلكية</string>
@@ -222,7 +222,7 @@
     <string name="no_entry_found">لم يُعثر على أي مُدخلَة</string>
     <string name="retry">أَعدِ المحاولة</string>
     <string name="folder_location">موقع المجلد</string>
-    <string name="default_zoom">التكبير الاعتيادي</string>
+    <string name="default_zoom">مستوى التكبير الاعتيادي</string>
     <string name="choose_directory">اِختر مجلدًا</string>
     <string name="bookmark_here">علِّم هنا</string>
     <string name="resume_from_page">اِستأنِف من الصفحة %d</string>
@@ -241,18 +241,18 @@
     <string name="days">الأيام</string>
     <string name="weeks">الأسابيع</string>
     <string name="choose_unit">اِختر وحدة:</string>
-    <string name="change_status">غيِّر الحالة</string>
-    <string name="create_new_status">أَنشئ حالة جديدة:</string>
+    <string name="change_status">غيِّر الوضعية</string>
+    <string name="create_new_status">أَنشئ وضعية جديدة:</string>
     <string name="invalid_color_selected">لا يمكن استخدام الأبيض والأسود</string>
-    <string name="change_status_title">اِختر حالة جديدة:</string>
+    <string name="change_status_title">اِختر وضعية جديدة:</string>
     <string name="remove_status">بدون</string>
     <string name="name_too_short">الاسم بالغ القِصر</string>
     <string name="duplicated_name">الاسم موجود سلفًا</string>
-    <string name="manage_statuses">سيِّر الحالات</string>
-    <string name="update_status">حدِّث الحالة:</string>
-    <string name="view_statuses">اِعرِض الحالات</string>
-    <string name="status_column_count">اِختر عدد أعمدة الحالات</string>
-    <string name="status_viewer">رائي الحالات</string>
+    <string name="manage_statuses">سيِّر الوضعيات</string>
+    <string name="update_status">حدِّث الوضعية:</string>
+    <string name="view_statuses">اِعرِض وضعيات الأعمال</string>
+    <string name="status_column_count">اِختر عدد أعمدة الوضعبات</string>
+    <string name="status_viewer">وضعيات الأعمال</string>
     <string name="title_hide_multitasking">أَخف محتوى التطبيق عند تعدد المهام</string>
     <string name="title">العنوان</string>
     <string name="download_date">تاريخ التنزيل</string>
@@ -263,7 +263,7 @@
     <string name="change_scroll_type">غيِّر نمط التمرير</string>
     <string name="exported_backup_file_toast" formatted="true">صُدِّر ملف النسخ الاحتياطي إلى %s</string>
     <string name="export_data">صدِّر البيانات</string>
-    <string name="import_data">صدِّر البيانات</string>
+    <string name="import_data">اِستورد البيانات</string>
 
     <string-array name="scroll_type">
         <item>أفقي</item>
@@ -292,7 +292,7 @@
     <string-array name="title_type_array">
         <item>الإنجليزية</item>
         <item>اليابانية</item>
-        <item>Pretty</item>
+        <item>أنيق</item>
     </string-array>
     <string name="default_status_1">قيد القراءة</string>
     <string name="default_status_2">تم</string>
@@ -301,7 +301,7 @@
     <string name="default_status_5">مُخطَّطة قراءته</string>
     <string name="title_site_mirror">غيِّر الموقع المرآة</string>
     <string name="disguise_app_in_drawer">موِّه التطبيق في درج التطبيقات</string>
-    <string name="summary_disguise_app">سيتنكَّر التطبيق بأيقونة الآلة الحاسبة (تجريبي)</string>
+    <string name="summary_disguise_app">سيتنكَّر التطبيق بأيقونة آلة حاسبة (تجريبي)</string>
     <string name="app_name_fake_calculator">آلة حاسبة</string>
     <string name="delete_galleries">اِحذف الأعمال</string>
     <string name="delete">اِحذف</string>
