@@ -12,7 +12,7 @@
     <string name="ignore_tags">تجاهَل باقي الوسوم</string>
     <string name="use_account_tag">اِستخدم وسوم الحساب</string>
     <string name="title_activity_gallery">عمل</string>
-    <string name="title_activity_zoom">نشاط التكبير</string>
+    <string name="title_activity_zoom">نشاط التقريب</string>
     <string name="title_activity_tag_filter">تصفية الوسوم</string>
     <string name="title_activity_login">تسجيل الدخول</string>
     <string name="parodies">مُحاكَيات</string>
@@ -189,8 +189,8 @@
     <string name="resume">اِستأنِف</string>
     <string name="pause">أَوقِف</string>
     <string name="title_copied_to_clipboard">نُسخ العنوان إلى الحافظة</string>
-    <string name="setting_zoom_one_column">فعِّل التكبير في وضع العمود الواحد داخل عمل</string>
-    <string name="zoom_one_column">فعِّل التكبير</string>
+    <string name="setting_zoom_one_column">فعِّل التقريب في وضع العمود الواحد داخل عمل</string>
+    <string name="zoom_one_column">فعِّل التقريب</string>
     <string name="insert_pin">أَدخِل الرقم السري</string>
     <string name="confirm_pin">أَكد الرقم السري</string>
     <string name="setting_pin">اُطلب الرقم السري عند الدخول إلى التطبيق</string>
@@ -222,7 +222,7 @@
     <string name="no_entry_found">لم يُعثر على أي مُدخلَة</string>
     <string name="retry">أَعدِ المحاولة</string>
     <string name="folder_location">موقع المجلد</string>
-    <string name="default_zoom">مستوى التكبير الاعتيادي</string>
+    <string name="default_zoom">مستوى التقريب الاعتيادي</string>
     <string name="choose_directory">اِختر مجلدًا</string>
     <string name="bookmark_here">علِّم هنا</string>
     <string name="resume_from_page">اِستأنِف من الصفحة %d</string>
