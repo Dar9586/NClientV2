@@ -331,17 +331,17 @@
     <string name="start_selected_downloads">Starte ausgewählte downloads</string>
     <string name="custom_path">Benutzerdefinierter Pfad</string>
     <string name="insert_path">Pfad:</string>
-    <string name="requesting_storage_access">Fordere Speicherberechtigung</string>
+    <string name="requesting_storage_access">Fordere Berechtigungen für den Gerätespeicher</string>
     <string name="request_storage_manager_summary">Due to some restriction in Android 11 to the storage access this app will require you to give additional permission to use custom paths.\nIf you want to give those permission please enable the setting in the next dialog.</string>
     <string name="summary_beta">Updating to a beta version can make you unable to return to a stable version without uninstalling</string>
     <string name="fix_inverted_title">Repariere invertierte Bilder</string>
     <string name="fix_inverted_summary">Aktivieren wenn Bilder mit invertierten Farben angezeigt werden (Auf manchen Geräten führt das zum ändern des Gerätethemas zu weiß. Deaktivieren der Einstellung wird dies wieder änderen.)</string>
-    <string name="navigation_settings_per_screen">Navigation settings per screen</string>
+    <string name="navigation_settings_per_screen">Navigations Einstellungen pro Bild</string>
     <string name="downloaded_update_at" formatted="true">Update zu %s heruntergeladen</string>
-    <string name="summary_offscreen_limit">Set the number of images to preload offscreen when reading a gallery</string>
-    <string name="title_offscreen_limit">Image to preload</string>
+    <string name="summary_offscreen_limit">Anzahl an Seiten die vorgeladen werden beim lesen einer Gallerie</string>
+    <string name="title_offscreen_limit">Bilder vorladen</string>
     <string name="sort_popoular_month">Populär diesen Monat</string>
-    <string name="random">Random</string>
+    <string name="random">Zufällig</string>
     <string name="summary_fetch_metadata">Download metadata for galleries downloaded before 2.3.0 which didn\'t have metadata like tags included</string>
     <string name="title_fetch_metadata">Fetch metadata for old galleries</string>
     <string name="title_change_page_buttons">Ändere Seite Klicke auf das Bild</string>
