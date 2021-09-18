@@ -42,10 +42,14 @@
     <string name="login">Войти</string>
     <string name="login_formatted" formatted="true">Вошёл как %s</string>
     <string name="logout">Выйти</string>
-    <string name="favorite_online_manga">Любимы онлайн галереи</string>
+    <string name="favorite_online_manga">Избранные онлайн галереи</string>
     <string name="online_tags">Онлайн тэги</string>
-    <string name="add_to_online_favorite">Добавить в онлайн любимые</string>
-    <string name="remove_from_online_favorites">Удалить из онлайн любимых</string>
+    <string name="add_to_online_favorite">Добавить в онлайн избранные</string>
+    <string name="remove_from_online_favorites">Удалить из онлайн избранных</string>
+    <string name="favorite_online_manga">Избранные онлайн галереи</string>
+    <string name="online_tags">Онлайн тэги</string>
+    <string name="add_to_online_favorite">Добавить в онлайн избранные</string>
+    <string name="remove_from_online_favorites">Удалить из онлайн избранных</string>
     <string name="add_to_online_blacklist">Добавить в онлайн чёрный список?</string>
     <string name="tag_already_in_blacklist">Тэг уже в чёрном списке</string>
     <string name="are_you_sure">Вы уверены?</string>
@@ -89,8 +93,8 @@
     <string name="save_page">Сохранить страницу</string>
     <string name="page_count_format" formatted="true">%d страниц</string>
     <string name="upload_date_format" formatted="true">Загружено %s в %s</string>
-    <string name="favorite_count_format" formatted="true">%d любимых</string>
-    <string name="favorite_manga">Любимые галереи</string>
+    <string name="favorite_count_format" formatted="true">%d избранных</string>
+    <string name="favorite_manga">Избранные галереи</string>
     <string name="setting_on_remove_ignored">Галереи с игнорируемыми тэгами не будут показываться</string>
     <string name="setting_off_remove_ignored">Галереи с игнорируемыми тэгами будут размыты</string>
     <string name="remove_ignored_galleries">Убрать игнорируемые галереи</string>
@@ -114,7 +118,7 @@
     <string name="images_settings">Настройки изображений</string>
     <string name="miscellaneous">Разное</string>
     <string name="update_settings">Настройки обновлений</string>
-    <string name="online_favorite_manga">Онлайн любимая манга</string>
+    <string name="online_favorite_manga">Онлайн избранная манга</string>
     <string name="cache_size_formatted">Размер кэша: %.2f MB</string>
     <string name="cache_cleared">Кэш очищен</string>
     <string name="sort_by_latest">Сортировать по дате</string>
@@ -123,7 +127,7 @@
     <string name="keep_history">Сохранять историю поиска</string>
     <string name="add">Добавить</string>
     <string name="insert_tag_name">Ввести тэг:</string>
-    <string name="favorite_count">Номер любимой</string>
+    <string name="favorite_count">Номер избранной</string>
     <string name="comments">Комментарии</string>
     <string name="send">Отправить</string>
     <string name="send_comment">Отправить комментарий…</string>
@@ -163,7 +167,7 @@
     <string name="disable_lock_title">Отключить затухание экрана во время чтения</string>
     <string name="download_all_galleries_in_this_page">Загрузить все галереи на этой странице</string>
     <string name="download_all_galleries">Загрузить все галереи</string>
-    <string name="favorite_column_count">Выберите количество столбцов в любимых</string>
+    <string name="favorite_column_count">Выберите количество столбцов в избранных</string>
     <string name="download_column_count">Выберите количество столбцов в загруженных</string>
     <string name="history_column_count">Выберите количество столбцов в истории</string>
     <string name="main_column_count">Выберите количество столбцов на главной странице</string>
@@ -187,7 +191,7 @@
     <string name="cancelled_format">Отменено: %s</string>
     <string name="completed_format">Завершено: %s</string>
     <string name="downloading_format">Загрузка: %s</string>
-    <string name="toggle_favorite">Переместить в любимые</string>
+    <string name="toggle_favorite">Переместить в избранное</string>
     <string name="resume">Возобновить</string>
     <string name="pause">Приостановить</string>
     <string name="title_copied_to_clipboard">Заголовок скопирован в буфер обмена</string>
@@ -199,7 +203,7 @@
     <string name="use_pin">Использовать Пин-код</string>
     <string name="wrong_pin">Неверный Пин-код</string>
     <string name="rotate_image">Повернуть изображение</string>
-    <string name="toggle_online_favorite">Переместить в онлайн любимые</string>
+    <string name="toggle_online_favorite">Переместить в онлайн избранное</string>
     <string name="data_usage_settings">Редактировать настройки исопользования сети</string>
     <string name="mobile_data_usage_setting">Настройки использования мобильной сети</string>
     <string name="wifi_data_usage_setting">Настройки использование Wi-Fi сети</string>
@@ -310,7 +314,7 @@
         <item>Немецкий</item>
         <item>Арабский</item>
         <item>Испанский</item>
-        <item>русский</item>
+        <item>Русский</item>
     </string-array>
 
 
