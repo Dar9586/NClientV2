@@ -37,5 +37,5 @@
     public static void i(...);
     public static void e(...);
 }
-
+-keep public class * implements com.bumptech.glide.module.GlideModule
 -dontwarn com.bumptech.glide.load.resource.bitmap.VideoDecoder

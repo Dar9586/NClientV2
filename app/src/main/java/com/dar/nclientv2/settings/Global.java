@@ -371,7 +371,7 @@ public class Global {
                 )
             );
         CustomSSLSocketFactory.enableTls12OnPreLollipop(builder);
-        builder.addInterceptor(new CustomInterceptor());
+        builder.addInterceptor(new CustomInterceptor(true));
         client = builder.build();
         client.dispatcher().setMaxRequests(25);
         client.dispatcher().setMaxRequestsPerHost(25);

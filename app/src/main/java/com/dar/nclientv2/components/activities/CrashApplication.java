@@ -18,7 +18,6 @@ import com.dar.nclientv2.async.database.DatabaseHelper;
 import com.dar.nclientv2.async.downloader.DownloadGalleryV2;
 import com.dar.nclientv2.components.classes.MySenderFactory;
 import com.dar.nclientv2.settings.Database;
-import com.dar.nclientv2.settings.Favorites;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
 import com.dar.nclientv2.utility.LogUtility;
@@ -59,7 +58,6 @@ public class CrashApplication extends Application {
             afterUpdateChecks(preferences, version, actualVersion);
 
         Global.initFromShared(this);
-        Favorites.countFavorite();
         NetworkUtil.initConnectivity(this);
         TagV2.initMinCount(this);
         TagV2.initSortByName(this);

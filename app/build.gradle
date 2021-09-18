@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     buildToolsVersion '30.0.3'
     defaultConfig {
         applicationId "com.dar.nclientv2"
         minSdkVersion 14
-        targetSdkVersion 30
-        versionCode 285
-        versionName "2.8.5-stable"
+        targetSdkVersion 31
+        versionCode 286
+        versionName "2.8.6-beta"
         vectorDrawables.useSupportLibrary true
         proguardFiles 'proguard-rules.pro'
     }
@@ -51,14 +51,13 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.12.12'//Because of min SDK
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
     //implementation 'com.github.chrisbanes:PhotoView:2.3.0'
-    implementation 'org.jsoup:jsoup:1.13.1'
+    implementation 'org.jsoup:jsoup:1.14.2'
     implementation 'ch.acra:acra-core:5.7.0'
     implementation("com.github.bumptech.glide:glide:4.12.0") {
         exclude group: "com.android.support"
     }
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
-    implementation 'com.github.bumptech.glide:okhttp3-integration:4.12.0'
     implementation 'com.github.yukuku:ambilwarna:2.0.1'
     implementation 'me.zhanghai.android.fastscroll:library:1.1.7'
 
