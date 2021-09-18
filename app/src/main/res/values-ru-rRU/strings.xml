@@ -34,7 +34,6 @@
     <string name="channel3_description">Использован чтобы показать прогресс создания ZIP</string>
     <string name="channel2_title">Создание PDF:</string>
     <string name="channel3_title">Создание ZIP:</string>
-    <string name="favorite_max_reached" formatted="true">У вас может быть максимум %d избранных галерей.</string>
     <string name="tags_max_reached" formatted="true">У вас может быть максимум %d выбранных тэгов.</string>
     <string name="only_english">Только английский</string>
     <string name="only_japanese">Только японский</string>

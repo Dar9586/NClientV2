@@ -93,7 +93,6 @@
     <string name="channel3_description">Used to show progress of the creation of the ZIP</string>
     <string name="channel2_title">Creating PDF:</string>
     <string name="channel3_title">Creating ZIP:</string>
-    <string name="favorite_max_reached" formatted="true">You can have a maximum of %d favorite galleries.</string>
     <string name="tags_max_reached" formatted="true">You can have a maximum of %d selected tags.</string>
     <string name="only_english">Only english</string>
     <string name="only_japanese">Only japanese</string>

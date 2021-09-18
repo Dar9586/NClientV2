@@ -295,8 +295,6 @@ public class GalleryActivity extends BaseActivity {
                 if (Favorites.removeFavorite(gallery)) isLocalFavorite = !isLocalFavorite;
             } else if (Favorites.addFavorite((Gallery) gallery)) {
                 isLocalFavorite = !isLocalFavorite;
-            } else {
-                Snackbar.make(recycler, getString(R.string.favorite_max_reached, Favorites.MAXFAVORITE), Snackbar.LENGTH_LONG).show();
             }
             item.setIcon(isLocalFavorite ? R.drawable.ic_favorite : R.drawable.ic_favorite_border);
             Global.setTint(item.getIcon());

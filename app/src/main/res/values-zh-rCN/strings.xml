@@ -32,7 +32,6 @@
     <string name="channel3_description">用于显示 zip 的创建进度</string>
     <string name="channel2_title">正在创建的 PDF：</string>
     <string name="channel3_title">正在创建的 ZIP：</string>
-    <string name="favorite_max_reached" formatted="true">你最多能收藏 %d 部漫画。</string>
     <string name="tags_max_reached" formatted="true">你最多能选中 %d 个标签。</string>
     <string name="only_english">仅英文</string>
     <string name="only_japanese">仅日文</string>

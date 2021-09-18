@@ -36,7 +36,6 @@
     <string name="channel2_title">PDF Oluşturuluyor:</string>
     <string name="channel3_title">ZIP oluşturuluyor:</string>
 
-    <string name="favorite_max_reached" formatted="true">Maksimum %d favori galeriniz olabilir.</string>
     <string name="tags_max_reached" formatted="true">Maksimum %d etiket seçebilirsiniz.</string>
 
 

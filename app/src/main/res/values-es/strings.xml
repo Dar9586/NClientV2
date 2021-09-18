@@ -31,7 +31,6 @@
     <string name="channel3_description">Usado para mostrar el progreso de la creación del comprimido</string>
     <string name="channel2_title">Creando PDF:</string>
     <string name="channel3_title">Comprimiendo:</string>
-    <string name="favorite_max_reached">Puedes tener un máximo de %d mangas favoritos.</string>
     <string name="tags_max_reached">Puedes tener un máximo de %d etiquetas seleccionadas.</string>
     <string name="only_english">Solo inglés</string>
     <string name="only_japanese">Solo japonés</string>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string name="setting_on_ignore_tags">لن يُستعلم عن الوسوم الأخرى إذا اختير وسام من قائمة الأعمال (باستثناء اللغة)</string>
+    <string name="setting_on_ignore_tags">لن يُستعلم عن الوسوم الأخرى إذا اختير وسام من قائمة الأعمال (باستثناء اللغة)</string>
     <string name="setting_off_ignore_tags">سيُستعلم عن الوسوم الأخرى إذا اختير وسام من قائمة الأعمال</string>
     <string name="setting_on_use_account_tag">اِستخدم وسوم حسابك عند استعلام البحث (ستحظى الوسوم المحلية بالأولوية)</string>
     <string name="setting_off_use_account_tag">ستُتَجاهل وسوم حسابك عند الاستعلام</string>
@@ -31,7 +31,6 @@
     <string name="channel3_description">تُستخدم لإظهار مدى تقدُّم إنشاء الملف المضغوط ZIP</string>
     <string name="channel2_title">جارٍ إنشاء المستند المحمول:</string>
     <string name="channel3_title">جارٍ إنشاء الملف المضغوط:</string>
-    <string name="favorite_max_reached" formatted="true">يمكنك الحصول على %d كعددِ أعمالٍ مفضَّلةٍ قصويٍّ.</string>
     <string name="tags_max_reached" formatted="true">يمكنك الحصول على %d كعددِ وسومٍ مختارةٍ قصويٍّ.</string>
     <string name="only_english">الإنجليزية فقط</string>
     <string name="only_japanese">اليابانية فقط</string>
