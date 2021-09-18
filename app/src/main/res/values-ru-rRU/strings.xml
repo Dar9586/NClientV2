@@ -46,10 +46,6 @@
     <string name="online_tags">Онлайн тэги</string>
     <string name="add_to_online_favorite">Добавить в онлайн избранные</string>
     <string name="remove_from_online_favorites">Удалить из онлайн избранных</string>
-    <string name="favorite_online_manga">Избранные онлайн галереи</string>
-    <string name="online_tags">Онлайн тэги</string>
-    <string name="add_to_online_favorite">Добавить в онлайн избранные</string>
-    <string name="remove_from_online_favorites">Удалить из онлайн избранных</string>
     <string name="add_to_online_blacklist">Добавить в онлайн чёрный список?</string>
     <string name="tag_already_in_blacklist">Тэг уже в чёрном списке</string>
     <string name="are_you_sure">Вы уверены?</string>
