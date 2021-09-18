@@ -204,7 +204,7 @@ public class VersionChecker {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 context.getSharedPreferences("Settings", 0).edit().putBoolean("downloaded", false).apply();
-                f.getParentFile().mkdirs();
+                Global.UPDATEFOLDER.mkdirs();
                 f.createNewFile();
                 FileOutputStream stream = new FileOutputStream(f);
                 InputStream stream1 = response.body().byteStream();
@@ -231,7 +231,8 @@ public class VersionChecker {
                 intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 context.startActivity(intent);
             } catch (IllegalArgumentException ignore) {
-                Toast.makeText(context, context.getString(R.string.downloaded_update_at, f.getAbsolutePath()), Toast.LENGTH_SHORT).show();
+                context.runOnUiThread(() -> Toast.makeText(context, context.getString(R.string.downloaded_update_at, f.getAbsolutePath()), Toast.LENGTH_SHORT).show());
+
             }
         } else {
             Uri apkUri = Uri.fromFile(f);

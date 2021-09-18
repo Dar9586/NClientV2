@@ -1,5 +1,6 @@
 package com.dar.nclientv2.async.database;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -36,6 +37,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+@SuppressLint("Range")
 public class Queries {
 
     static SQLiteDatabase db;
@@ -945,7 +947,8 @@ public class Queries {
             Status status;
             if (cursor.moveToFirst())
                 status = StatusManager.getByName(cursor.getString(cursor.getColumnIndex(NAME)));
-            else status = StatusManager.getByName(StatusManager.DEFAULT_STATUS);
+            else
+                status = StatusManager.getByName(StatusManager.DEFAULT_STATUS);
             cursor.close();
             return status;
         }

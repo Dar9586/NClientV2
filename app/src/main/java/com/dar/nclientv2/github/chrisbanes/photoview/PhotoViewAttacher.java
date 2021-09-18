@@ -459,9 +459,9 @@ public class PhotoViewAttacher implements View.OnTouchListener,
     public void setScale(float scale, float focalX, float focalY,
                          boolean animate) {
         // Check to see if the scale is within bounds
-        if (scale < mMinScale || scale > mMaxScale) {
-            throw new IllegalArgumentException("Scale must be within the range of minScale and maxScale");
-        }
+
+        scale = Math.min(scale, mMaxScale);
+        scale = Math.max(scale, mMinScale);
         if (animate) {
             mImageView.post(new AnimatedZoomRunnable(getScale(), scale,
                 focalX, focalY));
