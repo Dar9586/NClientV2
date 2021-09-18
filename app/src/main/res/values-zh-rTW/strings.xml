@@ -35,7 +35,6 @@
     <string name="channel2_description">用於顯示 PDF 建立進度</string>
     <string name="channel2_title">正在建立的 PDF：</string>
 
-    <string name="favorite_max_reached" formatted="true">最多只能收藏 %d 部漫畫。</string>
     <string name="tags_max_reached" formatted="true">最多只能選擇 %d 個標籤。</string>
 
 

@@ -50,7 +50,7 @@ public class RandomLoader {
     public void requestGallery() {
         galleryHasBeenRequested = true;
         for (int i = 0; i < galleries.size(); i++) {
-            if(galleries.get(i)==null)
+            if (galleries.get(i) == null)
                 galleries.remove(i--);
         }
         if (galleries.size() > 0) {

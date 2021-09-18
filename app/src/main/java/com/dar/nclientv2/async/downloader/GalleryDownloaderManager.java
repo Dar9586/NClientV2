@@ -160,7 +160,7 @@ public class GalleryDownloaderManager {
     private synchronized void notificationUpdate() {
         try {
             NotificationSettings.notify(context.getString(R.string.channel1_name), notificationId, notification.build());
-        } catch (NullPointerException| ConcurrentModificationException ignore) {
+        } catch (NullPointerException | ConcurrentModificationException ignore) {
         }
     }
 

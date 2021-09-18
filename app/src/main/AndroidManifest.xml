@@ -28,6 +28,7 @@
         <activity
             android:name=".PINActivity"
             android:configChanges="orientation|screenSize"
+            android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/DarkTheme">
             <intent-filter>
@@ -38,6 +39,7 @@
         <activity-alias
             android:name=".components.launcher.LauncherReal"
             android:enabled="true"
+            android:exported="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher"
@@ -50,6 +52,7 @@
         <activity-alias
             android:name=".components.launcher.LauncherCalculator"
             android:enabled="false"
+            android:exported="true"
             android:icon="@mipmap/ic_launcher_calculator"
             android:label="@string/app_name_fake_calculator"
             android:roundIcon="@mipmap/ic_launcher_calculator_round"
@@ -68,6 +71,7 @@
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize"
+            android:exported="true"
             android:hardwareAccelerated="true"
             android:label="@string/app_name"
             android:parentActivityName=".PINActivity"
@@ -95,6 +99,7 @@
         </activity>
         <activity
             android:name=".GalleryActivity"
+            android:exported="true"
             android:label="@string/title_activity_gallery"
             android:parentActivityName=".MainActivity"
             android:theme="@style/DarkTheme">
@@ -129,6 +134,7 @@
         <activity
             android:name=".TagFilterActivity"
             android:configChanges="orientation|screenSize"
+            android:exported="true"
             android:label="@string/title_activity_tag_filter"
             android:parentActivityName=".MainActivity"
             android:theme="@style/DarkTheme">
@@ -153,7 +159,9 @@
                 android:value="com.dar.nclientv2.MainActivity" />
         </activity>
         <activity android:name=".SettingsActivity" />
-        <activity android:name=".RandomActivity">
+        <activity
+            android:name=".RandomActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -221,5 +229,7 @@
             <data android:mimeType="application/pdf" />
         </intent>
     </queries>
-
+    <meta-data
+        android:name="com.dar.nclientv2.components.classes.integration.OkHttpGlideModule"
+        android:value="GlideModule" />
 </manifest>

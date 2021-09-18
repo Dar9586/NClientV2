@@ -39,7 +39,6 @@
     <string name="channel2_title">Erstelle PDF:</string>
     <string name="channel3_title">Erstelle ZIP:</string>
 
-    <string name="favorite_max_reached" formatted="true">Du kannst ein Maximum von %d Lieblingsmanga haben.</string>
     <string name="tags_max_reached" formatted="true">Du kannst ein Maximum von %d Tags haben</string>
 
 
