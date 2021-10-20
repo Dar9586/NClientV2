@@ -82,9 +82,17 @@ public class GalleryDownloaderManager {
         notifyIntent.putExtra(context.getPackageName() + ".GALLERY", downloaderV2.localGallery());
         notifyIntent.putExtra(context.getPackageName() + ".ISLOCAL", true);
         // Create the PendingIntent
-        PendingIntent notifyPendingIntent = PendingIntent.getActivity(
-            context, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
-        );
+
+        PendingIntent notifyPendingIntent;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            notifyPendingIntent = PendingIntent.getActivity(
+                context, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE
+            );
+        } else {
+            notifyPendingIntent = PendingIntent.getActivity(
+                context, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
+            );
+        }
         notification.setContentIntent(notifyPendingIntent);
     }
 
@@ -146,10 +154,18 @@ public class GalleryDownloaderManager {
         stopIntent.putExtra(context.getPackageName() + ".MODE", "STOP");
         pauseIntent.putExtra(context.getPackageName() + ".MODE", "PAUSE");
         startIntent.putExtra(context.getPackageName() + ".MODE", "START");
-
-        PendingIntent pStop = PendingIntent.getService(context, 0, stopIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        PendingIntent pPause = PendingIntent.getService(context, 1, pauseIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        PendingIntent pStart = PendingIntent.getService(context, 2, startIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pStop;
+        PendingIntent pPause;
+        PendingIntent pStart;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            pStop = PendingIntent.getService(context, 0, stopIntent, PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
+            pPause = PendingIntent.getService(context, 1, pauseIntent, PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
+            pStart = PendingIntent.getService(context, 2, startIntent, PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
+        } else {
+            pStop = PendingIntent.getService(context, 0, stopIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            pPause = PendingIntent.getService(context, 1, pauseIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            pStart = PendingIntent.getService(context, 2, startIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        }
         if (pauseMode)
             notification.addAction(R.drawable.ic_play, context.getString(R.string.resume), pStart);
         else notification.addAction(R.drawable.ic_pause, context.getString(R.string.pause), pPause);

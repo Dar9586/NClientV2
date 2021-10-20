@@ -87,7 +87,7 @@ class Importer {
                             break;
                     }
                 }
-                db.insert(tableName, null, values);
+                db.insertWithOnConflict(tableName, null, values, SQLiteDatabase.CONFLICT_REPLACE);
                 reader.endObject();
             }
             reader.endArray();

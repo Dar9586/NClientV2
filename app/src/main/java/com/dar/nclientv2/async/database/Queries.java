@@ -630,7 +630,7 @@ public class Queries {
             values.put(THUMB, gallery.getThumb().ordinal());
             values.put(TIME, new Date().getTime());
             db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
-            cleanHistory(db);
+            cleanHistory();
         }
 
         public static List<SimpleGallery> getHistory() {
@@ -645,11 +645,11 @@ public class Queries {
             return galleries;
         }
 
-        public static void emptyHistory(SQLiteDatabase db) {
+        public static void emptyHistory() {
             db.delete(TABLE_NAME, null, null);
         }
 
-        private static void cleanHistory(SQLiteDatabase db) {
+        private static void cleanHistory() {
             while (db.delete(TABLE_NAME, "(SELECT COUNT(*) FROM " + TABLE_NAME + ")>? AND " + TIME + "=(SELECT MIN(" + TIME + ") FROM " + TABLE_NAME + ")", new String[]{"" + Global.getMaxHistory()}) == 1)
                 ;
         }

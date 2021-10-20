@@ -23,7 +23,10 @@ import com.dar.nclientv2.async.database.export.Manager;
 import com.dar.nclientv2.components.activities.GeneralActivity;
 import com.dar.nclientv2.components.views.GeneralPreferenceFragment;
 import com.dar.nclientv2.settings.Global;
+import com.dar.nclientv2.utility.LogUtility;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import java.io.File;
 
 public class SettingsActivity extends GeneralActivity {
     GeneralPreferenceFragment fragment;
@@ -49,31 +52,29 @@ public class SettingsActivity extends GeneralActivity {
 
     }
 
+    private int selectedItem;
+
     private void registerActivities() {
-        IMPORT_ZIP = registerForActivityResult(new ActivityResultContracts.GetContent(), selectedFile -> {
-            if (selectedFile == null) return;
-            new Manager(selectedFile, this, false, () -> {
-                Toast.makeText(this, R.string.import_finished, Toast.LENGTH_SHORT).show();
-                finish();
-            }).start();
-        });
-        SAVE_SETTINGS = registerForActivityResult(new ActivityResultContracts.CreateDocument() {
-            @NonNull
-            @Override
-            public Intent createIntent(@NonNull Context context, @NonNull String input) {
-                Intent i = super.createIntent(context, input);
-                i.setType("application/zip");
-                return i;
-            }
-        }, selectedFile -> {
-            if (selectedFile == null) return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            IMPORT_ZIP = registerForActivityResult(new ActivityResultContracts.GetContent(), selectedFile -> {
+                if (selectedFile == null) return;
+                importSettings(selectedFile);
+            });
+            SAVE_SETTINGS = registerForActivityResult(new ActivityResultContracts.CreateDocument() {
+                @NonNull
+                @Override
+                public Intent createIntent(@NonNull Context context, @NonNull String input) {
+                    Intent i = super.createIntent(context, input);
+                    i.setType("application/zip");
+                    return i;
+                }
+            }, selectedFile -> {
+                if (selectedFile == null) return;
 
-            new Manager(selectedFile, this, true, () -> {
-                Toast.makeText(this, R.string.export_finished, Toast.LENGTH_SHORT).show();
-            }).start();
+                exportSettings(selectedFile);
 
-        });
-
+            });
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             REQUEST_STORAGE_MANAGER = registerForActivityResult(new ActivityResultContract<Object, Object>() {
 
@@ -98,13 +99,51 @@ public class SettingsActivity extends GeneralActivity {
         }
     }
 
+    private void importSettings(Uri selectedFile) {
+        new Manager(selectedFile, this, false, () -> {
+            Toast.makeText(this, R.string.import_finished, Toast.LENGTH_SHORT).show();
+            finish();
+        }).start();
+    }
+
+    private void exportSettings(Uri selectedFile) {
+        new Manager(selectedFile, this, true, () -> {
+            Toast.makeText(this, R.string.export_finished, Toast.LENGTH_SHORT).show();
+        }).start();
+    }
+
     public void importSettings() {
-        IMPORT_ZIP.launch("application/zip");
+        if (IMPORT_ZIP != null) {
+            IMPORT_ZIP.launch("application/zip");
+        } else {
+            importOldVersion();
+        }
+    }
+
+    private void importOldVersion() {
+        String[] files = Global.BACKUPFOLDER.list();
+        if (files == null || files.length == 0) return;
+        selectedItem = 0;
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+        builder.setSingleChoiceItems(files, 0, (dialog, which) -> {
+            LogUtility.d(which);
+            selectedItem = which;
+        });
+
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
+            importSettings(Uri.fromFile(new File(Global.BACKUPFOLDER, files[selectedItem])));
+        }).setNegativeButton(R.string.cancel, null);
+        builder.show();
     }
 
     public void exportSettings() {
         String name = Exporter.defaultExportName(this);
-        SAVE_SETTINGS.launch(name);
+        if (SAVE_SETTINGS != null)
+            SAVE_SETTINGS.launch(name);
+        else {
+            File f = new File(Global.BACKUPFOLDER, name);
+            exportSettings(Uri.fromFile(f));
+        }
     }
 
     @Override

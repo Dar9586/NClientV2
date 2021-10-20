@@ -104,23 +104,23 @@ public abstract class MultichoiceAdapter<D, T extends RecyclerView.ViewHolder> e
         boolean isSelected = map.containsKey(getItemId(holder.getBindingAdapterPosition()));
         View master = getMaster(holder.innerHolder);
         updateLayoutParams(master, holder.censor, isSelected);
-
-        master.setOnClickListener(v -> {
-            switch (mode) {
-                case SELECTING:
-                    toggleSelection(holder.getBindingAdapterPosition());
-                    break;
-                case NORMAL:
-                    defaultMasterAction(holder.getBindingAdapterPosition());
-                    break;
-            }
-        });
-        master.setOnLongClickListener(v -> {
-            map.put(getItemId(holder.getBindingAdapterPosition()), getItemAt(holder.getBindingAdapterPosition()));
-            notifyItemChanged(holder.getBindingAdapterPosition());
-            return true;
-        });
-
+        if (master != null) {
+            master.setOnClickListener(v -> {
+                switch (mode) {
+                    case SELECTING:
+                        toggleSelection(holder.getBindingAdapterPosition());
+                        break;
+                    case NORMAL:
+                        defaultMasterAction(holder.getBindingAdapterPosition());
+                        break;
+                }
+            });
+            master.setOnLongClickListener(v -> {
+                map.put(getItemId(holder.getBindingAdapterPosition()), getItemAt(holder.getBindingAdapterPosition()));
+                notifyItemChanged(holder.getBindingAdapterPosition());
+                return true;
+            });
+        }
         holder.censor.setVisibility(isSelected ? View.VISIBLE : View.GONE);
         holder.checkmark.setVisibility(isSelected ? View.VISIBLE : View.GONE);
         holder.censor.setOnClickListener(v -> toggleSelection(holder.getBindingAdapterPosition()));

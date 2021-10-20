@@ -235,7 +235,7 @@ public class LocalAdapter extends MultichoiceAdapter<Object, LocalAdapter.ViewHo
     }
 
     private void bindGallery(@NonNull final ViewHolder holder, int position, LocalGallery ent) {
-        holder.flag.setVisibility(View.GONE);
+        if (holder.flag != null) holder.flag.setVisibility(View.GONE);
         ImageDownloadUtility.loadImage(context, ent.getPage(ent.getMin()), holder.imgView);
         holder.title.setText(ent.getTitle());
         if (colCount == 1)
@@ -331,6 +331,7 @@ public class LocalAdapter extends MultichoiceAdapter<Object, LocalAdapter.ViewHo
 
     @Override
     public long getItemId(int position) {
+        if (position == -1) return -1;
         return filter.get(position).hashCode();
     }
 

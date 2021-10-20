@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Build;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.JobIntentService;
@@ -109,7 +110,11 @@ public class CreateZIP extends JobIntentService {
                 getApplicationContext().grantUriPermission(packageName, apkURI, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
             }
 
-            notification.setContentIntent(PendingIntent.getActivity(getApplicationContext(), 0, i, 0));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                notification.setContentIntent(PendingIntent.getActivity(getApplicationContext(), 0, i, PendingIntent.FLAG_MUTABLE));
+            } else {
+                notification.setContentIntent(PendingIntent.getActivity(getApplicationContext(), 0, i, 0));
+            }
             LogUtility.d(apkURI.toString());
         } catch (IllegalArgumentException ignore) {//sometimes the uri isn't available
 
