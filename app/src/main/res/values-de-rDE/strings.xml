@@ -344,5 +344,7 @@
     <string name="summary_fetch_metadata">Lade Metadaten für Galerien herunter die vor Version 2.3.0 herunter geladen wurden\nDiesen Galerien fehlten die Metadaten</string>
     <string name="title_fetch_metadata">Metadaten für alte Galerien abrufen</string>
     <string name="title_change_page_buttons">Ändere Seite Klicke auf das Bild</string>
+    <string name="export_finished">Export finished</string>
+    <string name="import_finished">Import finished</string>
 
 </resources>

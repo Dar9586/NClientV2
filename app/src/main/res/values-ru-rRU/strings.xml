@@ -295,6 +295,8 @@
     <string name="summary_fetch_metadata">Загрузить метаданные для галерей, загруженных до 2.3.0, которые не имеют метаданных, по типу применённых тэгов</string>
     <string name="title_fetch_metadata">Извлечь метаданные для старых галерей</string>
     <string name="title_change_page_buttons">Перелистывание страницы нажатием на изображение</string>
+    <string name="export_finished">Export finished</string>
+    <string name="import_finished">Import finished</string>
 
     <string-array name="scroll_type">
         <item>Горизонтальный</item>

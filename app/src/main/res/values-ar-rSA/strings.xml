@@ -322,5 +322,7 @@
     <string name="summary_fetch_metadata">نزِّل البيانات الوصفية للأعمال المُنزَّلة قبل 2.3.0 والتي لا تحوي بيانات وصفية كالوسوم</string>
     <string name="title_fetch_metadata">اُجلُب البيانات الوصفية للأعمال القديمة</string>
     <string name="title_change_page_buttons">غيِّر الصفحة بالنقر على الصورة</string>
+    <string name="export_finished">Export finished</string>
+    <string name="import_finished">Import finished</string>
 
 </resources>

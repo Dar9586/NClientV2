@@ -342,4 +342,6 @@
     <string name="summary_fetch_metadata">2.3.0\'dan önce indirilen galerilerde etiketler gibi metaveriler yoktu. Bu galeriler için metaverileri indirebilirsiniz</string>
     <string name="title_fetch_metadata">Eski galeriler için metaverileri indir</string>
     <string name="title_change_page_buttons">Resme tıklayarak sayfa değiştir</string>
+    <string name="export_finished">Export finished</string>
+    <string name="import_finished">Import finished</string>
 </resources>

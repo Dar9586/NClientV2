@@ -245,7 +245,7 @@ public class Queries {
     }
 
     public static class TagTable {
-        static final String TABLE_NAME = "Tags";
+        public static final String TABLE_NAME = "Tags";
         public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
         static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS `Tags` (" +
             " `idTag` INT  NOT NULL PRIMARY KEY," +
@@ -560,7 +560,7 @@ public class Queries {
         public static final String ID_GALLERY = "id_gallery";
         public static final String RANGE_START = "range_start";
         public static final String RANGE_END = "range_end";
-        static final String TABLE_NAME = "Downloads";
+        public static final String TABLE_NAME = "Downloads";
         public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
         static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS `Downloads` (" +
             "`id_gallery`  INT NOT NULL PRIMARY KEY , " +
@@ -611,7 +611,7 @@ public class Queries {
         public static final String TITLE = "title";
         public static final String THUMB = "thumbType";
         public static final String TIME = "time";
-        static final String TABLE_NAME = "History";
+        public static final String TABLE_NAME = "History";
         public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
         static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS `History`(" +
             "`id` INT NOT NULL PRIMARY KEY," +
@@ -656,7 +656,7 @@ public class Queries {
     }
 
     public static class BookmarkTable {
-        static final String TABLE_NAME = "Bookmark";
+        public static final String TABLE_NAME = "Bookmark";
         public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
         static final String URL = "url";
         static final String PAGE = "page";
@@ -707,7 +707,7 @@ public class Queries {
     }
 
     public static class GalleryBridgeTable {
-        static final String TABLE_NAME = "GalleryTags";
+        public static final String TABLE_NAME = "GalleryTags";
         public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
         static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS `GalleryTags` (" +
             "`id_gallery` INT NOT NULL , " +
@@ -752,7 +752,7 @@ public class Queries {
     }
 
     public static class FavoriteTable {
-        static final String TABLE_NAME = "Favorite";
+        public static final String TABLE_NAME = "Favorite";
         public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
         static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS `Favorite` (" +
             "`id_gallery` INT NOT NULL PRIMARY KEY , " +
@@ -879,7 +879,7 @@ public class Queries {
     }
 
     public static class ResumeTable {
-        static final String TABLE_NAME = "Resume";
+        public static final String TABLE_NAME = "Resume";
         public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
         static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS `Resume` (" +
             "`id_gallery` INT NOT NULL PRIMARY KEY , " +
@@ -914,7 +914,7 @@ public class Queries {
     }
 
     public static class StatusMangaTable {
-        static final String TABLE_NAME = "StatusManga";
+        public static final String TABLE_NAME = "StatusManga";
         public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
         static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS `StatusManga` (" +
             "`gallery` INT NOT NULL PRIMARY KEY, " +
@@ -983,7 +983,7 @@ public class Queries {
     }
 
     public static class StatusTable {
-        static final String TABLE_NAME = "Status";
+        public static final String TABLE_NAME = "Status";
         public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
         static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS `Status` (" +
             "`name` TINYTEXT NOT NULL PRIMARY KEY, " +
@@ -1005,7 +1005,6 @@ public class Queries {
         }
 
         public static void initStatuses() {
-            db.execSQL(CREATE_TABLE);
             Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
             if (cursor.moveToFirst()) {
                 do {

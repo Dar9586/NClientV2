@@ -18,13 +18,12 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 
-import com.dar.nclientv2.async.database.Exporter;
+import com.dar.nclientv2.async.database.export.Exporter;
+import com.dar.nclientv2.async.database.export.Manager;
 import com.dar.nclientv2.components.activities.GeneralActivity;
 import com.dar.nclientv2.components.views.GeneralPreferenceFragment;
 import com.dar.nclientv2.settings.Global;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-
-import java.io.IOException;
 
 public class SettingsActivity extends GeneralActivity {
     GeneralPreferenceFragment fragment;
@@ -51,13 +50,12 @@ public class SettingsActivity extends GeneralActivity {
     }
 
     private void registerActivities() {
-        IMPORT_ZIP = registerForActivityResult(new ActivityResultContracts.GetContent(), selectedfile -> {
-            if (selectedfile == null) return;
-            try {
-                Exporter.importData(this, getContentResolver().openInputStream(selectedfile));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        IMPORT_ZIP = registerForActivityResult(new ActivityResultContracts.GetContent(), selectedFile -> {
+            if (selectedFile == null) return;
+            new Manager(selectedFile, this, false, () -> {
+                Toast.makeText(this, R.string.import_finished, Toast.LENGTH_SHORT).show();
+                finish();
+            }).start();
         });
         SAVE_SETTINGS = registerForActivityResult(new ActivityResultContracts.CreateDocument() {
             @NonNull
@@ -69,11 +67,11 @@ public class SettingsActivity extends GeneralActivity {
             }
         }, selectedFile -> {
             if (selectedFile == null) return;
-            try {
-                Exporter.exportData(this, selectedFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
+            new Manager(selectedFile, this, true, () -> {
+                Toast.makeText(this, R.string.export_finished, Toast.LENGTH_SHORT).show();
+            }).start();
+
         });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
