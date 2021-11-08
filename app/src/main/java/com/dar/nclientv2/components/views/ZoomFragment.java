@@ -38,6 +38,11 @@ import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.LogUtility;
 
 public class ZoomFragment extends Fragment {
+
+    public interface OnZoomChangeListener {
+        void onZoomChange(View v, float zoomLevel);
+    }
+
     private static final float MAX_SCALE = 4f;
     private static final float CHANGE_PAGE_THRESHOLD = .2f;
     private PhotoView photoView = null;
@@ -47,6 +52,7 @@ public class ZoomFragment extends Fragment {
     private int degree = 0;
     private boolean completedDownload = false;
     private View.OnClickListener clickListener;
+    private OnZoomChangeListener zoomChangeListener;
     private ImageViewTarget<Drawable> target = null;
 
 
@@ -69,6 +75,11 @@ public class ZoomFragment extends Fragment {
 
     public void setClickListener(View.OnClickListener clickListener) {
         this.clickListener = clickListener;
+    }
+
+
+    public void setZoomChangeListener(OnZoomChangeListener zoomChangeListener) {
+        this.zoomChangeListener = zoomChangeListener;
     }
 
     private float calculateScaleFactor(int width, int height) {
@@ -107,6 +118,10 @@ public class ZoomFragment extends Fragment {
                 clickListener.onClick(view);
             }
             LogUtility.d(view, x, y, prev, next);
+        });
+
+        photoView.setOnScaleChangeListener((float scaleFactor, float focusX, float focusY)->{
+            this.zoomChangeListener.onZoomChange(rootView, photoView.getScale());
         });
 
         photoView.setMaximumScale(MAX_SCALE);

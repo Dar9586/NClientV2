@@ -170,6 +170,9 @@ public class ZoomActivity extends GeneralActivity {
         seekBar.setProgress(page);
     }
 
+    private void setUserInput(boolean enabled) {
+        mViewPager.setUserInputEnabled(enabled);
+    }
 
     private void setPageText(int page) {
         pageManagerLabel.setText(getString(R.string.page_format, page, gallery.getPageCount()));
@@ -412,11 +415,24 @@ public class ZoomActivity extends GeneralActivity {
 
         }
 
+        private boolean allowScroll = true;
 
         @NonNull
         @Override
         public Fragment createFragment(int position) {
             ZoomFragment f = ZoomFragment.newInstance(gallery, position, directory);
+
+            f.setZoomChangeListener((v, zoomLevel) -> {
+                try {
+                    boolean _allowScroll = zoomLevel < 1.1f;
+                    if (_allowScroll != allowScroll) {
+                        setUserInput(!allowScroll);
+                        allowScroll = _allowScroll;
+                    }
+                } catch (Exception ex) {
+                }
+            });
+
             f.setClickListener(v -> {
                 isHidden = !isHidden;
                 LogUtility.d("Clicked " + isHidden);
