@@ -11,7 +11,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.Build;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.JobIntentService;
@@ -56,7 +55,6 @@ public class CreatePDF extends JobIntentService {
     @Override
     protected void onHandleWork(@Nullable Intent intent) {
         if (!hasPDFCapabilities()) {
-            Toast.makeText(this, R.string.error_pdf, Toast.LENGTH_SHORT).show();
             return;
         }
         notId = NotificationSettings.getNotificationId();

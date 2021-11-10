@@ -7,8 +7,8 @@ android {
         applicationId "com.dar.nclientv2"
         minSdkVersion 14
         targetSdkVersion 31
-        versionCode 287
-        versionName "2.8.7-stable"
+        versionCode 288
+        versionName "2.8.8-stable"
         vectorDrawables.useSupportLibrary true
         proguardFiles 'proguard-rules.pro'
     }
@@ -51,7 +51,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.12.12'//Because of min SDK
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
     //implementation 'com.github.chrisbanes:PhotoView:2.3.0'
-    implementation 'org.jsoup:jsoup:1.14.2'
+    implementation 'org.jsoup:jsoup:1.14.3'
     implementation 'ch.acra:acra-core:5.7.0'
     implementation("com.github.bumptech.glide:glide:4.12.0") {
         exclude group: "com.android.support"

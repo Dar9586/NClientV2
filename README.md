@@ -40,6 +40,7 @@ Search|Random manga
 - [eme22](https://github.com/herrsunchess) for Spanish translation
 - [velosipedistufa](https://github.com/velosipedistufa) for Russian translation
 - [bottomtextboy](https://github.com/bottomtextboy) for Arabic translation
+- [MaticBabnik](https://github.com/MaticBabnik) for bug fixes
 
 
 
