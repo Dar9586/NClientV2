@@ -372,6 +372,7 @@
         <item>Arabic</item>
         <item>Spanish</item>
         <item>Russian</item>
+        <item>French</item>
     </string-array>
 
     <string-array name="language_data"><!--DO NOT TRANSLATE-->
@@ -385,6 +386,7 @@
         <item>ar-SA</item>
         <item>es</item>
         <item>ru-RU</item>
+        <item>fr-FR</item>
     </string-array>
 
     <string-array name="theme">
