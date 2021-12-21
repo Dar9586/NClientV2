@@ -204,6 +204,9 @@ public class VersionChecker {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 context.getSharedPreferences("Settings", 0).edit().putBoolean("downloaded", false).apply();
+                if (Global.UPDATEFOLDER == null) {
+                    Global.initStorage(context);
+                }
                 Global.UPDATEFOLDER.mkdirs();
                 f.createNewFile();
                 FileOutputStream stream = new FileOutputStream(f);

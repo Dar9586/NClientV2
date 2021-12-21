@@ -324,5 +324,6 @@
     <string name="title_change_page_buttons">غيِّر الصفحة بالنقر على الصورة</string>
     <string name="export_finished">Export finished</string>
     <string name="import_finished">Import finished</string>
+    <string name="download_torrent">Download torrent</string>
 
 </resources>
