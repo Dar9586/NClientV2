@@ -2,8 +2,8 @@
 
 <resources>
   
-    <string name="setting_on_ignore_tags">Les autres tags ne seront pas pris en compte quand un tag est séléctionné depuis la gallerie (sauf la langue)</string>
-    <string name="setting_off_ignore_tags">Les autres tags seront pris en compte quand un tag est sélectionné depuis la gallerie</string>
+    <string name="setting_on_ignore_tags">Les autres tags ne seront pas pris en compte quand un tag est sélectionné depuis la galerie (sauf la langue)</string>
+    <string name="setting_off_ignore_tags">Les autres tags seront pris en compte quand un tag est sélectionné depuis la galerie</string>
     <string name="setting_on_use_account_tag">Les tags du compte seront pris en compte lors des recherches (les tags locaux auront la priorité)</string>
     <string name="setting_off_use_account_tag">Les tags du compte seront ignorés lors des recherches</string>
     <string name="theme_summary">Sélectionner les couleurs du thème</string>
@@ -15,7 +15,7 @@
     <string name="use_account_tag">Utiliser les tags du compte</string>
     <string name="title_activity_gallery">Galerie</string>
     <string name="title_activity_zoom">Zoom</string>
-    <string name="title_activity_tag_filter">Filtres par tags</string>
+    <string name="title_activity_tag_filter">Filtre De Tags</string>
     <string name="title_activity_login">Connection</string>
     <string name="parodies">Parodies</string>
     <string name="characters">Personnages</string>
