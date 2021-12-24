@@ -47,7 +47,7 @@
     <string name="remove_from_online_favorites">Supprimer des favoris en ligne</string>
     <string name="add_to_online_blacklist">Ajouter à la liste noire en ligne ?</string>
     <string name="tag_already_in_blacklist">Tag déjà dans la liste noire</string>
-    <string name="are_you_sure">Êtes-vous sûr ?</string>
+    <string name="are_you_sure">Êtes-vous sûr(e) ?</string>
     <string name="thumbnail">Miniature</string>
     <string name="settings">Paramètres</string>
     <string name="related">Similaire</string>
@@ -119,7 +119,7 @@
     <string name="sort_by_latest">Trier par le plus récent</string>
     <string name="edit">Modifier</string>
     <string name="options">Options</string>
-    <string name="keep_history">Conserver l'historique des recherches</string>
+    <string name="keep_history">Conserver l\'historique des recherches</string>
     <string name="add">Ajouter</string>
     <string name="insert_tag_name">Insérer le nom du tag :</string>
     <string name="favorite_count">Nombre de tags populaires</string>
