@@ -162,10 +162,10 @@
     <string name="disable_lock_title">Désactiver le verouillage de l\'écran durant la lecture</string>
     <string name="download_all_galleries_in_this_page">Télécharger toutes les galeries de cette page</string>
     <string name="download_all_galleries">Télécharger toutes les galeries</string>
-    <string name="favorite_column_count">Selectionner le nombre de colonnes pour l\'écran des favoris</string>
-    <string name="download_column_count">Selectionner le nombre de colonnes pour l\'écran des téléchargements</string>
-    <string name="history_column_count">Selectionner le nombre de colonnes pour l\'écran de l'historique</string>
-    <string name="main_column_count">Selectionner le nombre de colonnes pour l\'écran principal</string>
+    <string name="favorite_column_count">Sélectionner le nombre de colonnes pour l\'écran des favoris</string>
+    <string name="download_column_count">Sélectionner le nombre de colonnes pour l\'écran des téléchargements</string>
+    <string name="history_column_count">Sélectionner le nombre de colonnes pour l\'écran de l'historique</string>
+    <string name="main_column_count">Sélectionner le nombre de colonnes pour l\'écran principal</string>
     <string name="navigation_settings">Navigation</string>
     <string name="stop_download">Arrêter le téléchargement</string>
     <string name="start_download">Lancer le téléchargement</string>
@@ -252,7 +252,7 @@
     <string name="manage_statuses">Gérer les statuts</string>
     <string name="update_status">Modifier le statut :</string>
     <string name="view_statuses">Voir les statuts</string>
-    <string name="status_column_count">Selectionner le nombre de colonnes pour l\'écran des statuts</string>
+    <string name="status_column_count">Sélectionner le nombre de colonnes pour l\'écran des statuts</string>
     <string name="status_viewer">Statuts</string>
     <string name="title_hide_multitasking">Masquer le contenu de l'appli dans les tâches</string>
     <string name="title">Titre</string>
