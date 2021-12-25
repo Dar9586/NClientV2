@@ -179,7 +179,7 @@
     <string name="send_with_title">Envoyer avec l\'URL ?</string>
     <string name="caption_send_with_title">Joindre l\'url du titre correspondant à l\'image ?</string>
     <string name="history_size">Taille de l\'historique</string>
-    <string name="history_size_summary">Définir le nombre maximal d'entrées pour l\'historique</string>
+    <string name="history_size_summary">Définir le nombre maximal d\'entrées pour l\'historique</string>
     <string name="view_history">Afficher l\'historique</string>
     <string name="history">Historique</string>
     <string name="clear_history">Effacer l\'historique</string>
