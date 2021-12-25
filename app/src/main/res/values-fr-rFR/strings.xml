@@ -164,7 +164,7 @@
     <string name="download_all_galleries">Télécharger toutes les galeries</string>
     <string name="favorite_column_count">Sélectionner le nombre de colonnes pour l\'écran des favoris</string>
     <string name="download_column_count">Sélectionner le nombre de colonnes pour l\'écran des téléchargements</string>
-    <string name="history_column_count">Sélectionner le nombre de colonnes pour l\'écran de l'historique</string>
+    <string name="history_column_count">Sélectionner le nombre de colonnes pour l\'écran de l\'historique</string>
     <string name="main_column_count">Sélectionner le nombre de colonnes pour l\'écran principal</string>
     <string name="navigation_settings">Navigation</string>
     <string name="stop_download">Arrêter le téléchargement</string>
@@ -178,8 +178,8 @@
     <string name="column_count_select">Sélection du nombre de colonnes</string>
     <string name="send_with_title">Envoyer avec l\'URL ?</string>
     <string name="caption_send_with_title">Joindre l\'url du titre correspondant à l\'image ?</string>
-    <string name="history_size">Taille de l'historique</string>
-    <string name="history_size_summary">Définir le nombre maximal d'entrées pour l'historique</string>
+    <string name="history_size">Taille de l\'historique</string>
+    <string name="history_size_summary">Définir le nombre maximal d'entrées pour l\'historique</string>
     <string name="view_history">Afficher l\'historique</string>
     <string name="history">Historique</string>
     <string name="clear_history">Effacer l\'historique</string>
@@ -194,7 +194,7 @@
     <string name="zoom_one_column">Activer le zoom</string>
     <string name="insert_pin">Insérer un code PIN</string>
     <string name="confirm_pin">Confirmer le code PIN</string>
-    <string name="setting_pin">Activer le code PIN pour ouvrir l'appli</string>
+    <string name="setting_pin">Activer le code PIN pour ouvrir l\'appli</string>
     <string name="use_pin">Utiliser un code PIN</string>
     <string name="wrong_pin">Mauvais code PIN</string>
     <string name="rotate_image">Pivoter l\'image</string>
@@ -254,7 +254,7 @@
     <string name="view_statuses">Voir les statuts</string>
     <string name="status_column_count">Sélectionner le nombre de colonnes pour l\'écran des statuts</string>
     <string name="status_viewer">Statuts</string>
-    <string name="title_hide_multitasking">Masquer le contenu de l'appli dans les tâches</string>
+    <string name="title_hide_multitasking">Masquer le contenu de l\'appli dans les tâches</string>
     <string name="title">Titre</string>
     <string name="download_date">Date de téléchargement</string>
     <string name="page_count">Nombre de pages</string>
@@ -287,7 +287,7 @@
     <string name="fix_inverted_summary">Activer si les images sont affichées avec des couleurs inversées (sur certains appareils, cela entraîne le changement du thème de l\'appareil en clair, désactiver le paramètre résoudra cela)</string>
     <string name="navigation_settings_per_screen">Paramètres de navigation par écran</string>
     <string name="downloaded_update_at" formatted="true">Mise à jour téléchargée dans %s</string>
-    <string name="summary_offscreen_limit">Définissez le nombre d\'images à précharger en arrière-plan lors de la lecture d'une galerie</string>
+    <string name="summary_offscreen_limit">Définissez le nombre d\'images à précharger en arrière-plan lors de la lecture d\'une galerie</string>
     <string name="title_offscreen_limit">Nombre d\'images à précharger</string>
     <string name="sort_popoular_month">Populaire ce mois-ci</string>
     <string name="random">Aléatoire</string>
