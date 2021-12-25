@@ -1,7 +1,6 @@
 package com.dar.nclientv2.components.activities;
 
 import android.annotation.SuppressLint;
-import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -9,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.multidex.MultiDexApplication;
 
 import com.dar.nclientv2.BuildConfig;
 import com.dar.nclientv2.R;
@@ -42,7 +42,7 @@ import java.security.NoSuchAlgorithmException;
     ReportField.ANDROID_VERSION,
     ReportField.LOGCAT
 })
-public class CrashApplication extends Application {
+public class CrashApplication extends MultiDexApplication {
     private static final String SIGNATURE_GITHUB = "ce96fdbcc89991f083320140c148db5f";
 
     @Override

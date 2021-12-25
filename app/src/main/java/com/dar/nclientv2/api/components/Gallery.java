@@ -105,7 +105,7 @@ public class Gallery extends GenericGallery {
         String pathTitle = title.replace('/', ' ').replaceAll("[/|\\\\*\"'?:<>]", " ");
         while (pathTitle.contains("  "))
             pathTitle = pathTitle.replace("  ", " ");
-        return pathTitle;
+        return pathTitle.trim();
     }
 
     public static String getPathTitle(@Nullable String title) {

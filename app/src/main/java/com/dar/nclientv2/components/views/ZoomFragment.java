@@ -121,8 +121,10 @@ public class ZoomFragment extends Fragment {
         });
 
         photoView.setOnScaleChangeListener((float scaleFactor, float focusX, float focusY)->{
-            this.zoomChangeListener.onZoomChange(rootView, photoView.getScale());
-        });
+            if(this.zoomChangeListener!=null) {
+                this.zoomChangeListener.onZoomChange(rootView, photoView.getScale());
+            }
+            });
 
         photoView.setMaximumScale(MAX_SCALE);
         retryButton.setOnClickListener(v -> loadImage());
