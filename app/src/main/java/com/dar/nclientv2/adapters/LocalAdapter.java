@@ -110,10 +110,12 @@ public class LocalAdapter extends MultichoiceAdapter<Object, LocalAdapter.ViewHo
         public void triggerEndDownload(GalleryDownloaderV2 downloader) {
             LocalGallery l = downloader.localGallery();
             galleryDownloaders.remove(downloader);
-            dataset.remove(l);
-            dataset.add(l);
-            LogUtility.d(l);
-            sortElements();
+            if(l!=null) {
+                dataset.remove(l);
+                dataset.add(l);
+                LogUtility.d(l);
+                sortElements();
+            }
             context.runOnUiThread(() -> notifyItemRangeChanged(0, getItemCount()));
         }
 

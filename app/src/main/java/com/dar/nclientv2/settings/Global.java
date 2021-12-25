@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.UiModeManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -68,6 +67,7 @@ public class Global {
     private static final String UPDATEFOLDER_NAME = "Update";
     private static final String ZIPFOLDER_NAME = "ZIP";
     private static final String BACKUPFOLDER_NAME = "Backup";
+    private static final String TORRENTFOLDER_NAME = "Torrents";
     private static final DisplayMetrics lastDisplay = new DisplayMetrics();
     public static OkHttpClient client = null;
     public static File OLD_GALLERYFOLDER;
@@ -77,6 +77,7 @@ public class Global {
     public static File PDFFOLDER;
     public static File UPDATEFOLDER;
     public static File ZIPFOLDER;
+    public static File TORRENTFOLDER;
     public static File BACKUPFOLDER;
     private static Language onlyLanguage;
     private static TitleType titleType;
@@ -174,12 +175,14 @@ public class Global {
         if (!files.contains(ROOTFOLDER) && !isExternalStorageManager())
             ROOTFOLDER = new File(getDefaultFileParent(context));
         MAINFOLDER = new File(ROOTFOLDER, MAINFOLDER_NAME);
+        LogUtility.d(MAINFOLDER);
         OLD_GALLERYFOLDER = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), MAINFOLDER_NAME);
         DOWNLOADFOLDER = new File(MAINFOLDER, DOWNLOADFOLDER_NAME);
         SCREENFOLDER = new File(MAINFOLDER, SCREENFOLDER_NAME);
         PDFFOLDER = new File(MAINFOLDER, PDFFOLDER_NAME);
         UPDATEFOLDER = new File(MAINFOLDER, UPDATEFOLDER_NAME);
         ZIPFOLDER = new File(MAINFOLDER, ZIPFOLDER_NAME);
+        TORRENTFOLDER = new File(MAINFOLDER, TORRENTFOLDER_NAME);
         BACKUPFOLDER = new File(MAINFOLDER, BACKUPFOLDER_NAME);
     }
 
@@ -551,6 +554,7 @@ public class Global {
             Global.UPDATEFOLDER.mkdir(),
             Global.SCREENFOLDER.mkdir(),
             Global.ZIPFOLDER.mkdir(),
+            Global.TORRENTFOLDER.mkdir(),
             Global.BACKUPFOLDER.mkdir(),
         };
         LogUtility.d(
@@ -561,6 +565,7 @@ public class Global {
                 "4:" + Global.UPDATEFOLDER + bools[3] + '\n' +
                 "5:" + Global.SCREENFOLDER + bools[4] + '\n' +
                 "5:" + Global.ZIPFOLDER + bools[5] + '\n' +
+                "5:" + Global.TORRENTFOLDER + bools[5] + '\n' +
                 "6:" + Global.BACKUPFOLDER + bools[6] + '\n'
         );
 
@@ -714,9 +719,6 @@ public class Global {
 
     private static void updateConfigurationNightMode(AppCompatActivity activity, Configuration c) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        UiModeManager manager = (UiModeManager) activity.getSystemService(Context.UI_MODE_SERVICE);
-        if (manager != null) manager.setNightMode(UiModeManager.MODE_NIGHT_NO);
-
         c.uiMode &= (~Configuration.UI_MODE_NIGHT_MASK);//clear night mode bits
         c.uiMode |= Configuration.UI_MODE_NIGHT_NO; //disable night mode
     }

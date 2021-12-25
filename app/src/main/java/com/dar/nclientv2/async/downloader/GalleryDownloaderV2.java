@@ -18,10 +18,8 @@ import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -277,7 +275,7 @@ public class GalleryDownloaderV2 {
                 r.close();
                 return false;
             }
-            long written = writeStreamToFile(r.body().byteStream(), filePath);
+            long written = Utility.writeStreamToFile(r.body().byteStream(), filePath);
             r.close();
             if (written != len) {
                 filePath.delete();
@@ -290,20 +288,6 @@ public class GalleryDownloaderV2 {
         return false;
     }
 
-    private long writeStreamToFile(InputStream inputStream, File filePath) throws IOException {
-        FileOutputStream outputStream = new FileOutputStream(filePath);
-        int read;
-        long totalByte = 0;
-        byte[] bytes = new byte[1024];
-        while ((read = inputStream.read(bytes)) != -1) {
-            outputStream.write(bytes, 0, read);
-            totalByte += read;
-        }
-        outputStream.flush();
-        outputStream.close();
-        inputStream.close();
-        return totalByte;
-    }
 
     public void initDownload() {
         if (initialized) return;

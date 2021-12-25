@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
 
 import com.dar.nclientv2.adapters.GalleryAdapter;
 import com.dar.nclientv2.api.InspectorV3;
@@ -46,6 +47,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
@@ -252,13 +254,10 @@ public class GalleryActivity extends BaseActivity {
         menu.findItem(R.id.download_gallery).setVisible(isValidOnline);
         menu.findItem(R.id.related).setVisible(isValidOnline);
         menu.findItem(R.id.comments).setVisible(isValidOnline);
+        menu.findItem(R.id.download_torrent).setVisible(isLogged);
 
         menu.findItem(R.id.share).setVisible(gallery.isValid());
         menu.findItem(R.id.load_internet).setVisible(isLocal && gallery.isValid());
-
-        if (isValidOnline && isLogged) ;
-        //instantiateWebView();
-
     }
 
     @Override
@@ -278,6 +277,7 @@ public class GalleryActivity extends BaseActivity {
                 requestStorage();
         } else if (id == R.id.add_online_gallery) addToFavorite(item);
         else if (id == R.id.change_view) updateColumnCount(true);
+        else if (id == R.id.download_torrent) downloadTorrent();
         else if (id == R.id.load_internet) toInternet();
         else if (id == R.id.manage_status) updateStatus();
         else if (id == R.id.share) Global.shareGallery(this, gallery);
@@ -286,9 +286,6 @@ public class GalleryActivity extends BaseActivity {
             i.putExtra(getPackageName() + ".GALLERYID", gallery.getId());
             startActivity(i);
         } else if (id == R.id.related) {
-            /*Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra(getPackageName() + ".RELATED", gallery.getId());
-            startActivity(intent);*/
             recycler.smoothScrollToPosition(recycler.getAdapter().getItemCount());
         } else if (id == R.id.favorite_manager) {
             if (isLocalFavorite) {
@@ -304,6 +301,41 @@ public class GalleryActivity extends BaseActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void downloadTorrent() {
+        if(!Global.hasStoragePermission(this)){
+            return;
+        }
+
+        String url = String.format(Locale.US, Utility.getBaseUrl() + "g/%d/download", gallery.getId());
+        String referer = String.format(Locale.US, Utility.getBaseUrl() + "g/%d/", gallery.getId());
+
+        new AuthRequest(referer, url, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call,@NonNull  IOException e) {
+                GalleryActivity.this.runOnUiThread(() ->
+                    Toast.makeText(GalleryActivity.this, R.string.failed, Toast.LENGTH_SHORT).show()
+                );
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call,@NonNull Response response) throws IOException {
+                File file=new File(Global.TORRENTFOLDER,gallery.getId()+".torrent");
+                Utility.writeStreamToFile(response.body().byteStream(), file);
+                Intent intent=new Intent(Intent.ACTION_VIEW);
+                Uri torrentUri;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    torrentUri = FileProvider.getUriForFile(GalleryActivity.this, GalleryActivity.this.getPackageName() + ".provider", file);
+                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                }else{
+                    torrentUri=Uri.fromFile(file);
+                }
+                intent.setDataAndType(torrentUri, "application/x-bittorrent");
+                GalleryActivity.this.startActivity(intent);
+                file.deleteOnExit();
+            }
+        }).setMethod("GET",null).start();
     }
 
     private void updateStatus() {
