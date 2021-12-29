@@ -75,7 +75,7 @@
     <string name="writing_pdf">PDF yazılıyor</string>
 
     <string name="navigation_drawer_close">Gezinme çekmecesini kapat</string>
-    <string name="nav_header_subtitle">Nhentai resmi olmayan istemci</string>
+    <string name="nav_header_subtitle">NHentai resmi olmayan istemci</string>
 
     <string name="change_page">Sayfayı değiştir:</string>
     <string name="prev_page">Önceki sayfa</string>
@@ -342,7 +342,7 @@
     <string name="summary_fetch_metadata">2.3.0\'dan önce indirilen galerilerde etiketler gibi metaveriler yoktu. Bu galeriler için metaverileri indirebilirsiniz</string>
     <string name="title_fetch_metadata">Eski galeriler için metaverileri indir</string>
     <string name="title_change_page_buttons">Resme tıklayarak sayfa değiştir</string>
-    <string name="export_finished">Export finished</string>
-    <string name="import_finished">Import finished</string>
-    <string name="download_torrent">Download torrent</string>
+    <string name="export_finished">Dışa Aktarma Tamamlandı</string>
+    <string name="import_finished">İçe Alma Tammalandı</string>
+    <string name="download_torrent">Torrent İndir</string>
 </resources>
