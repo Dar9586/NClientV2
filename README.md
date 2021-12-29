@@ -41,6 +41,7 @@ Search|Random manga
 - [velosipedistufa](https://github.com/velosipedistufa) for Russian translation
 - [bottomtextboy](https://github.com/bottomtextboy) for Arabic translation
 - [MaticBabnik](https://github.com/MaticBabnik) for bug fixes
+- [DontPayAttention](https://github.com/DontPayAttention) for French translation
 
 
 

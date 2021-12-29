@@ -279,6 +279,7 @@
         <item>Arabic</item>
         <item>Español</item>
         <item>Ruso</item>
+        <item>Francés</item>
     </string-array>
     <string-array name="theme">
         <item>Claro</item>
