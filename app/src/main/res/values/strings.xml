@@ -68,7 +68,7 @@
     <string name="setting_off_use_account_tag">Account tags will be ignored for the query</string>
     <string name="theme_summary">Select theme colors</string>
     <string name="send_crash_report">Send crash report</string>
-    <string name="change_theme">Change theme</string>
+    <string name="change_theme">テーマを変える</string>
     <string name="clear_cache">Clear cache</string>
     <string name="infinite_scroll">Infinite scroll</string>
     <string name="ignore_tags">Ignore other tags</string>
@@ -78,8 +78,8 @@
     <string name="title_activity_tag_filter">Tag Filter</string>
     <string name="title_activity_login">Log in</string>
     <string name="parodies">Parodies</string>
-    <string name="characters">Characters</string>
-    <string name="tags">Tags</string>
+    <string name="characters">キャラクター</string>
+    <string name="tags">タグ</string>
     <string name="artists">Artists</string>
     <string name="groups">Groups</string>
     <string name="languages">Languages</string>
@@ -359,21 +359,21 @@
     <string name="download_torrent">Download torrent</string>
 
     <string-array name="scroll_type">
-        <item>Horizontal</item>
+        <item></item>
         <item>Vertical</item>
     </string-array>
     <string-array name="language">
-        <item>System Default</item>
-        <item>English</item>
-        <item>Chinese (Traditional)</item>
-        <item>Chinese (Simplified)</item>
-        <item>Turkish</item>
-        <item>Italian</item>
-        <item>German</item>
-        <item>Arabic</item>
-        <item>Spanish</item>
-        <item>Russian</item>
-        <item>French</item>
+        <item>デフォルトの言語</item>
+        <item>英語</item>
+        <item>中国語(繁体字)</item>
+        <item>中国語 (簡体字)</item>
+        <item>トルコ語</item>
+        <item>イタリア語</item>
+        <item>ドイツ語</item>
+        <item>アラビア語</item>
+        <item>スペイン語</item>
+        <item>ロシア語</item>
+        <item>フランス語</item>
     </string-array>
 
     <string-array name="language_data"><!--DO NOT TRANSLATE-->
@@ -391,8 +391,8 @@
     </string-array>
 
     <string-array name="theme">
-        <item>Light</item>
-        <item>Dark</item>
+        <item>ライトテーマ</item>
+        <item>ダークテーマ</item>
     </string-array>
 
     <string-array name="theme_data"><!--DO NOT TRANSLATE-->
@@ -403,8 +403,8 @@
         <item>nhentai.net</item>
     </string-array>
     <string-array name="title_type_array">
-        <item>English</item>
-        <item>Japanese</item>
+        <item>英語</item>
+        <item>日本語</item>
         <item>Pretty</item>
     </string-array>
 
