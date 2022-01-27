@@ -62,103 +62,103 @@
     <string name="slash" translatable="false">/</string>
 
 
-    <string name="setting_on_ignore_tags">Other tags won\'t be queried when a tag is selected from the gallery menu (except language)</string>
-    <string name="setting_off_ignore_tags">Other tags will be queried when a tag is selected from the gallery menu</string>
-    <string name="setting_on_use_account_tag">Use the account tags into the search query (Local tags will have priority)</string>
-    <string name="setting_off_use_account_tag">Account tags will be ignored for the query</string>
-    <string name="theme_summary">Select theme colors</string>
-    <string name="send_crash_report">Send crash report</string>
+    <string name="setting_on_ignore_tags">ギャラリーメニューからタグを選択した場合、他のタグは照会されません。（言語を除く）</string>
+    <string name="setting_off_ignore_tags">ギャラリーメニューからタグを選択すると、他のタグが照会されます。</string>
+    <string name="setting_on_use_account_tag">アカウントタグを検索に使用します。（ローカルタグが優先されます）</string>
+    <string name="setting_off_use_account_tag">アカウントタグは無視されます</string>
+    <string name="theme_summary">テーマの色を選択</string>
+    <string name="send_crash_report">クラッシュレポートを送信する</string>
     <string name="change_theme">テーマを変える</string>
-    <string name="clear_cache">Clear cache</string>
-    <string name="infinite_scroll">Infinite scroll</string>
-    <string name="ignore_tags">Ignore other tags</string>
-    <string name="use_account_tag">Use tags from account</string>
+    <string name="clear_cache">キャッシュをクリアする</string>
+    <string name="infinite_scroll">スクロールを無限にする</string>
+    <string name="ignore_tags">他のタグを無視する</string>
+    <string name="use_account_tag">アカウントタグを使用する</string>
     <string name="title_activity_gallery">ギャラリー</string>
-    <string name="title_activity_zoom">Zoom Activity</string>
-    <string name="title_activity_tag_filter">Tag Filter</string>
+    <string name="title_activity_zoom">ズームアクティビティ</string>
+    <string name="title_activity_tag_filter">タグフィルター</string>
     <string name="title_activity_login">ログインする</string>
-    <string name="parodies">Parodies</string>
+    <string name="parodies">パロディー</string>
     <string name="characters">キャラクター</string>
     <string name="tags">タグ</string>
-    <string name="artists">Artists</string>
-    <string name="groups">Groups</string>
-    <string name="languages">Languages</string>
-    <string name="categories">Categories</string>
+    <string name="artists">作者</string>
+    <string name="groups">グループ</string>
+    <string name="languages">言語</string>
+    <string name="categories">カテゴリー</string>
     <string name="unknown">不明</string>
     <string name="channel1_name">ダウンロードした本</string>
     <string name="channel2_name">PDFファイルを作る</string>
     <string name="channel3_name">ZIPファイルを作る</string>
-    <string name="channel1_description">Used to show progress of the download of a gallery</string>
-    <string name="channel2_description">Used to show progress of the creation of the PDF</string>
-    <string name="channel3_description">Used to show progress of the creation of the ZIP</string>
+    <string name="channel1_description">ギャラリーのダウンロードの進行状況を表示するために使用されます。</string>
+    <string name="channel2_description">PDFファイルの作成の進捗状況を表示するために使用されます。</string>
+    <string name="channel3_description">ZIPファイルの作成の進捗状況を表示するために使用されます。</string>
     <string name="channel2_title">PDFファイルを作成中...しばらくお待ちください。:</string>
     <string name="channel3_title">ZIPファイルを作成中...しばらくお待ちください。:</string>
-    <string name="tags_max_reached" formatted="true">You can have a maximum of %d selected tags.</string>
+    <string name="tags_max_reached" formated = "true">最大％d個のタグを選択できます。</string>
     <string name="only_english">英語のみ</string>
     <string name="only_japanese">日本語のみ</string>
     <string name="only_chinese">中国語のみ</string>
     <string name="all_languages">全ての言語</string>
-    <string name="login">Log in</string>
-    <string name="login_formatted" formatted="true">Logged as %s</string>
-    <string name="logout">Logout</string>
-    <string name="favorite_online_manga">Favorite online galleries</string>
-    <string name="online_tags">Online tags</string>
-    <string name="add_to_online_favorite">Add to online favorites</string>
-    <string name="remove_from_online_favorites">Remove from online favorites</string>
-    <string name="add_to_online_blacklist">Add to online blacklist?</string>
-    <string name="tag_already_in_blacklist">Tag already in blacklist</string>
-    <string name="are_you_sure">Are you sure?</string>
-    <string name="thumbnail">Thumbnail</string>
-    <string name="settings">Settings</string>
-    <string name="related">Related</string>
-    <string name="failed">Failed</string>
-    <string name="search">Search</string>
-    <string name="prev">Previous</string>
-    <string name="share">Share</string>
-    <string name="image">Image</string>
-    <string name="next">Next</string>
-    <string name="create_pdf">Create PDF</string>
-    <string name="create_pdf_format" formatted="true">Create PDF of: "%s"</string>
-    <string name="create_zip_format" formatted="true">Create ZIP of: "%s"</string>
-    <string name="created_pdf">Successful created PDF</string>
-    <string name="error_pdf">Error while creating PDF</string>
-    <string name="parsing_pages">Parsing pages</string>
-    <string name="writing_pdf">Writing PDF</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_subtitle">NHentai unofficial client</string>
-    <string name="change_page">Change page:</string>
-    <string name="prev_page">Previous page</string>
-    <string name="next_page">Next page</string>
-    <string name="downloaded_manga">Downloaded galleries</string>
-    <string name="download_gallery">Download gallery</string>
-    <string name="delete_gallery_size_format" formatted="true">Delete gallery (%.2fMB)</string>
-    <string name="delete_gallery_format" formatted="true">Do you want to delete the gallery:\n%s</string>
-    <string name="share_with">Share with</string>
-    <string name="link_copied_to_clipboard">Link copied to clipboard</string>
-    <string name="open_in_browser">Open in browser</string>
-    <string name="go_online">Go online</string>
-    <string name="update_tag_status">Update tag status</string>
-    <string name="change_view">Change view</string>
-    <string name="tag_preference">Tag preference</string>
-    <string name="manage_tags">Manage tags</string>
-    <string name="applied_filters">Applied filters</string>
-    <string name="show_related">Show related galleries</string>
-    <string name="random_manga">Random gallery</string>
-    <string name="save_page">Save page</string>
-    <string name="page_count_format" formatted="true">%d pages</string>
-    <string name="upload_date_format" formatted="true">Uploaded on %s at %s</string>
-    <string name="favorite_count_format" formatted="true">%d favorites</string>
-    <string name="favorite_manga">Favorite galleries</string>
-    <string name="setting_on_remove_ignored">The galleries with ignored tags will not be shown</string>
-    <string name="setting_off_remove_ignored">The galleries with ignored tags will be blurred</string>
-    <string name="remove_ignored_galleries">Remove ignored galleries</string>
-    <string name="clear_tag_preferences">Clear tag preferences</string>
-    <string name="check_for_update_on_startup">Check for update on startup</string>
-    <string name="check_for_updates">Check for updates</string>
-    <string name="no_updates_found">No updates found</string>
-    <string name="error_retrieving">Error in retrieving latest version</string>
-    <string name="new_version_found">New version found</string>
+    <string name="login">ログイン</string>
+    <string name="login_formatted" formated = "true">％sとして記録</string>
+    <string name="logout">ログアウトする</string>
+    <string name="favorite_online_manga">お気に入りのオンラインギャラリー</string>
+    <string name="online_tags">オンラインタグ</string>
+    <string name="add_to_online_favorite">オンラインのお気に入りに追加する。</string>
+    <string name="remove_from_online_favorites">オンラインのお気に入りから削除する。</string>
+    <string name="add_to_online_blacklist">オンラインブラックリストに追加しますか？</string>
+    <string name="tag_already_in_blacklist">すでにブラックリスト追加されているタグ</string>
+    <string name="are_you_sure">本当ですか？</string>
+    <string name="thumbnail">サムネイル</string>
+    <string name="settings">設定</string>
+    <string name="related">関連しているる漫画</string>
+    <string name="failed">失敗した</string>
+    <string name="search">検索</string>
+    <string name="prev">前</string>
+    <string name="share">共有</string>
+    <string name="image">画像</string>
+    <string name="next">次</string>
+    <string name="create_pdf">PDFを作る</string>
+    <string name="create_pdf_format" formated = "true">次のPDFを作成： "％s"</string>
+    <string name="create_zip_format" formated = "true">次のZIPを作成： "％s"</string>
+    <string name="created_pdf">PDFファイルは正常に作成されました。</string>
+    <string name="error_pdf">PDFファイルの作成中にエラーが発生しました。</string>
+    <string name="parsing_pages">ページの解析</string>
+    <string name="writing_pdf">PDFを書く。</string>
+    <string name="navigation_drawer_open">ナビゲーションドロワーを開く。</string>
+    <string name="navigation_drawer_close">ナビゲーションドロワーを閉じる。</string>
+    <string name="nav_header_subtitle">NHentaiの非公式Androidクライアントアプリ</string>
+    <string name="change_page">ページを変更する:</string>
+    <string name="prev_page">前のページ</string>
+    <string name="next_page">次のページ</string>
+    <string name="downloaded_manga">ダウンロードしたギャラリー一覧</string>
+    <string name="download_gallery">ギャラリーをダウンロード</string>
+    <string name="delete_gallery_size_format" formated = "true">ギャラリーを削除します　よろしいですか？（％.2fMB）</string>
+    <string name="delete_gallery_format" formatted="true">ギャラリーを削除しますか？：\ n％s</string>
+    <string name="share_with">と共有する</string>
+    <string name="link_copied_to_clipboard">リンクをクリップボードにコピーしました。</string>
+    <string name="open_in_browser">ブラウザで開く</string>
+    <string name="go_online">オンライン化する</string>
+    <string name="update_tag_status">タグステータスの更新</string>
+    <string name="change_view">ビューを変更</string>
+    <string name="tag_preference">タグの設定</string>
+    <string name="manage_tags">漫画のタグ</string>
+    <string name="applied_filters">適用されたフィルター</string>
+    <string name="show_related">関連するギャラリーを表示する</string>
+    <string name="random_manga">ランダムギャラリー</string>
+    <string name="save_page">現在のページを保存する</string>
+    <string name="page_count_format" formated = "true">％dページ</string>
+    <string name="upload_date_format" formated = "true">％sの％sにアップロード</string>
+    <string name="favorite_count_format" formated = "true">％dお気に入り</string>
+    <string name="favorite_manga">お気に入りのギャラリー</string>
+    <string name="setting_on_remove_ignored">タグが無視されているギャラリーは表示されません。</string>
+    <string name="setting_off_remove_ignored">タグが無視されたギャラリーはぼやけます。</string>
+    <string name="remove_ignored_galleries">無視されたギャラリーを削除します。</string>
+    <string name="clear_tag_preferences">タグ設定をクリアする</string>
+    <string name="check_for_update_on_startup">起動時にアップデートを確認します</string>
+    <string name="check_for_updates">アップデートをチェックしますか？</string>
+    <string name="no_updates_found">お使いのバージョンは最新です。</string>
+    <string name="error_retrieving">最新バージョンの取得中にエラーが発生しました。　やり直しますか？</string>
+    <string name="new_version_found">新しい更新が利用可能です！</string>
     <string name="update_version_format" formatted="true">Update from version %s to version %s?\n\nChangelog:\n%s</string>
     <string name="clear_this_list">Clear this list?</string>
     <string name="set_minimum_count">Set minimum count</string>
@@ -178,7 +178,7 @@
     <string name="cache_cleared">Cache cleared</string>
     <string name="sort_by_latest">Sort by latest</string>
     <string name="edit">Edit</string>
-    <string name="options">Options</string>
+    <string name="options">設定</string>
     <string name="keep_history">Keep search history</string>
     <string name="add">Add</string>
     <string name="insert_tag_name">Insert tag name:</string>
@@ -189,9 +189,9 @@
     <string name="profile_picture">Profile picture</string>
     <string name="send_bug_on_github">Send bug on Github</string>
     <string name="github">Github</string>
-    <string name="install">Install</string>
+    <string name="install">インストール</string>
     <string name="download_update_failed">Unable to download updated version</string>
-    <string name="copyURL">Copy URL</string>
+    <string name="copyURL">URLをコピーする</string>
     <string name="add_bookmark">Add bookmark</string>
     <string name="manage_bookmarks">Manage bookmarks</string>
     <string name="bookmark_page_format">Page %d</string>
@@ -204,7 +204,7 @@
     <string name="show_gallery_titles">Show gallery titles</string>
     <string name="use_column_port">Column count while in portrait</string>
     <string name="use_column_land">Column count while in landscape</string>
-    <string name="change_language">Change language</string>
+    <string name="change_language">言語を変更する</string>
     <string name="tag_artist_gallery">Artist:</string>
     <string name="tag_character_gallery">Character:</string>
     <string name="tag_parody_gallery">Parody:</string>
@@ -212,11 +212,11 @@
     <string name="tag_category_gallery">Category:</string>
     <string name="tag_group_gallery">Group:</string>
     <string name="tag_tag_gallery">Tag:</string>
-    <string name="ok">OK</string>
-    <string name="cancel">Cancel</string>
-    <string name="no">No</string>
-    <string name="yes">Yes</string>
-    <string name="start_all_downloads">Start all downloads</string>
+    <string name="ok">はい</string>
+    <string name="cancel">いいえ</string>
+    <string name="no">いいえ</string>
+    <string name="yes">はい</string>
+    <string name="start_all_downloads">全てのダウンロードを開始する</string>
     <string name="pause_all_downloads">Pause all downloads</string>
     <string name="cancel_all_downloads">Cancel all downloads</string>
     <string name="disable_lock_title">Disable screen off while reading</string>
@@ -241,7 +241,7 @@
     <string name="history_size">History size</string>
     <string name="history_size_summary">Set the max number of entries for the history</string>
     <string name="view_history">View history</string>
-    <string name="history">History</string>
+    <string name="history">履歴</string>
     <string name="clear_history">Clear history</string>
     <string name="cancelled_format">Cancelled: %s</string>
     <string name="completed_format">Completed: %s</string>
@@ -288,7 +288,7 @@
     <string name="bookmark_here">Bookmark here</string>
     <string name="resume_from_page">Resume from page %d</string>
     <string name="new_beta_version_found">New beta version found</string>
-    <string name="check_beta_releases">Check for beta releases</string>
+    <string name="check_beta_releases">ベータ版のリリースをチェックする</string>
     <string name="page_range">Page range:</string>
     <string name="upload_time">Upload time:</string>
     <string name="from_page">From page:</string>
