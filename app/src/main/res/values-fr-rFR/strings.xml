@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-  
+
     <string name="setting_on_ignore_tags">Les autres tags ne seront pas pris en compte quand un tag est sélectionné depuis la galerie (sauf la langue)</string>
     <string name="setting_off_ignore_tags">Les autres tags seront pris en compte quand un tag est sélectionné depuis la galerie</string>
     <string name="setting_on_use_account_tag">Les tags du compte seront pris en compte lors des recherches (les tags locaux auront la priorité)</string>
@@ -314,6 +314,7 @@
         <item>Espagnol</item>
         <item>Russe</item>
         <item>Français</item>
+        <item>Japonais</item>
     </string-array>
 
     <string-array name="theme">
