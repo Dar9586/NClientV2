@@ -300,6 +300,10 @@ public class GalleryDownloaderV2 {
     private void checkPages() {
         File filePath;
         for (int i = 0; i < urls.size(); i++) {
+            if(urls.get(i)==null){
+                urls.remove(i--);
+                continue;
+            }
             filePath = new File(folder, urls.get(i).getPageName());
             if (filePath.exists() && !isCorrupted(filePath))
                 urls.remove(i--);

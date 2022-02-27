@@ -332,7 +332,11 @@ public class GalleryActivity extends BaseActivity {
                     torrentUri=Uri.fromFile(file);
                 }
                 intent.setDataAndType(torrentUri, "application/x-bittorrent");
-                GalleryActivity.this.startActivity(intent);
+                try {
+                    GalleryActivity.this.startActivity(intent);
+                }catch (RuntimeException ignore){
+                    Toast.makeText(GalleryActivity.this, R.string.failed, Toast.LENGTH_SHORT).show();
+                }
                 file.deleteOnExit();
             }
         }).setMethod("GET",null).start();

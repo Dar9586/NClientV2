@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="setting_on_ignore_tags">ギャラリーメニューからタグを選択した場合、他のタグは照会されません。（言語を除く）</string>
+    <string name="setting_off_ignore_tags">ギャラリーメニューからタグを選択すると、他のタグが照会されます。</string>
+    <string name="setting_on_use_account_tag">アカウントタグを検索に使用します。（ローカルタグが優先されます）</string>
+    <string name="setting_off_use_account_tag">アカウントタグは無視されます</string>
+    <string name="theme_summary">テーマの色を選択</string>
+    <string name="send_crash_report">クラッシュレポートを送信する</string>
+    <string name="change_theme">テーマを変える</string>
+    <string name="clear_cache">キャッシュをクリアする</string>
+    <string name="infinite_scroll">スクロールを無限にする</string>
+    <string name="ignore_tags">他のタグを無視する</string>
+    <string name="use_account_tag">アカウントタグを使用する</string>
+    <string name="title_activity_gallery">ギャラリー</string>
+    <string name="title_activity_zoom">ズームアクティビティ</string>
+    <string name="title_activity_tag_filter">タグフィルター</string>
+    <string name="title_activity_login">ログインする</string>
+    <string name="parodies">パロディー</string>
+    <string name="characters">キャラクター</string>
+    <string name="tags">タグ</string>
+    <string name="artists">作者</string>
+    <string name="groups">グループ</string>
+    <string name="languages">言語</string>
+    <string name="categories">カテゴリー</string>
+    <string name="unknown">不明</string>
+    <string name="channel1_name">ダウンロードした本</string>
+    <string name="channel2_name">PDFファイルを作る</string>
+    <string name="channel3_name">ZIPファイルを作る</string>
+    <string name="channel1_description">ギャラリーのダウンロードの進行状況を表示するために使用されます。</string>
+    <string name="channel2_description">PDFファイルの作成の進捗状況を表示するために使用されます。</string>
+    <string name="channel3_description">ZIPファイルの作成の進捗状況を表示するために使用されます。</string>
+    <string name="channel2_title">PDFファイルを作成中…しばらくお待ちください。:</string>
+    <string name="channel3_title">ZIPファイルを作成中…しばらくお待ちください。:</string>
+    <string name="tags_max_reached" formated = "true">最大%d個のタグを選択できます。</string>
+    <string name="only_english">英語のみ</string>
+    <string name="only_japanese">日本語のみ</string>
+    <string name="only_chinese">中国語のみ</string>
+    <string name="all_languages">全ての言語</string>
+    <string name="login">ログイン</string>
+    <string name="login_formatted" formated = "true">%sとして記録</string>
+    <string name="logout">ログアウトする</string>
+    <string name="favorite_online_manga">お気に入りのオンラインギャラリー</string>
+    <string name="online_tags">オンラインタグ</string>
+    <string name="add_to_online_favorite">オンラインのお気に入りに追加する。</string>
+    <string name="remove_from_online_favorites">オンラインのお気に入りから削除する。</string>
+    <string name="add_to_online_blacklist">オンラインブラックリストに追加しますか？</string>
+    <string name="tag_already_in_blacklist">すでにブラックリスト追加されているタグ</string>
+    <string name="are_you_sure">よろしいですか？</string>
+    <string name="thumbnail">サムネイル</string>
+    <string name="settings">設定</string>
+    <string name="related">関連しているる漫画</string>
+    <string name="failed">失敗した</string>
+    <string name="search">検索</string>
+    <string name="prev">前</string>
+    <string name="share">共有</string>
+    <string name="image">画像</string>
+    <string name="next">次</string>
+    <string name="create_pdf">PDFを作る</string>
+    <string name="create_pdf_format" formated = "true">次のPDFを作成： "%s"</string>
+    <string name="create_zip_format" formated = "true">次のZIPを作成： "%s"</string>
+    <string name="created_pdf">PDFファイルは正常に作成されました。</string>
+    <string name="error_pdf">PDFファイルの作成中にエラーが発生しました。</string>
+    <string name="parsing_pages">ページの解析</string>
+    <string name="writing_pdf">PDFを書く。</string>
+    <string name="navigation_drawer_open">ナビゲーションドロワーを開く。</string>
+    <string name="navigation_drawer_close">ナビゲーションドロワーを閉じる。</string>
+    <string name="nav_header_subtitle">NHentaiの非公式Androidクライアントアプリ</string>
+    <string name="change_page">ページを変更する:</string>
+    <string name="prev_page">前のページ</string>
+    <string name="next_page">次のページ</string>
+    <string name="downloaded_manga">ダウンロードしたギャラリー一覧</string>
+    <string name="download_gallery">ギャラリーをダウンロード</string>
+    <string name="delete_gallery_size_format" formated = "true">ギャラリーを削除します　よろしいですか？（%.2fMB）</string>
+    <string name="delete_gallery_format" formatted="true">ギャラリーを削除しますか？：\ n%s</string>
+    <string name="share_with">と共有する</string>
+    <string name="link_copied_to_clipboard">リンクをクリップボードにコピーしました。</string>
+    <string name="open_in_browser">ブラウザで開く</string>
+    <string name="go_online">オンライン化する</string>
+    <string name="update_tag_status">タグステータスの更新</string>
+    <string name="change_view">ビューを変更</string>
+    <string name="tag_preference">タグの設定</string>
+    <string name="manage_tags">漫画のタグ</string>
+    <string name="applied_filters">適用されたフィルター</string>
+    <string name="show_related">関連するギャラリーを表示する</string>
+    <string name="random_manga">ランダムギャラリー</string>
+    <string name="save_page">現在のページを保存する</string>
+    <string name="page_count_format" formated = "true">%dページ</string>
+    <string name="upload_date_format" formated = "true">%sの%sにアップロード</string>
+    <string name="favorite_count_format" formated = "true">%dお気に入り</string>
+    <string name="favorite_manga">お気に入りのギャラリー</string>
+    <string name="setting_on_remove_ignored">タグが無視されているギャラリーは表示されません。</string>
+    <string name="setting_off_remove_ignored">タグが無視されたギャラリーはぼやけます。</string>
+    <string name="remove_ignored_galleries">無視されたギャラリーを削除します。</string>
+    <string name="clear_tag_preferences">タグ設定をクリアする</string>
+    <string name="check_for_update_on_startup">起動時にアップデートを確認します</string>
+    <string name="check_for_updates">アップデートをチェックしますか？</string>
+    <string name="no_updates_found">お使いのバージョンは最新です。</string>
+    <string name="error_retrieving">最新バージョンの取得中にエラーが発生しました。</string>
+    <string name="new_version_found">新しい更新が利用可能です！</string>
+    <string name="update_version_format" formated = "true">バージョン%sからバージョン%sに更新しますか？\ n \ n変更ログ：\ n%s</string>
+    <string name="clear_this_list">このリストを削除しますか？</string>
+    <string name="set_minimum_count">最小カウントを設定する</string>
+    <string name="sort_by_title">タイトルで並べ替え</string>
+    <string name="sort_by_popular">人気順に並べ替え</string>
+    <string name="next_page_volume_up">音量を上げて次のページに移動</string>
+    <string name="next_page_volume_down">音量を下げて次のページに移動</string>
+    <string name="change_title_type">タイトルタイプを変更する</string>
+    <string name="title_type_summary">ギャラリーのデフォルトのタイトルタイプを選択します。</string>
+    <string name="search_settings">検索の設定</string>
+    <string name="global_settings">全体の設定</string>
+    <string name="images_settings">画像の設定</string>
+    <string name="miscellaneous">その他の設定</string>
+    <string name="update_settings">アップデートの設定</string>
+    <string name="online_favorite_manga">オンラインのお気に入りのギャラリー</string>
+    <string name="cache_size_formatted">キャッシュサイズ：%。2f MB</string>
+    <string name="cache_cleared">キャッシュが削除されました。</string>
+    <string name="sort_by_latest">最新順に並べ替え</string>
+    <string name="edit">編集</string>
+    <string name="options">設定</string>
+    <string name="keep_history">検索履歴を保存する</string>
+    <string name="add">追加</string>
+    <string name="insert_tag_name">タグ名を追加します：</string>
+    <string name="favorite_count">いいね数</string>
+    <string name="comments">コメント</string>
+    <string name="send">送信</string>
+    <string name="send_comment">コメントを送信する</string>
+    <string name="profile_picture">プロフィール画像</string>
+    <string name="send_bug_on_github">Githubでバグを送信する(Githubのアカウントが必要です。)</string>
+    <string name="github">Github</string>
+    <string name="install">インストール</string>
+    <string name="download_update_failed">更新されたバージョンをダウンロードできません。</string>
+    <string name="copyURL">URLをコピーする</string>
+    <string name="add_bookmark">ブックマークに追加</string>
+    <string name="manage_bookmarks">ブックマークを管理する</string>
+    <string name="bookmark_page_format">ページ %d</string>
+    <string name="bookmark_description">ブックマークの説明</string>
+    <string name="enable_right_to_left">右から左の設定を有効にする</string>
+    <string name="setting_on_use_rtl">画像は右から左に表示されます。</string>
+    <string name="setting_off_use_rtl">画像は左から右に表示されます。</string>
+    <string name="volume_change_setting">音量ボタンでページを変更する</string>
+    <string name="popular_tag_count">詳細検索中に表示される人気のあるタグの数</string>
+    <string name="show_gallery_titles">ギャラリーのタイトルを表示する</string>
+    <string name="use_column_port">ポートレート中の列数</string>
+    <string name="use_column_land">横向きでの列数</string>
+    <string name="change_language">言語を変更する</string>
+    <string name="tag_artist_gallery">作者:</string>
+    <string name="tag_character_gallery">キャラクター:</string>
+    <string name="tag_parody_gallery">パロディー:</string>
+    <string name="tag_language_gallery">言語:</string>
+    <string name="tag_category_gallery">カテゴリー:</string>
+    <string name="tag_group_gallery">グループ:</string>
+    <string name="tag_tag_gallery">タグ:</string>
+    <string name="ok">はい</string>
+    <string name="cancel">いいえ</string>
+    <string name="no">いいえ</string>
+    <string name="yes">はい</string>
+    <string name="start_all_downloads">全てのダウンロードを開始する</string>
+    <string name="pause_all_downloads">すべてのダウンロードを一時停止する</string>
+    <string name="cancel_all_downloads">全てのダウンロードを停止する</string>
+    <string name="disable_lock_title">読書中は画面をオフにする</string>
+    <string name="download_all_galleries_in_this_page">このページの全てのギャラリーをダウンロード</string>
+    <string name="download_all_galleries">全てのギャラリーをダウンロード</string>
+    <string name="favorite_column_count">お気に入りの列数を選択</string>
+    <string name="download_column_count">ダウンロード列数を選択</string>
+    <string name="history_column_count">履歴列数を選択</string>
+    <string name="main_column_count">メイン列数を選択</string>
+    <string name="navigation_settings">ナビゲーションの設定</string>
+    <string name="stop_download">ダウンロードを停止する</string>
+    <string name="start_download">ダウンロードを開始する</string>
+    <string name="create_zip">ZIPファイルを作成する。</string>
+    <string name="created_zip">ZIPファイルは正常に作成されました。</string>
+    <string name="failed_zip">ZIPファイルの作成に失敗しました。: </string>
+    <string name="start_page">最初のページ</string>
+    <string name="end_page">最後のページ</string>
+    <string name="invalid_range_selected">無効な範囲が選択されました</string>
+    <string name="column_count_select">列数の選択</string>
+    <string name="send_with_title">タイトルで送信しますか？</string>
+    <string name="caption_send_with_title">画像のキャプションとしてURLを画像に追加しますか？</string>
+    <string name="history_size">履歴サイズ</string>
+    <string name="history_size_summary">履歴のエントリの最大数を設定します</string>
+    <string name="view_history">履歴を表示</string>
+    <string name="history">履歴</string>
+    <string name="clear_history">履歴を削除</string>
+    <string name="cancelled_format">キャンセル：%s</string>
+    <string name="completed_format">完了：%s</string>
+    <string name="downloading_format">ダウンロード中: %s</string>
+    <string name="toggle_favorite">お気に入りを切り替える</string>
+    <string name="resume">再開する</string>
+    <string name="pause">一時停止</string>
+    <string name="title_copied_to_clipboard">タイトルをクリップボードにコピーする</string>
+    <string name="setting_zoom_one_column">ギャラリー内の1列モードでズームを有効にする</string>
+    <string name="zoom_one_column">ズームを有効にする</string>
+    <string name="insert_pin">PINを挿入</string>
+    <string name="confirm_pin">PINの確認</string>
+    <string name="setting_pin">PINを有効にしてアプリを起動する</string>
+    <string name="use_pin">PINを使用します</string>
+    <string name="wrong_pin">PINが間違っています。</string>
+    <string name="rotate_image">画像を回転させる</string>
+    <string name="toggle_online_favorite">オンラインのお気に入りを切り替える</string>
+    <string name="data_usage_settings">データの使用量の変更</string>
+    <string name="mobile_data_usage_setting">モバイルデータでの使用量設定</string>
+    <string name="wifi_data_usage_setting">Wi-Fiデータでの使用量設定</string>
+    <string name="data_usage_thumb">常にサムネイルをダウンロード</string>
+    <string name="data_usage_full">サムネイルまたは完全な画像をダウンロードする</string>
+    <string name="data_usage_no">画像をダウンロードしない</string>
+    <string name="enable_network_to_continue">イメージのダウンロードを有効にするか、ネットワークを変更してイメージを開きます。</string>
+    <string name="donate">開発者をサポートします。(PaypalかLiberapayかBitcoinで支援できます。）</string>
+    <string name="id_tag">ID:</string>
+    <string name="id_copied_to_clipboard">IDをクリップボードにコピーしました。</string>
+    <string name="copied_to_clipboard">クリップボードにコピー</string>
+    <string name="maximum_notification_count">最大通知数</string>
+    <string name="copy_settings_to_clipboard">設定をクリップボードにコピーします。</string>
+
+    <string name="sort_popular_all_time">人気</string>
+    <string name="sort_recent">最近追加</string>
+    <string name="sort_popular_day">毎日の人気</string>
+    <string name="sort_popular_week">毎週の人気</string>
+    <string name="sort_type_title_format" formated = "true">並べ替えタイプ（%s）を選択します</string>
+    <string name="sort_select_type">ソートタイプを選択:</string>
+    <string name="unable_to_connect_to_the_site">サイトに接続出来ませんでした。</string>
+    <string name="no_entry_found">エントリが見つかりませんでした。</string>
+    <string name="retry">リトライ</string>
+    <string name="folder_location">フォルダの場所</string>
+    <string name="default_zoom">デフォルトの倍率を設定します。</string>
+    <string name="choose_directory">ディレクトリを選択</string>
+    <string name="bookmark_here">ここにブックマークします。</string>
+    <string name="resume_from_page">ページ%dから再開します。</string>
+    <string name="new_beta_version_found">新しいベータ版が見つかりました。インストールしますか？</string>
+    <string name="check_beta_releases">ベータ版のリリースをチェックする</string>
+    <string name="page_range">ページの範囲:</string>
+    <string name="upload_time">アップロード時間:</string>
+    <string name="from_page">ページから:</string>
+    <string name="to_page">ページへ:</string>
+    <string name="from_time">時間から:</string>
+    <string name="to_time">時間に:</string>
+    <string name="reset">リセット</string>
+    <string name="hours">時間前</string>
+    <string name="years">年前</string>
+    <string name="months">月前</string>
+    <string name="days">日前</string>
+    <string name="weeks">数週間前</string>
+    <string name="choose_unit">ユニットを選択:</string>
+    <string name="change_status">ステータスを変更します。</string>
+    <string name="create_new_status">新しいステータスを作成します。:</string>
+    <string name="invalid_color_selected">白黒は使用出来ません。</string>
+    <string name="change_status_title">新しいステータスを選択します。:</string>
+    <string name="remove_status">無し</string>
+    <string name="name_too_short">名前が短すぎます。</string>
+    <string name="duplicated_name">名前が重複しています。</string>
+    <string name="manage_statuses">ステータスを管理します。</string>
+    <string name="update_status">最新の状況:</string>
+    <string name="view_statuses">ステータスを表示します。</string>
+    <string name="status_column_count">ステータス列数を選択します。</string>
+    <string name="status_viewer">ステータスビューア</string>
+    <string name="title_hide_multitasking">マルチタスクでアプリのコンテンツを非表示にします。</string>
+    <string name="title">タイトル</string>
+    <string name="download_date">データをダウンロードします。</string>
+    <string name="page_count">ページ数</string>
+    <string name="size">サイズを変える</string>
+    <string name="descending_order">降順</string>
+    <string name="minimum_comment_length" formated = "true">コメントは少なくとも%d文字である必要があります</string>
+    <string name="change_scroll_type">スクロールタイプを変更します。</string>
+    <string name="exported_backup_file_toast" formated = "true">エクスポートされたバックアップファイル（%s）</string>
+    <string name="export_data">データをエクスポートする</string>
+    <string name="import_data">データをインポートする</string>
+    <string name="default_status_1">読書中</string>
+    <string name="default_status_2">完了済</string>
+    <string name="default_status_3">保留中</string>
+    <string name="default_status_4">ドロップ中</string>
+    <string name="default_status_5">計画中</string>
+    <string name="title_site_mirror">サイトミラーを変更します。</string>
+    <string name="disguise_app_in_drawer">引き出しの中の変装アプリ</string>
+    <string name="summary_disguise_app">アプリは電卓を装います（実験的）</string>
+    <string name="app_name_fake_calculator">電卓</string>
+    <string name="delete_galleries">ギャラリーにある本を削除</string>
+    <string name="delete">削除</string>
+    <string name="pause_selected_downloads">選択したダウンロードを一時停止します。</string>
+    <string name="start_selected_downloads">選択したダウンロードを開始します。</string>
+    <string name="custom_path">カスタムパス</string>
+    <string name="insert_path">パスを挿入します:</string>
+    <string name="requesting_storage_access">ストレージアクセスの要求</string>
+    <string name="request_storage_manager_summary">Android 11ではストレージアクセスに制限があるため、このアプリではカスタムパスを使用するための追加の権限を付与する必要があります。\ nこれらの権限を付与する場合は、次のダイアログで設定を有効にしてください。</string>
+    <string name="summary_beta">ベータ版に切り替えると、アンインストールせずに安定版に戻ることができなくなります。</string>
+    <string name="fix_inverted_title">反転画像を修正します。</string>
+    <string name="fix_inverted_summary">画像が反転した色で表示されている場合は有効にします。（一部のデバイスでは、システムテーマが明るい色に変更される可能性があり、この設定を無効にするとこの問題が修正されます。）</string>
+    <string name="navigation_settings_per_screen">画面ごとのナビゲーションを設定します。</string>
+    <string name="downloaded_update_at" formatted="true">%sでダウンロードされた更新</string>
+    <string name="summary_offscreen_limit">ギャラリーを読むときに画面外にプリロードする画像の数を設定します。</string>
+    <string name="title_offscreen_limit">プリロードする画像</string>
+    <string name="sort_popoular_month">毎月の人気</string>
+    <string name="random">ランダム</string>
+    <string name="summary_fetch_metadata">タグなどのメタデータが含まれていない2.3.0より前にダウンロードされたギャラリーのメタデータをダウンロードします。</string>
+    <string name="title_fetch_metadata">古いギャラリーのメタデータを取得します。</string>
+    <string name="title_change_page_buttons">画像をクリックしてページを変更</string>
+    <string name="export_finished">エクスポートが完了しました。</string>
+    <string name="import_finished">インポートが完了しました。</string>
+    <string name="download_torrent">torrentファイルをダウンロードする。</string>
+
+    <string-array name="scroll_type">
+        <item>水平</item>
+        <item>垂直</item>
+    </string-array>
+
+    <string-array name="language">
+        <item>デフォルトの言語</item>
+        <item>英語</item>
+        <item>中国語(繁体字)</item>
+        <item>中国語 (簡体字)</item>
+        <item>トルコ語</item>
+        <item>イタリア語</item>
+        <item>ドイツ語</item>
+        <item>アラビア語</item>
+        <item>スペイン語</item>
+        <item>ロシア語</item>
+        <item>フランス語</item>
+        <item>日本</item>
+    </string-array>
+
+    <string-array name="theme">
+        <item>ライトテーマ</item>
+        <item>ダークテーマ</item>
+    </string-array>
+
+    <string-array name="title_type_array">
+        <item>英語</item>
+        <item>日本語</item>
+        <item>かわいい</item>
+    </string-array>
+
+</resources>

@@ -91,16 +91,16 @@
     <string name="channel1_description">ギャラリーのダウンロードの進行状況を表示するために使用されます。</string>
     <string name="channel2_description">PDFファイルの作成の進捗状況を表示するために使用されます。</string>
     <string name="channel3_description">ZIPファイルの作成の進捗状況を表示するために使用されます。</string>
-    <string name="channel2_title">PDFファイルを作成中...しばらくお待ちください。:</string>
-    <string name="channel3_title">ZIPファイルを作成中...しばらくお待ちください。:</string>
-    <string name="tags_max_reached" formated = "true">最大％d個のタグを選択できます。</string>
+    <string name="channel2_title">PDFファイルを作成中...しばらくお待ちください:</string>
+    <string name="channel3_title">ZIPファイルを作成中...しばらくお待ちください:</string>
+    <string name="tags_max_reached" formated = "true">最大％d個のタグを選択できます</string>
     <string name="only_english">英語のみ</string>
     <string name="only_japanese">日本語のみ</string>
     <string name="only_chinese">中国語のみ</string>
     <string name="all_languages">全ての言語</string>
     <string name="login">ログイン</string>
     <string name="login_formatted" formated = "true">％sとして記録</string>
-    <string name="logout">ログアウトする</string>
+    <string name="logout">ログアウト</string>
     <string name="favorite_online_manga">お気に入りのオンラインギャラリー</string>
     <string name="online_tags">オンラインタグ</string>
     <string name="add_to_online_favorite">オンラインのお気に入りに追加</string>
@@ -110,7 +110,7 @@
     <string name="are_you_sure">よろしいですか？</string>
     <string name="thumbnail">サムネイル</string>
     <string name="settings">設定</string>
-    <string name="related">関連しているる漫画</string>
+    <string name="related">関連している漫画</string>
     <string name="failed">失敗した</string>
     <string name="search">検索</string>
     <string name="prev">前</string>
@@ -120,10 +120,10 @@
     <string name="create_pdf">PDFを作成</string>
     <string name="create_pdf_format" formated = "true">次のPDFを作成： "％s"</string>
     <string name="create_zip_format" formated = "true">次のZIPを作成： "％s"</string>
-    <string name="created_pdf">PDFファイルは正常に作成されました。</string>
-    <string name="error_pdf">PDFファイルの作成中にエラーが発生しました。</string>
+    <string name="created_pdf">PDFファイルは正常に作成されました</string>
+    <string name="error_pdf">PDFファイルの作成中にエラーが発生しました</string>
     <string name="parsing_pages">ページの解析</string>
-    <string name="writing_pdf">PDFを書く。</string>
+    <string name="writing_pdf">PDFを書く</string>
     <string name="navigation_drawer_open">ナビゲーションドロワーを開く</string>
     <string name="navigation_drawer_close">ナビゲーションドロワーを閉じる</string>
     <string name="nav_header_subtitle">NHentaiの非公式Androidクライアントアプリ</string>
@@ -157,7 +157,7 @@
     <string name="check_for_update_on_startup">起動時にアップデートを確認</string>
     <string name="check_for_updates">アップデートをチェックしますか？</string>
     <string name="no_updates_found">お使いのバージョンは最新です。</string>
-    <string name="error_retrieving">最新バージョンの取得中にエラーが発生しました。</string>
+    <string name="error_retrieving">最新バージョンの取得中にエラーが発生しました</string>
     <string name="new_version_found">新しい更新が利用可能です</string>
     <string name="update_version_format" formated = "true">バージョン％sからバージョン％sに更新しますか？\ n \ n変更ログ：\ n％s</string>
     <string name="clear_this_list">このリストを削除</string>
@@ -175,7 +175,7 @@
     <string name="update_settings">アップデートの設定</string>
     <string name="online_favorite_manga">オンラインのお気に入りのギャラリー</string>
     <string name="cache_size_formatted">キャッシュサイズ：％。2f MB</string>
-    <string name="cache_cleared">キャッシュが削除されました。</string>
+    <string name="cache_cleared">キャッシュが削除されました</string>
     <string name="sort_by_latest">最新順に並べ替え</string>
     <string name="edit">編集</string>
     <string name="options">設定</string>
@@ -362,11 +362,13 @@
         <item>水平</item>
         <item>垂直</item>
     </string-array>
+
     <string-array name="language">
+
         <item>デフォルト</item>
         <item>英語</item>
         <item>中国語(繁体字)</item>
-        <item>中国語 (簡体字)</item>
+        <item>中国語(簡体字)</item>
         <item>トルコ語</item>
         <item>イタリア語</item>
         <item>ドイツ語</item>
@@ -374,6 +376,20 @@
         <item>スペイン語</item>
         <item>ロシア語</item>
         <item>フランス語</item>
+　　　　　<item>日本語</item>
+        <item>System Default</item>
+        <item>English</item>
+        <item>Chinese (Traditional)</item>
+        <item>Chinese (Simplified)</item>
+        <item>Turkish</item>
+        <item>Italian</item>
+        <item>German</item>
+        <item>Arabic</item>
+        <item>Spanish</item>
+        <item>Russian</item>
+        <item>French</item>
+        <item>Japanese</item>
+
     </string-array>
 
     <string-array name="language_data"><!--DO NOT TRANSLATE-->
@@ -388,6 +404,7 @@
         <item>es</item>
         <item>ru-RU</item>
         <item>fr-FR</item>
+        <item>ja-JP</item>
     </string-array>
 
     <string-array name="theme">
@@ -399,9 +416,11 @@
         <item>light</item>
         <item>dark</item>
     </string-array>
+
     <string-array name="site_mirrors"><!--DO NOT TRANSLATE-->
         <item>nhentai.net</item>
     </string-array>
+
     <string-array name="title_type_array">
         <item>英語</item>
         <item>日本語</item>
