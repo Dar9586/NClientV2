@@ -189,7 +189,7 @@ public class GalleryDownloaderV2 {
             if (g.isValid())
                 setGallery(g);
             return g.isValid();
-        } catch (IOException e) {
+        } catch (Exception e) {
             LogUtility.e("Error while downloading", e);
             return false;
         }

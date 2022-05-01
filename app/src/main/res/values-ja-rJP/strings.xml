@@ -16,6 +16,7 @@
     <string name="title_activity_zoom">ズームアクティビティ</string>
     <string name="title_activity_tag_filter">タグフィルター</string>
     <string name="title_activity_login">ログインする</string>
+    <string name="title_activity_captcha">CAPTCHA</string>
     <string name="parodies">パロディー</string>
     <string name="characters">キャラクター</string>
     <string name="tags">タグ</string>

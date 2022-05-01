@@ -315,7 +315,7 @@ public class InspectorV3 extends Thread implements Parcelable {
         response.close();
     }
 
-    public void parseDocument() throws IOException {
+    public void parseDocument() throws IOException, InvalidResponseException {
         if (requestType.isSingle()) doSingle(htmlDocument.body());
         else doSearch(htmlDocument.body());
         htmlDocument = null;
@@ -343,20 +343,24 @@ public class InspectorV3 extends Thread implements Parcelable {
         try {
             createDocument();
             parseDocument();
-            if (response != null) response.onSuccess(galleries);
-        } catch (IOException e) {
+            if (response != null) {
+                response.onSuccess(galleries);
+            }
+        } catch (Exception e) {
             if (response != null) response.onFailure(e);
         }
         if (response != null) response.onEnd();
         LogUtility.d("Finished download: " + url);
     }
 
-    private void doSingle(Element document) throws IOException {
+    private void doSingle(Element document) throws IOException, InvalidResponseException {
         galleries = new ArrayList<>(1);
         Elements scripts = document.getElementsByTag("script");
-        if (scripts.size() == 0) return;
+        if (scripts.size() == 0)
+            throw new InvalidResponseException();
         String json = trimScriptTag(scripts.last().html());
-        if (json == null) return;
+        if (json == null)
+            throw new InvalidResponseException();
         Element relContainer = document.getElementById("related-container");
         Elements rel;
         if (relContainer != null)
@@ -384,12 +388,14 @@ public class InspectorV3 extends Thread implements Parcelable {
         return scriptHtml;
     }
 
-    private void doSearch(Element document) {
+    private void doSearch(Element document) throws InvalidResponseException {
         Elements gal = document.getElementsByClass("gallery");
         galleries = new ArrayList<>(gal.size());
         for (Element e : gal) galleries.add(new SimpleGallery(context.get(), e));
         gal = document.getElementsByClass("last");
         pageCount = gal.size() == 0 ? Math.max(1, page) : findTotal(gal.last());
+        if (gal.size() == 0 && pageCount == 1 && document.getElementById("content") == null)
+            throw new InvalidResponseException();
     }
 
     private int findTotal(Element e) {
@@ -449,6 +455,12 @@ public class InspectorV3 extends Thread implements Parcelable {
             t = tt;
         }
         return t;
+    }
+
+    public static class InvalidResponseException extends Exception {
+        public InvalidResponseException() {
+            super();
+        }
     }
 
     public interface InspectorResponse {

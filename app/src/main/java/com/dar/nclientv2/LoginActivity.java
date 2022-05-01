@@ -1,10 +1,12 @@
 package com.dar.nclientv2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.webkit.CookieManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,6 +31,8 @@ public class LoginActivity extends GeneralActivity {
     public TextView invalid;
     CookieWaiter waiter;
     WebView webView;
+    boolean isCaptcha;
+    boolean captchaPassed;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,14 +42,29 @@ public class LoginActivity extends GeneralActivity {
         final Toolbar toolbar = findViewById(R.id.toolbar);
         webView = findViewById(R.id.webView);
         setSupportActionBar(toolbar);
-        toolbar.setTitle(R.string.title_activity_login);
+        isCaptcha = false;
+        captchaPassed = false;
+        Intent intent = this.getIntent();
+        if (intent != null)
+            isCaptcha = intent.getBooleanExtra(getPackageName() + ".IS_CAPTCHA", false);
+        toolbar.setTitle(isCaptcha ? R.string.title_activity_captcha : R.string.title_activity_login);
         assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onLoadResource(WebView view, String url) {
+                // any subdomain (e.g. static.)
+                if (url.indexOf("." + Utility.ORIGINAL_URL) > 0)
+                    captchaPassed = true;
+                super.onLoadResource(view, url);
+            }
+        });
+        webSettings.setLoadsImagesAutomatically(true);
         webSettings.setUserAgentString(Global.getUserAgent());
-        webView.loadUrl(Utility.getBaseUrl() + "login/");
+        webView.loadUrl(Utility.getBaseUrl() + (isCaptcha ? "" : "login/"));
         waiter = new CookieWaiter();
         waiter.start();
     }
@@ -67,30 +86,34 @@ public class LoginActivity extends GeneralActivity {
         @Override
         public void run() {
             CookieManager manager = CookieManager.getInstance();
-            String cookies = "";
-            while (cookies == null || !cookies.contains("sessionid")) {
+            String cookies = null;
+            do {
                 Utility.threadSleep(100);
-                if (isInterrupted()) return;
+                if (isInterrupted()) {
+                    LogUtility.i((isCaptcha ? "captcha" : "login") + " interrupted");
+                    return;
+                }
                 cookies = manager.getCookie(Utility.getBaseUrl());
-            }
-            LogUtility.d("Cookie string: " + cookies);
-            String session = fetchCookie(cookies);
-            applyCookie(session);
+
+                if (cookies == null)
+                    continue;
+                String[] splitCookies = cookies.split("; ");
+                for (int i = 0; i < splitCookies.length; ++i) {
+                    String[] kv = splitCookies[i].split("=", 2);
+                    if (kv.length == 2) {
+                        applyCookie(kv[0], kv[1]);
+                    }
+                }
+            } while (!(isCaptcha && captchaPassed) && !(!isCaptcha && cookies != null && cookies.contains("sessionid=")));
+            LogUtility.i((isCaptcha ? "captcha" : "login") + " finish");
             runOnUiThread(LoginActivity.this::finish);
         }
 
-        private void applyCookie(String session) {
-            Cookie cookie = Cookie.parse(Login.BASE_HTTP_URL, "sessionid=" + session + "; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax");
+        private void applyCookie(String key, String value) {
+            Cookie cookie = Cookie.parse(Login.BASE_HTTP_URL, key + "=" + value + "; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax");
             Global.client.cookieJar().saveFromResponse(Login.BASE_HTTP_URL, Collections.singletonList(cookie));
-            User.createUser(null);
-            finish();
-        }
-
-        String fetchCookie(String cookies) {
-            int start = cookies.indexOf("sessionid");
-            start = cookies.indexOf('=', start) + 1;
-            int end = cookies.indexOf(';', start);
-            return cookies.substring(start, end == -1 ? cookies.length() : end);
+            if(!isCaptcha && key.equals("sessionid"))
+                User.createUser(null);
         }
     }
 }

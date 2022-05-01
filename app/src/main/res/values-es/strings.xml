@@ -15,6 +15,7 @@
     <string name="title_activity_zoom">Actividad de Zoom</string>
     <string name="title_activity_tag_filter">Filtro de etiquetas</string>
     <string name="title_activity_login">Conectarse</string>
+    <string name="title_activity_captcha">CAPTCHA</string>
     <string name="parodies">Parodias</string>
     <string name="characters">Personajes</string>
     <string name="tags">Etiquetas</string>

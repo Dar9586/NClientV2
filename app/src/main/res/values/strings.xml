@@ -77,6 +77,7 @@
     <string name="title_activity_zoom">ズームアクティビティ</string>
     <string name="title_activity_tag_filter">タグフィルター</string>
     <string name="title_activity_login">ログイン</string>
+    <string name="title_activity_captcha">CAPTCHA</string>
     <string name="parodies">パロディー</string>
     <string name="characters">キャラクター</string>
     <string name="tags">タグ</string>
@@ -200,7 +201,7 @@
     <string name="setting_on_use_rtl">画像は右から左に表示されます。</string>
     <string name="setting_off_use_rtl">画像は左から右に表示されます。</string>
     <string name="volume_change_setting">音量ボタンでページを変更</string>
-    <string name="popular_tag_count"><詳細検索中に表示される人気のあるタグの数/string>
+    <string name="popular_tag_count">詳細検索中に表示される人気のあるタグの数</string>
     <string name="show_gallery_titles">ギャラリーのタイトルを表示</string>
     <string name="use_column_port">ポートレート中の列数</string>
     <string name="use_column_land">横向きでの列数</string>
@@ -280,6 +281,7 @@
     <string name="sort_type_title_format" formated = "true">並べ替えタイプ（％s）を選択</string>
     <string name="sort_select_type">ソートタイプを選択:</string>
     <string name="unable_to_connect_to_the_site">サイトに接続出来ませんでした。</string>
+    <string name="invalid_response">サーバーが不正な応答を返しました。</string>
     <string name="no_entry_found">エントリが見つかりませんでした。</string>
     <string name="retry">リトライ</string>
     <string name="folder_location">フォルダの場所</string>
@@ -350,7 +352,7 @@
     <string name="summary_offscreen_limit">ギャラリーを読むときに画面外にプリロードする画像の数を設定</string>
     <string name="title_offscreen_limit">プリロードする画像</string>
     <string name="sort_popoular_month">毎月の人気</string>
-    <string name="random">ランダム/string>
+    <string name="random">ランダム</string>
     <string name="summary_fetch_metadata">タグなどのメタデータが含まれていない2.3.0より前にダウンロードされたギャラリーのメタデータをダウンロード</string>
     <string name="title_fetch_metadata">古いギャラリーのメタデータを取得</string>
     <string name="title_change_page_buttons">画像をクリックしてページを変更</string>
