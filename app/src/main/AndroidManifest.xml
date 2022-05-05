@@ -207,12 +207,12 @@
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
-            android:name=".async.converters.CreatePDF"
+            android:name=".async.converters.CreatePDFWorker"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
-            android:name=".async.converters.CreateZIP"
+            android:name=".async.converters.CreateZIPWorker"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />

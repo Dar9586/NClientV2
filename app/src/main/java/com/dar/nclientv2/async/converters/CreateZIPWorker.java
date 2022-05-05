@@ -8,10 +8,14 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 
-import androidx.annotation.Nullable;
-import androidx.core.app.JobIntentService;
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.FileProvider;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+import androidx.work.Worker;
+import androidx.work.WorkerParameters;
 
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.local.LocalGallery;
@@ -28,27 +32,36 @@ import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class CreateZIP extends JobIntentService {
+public class CreateZIPWorker extends Worker {
     // TODO: 11/04/20 REFACTOR CREATE ZIP AND PDF
 
     private final byte[] buffer = new byte[1024];
+    private final Context context;
     private int notId;
     private NotificationCompat.Builder notification;
 
-    public CreateZIP() {
+    public CreateZIPWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+        super(context, workerParams);
+        this.context = context.getApplicationContext();
     }
+
 
     public static void startWork(Context context, LocalGallery gallery) {
-        Intent i = new Intent();
-        i.putExtra(context.getPackageName() + ".GALLERY", gallery);
-        enqueueWork(context, CreateZIP.class, 555, i);
+        WorkManager manager = WorkManager.getInstance(context);
+        Data data = new Data.Builder()
+            .putString("GALLERY_FOLDER", gallery.getGalleryFolder().getFolder().getAbsolutePath())
+            .build();
+        OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(CreateZIPWorker.class).setInputData(data).build();
+        manager.enqueue(request);
     }
 
+    @NonNull
     @Override
-    protected void onHandleWork(@Nullable Intent intent) {
+    public Result doWork() {
         System.gc();
-        LocalGallery gallery = intent.getParcelableExtra(getPackageName() + ".GALLERY");
-        if (gallery == null) return;
+        File folder = new File(getInputData().getString("GALLERY_FOLDER"));
+        LocalGallery gallery = new LocalGallery(folder, true);
+        ;
         preExecute(gallery.getDirectory());
         try {
             File file = new File(Global.ZIPFOLDER, gallery.getTitle() + ".zip");
@@ -70,7 +83,7 @@ public class CreateZIP extends JobIntentService {
                 in.close();
                 out.closeEntry();
                 notification.setProgress(gallery.getPageCount(), i, false);
-                NotificationSettings.notify(getString(R.string.channel3_name), notId, notification.build());
+                NotificationSettings.notify(context.getString(R.string.channel3_name), notId, notification.build());
             }
             out.flush();
             out.close();
@@ -79,12 +92,12 @@ public class CreateZIP extends JobIntentService {
             LogUtility.e(e.getLocalizedMessage(), e);
             postExecute(false, gallery, e.getLocalizedMessage(), null);
         }
-
+        return Result.success();
     }
 
     private void postExecute(boolean success, LocalGallery gallery, String localizedMessage, File file) {
         notification.setProgress(0, 0, false)
-            .setContentTitle(success ? getString(R.string.created_zip) : getString(R.string.failed_zip));
+            .setContentTitle(success ? context.getString(R.string.created_zip) : context.getString(R.string.failed_zip));
         if (!success) {
             notification.setStyle(new NotificationCompat.BigTextStyle()
                 .bigText(gallery.getTitle())
@@ -92,7 +105,7 @@ public class CreateZIP extends JobIntentService {
         } else {
             createIntentOpen(file);
         }
-        NotificationSettings.notify(getString(R.string.channel3_name), notId, notification.build());
+        NotificationSettings.notify(context.getString(R.string.channel3_name), notId, notification.build());
 
     }
 
@@ -100,7 +113,7 @@ public class CreateZIP extends JobIntentService {
         try {
             Intent i = new Intent(Intent.ACTION_VIEW);
             Uri apkURI = FileProvider.getUriForFile(
-                getApplicationContext(), getPackageName() + ".provider", finalPath);
+                getApplicationContext(), context.getPackageName() + ".provider", finalPath);
             i.setDataAndType(apkURI, "application/zip");
             i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             i.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
@@ -127,10 +140,12 @@ public class CreateZIP extends JobIntentService {
         notification.setSmallIcon(R.drawable.ic_archive)
             .setOnlyAlertOnce(true)
             .setContentText(file.getName())
-            .setContentTitle(getString(R.string.channel3_title))
+            .setContentTitle(context.getString(R.string.channel3_title))
             .setProgress(1, 0, false)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCategory(NotificationCompat.CATEGORY_STATUS);
-        NotificationSettings.notify(getString(R.string.channel3_name), notId, notification.build());
+        NotificationSettings.notify(context.getString(R.string.channel3_name), notId, notification.build());
     }
+
+
 }

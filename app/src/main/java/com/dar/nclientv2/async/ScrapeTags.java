@@ -1,12 +1,14 @@
 package com.dar.nclientv2.async;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.JsonReader;
 
-import androidx.annotation.Nullable;
-import androidx.core.app.JobIntentService;
+import androidx.annotation.NonNull;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+import androidx.work.Worker;
+import androidx.work.WorkerParameters;
 
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.enums.TagStatus;
@@ -24,21 +26,25 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-public class ScrapeTags extends JobIntentService {
+public class ScrapeTags extends Worker {
     private static final int DAYS_UNTIL_SCRAPE = 7;
     private static final String DATA_FOLDER = "https://raw.githubusercontent.com/Dar9586/NClientV2/master/data/";
     private static final String TAGS = DATA_FOLDER + "tags.json";
     private static final String VERSION = DATA_FOLDER + "tagsVersion";
 
-    public ScrapeTags() {
+    public ScrapeTags(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+        super(context, workerParams);
     }
 
+
     public static void startWork(Context context) {
-        enqueueWork(context, ScrapeTags.class, 2000, new Intent());
+        WorkManager manager = WorkManager.getInstance(context);
+        OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(ScrapeTags.class).build();
+        manager.enqueue(request);
     }
 
     private int getNewVersionCode() throws IOException {
-        Response x = Global.getClient(this).newCall(new Request.Builder().url(VERSION).build()).execute();
+        Response x = Global.getClient(getApplicationContext()).newCall(new Request.Builder().url(VERSION).build()).execute();
         ResponseBody body = x.body();
         if (body == null) {
             x.close();
@@ -55,18 +61,19 @@ public class ScrapeTags extends JobIntentService {
         return -1;
     }
 
+    @NonNull
     @Override
-    protected void onHandleWork(@Nullable Intent intent) {
+    public Result doWork() {
         SharedPreferences preferences = getApplicationContext().getSharedPreferences("Settings", 0);
         Date nowTime = new Date();
         Date lastTime = new Date(preferences.getLong("lastSync", nowTime.getTime()));
         int lastVersion = preferences.getInt("lastTagsVersion", -1), newVersion = -1;
-        if (!enoughDayPassed(nowTime, lastTime)) return;
+        if (!enoughDayPassed(nowTime, lastTime)) return Result.success();
 
         LogUtility.d("Scraping tags");
         try {
             newVersion = getNewVersionCode();
-            if (lastVersion > -1 && lastVersion >= newVersion) return;
+            if (lastVersion > -1 && lastVersion >= newVersion) return Result.success();
             List<Tag> tags = Queries.TagTable.getAllFiltered();
             fetchTags();
             for (Tag t : tags) Queries.TagTable.updateStatus(t.getId(), t.getStatus());
@@ -78,10 +85,11 @@ public class ScrapeTags extends JobIntentService {
             .putLong("lastSync", nowTime.getTime())
             .putInt("lastTagsVersion", newVersion)
             .apply();
+        return Result.success();
     }
 
     private void fetchTags() throws IOException {
-        Response x = Global.getClient(this).newCall(new Request.Builder().url(TAGS).build()).execute();
+        Response x = Global.getClient(getApplicationContext()).newCall(new Request.Builder().url(TAGS).build()).execute();
         ResponseBody body = x.body();
         if (body == null) {
             x.close();
