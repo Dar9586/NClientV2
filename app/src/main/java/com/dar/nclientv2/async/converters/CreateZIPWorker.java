@@ -61,7 +61,6 @@ public class CreateZIPWorker extends Worker {
         System.gc();
         File folder = new File(getInputData().getString("GALLERY_FOLDER"));
         LocalGallery gallery = new LocalGallery(folder, true);
-        ;
         preExecute(gallery.getDirectory());
         try {
             File file = new File(Global.ZIPFOLDER, gallery.getTitle() + ".zip");

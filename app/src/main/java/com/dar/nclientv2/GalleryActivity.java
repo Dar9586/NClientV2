@@ -335,7 +335,10 @@ public class GalleryActivity extends BaseActivity {
                 try {
                     GalleryActivity.this.startActivity(intent);
                 }catch (RuntimeException ignore){
-                    Toast.makeText(GalleryActivity.this, R.string.failed, Toast.LENGTH_SHORT).show();
+                    runOnUiThread(() ->
+                        Toast.makeText(GalleryActivity.this, R.string.failed, Toast.LENGTH_SHORT).show()
+                    );
+
                 }
                 file.deleteOnExit();
             }

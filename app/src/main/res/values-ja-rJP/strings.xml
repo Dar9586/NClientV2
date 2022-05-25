@@ -175,7 +175,7 @@
     <string name="miscellaneous">その他の設定</string>
     <string name="update_settings">アップデートの設定</string>
     <string name="online_favorite_manga">オンラインのお気に入りのギャラリー</string>
-    <string name="cache_size_formatted">キャッシュサイズ：%。2f MB</string>
+    <string name="cache_size_formatted">キャッシュサイズ：%.2f MB</string>
     <string name="cache_cleared">キャッシュが削除されました</string>
     <string name="sort_by_latest">最新順に並べ替え</string>
     <string name="edit">編集</string>

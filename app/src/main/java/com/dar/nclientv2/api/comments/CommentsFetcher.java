@@ -1,6 +1,7 @@
 package com.dar.nclientv2.api.comments;
 
 import android.util.JsonReader;
+import android.util.JsonToken;
 
 import com.dar.nclientv2.CommentActivity;
 import com.dar.nclientv2.adapters.CommentAdapter;
@@ -53,9 +54,11 @@ public class CommentsFetcher extends Thread {
                 return;
             }
             JsonReader reader = new JsonReader(new InputStreamReader(body.byteStream()));
-            reader.beginArray();
-            while (reader.hasNext())
-                comments.add(new Comment(reader));
+            if(reader.peek() == JsonToken.BEGIN_ARRAY) {
+                reader.beginArray();
+                while (reader.hasNext())
+                    comments.add(new Comment(reader));
+            }
             reader.close();
             response.close();
         } catch (IOException e) {
