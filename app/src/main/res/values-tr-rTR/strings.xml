@@ -348,4 +348,5 @@
     <string name="export_finished">Dışa Aktarma Tamamlandı</string>
     <string name="import_finished">İçe Alma Tammalandı</string>
     <string name="download_torrent">Torrent İndir</string>
+    <string name="invalid_response">Invalid response</string>
 </resources>

@@ -298,6 +298,7 @@
     <string name="export_finished">Export terminé</string>
     <string name="import_finished">Import terminé</string>
     <string name="download_torrent">Télécharger le torrent</string>
+    <string name="invalid_response">Invalid response</string>
     <string-array name="scroll_type">
         <item>Horizontal</item>
         <item>Vertical</item>

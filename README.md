@@ -47,6 +47,7 @@ Search|Random manga
 - [MaticBabnik](https://github.com/MaticBabnik) for bug fixes
 - [DontPayAttention](https://github.com/DontPayAttention) for French translation
 - [kuragehimekurara1](https://github.com/kuragehimekurara1) for Japanese translation
+- [chayleaf](https://github.com/chayleaf) for Cloudflare bypass
 
 
 

@@ -354,6 +354,8 @@
     <string name="export_finished">Export finished</string>
     <string name="import_finished">Import finished</string>
     <string name="download_torrent">Download torrent</string>
+    <string name="title_activity_captcha">CAPTCHA</string>
+    <string name="invalid_response">Invalid response</string>
 
     <string-array name="scroll_type">
         <item>Horizontal</item>
