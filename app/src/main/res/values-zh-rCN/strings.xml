@@ -16,6 +16,7 @@
     <string name="title_activity_zoom">启用放大</string>
     <string name="title_activity_tag_filter">标签筛选</string>
     <string name="title_activity_login">登录</string>
+    <string name="title_activity_captcha">CAPTCHA</string>
     <string name="parodies">原作</string>
     <string name="characters">角色</string>
     <string name="tags">标签</string>

@@ -99,6 +99,7 @@ public class MainActivity extends BaseActivity
     private boolean inspecting = false, filteringTag = false;
     private SortType temporaryType;
     private Snackbar snackbar = null;
+    private boolean showedCaptcha = false, noNeedForCaptcha = false;
     private PageSwitcher pageSwitcher;
     private final InspectorV3.InspectorResponse
         resetDataset = new MainInspectorResponse() {
@@ -777,6 +778,7 @@ public class MainActivity extends BaseActivity
         public void onSuccess(List<GenericGallery> galleries) {
             super.onSuccess(galleries);
             if (adapter != null) adapter.resetStatuses();
+            noNeedForCaptcha = true;
             if (galleries.size() == 0)
                 showError(R.string.no_entry_found, null);
         }
@@ -796,10 +798,23 @@ public class MainActivity extends BaseActivity
         @Override
         public void onFailure(Exception e) {
             super.onFailure(e);
-            showError(R.string.unable_to_connect_to_the_site, v -> {
-                inspector = inspector.cloneInspector(MainActivity.this, inspector.getResponse());
-                inspector.start();
-            });
+            if (e instanceof InspectorV3.InvalidResponseException) {
+                if (!noNeedForCaptcha && !showedCaptcha) {
+                    showedCaptcha = true;
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    intent.putExtra(getPackageName() + ".IS_CAPTCHA", true);
+                    startActivity(intent);
+                }
+                showError(R.string.invalid_response, v -> {
+                    inspector = inspector.cloneInspector(MainActivity.this, inspector.getResponse());
+                    inspector.start();
+                });
+            } else {
+                showError(R.string.unable_to_connect_to_the_site, v -> {
+                    inspector = inspector.cloneInspector(MainActivity.this, inspector.getResponse());
+                    inspector.start();
+                });
+            }
         }
 
         @Override

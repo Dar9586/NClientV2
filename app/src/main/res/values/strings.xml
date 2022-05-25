@@ -60,8 +60,6 @@
     <string name="key_change_page_buttons" translatable="false">change_page_buttons</string>
     <string name="dash" translatable="false">-</string>
     <string name="slash" translatable="false">/</string>
-
-
     <string name="setting_on_ignore_tags">Other tags won\'t be queried when a tag is selected from the gallery menu (except language)</string>
     <string name="setting_off_ignore_tags">Other tags will be queried when a tag is selected from the gallery menu</string>
     <string name="setting_on_use_account_tag">Use the account tags into the search query (Local tags will have priority)</string>
@@ -272,7 +270,6 @@
     <string name="copied_to_clipboard">Copied to clipboard</string>
     <string name="maximum_notification_count">Maximum notification count</string>
     <string name="copy_settings_to_clipboard">Copy settings to clipboard</string>
-
     <string name="sort_popular_all_time">Popular</string>
     <string name="sort_recent">Recent</string>
     <string name="sort_popular_day">Daily popular</string>

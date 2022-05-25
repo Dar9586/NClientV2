@@ -19,6 +19,7 @@
     <string name="title_activity_zoom">啟用縮放</string>
     <string name="title_activity_tag_filter">標籤篩選</string>
     <string name="title_activity_login">登入</string>
+    <string name="title_activity_captcha">CAPTCHA</string>
 
     <string name="parodies">原作</string>
     <string name="characters">角色</string>

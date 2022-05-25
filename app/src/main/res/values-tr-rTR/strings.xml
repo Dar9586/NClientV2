@@ -17,6 +17,7 @@
     <string name="title_activity_zoom">Yakınlaştırma aktivitesi</string>
     <string name="title_activity_tag_filter">Etiket filtresi</string>
     <string name="title_activity_login">Giriş yap</string>
+    <string name="title_activity_captcha">CAPTCHA</string>
 
     <string name="parodies">Parodiler</string>
     <string name="characters">Karakterler</string>

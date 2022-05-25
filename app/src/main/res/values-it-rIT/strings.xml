@@ -20,6 +20,7 @@
     <string name="title_activity_zoom">Zoom</string>
     <string name="title_activity_tag_filter">Filtro tag</string>
     <string name="title_activity_login">Accedi</string>
+    <string name="title_activity_captcha">CAPTCHA</string>
 
     <string name="parodies">Parodie</string>
     <string name="characters">Personaggi</string>
