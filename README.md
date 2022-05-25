@@ -48,6 +48,7 @@ Search|Random manga
 - [DontPayAttention](https://github.com/DontPayAttention) for French translation
 - [kuragehimekurara1](https://github.com/kuragehimekurara1) for Japanese translation
 - [chayleaf](https://github.com/chayleaf) for Cloudflare bypass
+- [Atmosphelen](https://github.com/Atmosphelen) for Ukrainian translation
 
 
 

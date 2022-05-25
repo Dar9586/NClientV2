@@ -375,6 +375,7 @@
         <item>Russian</item>
         <item>French</item>
         <item>Japanese</item>
+        <item>Ukrainian</item>
     </string-array>
 
     <string-array name="language_data"><!--DO NOT TRANSLATE-->
@@ -390,6 +391,7 @@
         <item>ru-RU</item>
         <item>fr-FR</item>
         <item>ja-JP</item>
+        <item>uk-UA</item>
     </string-array>
 
     <string-array name="theme">
