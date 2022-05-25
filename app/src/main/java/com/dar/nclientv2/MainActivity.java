@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -81,7 +82,7 @@ public class MainActivity extends BaseActivity
             LogUtility.d("STARTED");
         }
     };
-    private final Handler changeLanguageTimeHandler = new Handler();
+    private final Handler changeLanguageTimeHandler = new Handler(Looper.myLooper());
     public ListAdapter adapter;
     private final InspectorV3.InspectorResponse addDataset = new MainInspectorResponse() {
         @Override

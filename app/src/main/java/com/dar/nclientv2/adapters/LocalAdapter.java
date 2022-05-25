@@ -23,8 +23,8 @@ import com.dar.nclientv2.LocalActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.api.local.LocalSortType;
-import com.dar.nclientv2.async.converters.CreatePDF;
-import com.dar.nclientv2.async.converters.CreateZIP;
+import com.dar.nclientv2.async.converters.CreatePDFWorker;
+import com.dar.nclientv2.async.converters.CreateZIPWorker;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.async.downloader.DownloadGalleryV2;
 import com.dar.nclientv2.async.downloader.DownloadObserver;
@@ -380,7 +380,7 @@ public class LocalAdapter extends MultichoiceAdapter<Object, LocalAdapter.ViewHo
         builder.setPositiveButton(R.string.yes, (dialog, which) -> {
             for (Object o : getSelected()) {
                 if (!(o instanceof LocalGallery)) continue;
-                CreatePDF.startWork(context, (LocalGallery) o);
+                CreatePDFWorker.startWork(context, (LocalGallery) o);
             }
         }).setNegativeButton(R.string.no, null).setCancelable(true);
         builder.show();
@@ -393,7 +393,7 @@ public class LocalAdapter extends MultichoiceAdapter<Object, LocalAdapter.ViewHo
         builder.setPositiveButton(R.string.yes, (dialog, which) -> {
             for (Object o : getSelected()) {
                 if (!(o instanceof LocalGallery)) continue;
-                CreateZIP.startWork(context, (LocalGallery) o);
+                CreateZIPWorker.startWork(context, (LocalGallery) o);
             }
         }).setNegativeButton(R.string.no, null).setCancelable(true);
         builder.show();
