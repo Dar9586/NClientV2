@@ -98,8 +98,8 @@ public class LoginActivity extends GeneralActivity {
                 if (cookies == null)
                     continue;
                 String[] splitCookies = cookies.split("; ");
-                for (int i = 0; i < splitCookies.length; ++i) {
-                    String[] kv = splitCookies[i].split("=", 2);
+                for (String splitCookie : splitCookies) {
+                    String[] kv = splitCookie.split("=", 2);
                     if (kv.length == 2) {
                         applyCookie(kv[0], kv[1]);
                     }
@@ -110,9 +110,9 @@ public class LoginActivity extends GeneralActivity {
         }
 
         private void applyCookie(String key, String value) {
-            Cookie cookie = Cookie.parse(Login.BASE_HTTP_URL, key + "=" + value + "; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax");
+            Cookie cookie = Cookie.parse(Login.BASE_HTTP_URL, key + "=" + value + "; Max-Age=31449600; Path=/; SameSite=Lax");
             Global.client.cookieJar().saveFromResponse(Login.BASE_HTTP_URL, Collections.singletonList(cookie));
-            if(!isCaptcha && key.equals("sessionid"))
+            if (!isCaptcha && key.equals("sessionid"))
                 User.createUser(null);
         }
     }

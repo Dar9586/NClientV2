@@ -7,6 +7,7 @@ import com.franmontiel.persistentcookiejar.cache.CookieCache;
 import com.franmontiel.persistentcookiejar.persistence.CookiePersistor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -64,7 +65,6 @@ public class CustomCookieJar implements ClearableCookieJar {
         }
 
         persistor.removeAll(cookiesToRemove);
-
         return validCookies;
     }
 
@@ -78,5 +78,15 @@ public class CustomCookieJar implements ClearableCookieJar {
     synchronized public void clear() {
         cache.clear();
         persistor.clear();
+    }
+
+    public void removeCookie(String name) {
+        List<Cookie> cookies = persistor.loadAll();
+        for (Cookie cookie : cookies) {
+            if (cookie.name().equals(name)) {
+                cache.clear();
+                persistor.removeAll(Collections.singletonList(cookie));
+            }
+        }
     }
 }

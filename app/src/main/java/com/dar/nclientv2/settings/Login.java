@@ -47,7 +47,7 @@ public class Login {
 
     public static void logout(Context context) {
         CustomCookieJar cookieJar = (CustomCookieJar) Global.client.cookieJar();
-        cookieJar.clear();
+        cookieJar.removeCookie("sessionid");
         cookieJar.clearSession();
         updateUser(null);//remove user
         clearOnlineTags();//remove online tags
@@ -85,21 +85,29 @@ public class Login {
         Queries.TagTable.updateBlacklistedTag(tag, false);
     }
 
+    public static boolean hasCookie(String name) {
+        List<Cookie> cookies = Global.client.cookieJar().loadForRequest(BASE_HTTP_URL);
+        for (Cookie c : cookies) {
+            if (c.name().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static boolean isLogged(@Nullable Context context) {
         List<Cookie> cookies = Global.client.cookieJar().loadForRequest(BASE_HTTP_URL);
         LogUtility.d("Cookies: " + cookies);
-        for (Cookie c : cookies) {
-            if (c.name().equals("sessionid")) {
-                if (user == null) User.createUser(user -> {
-                    if (user != null) {
-                        new LoadTags(null).start();
-                        if (context instanceof MainActivity) {
-                            ((MainActivity) context).runOnUiThread(() -> ((MainActivity) context).loginItem.setTitle(context.getString(R.string.login_formatted, user.getUsername())));
-                        }
+        if (hasCookie("sessionid")) {
+            if (user == null) User.createUser(user -> {
+                if (user != null) {
+                    new LoadTags(null).start();
+                    if (context instanceof MainActivity) {
+                        ((MainActivity) context).runOnUiThread(() -> ((MainActivity) context).loginItem.setTitle(context.getString(R.string.login_formatted, user.getUsername())));
                     }
-                });
-                return true;
-            }
+                }
+            });
+            return true;
         }
         if (context != null) logout(context);
         return false;

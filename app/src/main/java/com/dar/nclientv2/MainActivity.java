@@ -494,6 +494,13 @@ public class MainActivity extends BaseActivity
         }
         loadStringLogin();
         onlineFavoriteManager.setVisible(com.dar.nclientv2.settings.Login.isLogged());
+        if (!noNeedForCaptcha) {
+            if (Login.hasCookie("csrftoken")) {
+                inspector = inspector.cloneInspector(this, resetDataset);
+                inspector.start();//restart inspector
+                noNeedForCaptcha = true;
+            }
+        }
         if (setting != null) {
             Global.initFromShared(this);//restart all settings
             inspector = inspector.cloneInspector(this, resetDataset);
