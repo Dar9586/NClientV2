@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <!--DO NOT TRANSLATE-->
     <string name="key_offscreen_limit" translatable="false">offscreen_limit</string>
     <string name="key_default_value" translatable="false">default_value</string>
     <string name="key_enable_beta" translatable="false">enable_beta</string>
@@ -356,42 +355,10 @@
     <string name="download_torrent">Download torrent</string>
     <string name="title_activity_captcha">CAPTCHA</string>
     <string name="invalid_response">Invalid response</string>
-
+    <string name="system_default">System default</string>
     <string-array name="scroll_type">
         <item>Horizontal</item>
         <item>Vertical</item>
-    </string-array>
-
-    <string-array name="language">
-        <item>System Default</item>
-        <item>English</item>
-        <item>Chinese (Traditional)</item>
-        <item>Chinese (Simplified)</item>
-        <item>Turkish</item>
-        <item>Italian</item>
-        <item>German</item>
-        <item>Arabic</item>
-        <item>Spanish</item>
-        <item>Russian</item>
-        <item>French</item>
-        <item>Japanese</item>
-        <item>Ukrainian</item>
-    </string-array>
-
-    <string-array name="language_data"><!--DO NOT TRANSLATE-->
-        <item>@string/key_default_value</item>
-        <item>en-US</item>
-        <item>zh-TW</item>
-        <item>zh-CN</item>
-        <item>tr-TR</item>
-        <item>it-IT</item>
-        <item>de-DE</item>
-        <item>ar-SA</item>
-        <item>es</item>
-        <item>ru-RU</item>
-        <item>fr-FR</item>
-        <item>ja-JP</item>
-        <item>uk-UA</item>
     </string-array>
 
     <string-array name="theme">
@@ -399,12 +366,12 @@
         <item>Dark</item>
     </string-array>
 
-    <string-array name="theme_data"><!--DO NOT TRANSLATE-->
+    <string-array name="theme_data" translatable="false">
         <item>light</item>
         <item>dark</item>
     </string-array>
 
-    <string-array name="site_mirrors"><!--DO NOT TRANSLATE-->
+    <string-array name="site_mirrors" translatable="false">
         <item>nhentai.net</item>
     </string-array>
 
@@ -414,7 +381,7 @@
         <item>Pretty</item>
     </string-array>
 
-    <string-array name="title_type_array_data"><!--DO NOT TRANSLATE-->
+    <string-array name="title_type_array_data" translatable="false">
         <item>english</item>
         <item>japanese</item>
         <item>pretty</item>

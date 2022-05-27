@@ -1,27 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?><!--Thanks to herrsunchess for the German translation-->
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <!--SUMMARY-->
     <string name="setting_on_ignore_tags">Andere Tags werden nicht gesucht wenn du einen Tag von einer Galerie auswählst (außer die Sprache)</string>
     <string name="setting_off_ignore_tags">Andere Tags werden gesucht wenn du einen Tag von einer Galerie auswählst</string>
     <string name="setting_on_use_account_tag">Benutze online Tags in deiner Suche (lokale Tags haben Priorität)</string>
     <string name="setting_off_use_account_tag">Online Tags werden bei deiner Suche ignoriert</string>
     <string name="theme_summary">Farbschema wählen</string>
-
-    <!--SETTINGS NAME-->
     <string name="send_crash_report">Sende Absturzbericht</string>
     <string name="change_theme">Thema ändern</string>
     <string name="clear_cache">Cache löschen</string>
     <string name="infinite_scroll">Unendlich scrollen</string>
     <string name="ignore_tags">Ignoriere andere Tags</string>
     <string name="use_account_tag">Benutze Account Tags</string>
-
     <string name="title_activity_gallery">Galerie</string>
     <string name="title_activity_zoom">Zoom</string>
     <string name="title_activity_tag_filter">Tagfilter</string>
     <string name="title_activity_login">Einloggen</string>
-    <string name="title_activity_captcha">CAPTCHA</string>
-
     <string name="parodies">Parodien</string>
     <string name="characters">Charaktere</string>
     <string name="tags">Tags</string>
@@ -30,7 +23,6 @@
     <string name="languages">Sprachen</string>
     <string name="categories">Kategorien</string>
     <string name="unknown">Unbekannt</string>
-
     <string name="channel1_name">Galerie herunterladen</string>
     <string name="channel2_name">PDF erstellen</string>
     <string name="channel3_name">ZIP erstellen</string>
@@ -39,28 +31,20 @@
     <string name="channel3_description">Benutzt um den Fortschritt beim Erstellen des ZIP anzuzeigen</string>
     <string name="channel2_title">Erstelle PDF:</string>
     <string name="channel3_title">Erstelle ZIP:</string>
-
     <string name="tags_max_reached" formatted="true">Du kannst ein Maximum von %d Tags haben</string>
-
-
     <string name="only_english">Nur Englisch</string>
     <string name="only_japanese">Nur Japanisch</string>
     <string name="only_chinese">Nur Chinesisch</string>
     <string name="all_languages">Alle Sprachen</string>
-
-
     <string name="login">Einloggen</string>
     <string name="login_formatted" formatted="true">Eingeloggt als %s</string>
     <string name="logout">Ausloggen</string>
-
     <string name="favorite_online_manga">Online Manga Favoriten</string>
     <string name="online_tags">Online Tag</string>
-
     <string name="add_to_online_favorite">Zu online Favoriten hinzufügen</string>
     <string name="remove_from_online_favorites">Von online Favoriten entfernen</string>
     <string name="add_to_online_blacklist">Zur online Blacklist hinzufügen?</string>
     <string name="tag_already_in_blacklist">Tag ist schon in der Blackist</string>
-
     <string name="are_you_sure">Bist du dir sicher?</string>
     <string name="thumbnail">Vorschaubild</string>
     <string name="settings">Einstellungen</string>
@@ -71,29 +55,23 @@
     <string name="share">Teilen</string>
     <string name="image">Bild</string>
     <string name="next">Nächste</string>
-
     <string name="create_pdf">Erstelle PDF</string>
-    <string name="create_pdf_format" formatted="true">Erstelle PDF von: "%s"</string>
-    <string name="create_zip_format" formatted="true">Erstelle ZIP von: "%s"</string>
+    <string name="create_pdf_format" formatted="true">Erstelle PDF von: \"%s\"</string>
+    <string name="create_zip_format" formatted="true">Erstelle ZIP von: \"%s\"</string>
     <string name="created_pdf">PDF erfolgreich erstellt</string>
     <string name="error_pdf">Fehler während des Erstellens der PDF</string>
     <string name="parsing_pages">Analysiere Seiten</string>
     <string name="writing_pdf">Schreibe PDF</string>
-
     <string name="navigation_drawer_open">Öffne Menü</string>
     <string name="navigation_drawer_close">Schließe Menü</string>
     <string name="nav_header_subtitle">NHentai inoffizieller Client</string>
-
     <string name="change_page">Seite wechseln:</string>
     <string name="prev_page">Vorherige Seite</string>
     <string name="next_page">Nächste Seite</string>
-
     <string name="downloaded_manga">Heruntergeladene Manga</string>
     <string name="download_gallery">Galerie herunterladen</string>
-
     <string name="delete_gallery_size_format" formatted="true">Lösche Galerie (%.2fMB)</string>
     <string name="delete_gallery_format" formatted="true">Möchtest du die Galerie löschen:\n%s</string>
-
     <string name="share_with">Teilen mit</string>
     <string name="link_copied_to_clipboard">Link in die Zwischenablage kopiert</string>
     <string name="open_in_browser">Im Browser öffnen</string>
@@ -128,7 +106,6 @@
     <string name="next_page_volume_down">Wechsel zur nächsten Seite mit Lautstärke Runter</string>
     <string name="change_title_type">Ändere Titel Typ</string>
     <string name="title_type_summary">Wähle den Standard Titel Typ für Galerien aus</string>
-
     <string name="search_settings">Sucheinstellungen</string>
     <string name="global_settings">Globale Einstellungen</string>
     <string name="images_settings">Bilder Einstellungen</string>
@@ -163,11 +140,9 @@
     <string name="volume_change_setting">Seite mit Lautstärketasten wechseln</string>
     <string name="popular_tag_count">Die Anzahl von populären Tags während der erweiterten Suche</string>
     <string name="show_gallery_titles">Zeige Galerie Titel</string>
-
     <string name="use_column_port">Spalten Anzahl während Portrait</string>
     <string name="use_column_land">Spalten Anzahl während Landscape</string>
     <string name="change_language">Sprache ändern</string>
-
     <string name="tag_artist_gallery">Künstler:</string>
     <string name="tag_character_gallery">Charakter:</string>
     <string name="tag_parody_gallery">Parodie:</string>
@@ -287,43 +262,11 @@
     <string name="exported_backup_file_toast" formatted="true">Backup nach %s exportiert</string>
     <string name="export_data">Exportiere Daten</string>
     <string name="import_data">Importiere Daten</string>
-
-    <string-array name="scroll_type">
-        <item>Horizontal</item>
-        <item>Vertikal</item>
-    </string-array>
-
-    <string-array name="language">
-        <item>Systemstandard</item>
-        <item>Englisch</item>
-        <item>Chinesisch (Traditionell)</item>
-        <item>Chinesisch (Vereinfacht)</item>
-        <item>Türkisch</item>
-        <item>Italienisch</item>
-        <item>Deutsch</item>
-        <item>Arabisch</item>
-        <item>Spanisch</item>
-        <item>Russisch</item>
-        <item>Französisch</item>
-        <item>Japanisch</item>
-        <item>Ukrainisch</item>
-    </string-array>
-
-    <string-array name="theme">
-        <item>Hell</item>
-        <item>Dunkel</item>
-    </string-array>
-
-    <string-array name="title_type_array">
-        <item>Englisch</item>
-        <item>Japanisch</item>
-        <item>Schön</item>
-    </string-array>
     <string name="default_status_1">Lesen</string>
     <string name="default_status_2">Komplett</string>
-    <string name="default_status_5">Geplant</string>
-    <string name="default_status_4">Lieber nicht</string>
     <string name="default_status_3">Warten</string>
+    <string name="default_status_4">Lieber nicht</string>
+    <string name="default_status_5">Geplant</string>
     <string name="title_site_mirror">Mirrorseite ändern</string>
     <string name="disguise_app_in_drawer">Verstecke die App</string>
     <string name="summary_disguise_app">Die App versteckt sich als Taschenrechner (experimentell)</string>
@@ -336,7 +279,7 @@
     <string name="insert_path">Pfad:</string>
     <string name="requesting_storage_access">Fordere Berechtigungen für den Gerätespeicher</string>
     <string name="request_storage_manager_summary">Aufgrund einer Einschränkung des Speicherzugriffs in Android 11 erfordert diese App eine zusätzliche Berechtigung zur Verwendung benutzerdefinierter Pfade.\nWenn Sie diese Berechtigung erteilen möchten, aktivieren Sie die Einstellung im nächsten Dialogfeld.</string>
-     <string name="summary_beta">Das Aktualisieren auf eine Beta-Version kann dazu führen, dass Sie ohne Deinstallation nicht zu einer stabilen Version zurückkehren können</string>
+    <string name="summary_beta">Das Aktualisieren auf eine Beta-Version kann dazu führen, dass Sie ohne Deinstallation nicht zu einer stabilen Version zurückkehren können</string>
     <string name="fix_inverted_title">Repariere invertierte Bilder</string>
     <string name="fix_inverted_summary">Aktivieren wenn Bilder mit invertierten Farben angezeigt werden (Auf manchen Geräten führt das zum ändern des Gerätethemas zu weiß. Deaktivieren der Einstellung wird dies wieder änderen.)</string>
     <string name="navigation_settings_per_screen">Navigations Einstellungen pro Bild</string>
@@ -351,6 +294,20 @@
     <string name="export_finished">Export finished</string>
     <string name="import_finished">Import finished</string>
     <string name="download_torrent">Download torrent</string>
+    <string name="title_activity_captcha">CAPTCHA</string>
     <string name="invalid_response">Invalid response</string>
-
+    <string name="system_default">System default</string>
+    <string-array name="scroll_type">
+        <item>Horizontal</item>
+        <item>Vertikal</item>
+    </string-array>
+    <string-array name="theme">
+        <item>Hell</item>
+        <item>Dunkel</item>
+    </string-array>
+    <string-array name="title_type_array">
+        <item>Englisch</item>
+        <item>Japanisch</item>
+        <item>Schön</item>
+    </string-array>
 </resources>

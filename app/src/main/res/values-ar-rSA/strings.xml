@@ -15,7 +15,6 @@
     <string name="title_activity_zoom">نشاط التقريب</string>
     <string name="title_activity_tag_filter">تصفية الوسوم</string>
     <string name="title_activity_login">تسجيل الدخول</string>
-    <string name="title_activity_captcha">CAPTCHA</string>
     <string name="parodies">مُحاكَيات</string>
     <string name="characters">شخصيات</string>
     <string name="tags">وسوم</string>
@@ -57,8 +56,8 @@
     <string name="image">صورة</string>
     <string name="next">التالي</string>
     <string name="create_pdf">أَنشئ مستندًا محمولًا PDF</string>
-    <string name="create_pdf_format" formatted="true">أَنشئ مستند "%s" المحمول</string>
-    <string name="create_zip_format" formatted="true">أَنشئ ملف "%s" المضغوط</string>
+    <string name="create_pdf_format" formatted="true">أَنشئ مستند \"%s\" المحمول</string>
+    <string name="create_zip_format" formatted="true">أَنشئ ملف \"%s\" المضغوط</string>
     <string name="created_pdf">تم إنشاء المستند المحمول بنجاح</string>
     <string name="error_pdf">طرأ خطأٌ أثناء إنشاء المستند المحمول</string>
     <string name="parsing_pages">تجزئة الصفحات</string>
@@ -211,7 +210,6 @@
     <string name="copied_to_clipboard">نُسخ إلى الحافظة</string>
     <string name="maximum_notification_count">عدد الإشعارات القصوي</string>
     <string name="copy_settings_to_clipboard">اِنسَخ الإعدادات إلى الحافظة</string>
-
     <string name="sort_popular_all_time">رائجة</string>
     <string name="sort_recent">حديثة</string>
     <string name="sort_popular_day">رائجة على مدار اليوم</string>
@@ -264,39 +262,6 @@
     <string name="exported_backup_file_toast" formatted="true">صُدِّر ملف النسخ الاحتياطي إلى %s</string>
     <string name="export_data">صدِّر البيانات</string>
     <string name="import_data">اِستورد البيانات</string>
-
-    <string-array name="scroll_type">
-        <item>أفقي</item>
-        <item>عمودي</item>
-    </string-array>
-
-    <string-array name="language">
-        <item>لغة النظام</item>
-        <item>الإنجليزية</item>
-        <item>الصينية (التقليدية)</item>
-        <item>الصينية (المُبسَّطة)</item>
-        <item>التركية</item>
-        <item>الإيطالية</item>
-        <item>الألمانية</item>
-        <item>العربية</item>
-        <item>الإسبانية</item>
-        <item>الروسية</item>
-        <item>فرنسي</item>
-        <item>اليابانية</item>
-        <item>الأوكرانية</item>
-    </string-array>
-
-    <string-array name="theme">
-        <item>فاتحة</item>
-        <item>داكنة</item>
-    </string-array>
-
-
-    <string-array name="title_type_array">
-        <item>الإنجليزية</item>
-        <item>اليابانية</item>
-        <item>أنيق</item>
-    </string-array>
     <string name="default_status_1">قيد القراءة</string>
     <string name="default_status_2">تم</string>
     <string name="default_status_3">مُعلَّق</string>
@@ -329,6 +294,20 @@
     <string name="export_finished">Export finished</string>
     <string name="import_finished">Import finished</string>
     <string name="download_torrent">Download torrent</string>
+    <string name="title_activity_captcha">CAPTCHA</string>
     <string name="invalid_response">Invalid response</string>
-
+    <string name="system_default">System default</string>
+    <string-array name="scroll_type">
+        <item>أفقي</item>
+        <item>عمودي</item>
+    </string-array>
+    <string-array name="theme">
+        <item>فاتحة</item>
+        <item>داكنة</item>
+    </string-array>
+    <string-array name="title_type_array">
+        <item>الإنجليزية</item>
+        <item>اليابانية</item>
+        <item>أنيق</item>
+    </string-array>
 </resources>

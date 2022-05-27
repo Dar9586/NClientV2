@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <resources>
-
-
     <string name="setting_on_ignore_tags">Другие тэги не будут применены, когда тэг выбран из меню галереи(кроме языка)</string>
     <string name="setting_off_ignore_tags">Другие тэги будут применены, когда тэг выбран из меню галереи</string>
     <string name="setting_on_use_account_tag">Использовать тэги аккаунта в поисковом запросе(Локальные тэги будут иметь больший приоритет)</string>
@@ -18,7 +15,6 @@
     <string name="title_activity_zoom">Работа зума</string>
     <string name="title_activity_tag_filter">Фильтр тэгов</string>
     <string name="title_activity_login">Войти</string>
-    <string name="title_activity_captcha">CAPTCHA</string>
     <string name="parodies">Пародии</string>
     <string name="characters">Персонажи</string>
     <string name="tags">Тэги</string>
@@ -60,8 +56,8 @@
     <string name="image">Изображение</string>
     <string name="next">Следующий</string>
     <string name="create_pdf">Создать PDF</string>
-    <string name="create_pdf_format" formatted="true">Создать PDF: "%s"</string>
-    <string name="create_zip_format" formatted="true">Создать ZIP: "%s"</string>
+    <string name="create_pdf_format" formatted="true">Создать PDF: \"%s\"</string>
+    <string name="create_zip_format" formatted="true">Создать ZIP: \"%s\"</string>
     <string name="created_pdf">PDF создан успешно</string>
     <string name="error_pdf">Ошибка при создании PDF</string>
     <string name="parsing_pages">Анализ страниц</string>
@@ -201,7 +197,7 @@
     <string name="wrong_pin">Неверный Пин-код</string>
     <string name="rotate_image">Повернуть изображение</string>
     <string name="toggle_online_favorite">Переместить в онлайн избранное</string>
-    <string name="data_usage_settings">Редактировать настройки исопользования сети</string>
+    <string name="data_usage_settings">Редактировать настройки использования сети</string>
     <string name="mobile_data_usage_setting">Настройки использования мобильной сети</string>
     <string name="wifi_data_usage_setting">Настройки использование Wi-Fi сети</string>
     <string name="data_usage_thumb">Всегда загружать превью</string>
@@ -214,7 +210,6 @@
     <string name="copied_to_clipboard">Скопировано в буфер обмена</string>
     <string name="maximum_notification_count">Максимальное количество уведомлений</string>
     <string name="copy_settings_to_clipboard">Скопировать настройки</string>
-
     <string name="sort_popular_all_time">Популярные</string>
     <string name="sort_recent">Новые</string>
     <string name="sort_popular_day">Популярные за день</string>
@@ -222,7 +217,6 @@
     <string name="sort_type_title_format" formatted="true">выберите способ сортировки (%s)</string>
     <string name="sort_select_type">Выберите способ сортировки:</string>
     <string name="unable_to_connect_to_the_site">Не удалось подключиться к сайту</string>
-    <string name="invalid_response">Получен неверный ответ с сервера</string>
     <string name="no_entry_found">Не было найдено ни одного элемента</string>
     <string name="retry">Попробовать снова</string>
     <string name="folder_location">Расположение папки</string>
@@ -297,41 +291,23 @@
     <string name="summary_fetch_metadata">Загрузить метаданные для галерей, загруженных до 2.3.0, которые не имеют метаданных, по типу применённых тэгов</string>
     <string name="title_fetch_metadata">Извлечь метаданные для старых галерей</string>
     <string name="title_change_page_buttons">Перелистывание страницы нажатием на изображение</string>
-    <string name="export_finished">Export finished</string>
-    <string name="import_finished">Import finished</string>
-    <string name="download_torrent">Download torrent</string>
-
+    <string name="export_finished">Экспорт завершён</string>
+    <string name="import_finished">Импорт завершён</string>
+    <string name="download_torrent">Загрузить торрент</string>
+    <string name="title_activity_captcha">CAPTCHA</string>
+    <string name="invalid_response">Получен неверный ответ с сервера</string>
+    <string name="system_default">System default</string>
     <string-array name="scroll_type">
         <item>Горизонтальный</item>
         <item>Вертикальный</item>
     </string-array>
-    <string-array name="language">
-        <item>Системное значение по умолчанию</item>
-        <item>Английский</item>
-        <item>Китайский (Традиционный)</item>
-        <item>Китайский (Упрощённый)</item>
-        <item>Турецкий</item>
-        <item>Итальянский</item>
-        <item>Немецкий</item>
-        <item>Арабский</item>
-        <item>Испанский</item>
-        <item>Русский</item>
-        <item>Французский</item>
-        <item>Японский</item>
-        <item>украинец</item>
-    </string-array>
-
-
     <string-array name="theme">
         <item>Светлая</item>
         <item>Тёмная</item>
     </string-array>
-
     <string-array name="title_type_array">
         <item>Английский</item>
         <item>Японский</item>
         <item>Pretty</item>
     </string-array>
-
-
 </resources>

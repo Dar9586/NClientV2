@@ -15,7 +15,6 @@
     <string name="title_activity_zoom">Actividad de Zoom</string>
     <string name="title_activity_tag_filter">Filtro de etiquetas</string>
     <string name="title_activity_login">Conectarse</string>
-    <string name="title_activity_captcha">CAPTCHA</string>
     <string name="parodies">Parodias</string>
     <string name="characters">Personajes</string>
     <string name="tags">Etiquetas</string>
@@ -32,13 +31,13 @@
     <string name="channel3_description">Usado para mostrar el progreso de la creación del comprimido</string>
     <string name="channel2_title">Creando PDF:</string>
     <string name="channel3_title">Comprimiendo:</string>
-    <string name="tags_max_reached">Puedes tener un máximo de %d etiquetas seleccionadas.</string>
+    <string name="tags_max_reached" formatted="true">Puedes tener un máximo de %d etiquetas seleccionadas.</string>
     <string name="only_english">Solo inglés</string>
     <string name="only_japanese">Solo japonés</string>
     <string name="only_chinese">Solo chino</string>
     <string name="all_languages">Todos los idiomas</string>
     <string name="login">Conectarse</string>
-    <string name="login_formatted">Conectado como %s</string>
+    <string name="login_formatted" formatted="true">Conectado como %s</string>
     <string name="logout">Desconectarse</string>
     <string name="favorite_online_manga">Mangas Favoritos En Línea</string>
     <string name="online_tags">Etiquetas En Línea</string>
@@ -57,8 +56,8 @@
     <string name="image">Imagen</string>
     <string name="next">Siguiente</string>
     <string name="create_pdf">Crear PDF</string>
-    <string name="create_pdf_format">Crear PDF de: %s</string>
-    <string name="create_zip_format">Crear Comprimido de: %s</string>
+    <string name="create_pdf_format" formatted="true">Crear PDF de: %s</string>
+    <string name="create_zip_format" formatted="true">Crear Comprimido de: %s</string>
     <string name="created_pdf">PDF Creado con éxito</string>
     <string name="error_pdf">Error Creando PDF</string>
     <string name="parsing_pages">Analizando páginas</string>
@@ -67,20 +66,12 @@
     <string name="navigation_drawer_close">Cerrar Cajón de Navegación</string>
     <string name="nav_header_subtitle">Cliente no oficial de NHentai</string>
     <string name="change_page">Cambiar página:</string>
-    <string name="minimum_comment_length">El comentario debe ser de al menos %d carácteres.</string>
-    <string name="descending_order">Orden Descendiente</string>
-    <string name="size">Tamaño</string>
-    <string name="page_count">Número de página</string>
-    <string name="download_date">Fecha de descarga</string>
-    <string name="title">Título</string>
-    <string name="title_hide_multitasking">Esconder app en miniatura del sistema</string>
-    <string name="status_viewer">Ver Estados</string>
     <string name="prev_page">Página anterior</string>
     <string name="next_page">Página siguiente</string>
     <string name="downloaded_manga">Descargas</string>
     <string name="download_gallery">Descargar galería</string>
-    <string name="delete_gallery_size_format">Borrar galería (%.2fMB)</string>
-    <string name="delete_gallery_format">¿Quieres borrar la galería: %s</string>
+    <string name="delete_gallery_size_format" formatted="true">Borrar galería (%.2fMB)</string>
+    <string name="delete_gallery_format" formatted="true">¿Quieres borrar la galería: %s</string>
     <string name="share_with">Compartir con</string>
     <string name="link_copied_to_clipboard">Enlace copiado al portapapeles</string>
     <string name="open_in_browser">Abrir en el navegador</string>
@@ -93,9 +84,9 @@
     <string name="show_related">Mostrar galerías relacionadas</string>
     <string name="random_manga">Manga aleatorio</string>
     <string name="save_page">Guardar la página</string>
-    <string name="page_count_format">%d páginas</string>
-    <string name="upload_date_format">Subido el %s a las %s</string>
-    <string name="favorite_count_format">%d favoritos</string>
+    <string name="page_count_format" formatted="true">%d páginas</string>
+    <string name="upload_date_format" formatted="true">Subido el %s a las %s</string>
+    <string name="favorite_count_format" formatted="true">%d favoritos</string>
     <string name="favorite_manga">Manga favorito</string>
     <string name="setting_on_remove_ignored">Las galerías con etiquetas ignoradas no se mostrarán</string>
     <string name="setting_off_remove_ignored">Las galerías con etiquetas ignoradas se pondrán borrosas</string>
@@ -106,7 +97,7 @@
     <string name="no_updates_found">No se han encontrado actualizaciones</string>
     <string name="error_retrieving">Error al obtener la última versión</string>
     <string name="new_version_found">Nueva versión encontrada</string>
-    <string name="update_version_format">¿Actualizar de versión %s a la versión %s?  Registro de cambios: %s</string>
+    <string name="update_version_format" formatted="true">¿Actualizar de versión %s a la versión %s?  Registro de cambios: %s</string>
     <string name="clear_this_list">¿Limpiar esta lista?</string>
     <string name="set_minimum_count">Establecer número mínimo</string>
     <string name="sort_by_title">Ordenar por título</string>
@@ -139,29 +130,6 @@
     <string name="install">Instalar</string>
     <string name="download_update_failed">No se puede descargar la versión actualizada</string>
     <string name="copyURL">Copiar URL</string>
-    <string name="view_statuses">Ver estados</string>
-    <string name="update_status">Estado de actualización:</string>
-    <string name="manage_statuses">Administrar los estados</string>
-    <string name="duplicated_name">Nombre duplicado</string>
-    <string name="name_too_short">El nombre es demasiado corto</string>
-    <string name="remove_status">Ninguno</string>
-    <string name="change_status_title">Seleccione nuevo estado:</string>
-    <string name="invalid_color_selected">Blanco y negro no pueden ser usados</string>
-    <string name="create_new_status">Crear un nuevo estado:</string>
-    <string name="change_status">Cambiar estado</string>
-    <string name="choose_unit">Elija unidad:</string>
-    <string name="weeks">Semanas</string>
-    <string name="days">Días</string>
-    <string name="months">Meses</string>
-    <string name="years">Años</string>
-    <string name="hours">Horas</string>
-    <string name="reset">Resetear</string>
-    <string name="to_time">Hasta:</string>
-    <string name="from_time">Desde:</string>
-    <string name="to_page">Hasta página:</string>
-    <string name="from_page">Desde página:</string>
-    <string name="upload_time">Tiempo de carga:</string>
-    <string name="page_range">Rango de páginas:</string>
     <string name="add_bookmark">Agregar a marcadores</string>
     <string name="manage_bookmarks">Administrar los marcadores</string>
     <string name="bookmark_page_format">Página %d</string>
@@ -192,6 +160,10 @@
     <string name="disable_lock_title">Desactivar el apagado de pantalla mientras se lee</string>
     <string name="download_all_galleries_in_this_page">Descargar todas las galerías de esta página</string>
     <string name="download_all_galleries">Descargar todas las galerías</string>
+    <string name="favorite_column_count">Seleccione número de columnas en favoritos</string>
+    <string name="download_column_count">Seleccione número de columnas en descargas</string>
+    <string name="history_column_count">Seleccione número de columnas en historial</string>
+    <string name="main_column_count">Seleccione número de columnas en la pantalla principal</string>
     <string name="navigation_settings">Configuración de navegación</string>
     <string name="stop_download">Detener la descarga</string>
     <string name="start_download">Iniciar la descarga</string>
@@ -242,11 +214,11 @@
     <string name="sort_recent">Recientes</string>
     <string name="sort_popular_day">Populares por día</string>
     <string name="sort_popular_week">Populares por semana</string>
-    <string name="sort_type_title_format">Ordenar por (%s)</string>
+    <string name="sort_type_title_format" formatted="true">Ordenar por (%s)</string>
     <string name="sort_select_type">Ordenar por:</string>
     <string name="unable_to_connect_to_the_site">No se puede conectar con el sitio</string>
-    <string name="retry">Reintentar</string>
     <string name="no_entry_found">No se han encontrado entradas</string>
+    <string name="retry">Reintentar</string>
     <string name="folder_location">Ubicación de carpeta de la aplicación</string>
     <string name="default_zoom">Zoom predeterminado</string>
     <string name="choose_directory">Elegir directorio</string>
@@ -254,46 +226,42 @@
     <string name="resume_from_page">Reanudar desde la página %d</string>
     <string name="new_beta_version_found">Se ha encontrado una nueva versión beta</string>
     <string name="check_beta_releases">Compruebe si hay alguna versión beta</string>
+    <string name="page_range">Rango de páginas:</string>
+    <string name="upload_time">Tiempo de carga:</string>
+    <string name="from_page">Desde página:</string>
+    <string name="to_page">Hasta página:</string>
+    <string name="from_time">Desde:</string>
+    <string name="to_time">Hasta:</string>
+    <string name="reset">Resetear</string>
+    <string name="hours">Horas</string>
+    <string name="years">Años</string>
+    <string name="months">Meses</string>
+    <string name="days">Días</string>
+    <string name="weeks">Semanas</string>
+    <string name="choose_unit">Elija unidad:</string>
+    <string name="change_status">Cambiar estado</string>
+    <string name="create_new_status">Crear un nuevo estado:</string>
+    <string name="invalid_color_selected">Blanco y negro no pueden ser usados</string>
+    <string name="change_status_title">Seleccione nuevo estado:</string>
+    <string name="remove_status">Ninguno</string>
+    <string name="name_too_short">El nombre es demasiado corto</string>
+    <string name="duplicated_name">Nombre duplicado</string>
+    <string name="manage_statuses">Administrar los estados</string>
+    <string name="update_status">Estado de actualización:</string>
+    <string name="view_statuses">Ver estados</string>
     <string name="status_column_count">Número de columnas de estados</string>
-    <string name="main_column_count">Seleccione número de columnas en la pantalla principal</string>
-    <string name="history_column_count">Seleccione número de columnas en historial</string>
-    <string name="download_column_count">Seleccione número de columnas en descargas</string>
-    <string name="favorite_column_count">Seleccione número de columnas en favoritos</string>
+    <string name="status_viewer">Ver Estados</string>
+    <string name="title_hide_multitasking">Esconder app en miniatura del sistema</string>
+    <string name="title">Título</string>
+    <string name="download_date">Fecha de descarga</string>
+    <string name="page_count">Número de página</string>
+    <string name="size">Tamaño</string>
+    <string name="descending_order">Orden Descendiente</string>
+    <string name="minimum_comment_length" formatted="true">El comentario debe ser de al menos %d carácteres.</string>
     <string name="change_scroll_type">Cambiar tipo de scroll</string>
     <string name="exported_backup_file_toast" formatted="true">Copia de seguridad exportada en %s</string>
     <string name="export_data">Exportar datos</string>
     <string name="import_data">Importar datos</string>
-
-    <string-array name="scroll_type">
-        <item>Horizontal</item>
-        <item>Vertical</item>
-    </string-array>
-
-    <string-array name="language">
-        <item>Por Defecto</item>
-        <item>English</item>
-        <item>Chinese (Traditional)</item>
-        <item>Chinese (Simplified)</item>
-        <item>Turkish</item>
-        <item>Italian</item>
-        <item>German</item>
-        <item>Arabic</item>
-        <item>Español</item>
-        <item>Ruso</item>
-        <item>Francés</item>
-        <item>Japonés</item>
-        <item>Ucranio</item>
-    </string-array>
-    <string-array name="theme">
-        <item>Claro</item>
-        <item>Oscuro</item>
-    </string-array>
-
-    <string-array name="title_type_array">
-        <item>Inglés</item>
-        <item>Japonés</item>
-        <item>Arreglado</item>
-    </string-array>
     <string name="default_status_1">Leyendo</string>
     <string name="default_status_2">Completado</string>
     <string name="default_status_3">En Espera</string>
@@ -326,6 +294,20 @@
     <string name="export_finished">Export finished</string>
     <string name="import_finished">Import finished</string>
     <string name="download_torrent">Download torrent</string>
+    <string name="title_activity_captcha">CAPTCHA</string>
     <string name="invalid_response">Invalid response</string>
-
+    <string name="system_default">System default</string>
+    <string-array name="scroll_type">
+        <item>Horizontal</item>
+        <item>Vertical</item>
+    </string-array>
+    <string-array name="theme">
+        <item>Claro</item>
+        <item>Oscuro</item>
+    </string-array>
+    <string-array name="title_type_array">
+        <item>Inglés</item>
+        <item>Japonés</item>
+        <item>Arreglado</item>
+    </string-array>
 </resources>

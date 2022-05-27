@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--Thanks to ZerOri and linsui for the Simplified Chinese translation-->
-
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="setting_on_ignore_tags">从画廊菜单中选中一个标签时不再查询其它标签（语言项除外）</string>
     <string name="setting_off_ignore_tags">从画廊菜单中选中一个标签时查询其它标签</string>
@@ -16,7 +15,6 @@
     <string name="title_activity_zoom">启用放大</string>
     <string name="title_activity_tag_filter">标签筛选</string>
     <string name="title_activity_login">登录</string>
-    <string name="title_activity_captcha">CAPTCHA</string>
     <string name="parodies">原作</string>
     <string name="characters">角色</string>
     <string name="tags">标签</string>
@@ -58,8 +56,8 @@
     <string name="image">图像</string>
     <string name="next">下一个</string>
     <string name="create_pdf">创建 PDF</string>
-    <string name="create_pdf_format" formatted="true">创建的 PDF："%s"</string>
-    <string name="create_zip_format" formatted="true">创建的 ZIP："%s"</string>
+    <string name="create_pdf_format" formatted="true">创建的 PDF：\"%s\"</string>
+    <string name="create_zip_format" formatted="true">创建的 ZIP：\"%s\"</string>
     <string name="created_pdf">成功创建 PDF</string>
     <string name="error_pdf">创建 PDF 出错</string>
     <string name="parsing_pages">正在解析页面</string>
@@ -164,6 +162,7 @@
     <string name="download_all_galleries">下载所有画廊</string>
     <string name="favorite_column_count">选择收藏界面列数</string>
     <string name="download_column_count">选择下载界面列数</string>
+    <string name="history_column_count">选择历史列数</string>
     <string name="main_column_count">选择主界面列数</string>
     <string name="navigation_settings">浏览设置</string>
     <string name="stop_download">停止下载</string>
@@ -181,7 +180,6 @@
     <string name="history_size_summary">设置历史条目最大值</string>
     <string name="view_history">阅读历史</string>
     <string name="history">历史</string>
-    <string name="history_column_count">选择历史列数</string>
     <string name="clear_history">清除历史</string>
     <string name="cancelled_format">取消: %s</string>
     <string name="completed_format">完成: %s</string>
@@ -212,13 +210,12 @@
     <string name="copied_to_clipboard">复制至剪贴板</string>
     <string name="maximum_notification_count">最大通知数</string>
     <string name="copy_settings_to_clipboard">复制设置到剪贴板</string>
-
     <string name="sort_popular_all_time">热门</string>
     <string name="sort_recent">最近</string>
     <string name="sort_popular_day">日榜</string>
     <string name="sort_popular_week">周榜</string>
-    <string name="sort_select_type">选择排序类型：</string>
     <string name="sort_type_title_format" formatted="true">选择排序类型（%s）</string>
+    <string name="sort_select_type">选择排序类型：</string>
     <string name="unable_to_connect_to_the_site">无法连接站点</string>
     <string name="no_entry_found">找不到条目</string>
     <string name="retry">重试</string>
@@ -291,42 +288,26 @@
     <string name="title_offscreen_limit">Image to preload</string>
     <string name="sort_popoular_month">Monthly popular</string>
     <string name="random">Random</string>
-    <string name="summary_fetch_metadata">Download metadata for galleries downloaded before 2.3.0 which didn\'t have metadata like tags included</string>
+    <string name="summary_fetch_metadata">Chinese</string>
     <string name="title_fetch_metadata">Fetch metadata for old galleries</string>
     <string name="title_change_page_buttons">Change page clicking on the image</string>
     <string name="export_finished">Export finished</string>
     <string name="import_finished">Import finished</string>
     <string name="download_torrent">Download torrent</string>
+    <string name="title_activity_captcha">CAPTCHA</string>
     <string name="invalid_response">Invalid response</string>
-
+    <string name="system_default">System default</string>
     <string-array name="scroll_type">
         <item>水平</item>
         <item>垂直</item>
-    </string-array>
-    <string-array name="language">
-        <item>系统默认</item>
-        <item>英语</item>
-        <item>繁体中文</item>
-        <item>简体中文</item>
-        <item>土耳其语</item>
-        <item>意大利语</item>
-        <item>德语</item>
-        <item>阿拉伯语</item>
-        <item>西班牙语</item>
-        <item>俄语</item>
-        <item>法语</item>
-        <item>日本人</item>
-        <item>乌克兰</item>
     </string-array>
     <string-array name="theme">
         <item>亮色</item>
         <item>暗色</item>
     </string-array>
-
     <string-array name="title_type_array">
         <item>英文</item>
         <item>日文</item>
         <item>简约</item>
     </string-array>
-
 </resources>

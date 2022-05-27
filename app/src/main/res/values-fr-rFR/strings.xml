@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <resources>
-
     <string name="setting_on_ignore_tags">Les autres tags ne seront pas pris en compte quand un tag est sélectionné depuis la galerie (sauf la langue)</string>
     <string name="setting_off_ignore_tags">Les autres tags seront pris en compte quand un tag est sélectionné depuis la galerie</string>
     <string name="setting_on_use_account_tag">Les tags du compte seront pris en compte lors des recherches (les tags locaux auront la priorité)</string>
@@ -17,7 +15,6 @@
     <string name="title_activity_zoom">Zoom</string>
     <string name="title_activity_tag_filter">Filtre De Tags</string>
     <string name="title_activity_login">Connection</string>
-    <string name="title_activity_captcha">CAPTCHA</string>
     <string name="parodies">Parodies</string>
     <string name="characters">Personnages</string>
     <string name="tags">Tags</string>
@@ -59,8 +56,8 @@
     <string name="image">Image</string>
     <string name="next">Suivant</string>
     <string name="create_pdf">Créer un PDF</string>
-    <string name="create_pdf_format" formatted="true">Créer un PDF de : "%s"</string>
-    <string name="create_zip_format" formatted="true">Créer un ZIP de : "%s"</string>
+    <string name="create_pdf_format" formatted="true">Créer un PDF de : \"%s\"</string>
+    <string name="create_zip_format" formatted="true">Créer un ZIP de : \"%s\"</string>
     <string name="created_pdf">PDF créé avec succès</string>
     <string name="error_pdf">Erreur lors de la création du PDF</string>
     <string name="parsing_pages">Analyse des pages</string>
@@ -213,7 +210,6 @@
     <string name="copied_to_clipboard">Copié dans le presse-papiers</string>
     <string name="maximum_notification_count">Nombre maximal de notifications</string>
     <string name="copy_settings_to_clipboard">Copier les paramètres dans le presse-papiers</string>
-
     <string name="sort_popular_all_time">Populaire</string>
     <string name="sort_recent">Récent</string>
     <string name="sort_popular_day">Populaire du jour</string>
@@ -298,37 +294,20 @@
     <string name="export_finished">Export terminé</string>
     <string name="import_finished">Import terminé</string>
     <string name="download_torrent">Télécharger le torrent</string>
+    <string name="title_activity_captcha">CAPTCHA</string>
     <string name="invalid_response">Invalid response</string>
+    <string name="system_default">System default</string>
     <string-array name="scroll_type">
         <item>Horizontal</item>
         <item>Vertical</item>
     </string-array>
-
-    <string-array name="language">
-        <item>Par défaut (système)</item>
-        <item>Anglais</item>
-        <item>Chinois (Traditionnel)</item>
-        <item>Chinois (Simplifié)</item>
-        <item>Turc</item>
-        <item>Italien</item>
-        <item>Allemand</item>
-        <item>Arabe</item>
-        <item>Espagnol</item>
-        <item>Russe</item>
-        <item>Français</item>
-        <item>Japonais</item>
-        <item>Ukrainien</item>
-    </string-array>
-
     <string-array name="theme">
         <item>Clair</item>
         <item>Sombre</item>
     </string-array>
-
     <string-array name="title_type_array">
         <item>Anglais</item>
         <item>Japonais</item>
         <item>Abrégé (anglais, titre seulement)</item>
     </string-array>
-
 </resources>

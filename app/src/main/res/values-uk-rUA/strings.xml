@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--Thanks to Atmosphelen for the Simplified Chinese translation-->
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="setting_on_ignore_tags">Інші теги не будуть використані, якщо тег вибрано з меню галереї(окрім мови)</string>
     <string name="setting_off_ignore_tags">Інші теги будуть використані, якщо тег вибрано з меню галереї</string>
@@ -296,26 +296,10 @@
     <string name="download_torrent">Завантажити торрент</string>
     <string name="title_activity_captcha">CAPTCHA</string>
     <string name="invalid_response">Недійсна відповідь</string>
-
-
+    <string name="system_default">System default</string>
     <string-array name="scroll_type">
         <item>Горизонтально</item>
         <item>Вертикально</item>
-    </string-array>
-    <string-array name="language">
-        <item>Системні замовчування</item>
-        <item>Англійська</item>
-        <item>Китайська (Традиційна)</item>
-        <item>Китайська (Спрощена)</item>
-        <item>Турецька</item>
-        <item>Італійська</item>
-        <item>Німецька</item>
-        <item>Арабська</item>
-        <item>Іспанська</item>
-        <item>Російська</item>
-        <item>Французька</item>
-        <item>Японська</item>
-        <item>Український</item>
     </string-array>
     <string-array name="theme">
         <item>Світла</item>

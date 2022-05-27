@@ -53,7 +53,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.12.12'//Because of min SDK
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
     //implementation 'com.github.chrisbanes:PhotoView:2.3.0'
-    implementation 'org.jsoup:jsoup:1.14.3'
+    implementation 'org.jsoup:jsoup:1.15.1'
     implementation 'ch.acra:acra-core:5.7.0'
     implementation('com.github.bumptech.glide:glide:4.13.2') {
         exclude group: "com.android.support"
@@ -65,5 +65,5 @@ dependencies {
     implementation 'me.zhanghai.android.fastscroll:library:1.1.8'
 
     implementation 'net.opacapp:multiline-collapsingtoolbar:27.1.1'
-
+    implementation 'com.zeugmasolutions.localehelper:locale-helper-android:1.5.1'
 }

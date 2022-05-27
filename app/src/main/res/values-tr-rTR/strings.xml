@@ -1,24 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?><!--Thanks to hmaltr for the Turkish translation-->
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--SUMMARY-->
     <string name="setting_on_ignore_tags">Diğer etiketler galeri menüsünden bir etiket seçildiğinde listelenmeyecek (dil hariç)</string>
     <string name="setting_off_ignore_tags">Diğer etiketler galeri menüsünden bir etiket seçildiğinde listelenecek</string>
+    <string name="setting_on_use_account_tag">Hesap etiketlerini aramada kullan (Yerel etiketler daha önceliklidir)</string>
     <string name="setting_off_use_account_tag">Hesap etiketleri aramada dikkate alınmayacak</string>
     <string name="theme_summary">Tema rengini seç</string>
-
-    <!--SETTINGS NAME-->
     <string name="send_crash_report">Otomatik çökme raporu gönder</string>
     <string name="change_theme">Tema değiştir</string>
     <string name="clear_cache">Önbelleği temizle</string>
     <string name="infinite_scroll">Sonsuz kaydırma</string>
-    <string name="use_account_tag">Hesaptan etiketleri kullan</string> <!-- DEPRECATED-->
-
+    <string name="ignore_tags">Diğer etiketleri dikkate alma</string>
+    <string name="use_account_tag">Hesaptan etiketleri kullan</string>
     <string name="title_activity_gallery">Galeri</string>
     <string name="title_activity_zoom">Yakınlaştırma aktivitesi</string>
     <string name="title_activity_tag_filter">Etiket filtresi</string>
     <string name="title_activity_login">Giriş yap</string>
-    <string name="title_activity_captcha">CAPTCHA</string>
-
     <string name="parodies">Parodiler</string>
     <string name="characters">Karakterler</string>
     <string name="tags">Etiketler</string>
@@ -27,7 +23,6 @@
     <string name="languages">Diller</string>
     <string name="categories">Kategoriler</string>
     <string name="unknown">Bilinmiyor</string>
-
     <string name="channel1_name">Galeriyi indir</string>
     <string name="channel2_name">PDF oluştur</string>
     <string name="channel3_name">ZIP oluştur</string>
@@ -36,27 +31,20 @@
     <string name="channel3_description">ZIP\'in oluşturulma sürecinin ne kadar tamamlandığını gösterir</string>
     <string name="channel2_title">PDF Oluşturuluyor:</string>
     <string name="channel3_title">ZIP oluşturuluyor:</string>
-
     <string name="tags_max_reached" formatted="true">Maksimum %d etiket seçebilirsiniz.</string>
-
-
     <string name="only_english">Sadece İngilizce</string>
     <string name="only_japanese">Sadece Japonca</string>
     <string name="only_chinese">Sadece Çince</string>
     <string name="all_languages">Tüm Diller</string>
-
     <string name="login">Giriş yap</string>
     <string name="login_formatted" formatted="true">%s olarak giriş yapıldı</string>
     <string name="logout">Çıkış yap</string>
-
     <string name="favorite_online_manga">Favori online galeri</string>
     <string name="online_tags">Online etiketler</string>
-
     <string name="add_to_online_favorite">Online favorilere ekle</string>
     <string name="remove_from_online_favorites">Online favorilerden kaldır</string>
     <string name="add_to_online_blacklist">Online kara listeye ekle?</string>
     <string name="tag_already_in_blacklist">Etiket zaten karalistede</string>
-
     <string name="are_you_sure">Eminmisin?</string>
     <string name="thumbnail">Önizleme</string>
     <string name="settings">Ayarlar</string>
@@ -67,30 +55,27 @@
     <string name="share">Paylaş</string>
     <string name="image">Fotoğraf</string>
     <string name="next">Sıradaki</string>
-
     <string name="create_pdf">PDF oluştur</string>
     <string name="create_pdf_format" formatted="true">%s PDF\'ini oluştur</string>
     <string name="create_zip_format" formatted="true">%s ZIP\'ini oluştur</string>
+    <string name="created_pdf">PDF başarıyla oluşturuldu</string>
     <string name="error_pdf">PDF oluşturulurken bir hata meydana geldi</string>
     <string name="parsing_pages">Sayfalar ayrıştırılıyor</string>
     <string name="writing_pdf">PDF yazılıyor</string>
-
+    <string name="navigation_drawer_open">Gezinme çekmecesini aç</string>
     <string name="navigation_drawer_close">Gezinme çekmecesini kapat</string>
     <string name="nav_header_subtitle">NHentai resmi olmayan istemci</string>
-
     <string name="change_page">Sayfayı değiştir:</string>
     <string name="prev_page">Önceki sayfa</string>
     <string name="next_page">Sıradaki sayfa</string>
-
     <string name="downloaded_manga">İndirilenler</string>
     <string name="download_gallery">Bu galeriyi indir</string>
-
     <string name="delete_gallery_size_format" formatted="true">Galeriyi sil? (%.2fMB)</string>
     <string name="delete_gallery_format" formatted="true">Bu galeriyi silmek istiyor musunuz? %s</string>
-
-
     <string name="share_with">Şununla paylaş</string>
+    <string name="link_copied_to_clipboard">Link panoya kopyalandı</string>
     <string name="open_in_browser">Tarayıcıda aç</string>
+    <string name="go_online">Online görüntüle</string>
     <string name="update_tag_status">Etiket durumunu güncelle</string>
     <string name="change_view">Görünümü değiştir</string>
     <string name="tag_preference">Etiket tercihi</string>
@@ -109,16 +94,18 @@
     <string name="clear_tag_preferences">Etiket tercihlerini temizle</string>
     <string name="check_for_update_on_startup">Açılışta güncellemeleri denetle</string>
     <string name="check_for_updates">Güncellemeleri denetle</string>
+    <string name="no_updates_found">Zaten en son sürümü kullanıyorsunuz!</string>
     <string name="error_retrieving">Güncelleme bilgileri alınırken bir sorun oluştu</string>
     <string name="new_version_found">Yeni sürüm bulundu</string>
     <string name="update_version_format" formatted="true">%s bu sürümden %s bu sürüme güncellensin mi?  Değişim kaydı: %s</string>
+    <string name="clear_this_list">Bu listeyi temizle?</string>
     <string name="set_minimum_count">Minimum sayıyı ayarla</string>
     <string name="sort_by_title">Başlığa göre sırala</string>
     <string name="sort_by_popular">Popülerliğe göre sırala</string>
+    <string name="next_page_volume_up">Ses arttırma tuşuyla sıradaki sayfaya geç</string>
     <string name="next_page_volume_down">Ses azaltma tuşuyla sıradaki sayfaya geç</string>
     <string name="change_title_type">Başlık dilini değiştir</string>
     <string name="title_type_summary">Tüm galeriler için varsayılan dili seç</string>
-
     <string name="search_settings">Arama ayarları</string>
     <string name="global_settings">Uygulama ayarları</string>
     <string name="images_settings">Okuma ayarları</string>
@@ -134,24 +121,28 @@
     <string name="add">Ekle</string>
     <string name="insert_tag_name">Etiket adı ekle</string>
     <string name="favorite_count">Favori sayısı</string>
+    <string name="comments">Yorumlar</string>
     <string name="send">Gönder</string>
     <string name="send_comment">Yorumu gönder…</string>
     <string name="profile_picture">Profil fotoğrafı</string>
     <string name="send_bug_on_github">Github üzerinden hata gönder</string>
     <string name="github">Github</string>
+    <string name="install">Yükle</string>
     <string name="download_update_failed">Güncellenmiş sürüm indirilemedi</string>
     <string name="copyURL">URL\'yi kopyala</string>
     <string name="add_bookmark">Yer imi ekle</string>
     <string name="manage_bookmarks">Yer imlerini yönet</string>
     <string name="bookmark_page_format">Sayfa %d</string>
+    <string name="bookmark_description">Yer imi açıklaması</string>
     <string name="enable_right_to_left">Sağdan sola okumayı etkinleştir</string>
     <string name="setting_on_use_rtl">Fotoğraflar sağdan sola gösterilecek</string>
     <string name="setting_off_use_rtl">Fotoğraflar soldan sağa gösterilecek</string>
     <string name="volume_change_setting">Sayfayı ses tuşlarıyla değiştir</string>
     <string name="popular_tag_count">Popüler etiketler Ayrıntılı aramada gösterilecek</string>
     <string name="show_gallery_titles">Galeri başlıklarını göster</string>
+    <string name="use_column_port">Dikey konumda satır başına öğe sayısını seçin</string>
+    <string name="use_column_land">Yatay konumda satır başına öğe sayısını seçin</string>
     <string name="change_language">Dil değiştir</string>
-
     <string name="tag_artist_gallery">Çizer:</string>
     <string name="tag_character_gallery">Karakter:</string>
     <string name="tag_parody_gallery">Parodi:</string>
@@ -171,6 +162,7 @@
     <string name="download_all_galleries">Tüm galerileri indir</string>
     <string name="favorite_column_count">Favori sütun sayısını seç</string>
     <string name="download_column_count">İndirme sütun sayısını seç</string>
+    <string name="history_column_count">Tarihçe sütun sayısını seç</string>
     <string name="main_column_count">Ana sütun sayısını seç</string>
     <string name="navigation_settings">Gezinti ayarları</string>
     <string name="stop_download">İndirmeyi durdur</string>
@@ -200,60 +192,16 @@
     <string name="zoom_one_column">Yakınlaştırmayı etkinleştir</string>
     <string name="insert_pin">PIN gir</string>
     <string name="confirm_pin">PIN\'i doğrula</string>
+    <string name="setting_pin">Uygulamaya girmek için PIN\'i aktifleştir</string>
     <string name="use_pin">PIN kullan</string>
     <string name="wrong_pin">Yanlış PIN</string>
     <string name="rotate_image">Fotoğrafı çevir</string>
-    <string name="exported_backup_file_toast" formatted="true">Yedekleme dosyası şuraya çıkartıldı: %s</string>
-
-    <string-array name="scroll_type">
-        <item>Horizontal</item>
-        <item>Vertical</item>
-    </string-array>
-
-    <string-array name="language">
-        <item>Sistem Dili</item>
-        <item>İngilizce</item>
-        <item>Çince (Geleneksel)</item>
-        <item>Çince (Basitleştirilmiş)</item>
-        <item>Türkçe</item>
-        <item>İtalyanca</item>
-        <item>Almanca</item>
-        <item>Arapça</item>
-        <item>İspanyolca</item>
-        <item>Rusça</item>
-        <item>Fransızca</item>
-        <item>Japonca</item>
-        <item>Ukrayna</item>
-    </string-array>
-    <string-array name="theme">
-        <item>Beyaz Tema</item>
-        <item>Siyah Tema</item>
-    </string-array>
-
-    <string-array name="title_type_array">
-        <item>İngilizce</item>
-        <item>Japonca</item>
-        <item>Özel</item>
-    </string-array>
-    <string name="setting_on_use_account_tag">Hesap etiketlerini aramada kullan (Yerel etiketler daha önceliklidir)</string>
-    <string name="ignore_tags">Diğer etiketleri dikkate alma</string>
-    <string name="created_pdf">PDF başarıyla oluşturuldu</string>
-    <string name="navigation_drawer_open">Gezinme çekmecesini aç</string>
-    <string name="link_copied_to_clipboard">Link panoya kopyalandı</string>
-    <string name="go_online">Online görüntüle</string>
-    <string name="no_updates_found">Zaten en son sürümü kullanıyorsunuz!</string>
-    <string name="clear_this_list">Bu listeyi temizle?</string>
-    <string name="next_page_volume_up">Ses arttırma tuşuyla sıradaki sayfaya geç</string>
-    <string name="comments">Yorumlar</string>
-    <string name="install">Yükle</string>
-    <string name="bookmark_description">Yer imi açıklaması</string>
-    <string name="history_column_count">Tarihçe sütun sayısını seç</string>
-    <string name="setting_pin">Uygulamaya girmek için PIN\'i aktifleştir</string>
     <string name="toggle_online_favorite">Online favori aç/kapa</string>
     <string name="data_usage_settings">Veri kullanım ayarları</string>
     <string name="mobile_data_usage_setting">Mobil veri kullanım ayarları</string>
     <string name="wifi_data_usage_setting">Wi-Fi kullanım ayarları</string>
     <string name="data_usage_thumb">Sadece kapak fotoğraflarını indir</string>
+    <string name="data_usage_full">Her şeyi indir (Yüksek veri kullanımı)</string>
     <string name="data_usage_no">Sayfaları indirme</string>
     <string name="enable_network_to_continue">Sayfayı görmek için veri kullanım ayarlarını değiştirin veya bağlı olduğunuz ağı değiştirin</string>
     <string name="donate">Geliştiriciyi destekle</string>
@@ -261,17 +209,13 @@
     <string name="id_copied_to_clipboard">Galeri ID\'si panoya kopyalandı</string>
     <string name="copied_to_clipboard">Panoya kopyalandı</string>
     <string name="maximum_notification_count">Maksimum bildirim sayısı</string>
-
-    <string name="data_usage_full">Her şeyi indir (Yüksek veri kullanımı)</string>
-    <string name="use_column_port">Dikey konumda satır başına öğe sayısını seçin</string>
-    <string name="use_column_land">Yatay konumda satır başına öğe sayısını seçin</string>
     <string name="copy_settings_to_clipboard">Ayarları panoya kopyala</string>
     <string name="sort_popular_all_time">Popülerlik</string>
     <string name="sort_recent">Eklenme tarihi</string>
     <string name="sort_popular_day">Günlük Popülerlik</string>
     <string name="sort_popular_week">Haftalık Popülerlik</string>
-    <string name="sort_select_type">Sıralama tipi seç:</string>
     <string name="sort_type_title_format" formatted="true">Sıralama tipi seç (%s)</string>
+    <string name="sort_select_type">Sıralama tipi seç:</string>
     <string name="unable_to_connect_to_the_site">Siteyle bağlantı kurulamadı</string>
     <string name="no_entry_found">Herhangi bir sonuç bulunamadı</string>
     <string name="retry">Tekrar Dene</string>
@@ -315,13 +259,14 @@
     <string name="descending_order">Azalan</string>
     <string name="minimum_comment_length" formatted="true">Yorum en az %d karakter olmalıdır</string>
     <string name="change_scroll_type">Kaydırma tipini değiştir</string>
+    <string name="exported_backup_file_toast" formatted="true">Yedekleme dosyası şuraya çıkartıldı: %s</string>
     <string name="export_data">Verileri dışa aktar</string>
     <string name="import_data">Verileri dışarıdan yükle</string>
     <string name="default_status_1">Okunuyor</string>
     <string name="default_status_2">Tamamlandı</string>
     <string name="default_status_3">Beklemede</string>
-    <string name="default_status_5">Planlanıyor</string>
     <string name="default_status_4">Bırakıldı</string>
+    <string name="default_status_5">Planlanıyor</string>
     <string name="title_site_mirror">Yedek site seçici</string>
     <string name="disguise_app_in_drawer">Uygulamayı gizle</string>
     <string name="summary_disguise_app">Uygulama bir Hesap Makinesi olarak gizlenecektir (deneysel)</string>
@@ -349,5 +294,20 @@
     <string name="export_finished">Dışa Aktarma Tamamlandı</string>
     <string name="import_finished">İçe Alma Tammalandı</string>
     <string name="download_torrent">Torrent İndir</string>
+    <string name="title_activity_captcha">CAPTCHA</string>
     <string name="invalid_response">Invalid response</string>
+    <string name="system_default">System default</string>
+    <string-array name="scroll_type">
+        <item>Horizontal</item>
+        <item>Vertical</item>
+    </string-array>
+    <string-array name="theme">
+        <item>Beyaz Tema</item>
+        <item>Siyah Tema</item>
+    </string-array>
+    <string-array name="title_type_array">
+        <item>İngilizce</item>
+        <item>Japonca</item>
+        <item>Özel</item>
+    </string-array>
 </resources>

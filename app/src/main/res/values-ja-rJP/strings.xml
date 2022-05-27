@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <resources>
     <string name="setting_on_ignore_tags">ギャラリーメニューからタグを選択した場合、他のタグは照会されません（言語を除く）</string>
     <string name="setting_off_ignore_tags">ギャラリーメニューからタグを選択すると、他のタグが照会されます</string>
@@ -16,7 +15,6 @@
     <string name="title_activity_zoom">ズームアクティビティ</string>
     <string name="title_activity_tag_filter">タグフィルター</string>
     <string name="title_activity_login">ログインする</string>
-    <string name="title_activity_captcha">CAPTCHA</string>
     <string name="parodies">パロディー</string>
     <string name="characters">キャラクター</string>
     <string name="tags">タグ</string>
@@ -33,13 +31,13 @@
     <string name="channel3_description">ZIPファイルの作成の進捗状況を表示するために使用されます。</string>
     <string name="channel2_title">PDFファイルを作成中…しばらくお待ちください:</string>
     <string name="channel3_title">ZIPファイルを作成中…しばらくお待ちください:</string>
-    <string name="tags_max_reached" formated="true">最大%d個のタグを選択できます</string>
+    <string name="tags_max_reached" formatted="true">最大%d個のタグを選択できます</string>
     <string name="only_english">英語のみ</string>
     <string name="only_japanese">日本語のみ</string>
     <string name="only_chinese">中国語のみ</string>
     <string name="all_languages">全ての言語</string>
     <string name="login">ログイン</string>
-    <string name="login_formatted" formated="true">%sとして記録</string>
+    <string name="login_formatted" formatted="true">%sとして記録</string>
     <string name="logout">ログアウト</string>
     <string name="favorite_online_manga">お気に入りのオンラインギャラリー</string>
     <string name="online_tags">オンラインタグ</string>
@@ -58,8 +56,8 @@
     <string name="image">画像</string>
     <string name="next">次</string>
     <string name="create_pdf">PDFを作成</string>
-    <string name="create_pdf_format" formated="true">次のPDFを作成： "%s"</string>
-    <string name="create_zip_format" formated="true">次のZIPを作成： "%s"</string>
+    <string name="create_pdf_format" formatted="true">次のPDFを作成： \"%s\"</string>
+    <string name="create_zip_format" formatted="true">次のZIPを作成： \"%s\"</string>
     <string name="created_pdf">PDFファイルは正常に作成されました</string>
     <string name="error_pdf">PDFファイルの作成中にエラーが発生しました</string>
     <string name="parsing_pages">ページの解析</string>
@@ -72,7 +70,7 @@
     <string name="next_page">次のページ</string>
     <string name="downloaded_manga">ダウンロードしたギャラリー一覧</string>
     <string name="download_gallery">ギャラリーをダウンロード</string>
-    <string name="delete_gallery_size_format" formated="true">ギャラリーを削除します（%.2fMB）</string>
+    <string name="delete_gallery_size_format" formatted="true">ギャラリーを削除します（%.2fMB）</string>
     <string name="delete_gallery_format" formatted="true">ギャラリーを削除しますか？：\ n%s</string>
     <string name="share_with">と共有する</string>
     <string name="link_copied_to_clipboard">リンクをクリップボードにコピーしました</string>
@@ -86,9 +84,9 @@
     <string name="show_related">関連するギャラリーを表示</string>
     <string name="random_manga">ランダムギャラリー</string>
     <string name="save_page">現在のページを保存する</string>
-    <string name="page_count_format" formated="true">%dページ</string>
-    <string name="upload_date_format" formated="true">%sの%sにアップロード</string>
-    <string name="favorite_count_format" formated="true">%dお気に入り</string>
+    <string name="page_count_format" formatted="true">%dページ</string>
+    <string name="upload_date_format" formatted="true">%sの%sにアップロード</string>
+    <string name="favorite_count_format" formatted="true">%dお気に入り</string>
     <string name="favorite_manga">お気に入りのギャラリー</string>
     <string name="setting_on_remove_ignored">タグが無視されているギャラリーは表示されません</string>
     <string name="setting_off_remove_ignored">タグが無視されたギャラリーはぼやけます</string>
@@ -99,7 +97,7 @@
     <string name="no_updates_found">お使いのバージョンは最新です。</string>
     <string name="error_retrieving">最新バージョンの取得中にエラーが発生しました</string>
     <string name="new_version_found">新しい更新が利用可能です</string>
-    <string name="update_version_format" formated="true">バージョン%sからバージョン%sに更新しますか？\ n \ n変更ログ：\ n%s</string>
+    <string name="update_version_format" formatted="true">バージョン%sからバージョン%sに更新しますか？\ n \ n変更ログ：\ n%s</string>
     <string name="clear_this_list">このリストを削除</string>
     <string name="set_minimum_count">最小カウントを設定</string>
     <string name="sort_by_title">タイトルで並べ替え</string>
@@ -212,12 +210,11 @@
     <string name="copied_to_clipboard">クリップボードにコピー</string>
     <string name="maximum_notification_count">最大通知数</string>
     <string name="copy_settings_to_clipboard">設定をクリップボードにコピー</string>
-
     <string name="sort_popular_all_time">人気</string>
     <string name="sort_recent">最近追加</string>
     <string name="sort_popular_day">毎日の人気</string>
     <string name="sort_popular_week">毎週の人気</string>
-    <string name="sort_type_title_format" formated="true">並べ替えタイプ（%s）を選択</string>
+    <string name="sort_type_title_format" formatted="true">並べ替えタイプ（%s）を選択</string>
     <string name="sort_select_type">ソートタイプを選択:</string>
     <string name="unable_to_connect_to_the_site">サイトに接続出来ませんでした。</string>
     <string name="no_entry_found">エントリが見つかりませんでした。</string>
@@ -260,9 +257,9 @@
     <string name="page_count">ページ数</string>
     <string name="size">サイズを変更</string>
     <string name="descending_order">降順</string>
-    <string name="minimum_comment_length" formated="true">コメントは少なくとも%d文字である必要があります</string>
+    <string name="minimum_comment_length" formatted="true">コメントは少なくとも%d文字である必要があります</string>
     <string name="change_scroll_type">スクロールタイプを変更</string>
-    <string name="exported_backup_file_toast" formated="true">エクスポートされたバックアップファイル（%s）</string>
+    <string name="exported_backup_file_toast" formatted="true">エクスポートされたバックアップファイル（%s）</string>
     <string name="export_data">データをエクスポート</string>
     <string name="import_data">データをインポート</string>
     <string name="default_status_1">読書中</string>
@@ -297,38 +294,20 @@
     <string name="export_finished">エクスポートが完了しました</string>
     <string name="import_finished">インポートが完了しました</string>
     <string name="download_torrent">torrentファイルをダウンロード</string>
+    <string name="title_activity_captcha">CAPTCHA</string>
     <string name="invalid_response">Invalid response</string>
-
+    <string name="system_default">System default</string>
     <string-array name="scroll_type">
         <item>水平</item>
         <item>垂直</item>
     </string-array>
-
-    <string-array name="language">
-        <item>デフォルト</item>
-        <item>英語</item>
-        <item>中国語(繁体字)</item>
-        <item>中国語(簡体字)</item>
-        <item>トルコ語</item>
-        <item>イタリア語</item>
-        <item>ドイツ語</item>
-        <item>アラビア語</item>
-        <item>スペイン語</item>
-        <item>ロシア語</item>
-        <item>フランス語</item>
-        <item>日本語</item>
-        <item>ウクライナ</item>
-    </string-array>
-
     <string-array name="theme">
         <item>ライトテーマ</item>
         <item>ダークテーマ</item>
     </string-array>
-
     <string-array name="title_type_array">
         <item>英語</item>
         <item>日本語</item>
         <item>かわいい</item>
     </string-array>
-
 </resources>

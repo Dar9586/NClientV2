@@ -410,35 +410,19 @@ public class Global {
         assert langCode != null;
         if (langCode.equalsIgnoreCase(defaultValue)) {
             Locale defaultLocale = Locale.getDefault();
-            if (isLocaleAvailable(context, defaultLocale)) return defaultLocale;
+            return defaultLocale;
         }
-        if (langCode.contains("-")) {
-            String[] regexSplit = langCode.split("-");
+        if (langCode.contains("-") || langCode.contains("_")) {
+            String[] regexSplit = langCode.split("[-_]");
             Locale targetLocale = new Locale(regexSplit[0], regexSplit[1]);
-            if (isLocaleAvailable(context, targetLocale)) return targetLocale;
+            return targetLocale;
         } else {
             Locale targetLocale = new Locale(langCode);
             System.out.println(targetLocale.getCountry());
-            if (isLocaleAvailable(context, targetLocale)) return targetLocale;
+            return targetLocale;
         }
-        return new Locale("en", "US");
     }
 
-    private static boolean isLocaleAvailable(Context context, Locale targetLocale) {
-        Locale[] availableLocales = Locale.getAvailableLocales();
-        String[] supportedLangCodes = context.getResources().getStringArray(R.array.language_data);
-        // array.stream is not supported on Android <6.0
-        for (Locale availableLocale : availableLocales) {
-            if ((availableLocale.getCountry().equalsIgnoreCase(targetLocale.getCountry()) &&
-                availableLocale.getLanguage().equalsIgnoreCase(targetLocale.getLanguage())) || targetLocale.getCountry().equals(""))
-                for (String supportedLangCode : supportedLangCodes) {
-                    if (getLocaleCode(targetLocale).equalsIgnoreCase(supportedLangCode))
-                        return true;
-                    if (targetLocale.getLanguage().equals(supportedLangCode)) return true;
-                }
-        }
-        return false;
-    }
 
     public static int getOffscreenLimit() {
         return offscreenLimit;

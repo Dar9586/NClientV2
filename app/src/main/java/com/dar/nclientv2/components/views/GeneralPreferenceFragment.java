@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.JsonWriter;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ import com.dar.nclientv2.SettingsActivity;
 import com.dar.nclientv2.StatusManagerActivity;
 import com.dar.nclientv2.async.MetadataFetcher;
 import com.dar.nclientv2.async.VersionChecker;
+import com.dar.nclientv2.components.LocaleManager;
 import com.dar.nclientv2.components.launcher.LauncherCalculator;
 import com.dar.nclientv2.components.launcher.LauncherReal;
 import com.dar.nclientv2.settings.Global;
@@ -36,7 +38,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
@@ -90,8 +94,35 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
         return R.string.data_usage_full;
     }
 
+    private void fillRoba() {
+        ArrayList<Pair<String, String>> languages = new ArrayList<>(LocaleManager.LANGUAGES.length);
+        Locale actualLocale = Global.getLanguage(act);
+        for (Locale l : LocaleManager.LANGUAGES) {
+            languages.add(new Pair<>(l.toString(), l.getDisplayName(actualLocale)));
+        }
+        Collections.sort(languages, (o1, o2) -> o1.second.compareTo(o2.second));
+        languages.add(0, new Pair<>(getString(R.string.key_default_value), getString(R.string.system_default)));
+        ListPreference preference = findPreference(getString(R.string.key_language));
+        assert preference != null;
+
+        String[] languagesEntry = new String[languages.size()];
+        String[] languagesNames = new String[languages.size()];
+        for (int i = 0; i < languages.size(); i++) {
+            Pair<String, String> lang = languages.get(i);
+            languagesEntry[i] = lang.first;
+            languagesNames[i] = Character.toUpperCase(lang.second.charAt(0)) + lang.second.substring(1);
+        }
+
+        preference.setEntryValues(languagesEntry);
+        preference.setEntries(languagesNames);
+
+    }
+
     private void mainMenu() {
         addPreferencesFromResource(R.xml.settings);
+
+        fillRoba();
+
         findPreference("status_screen").setOnPreferenceClickListener(preference -> {
             Intent i = new Intent(act, StatusManagerActivity.class);
             act.runOnUiThread(() -> act.startActivity(i));
