@@ -297,6 +297,7 @@
     <string name="title_activity_captcha">CAPTCHA</string>
     <string name="invalid_response">Invalid response</string>
     <string name="system_default">System default</string>
+    <string name="clear_cookies">Clear cookies</string>
     <string-array name="scroll_type">
         <item>水平</item>
         <item>垂直</item>

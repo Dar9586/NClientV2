@@ -56,6 +56,7 @@
     <string name="page_switcher_placeholder" translatable="false">0/0</string>
     <string name="page_placeholder" translatable="false">999/999</string>
     <string name="key_favorite_limit" translatable="false">favorite_limit</string>
+    <string name="key_cookie" translatable="false">cookie</string>
     <string name="key_change_page_buttons" translatable="false">change_page_buttons</string>
     <string name="dash" translatable="false">-</string>
     <string name="slash" translatable="false">/</string>
@@ -356,6 +357,7 @@
     <string name="title_activity_captcha">CAPTCHA</string>
     <string name="invalid_response">Invalid response</string>
     <string name="system_default">System default</string>
+    <string name="clear_cookies">Clear cookies</string>
     <string-array name="scroll_type">
         <item>Horizontal</item>
         <item>Vertical</item>

@@ -245,6 +245,10 @@
             android:title="@string/clear_cache"
             app:iconSpaceReserved="false" />
         <Preference
+            android:key="@string/key_cookie"
+            android:title="@string/clear_cookies"
+            app:iconSpaceReserved="false" />
+        <Preference
             android:key="bug"
             android:title="@string/send_bug_on_github"
             app:iconSpaceReserved="false" />

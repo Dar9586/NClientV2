@@ -198,6 +198,10 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
         });
         //clear cache if pressed
         findPreference(getString(R.string.key_cache)).setSummary(getString(R.string.cache_size_formatted, cacheSize));
+        findPreference(getString(R.string.key_cookie)).setOnPreferenceClickListener(preference -> {
+            Login.clearCookies();
+            return true;
+        });
         findPreference(getString(R.string.key_cache)).setOnPreferenceClickListener(preference -> {
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(act);
             builder.setTitle(R.string.clear_cache);

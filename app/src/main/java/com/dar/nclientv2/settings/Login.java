@@ -76,6 +76,12 @@ public class Login {
         Queries.TagTable.removeAllBlacklisted();
     }
 
+    public static void clearCookies(){
+        CustomCookieJar cookieJar = (CustomCookieJar) Global.getClient().cookieJar();
+        cookieJar.clear();
+        cookieJar.clearSession();
+    }
+
     public static void addOnlineTag(Tag tag) {
         Queries.TagTable.insert(tag);
         Queries.TagTable.updateBlacklistedTag(tag, true);
