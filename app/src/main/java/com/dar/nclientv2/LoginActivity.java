@@ -112,7 +112,7 @@ public class LoginActivity extends GeneralActivity {
         private void applyCookie(String key, String value) {
             Cookie cookie = Cookie.parse(Login.BASE_HTTP_URL, key + "=" + value + "; Max-Age=31449600; Path=/; SameSite=Lax");
             Global.client.cookieJar().saveFromResponse(Login.BASE_HTTP_URL, Collections.singletonList(cookie));
-            if (!isCaptcha && key.equals("sessionid"))
+            if (!isCaptcha && key.equals(Login.LOGIN_COOKIE))
                 User.createUser(null);
         }
     }

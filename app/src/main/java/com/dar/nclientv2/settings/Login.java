@@ -26,6 +26,7 @@ import okhttp3.Cookie;
 import okhttp3.HttpUrl;
 
 public class Login {
+    public static final String LOGIN_COOKIE = "sessionid";
     public static HttpUrl BASE_HTTP_URL;
     private static User user;
     private static boolean accountTag;
@@ -45,9 +46,26 @@ public class Login {
         Login.loginShared = loginShared;
     }
 
+    private static void removeCookie(String cookieName) {
+        CustomCookieJar cookieJar = (CustomCookieJar) Global.client.cookieJar();
+        cookieJar.removeCookie(cookieName);
+    }
+
+
+    public static void removeCloudflareCookies() {
+        CustomCookieJar cookieJar = (CustomCookieJar) Global.client.cookieJar();
+        List<Cookie> cookies = cookieJar.loadForRequest(BASE_HTTP_URL);
+        for (Cookie cookie : cookies) {
+            if (cookie.name().equals(LOGIN_COOKIE)) {
+                continue;
+            }
+            cookieJar.removeCookie(cookie.name());
+        }
+    }
+
     public static void logout(Context context) {
         CustomCookieJar cookieJar = (CustomCookieJar) Global.client.cookieJar();
-        cookieJar.removeCookie("sessionid");
+        removeCookie(LOGIN_COOKIE);
         cookieJar.clearSession();
         updateUser(null);//remove user
         clearOnlineTags();//remove online tags
@@ -104,7 +122,7 @@ public class Login {
     public static boolean isLogged(@Nullable Context context) {
         List<Cookie> cookies = Global.client.cookieJar().loadForRequest(BASE_HTTP_URL);
         LogUtility.d("Cookies: " + cookies);
-        if (hasCookie("sessionid")) {
+        if (hasCookie(LOGIN_COOKIE)) {
             if (user == null) User.createUser(user -> {
                 if (user != null) {
                     new LoadTags(null).start();
