@@ -64,8 +64,9 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull final GenericAdapter.ViewHolder holder, int position) {
-        if (position >= mDataset.size()) return;
-        final SimpleGallery ent = mDataset.get(holder.getBindingAdapterPosition());
+        int holderPos = holder.getBindingAdapterPosition();
+        if (holderPos >= mDataset.size()) return;
+        final SimpleGallery ent = mDataset.get(holderPos);
         if (ent == null) return;
         if (!Global.showTitles()) {
             holder.title.setAlpha(0f);
@@ -127,7 +128,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         int position = -1;
         statuses.put(id, Queries.StatusMangaTable.getStatus(id).color);
         for (int i = 0; i < mDataset.size(); i++) {
-            if (mDataset.get(i).getId() == id) {
+            if (mDataset.get(i) != null && mDataset.get(i).getId() == id) {
                 position = id;
                 break;
             }

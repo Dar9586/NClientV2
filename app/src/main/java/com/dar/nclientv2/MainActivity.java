@@ -63,6 +63,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class MainActivity extends BaseActivity
     implements NavigationView.OnNavigationItemSelectedListener {
@@ -507,7 +508,7 @@ public class MainActivity extends BaseActivity
             Global.initFromShared(this);//restart all settings
             inspector = inspector.cloneInspector(this, resetDataset);
             inspector.start();//restart inspector
-            if (setting.theme != Global.getTheme() || !setting.locale.equals(Global.initLanguage(this))) {
+            if (setting.theme != Global.getTheme() || !Objects.equals(setting.locale, Global.initLanguage(this))) {
                 RequestManager manager = GlideX.with(getApplicationContext());
                 if (manager != null) manager.pauseAllRequestsRecursive();
                 recreate();
