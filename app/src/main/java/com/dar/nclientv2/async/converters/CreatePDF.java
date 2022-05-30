@@ -12,14 +12,10 @@ import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.Build;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.JobIntentService;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.FileProvider;
-import androidx.work.Data;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
-import androidx.work.Worker;
-import androidx.work.WorkerParameters;
 
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.local.LocalGallery;
@@ -33,25 +29,18 @@ import java.io.IOException;
 import java.util.List;
 
 @TargetApi(Build.VERSION_CODES.KITKAT)
-public class CreatePDFWorker extends Worker {
-    private final Context context;
+public class CreatePDF extends JobIntentService {
     private int notId;
     private int totalPage;
     private NotificationCompat.Builder notification;
 
-    public CreatePDFWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
-        super(context, workerParams);
-        this.context = getApplicationContext();
+    public CreatePDF() {
     }
 
-
     public static void startWork(Context context, LocalGallery gallery) {
-        WorkManager manager = WorkManager.getInstance(context);
-        Data data = new Data.Builder()
-            .putString("GALLERY_FOLDER", gallery.getGalleryFolder().getFolder().getAbsolutePath())
-            .build();
-        OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(CreatePDFWorker.class).setInputData(data).build();
-        manager.enqueue(request);
+        Intent i = new Intent();
+        i.putExtra(context.getPackageName() + ".GALLERY", gallery);
+        enqueueWork(context, CreatePDF.class, 444, i);
     }
 
     public static boolean hasPDFCapabilities() {
@@ -63,18 +52,15 @@ public class CreatePDFWorker extends Worker {
         }
     }
 
-    @NonNull
     @Override
-    public Result doWork() {
+    protected void onHandleWork(@Nullable Intent intent) {
         if (!hasPDFCapabilities()) {
-            return Result.failure();
+            return;
         }
-        File folder = new File(getInputData().getString("GALLERY_FOLDER"));
-        LocalGallery gallery = new LocalGallery(folder, true);
-        ;
-
         notId = NotificationSettings.getNotificationId();
         System.gc();
+        LocalGallery gallery = intent.getParcelableExtra(getPackageName() + ".GALLERY");
+        if (gallery == null) return;
         totalPage = gallery.getPageCount();
         preExecute(gallery.getDirectory());
         PdfDocument document = new PdfDocument();
@@ -91,12 +77,12 @@ public class CreatePDFWorker extends Worker {
                 bitmap.recycle();
             }
             notification.setProgress(totalPage - 1, a + 1, false);
-            NotificationSettings.notify(context.getString(R.string.channel2_name), notId, notification.build());
+            NotificationSettings.notify(getString(R.string.channel2_name), notId, notification.build());
 
         }
-        notification.setContentText(context.getString(R.string.writing_pdf));
+        notification.setContentText(getString(R.string.writing_pdf));
         notification.setProgress(totalPage, 0, true);
-        NotificationSettings.notify(context.getString(R.string.channel2_name), notId, notification.build());
+        NotificationSettings.notify(getString(R.string.channel2_name), notId, notification.build());
         try {
 
             File finalPath = Global.PDFFOLDER;
@@ -109,29 +95,29 @@ public class CreatePDFWorker extends Worker {
             out.close();
             document.close();
             notification.setProgress(0, 0, false);
-            notification.setContentTitle(context.getString(R.string.created_pdf));
+            notification.setContentTitle(getString(R.string.created_pdf));
             notification.setContentText(gallery.getTitle());
             createIntentOpen(finalPath);
-            NotificationSettings.notify(context.getString(R.string.channel2_name), notId, notification.build());
+            NotificationSettings.notify(getString(R.string.channel2_name), notId, notification.build());
             LogUtility.d(finalPath.getAbsolutePath());
         } catch (IOException e) {
-            notification.setContentTitle(context.getString(R.string.error_pdf));
-            notification.setContentText(context.getString(R.string.failed));
+            notification.setContentTitle(getString(R.string.error_pdf));
+            notification.setContentText(getString(R.string.failed));
             notification.setProgress(0, 0, false);
-            NotificationSettings.notify(context.getString(R.string.channel2_name), notId, notification.build());
+            NotificationSettings.notify(getString(R.string.channel2_name), notId, notification.build());
             throw new RuntimeException("Error generating file", e);
         } finally {
             document.close();
         }
 
-        return Result.success();
+
     }
 
     private void createIntentOpen(File finalPath) {
         try {
             Intent i = new Intent(Intent.ACTION_VIEW);
             Uri apkURI = FileProvider.getUriForFile(
-                getApplicationContext(), context.getPackageName() + ".provider", finalPath);
+                getApplicationContext(), getPackageName() + ".provider", finalPath);
             i.setDataAndType(apkURI, "application/pdf");
             i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             i.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
@@ -157,13 +143,12 @@ public class CreatePDFWorker extends Worker {
         notification.setSmallIcon(R.drawable.ic_pdf)
             .setOnlyAlertOnce(true)
             .setStyle(new NotificationCompat.BigTextStyle().bigText(file.getName()))
-            .setContentTitle(context.getString(R.string.channel2_title))
-            .setContentText(context.getString(R.string.parsing_pages))
+            .setContentTitle(getString(R.string.channel2_title))
+            .setContentText(getString(R.string.parsing_pages))
             .setProgress(totalPage - 1, 0, false)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCategory(NotificationCompat.CATEGORY_STATUS);
-        NotificationSettings.notify(context.getString(R.string.channel2_name), notId, notification.build());
+        NotificationSettings.notify(getString(R.string.channel2_name), notId, notification.build());
     }
-
 
 }
