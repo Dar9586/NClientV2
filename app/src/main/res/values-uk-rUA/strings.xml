@@ -298,6 +298,7 @@
     <string name="invalid_response">Недійсна відповідь</string>
     <string name="system_default">System default</string>
     <string name="clear_cookies">Clear cookies</string>
+    <string name="fetching_cloudflare_token">Fetching Cloudflare token …</string>
     <string-array name="scroll_type">
         <item>Горизонтально</item>
         <item>Вертикально</item>

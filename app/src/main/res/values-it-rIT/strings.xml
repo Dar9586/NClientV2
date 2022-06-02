@@ -64,7 +64,7 @@
     <string name="writing_pdf">Scrivendo PDF</string>
     <string name="navigation_drawer_open">Apri menù</string>
     <string name="navigation_drawer_close">Chiudi menù</string>
-    <string name="nav_header_subtitle">NHentai client non ufficiale</string>
+    <string name="nav_header_subtitle">Client NHentai non ufficiale</string>
     <string name="change_page">Cambia pagina:</string>
     <string name="prev_page">Pagina precedente</string>
     <string name="next_page">Pagina successiva</string>
@@ -281,7 +281,7 @@
     <string name="request_storage_manager_summary">Per via di alcune restrizioni sull\'accesso alla memoria su Android 11 sono richiesti ulteriori permessi per usare i percorsi personalizzati.\nSe vuoi dare questi permessi abilitali nella prossima schermata.</string>
     <string name="summary_beta">Aggiornare ad una versione beta può impedirti di ritornare ad una versione stabile senza disinstallare</string>
     <string name="fix_inverted_title">Ripara immagini invertite</string>
-    <string name="fix_inverted_summary">Abilita se le immagini sonoo msotrate a colori invertiti (in qualche dispositivo può cambiare il tema di sistema in chiaro, disabilitarlo riparerà il problema)</string>
+    <string name="fix_inverted_summary">Abilita se le immagini sono mostrate a colori invertiti (in qualche dispositivo può cambiare il tema di sistema in chiaro, disabilitarlo riparerà il problema)</string>
     <string name="navigation_settings_per_screen">Impostazioni di navigazione per schermata</string>
     <string name="downloaded_update_at" formatted="true">Scaricamento aggiornamento al %s</string>
     <string name="summary_offscreen_limit">Imposta il numero di immagini da preacricare quando si sta leggendo una galleria</string>
@@ -298,6 +298,7 @@
     <string name="invalid_response">Risposta invalida</string>
     <string name="system_default">System default</string>
     <string name="clear_cookies">Clear cookies</string>
+    <string name="fetching_cloudflare_token">Fetching Cloudflare token …</string>
     <string-array name="scroll_type">
         <item>Orizzontale</item>
         <item>Verticale</item>
