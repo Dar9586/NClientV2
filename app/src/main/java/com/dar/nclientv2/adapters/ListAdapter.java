@@ -41,7 +41,16 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
 
     public ListAdapter(BaseActivity cont) {
         this.context = cont;
-        this.mDataset = new ArrayList<>();
+        this.mDataset = new ArrayList<SimpleGallery>(){
+            @Override
+            public SimpleGallery get(int index) {
+                try {
+                    return super.get(index);
+                }catch (ArrayIndexOutOfBoundsException ignore){
+                    return null;
+                }
+            }
+        };
         storagePermission = Global.hasStoragePermission(context);
         queryString = TagV2.getAvoidedTags();
     }
@@ -128,7 +137,8 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         int position = -1;
         statuses.put(id, Queries.StatusMangaTable.getStatus(id).color);
         for (int i = 0; i < mDataset.size(); i++) {
-            if (mDataset.get(i) != null && mDataset.get(i).getId() == id) {
+            SimpleGallery gallery= mDataset.get(i);
+            if (gallery != null && gallery.getId() == id) {
                 position = id;
                 break;
             }
