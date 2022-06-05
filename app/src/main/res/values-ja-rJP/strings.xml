@@ -298,7 +298,7 @@
     <string name="invalid_response">無効な応答</string>
     <string name="system_default">システムのデフォルト</string>
     <string name="clear_cookies">Cookie を消去</string>
-    <string name="fetching_cloudflare_token">Fetching Cloudflare token …</string>
+    <string name="fetching_cloudflare_token">Cloudflareトークンを取得しています …</string>
     <string-array name="scroll_type">
         <item>水平</item>
         <item>垂直</item>

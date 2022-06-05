@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.JsonWriter;
 import android.util.Pair;
 import android.view.View;
+import android.webkit.CookieManager;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
@@ -200,6 +201,7 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
         findPreference(getString(R.string.key_cache)).setSummary(getString(R.string.cache_size_formatted, cacheSize));
         findPreference(getString(R.string.key_cookie)).setOnPreferenceClickListener(preference -> {
             Login.clearCookies();
+            CookieManager.getInstance().removeAllCookie();
             return true;
         });
         findPreference(getString(R.string.key_cache)).setOnPreferenceClickListener(preference -> {
