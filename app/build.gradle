@@ -9,7 +9,7 @@ android {
         targetSdkVersion 32
         versionCode 296
         multiDexEnabled true
-        versionName "2.9.6-beta"
+        versionName "2.9.6-stable"
         vectorDrawables.useSupportLibrary true
         proguardFiles 'proguard-rules.pro'
     }
