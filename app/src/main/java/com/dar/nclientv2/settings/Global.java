@@ -89,7 +89,7 @@ public class Global {
     private static String lastVersion, mirror;
     private static int maxHistory, columnCount, maxId, galleryWidth = -1, galleryHeight = -1;
     private static int colPortStat, colLandStat, colPortHist, colLandHist, colPortMain, colLandMain, colPortDownload, colLandDownload, colLandFavorite, colPortFavorite;
-    private static boolean infiniteScrollMain, infiniteScrollFavorite;
+    private static boolean infiniteScrollMain, infiniteScrollFavorite, exactTagMatch;
     private static int defaultZoom, offscreenLimit;
     private static Point screenSize;
 
@@ -102,6 +102,10 @@ public class Global {
             size += f.isFile() ? f.length() : recursiveSize(f);
 
         return size;
+    }
+
+    public static boolean isExactTagMatch() {
+        return exactTagMatch;
     }
 
     public static int getFavoriteLimit(Context context) {
@@ -291,6 +295,7 @@ public class Global {
         enableBeta = shared.getBoolean(context.getString(R.string.key_enable_beta), true);
         columnCount = shared.getInt(context.getString(R.string.key_column_count), 2);
         showTitles = shared.getBoolean(context.getString(R.string.key_show_titles), true);
+        exactTagMatch = shared.getBoolean(context.getString(R.string.key_exact_title_match), false);
         buttonChangePage = shared.getBoolean(context.getString(R.string.key_change_page_buttons), true);
         lockScreen = shared.getBoolean(context.getString(R.string.key_disable_lock), false);
         hideMultitask = shared.getBoolean(context.getString(R.string.key_hide_multitasking), true);
@@ -374,7 +379,7 @@ public class Global {
                 )
             );
         CustomSSLSocketFactory.enableTls12OnPreLollipop(builder);
-        builder.addInterceptor(new CustomInterceptor(true));
+        builder.addInterceptor(new CustomInterceptor(context.getApplicationContext(), true));
         client = builder.build();
         client.dispatcher().setMaxRequests(25);
         client.dispatcher().setMaxRequestsPerHost(25);

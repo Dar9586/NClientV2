@@ -59,7 +59,7 @@ public class InspectorV3 extends Thread implements Parcelable {
     private String query, url;
     private ApiRequestType requestType;
     private Set<Tag> tags;
-    private List<GenericGallery> galleries = null;
+    private ArrayList<GenericGallery> galleries = null;
     private Ranges ranges = null;
     private InspectorResponse response;
     private WeakReference<Context> context;
@@ -353,6 +353,20 @@ public class InspectorV3 extends Thread implements Parcelable {
         LogUtility.d("Finished download: " + url);
     }
 
+    private void filterDocumentTags() {
+        if (galleries == null || tags == null) return;
+        ArrayList<SimpleGallery> galleryTag = new ArrayList<>(galleries.size());
+        for (GenericGallery gal : galleries) {
+            assert gal instanceof SimpleGallery;
+            SimpleGallery gallery = (SimpleGallery) gal;
+            if (gallery.hasTags(tags)) {
+                galleryTag.add(gallery);
+            }
+        }
+        galleries.clear();
+        galleries.addAll(galleryTag);
+    }
+
     private void doSingle(Element document) throws IOException, InvalidResponseException {
         galleries = new ArrayList<>(1);
         Elements scripts = document.getElementsByTag("script");
@@ -394,8 +408,10 @@ public class InspectorV3 extends Thread implements Parcelable {
         for (Element e : gal) galleries.add(new SimpleGallery(context.get(), e));
         gal = document.getElementsByClass("last");
         pageCount = gal.size() == 0 ? Math.max(1, page) : findTotal(gal.last());
-        if (gal.size() == 0 && pageCount == 1 && document.getElementById("content") == null)
+        if (document.getElementById("content") == null)
             throw new InvalidResponseException();
+        if (Global.isExactTagMatch())
+            filterDocumentTags();
     }
 
     private int findTotal(Element e) {

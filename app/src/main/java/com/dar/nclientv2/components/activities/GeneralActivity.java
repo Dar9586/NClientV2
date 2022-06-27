@@ -1,6 +1,7 @@
 package com.dar.nclientv2.components.activities;
 
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.WebView;
@@ -31,7 +32,8 @@ public abstract class GeneralActivity extends AppCompatActivity {
     private void inflateWebView() {
         if (webView == null) {
             webView = new WebView(this);
-            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(0, 0);
+            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            webView.setVisibility(View.GONE);
             this.addContentView(webView, params);
         }
     }

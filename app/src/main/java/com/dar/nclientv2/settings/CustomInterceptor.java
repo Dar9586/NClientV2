@@ -1,11 +1,17 @@
 package com.dar.nclientv2.settings;
 
+import android.content.Context;
+import android.webkit.CookieManager;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.dar.nclientv2.components.CookieInterceptor;
 import com.dar.nclientv2.utility.LogUtility;
+import com.dar.nclientv2.utility.Utility;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.Collections;
 
 import okhttp3.Cookie;
@@ -27,7 +33,10 @@ public class CustomInterceptor implements Interceptor {
 
         @Override
         public boolean endInterceptor() {
-            return tokenFound;
+            if (tokenFound) return true;
+            String cookies = CookieManager.getInstance().getCookie(Utility.getBaseUrl());
+            if (cookies == null) return false;
+            return cookies.contains("csrftoken");
         }
 
         @Override
@@ -35,8 +44,11 @@ public class CustomInterceptor implements Interceptor {
 
         }
     };
+    @Nullable
+    private final Context context;
 
-    public CustomInterceptor(boolean logRequests) {
+    public CustomInterceptor(@Nullable Context context, boolean logRequests) {
+        this.context = context;
         this.logRequests = logRequests;
     }
 
@@ -44,15 +56,18 @@ public class CustomInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
+        boolean rec = request.header("rec") != null;
         if (logRequests)
             LogUtility.d("Requested url: " + request.url());
         Request.Builder r = request.newBuilder();
+        r.removeHeader("rec");
         r.addHeader("User-Agent", Global.getUserAgent());
         Response response = chain.proceed(r.build());
-        if (response.code() == 503) {
+        if (response.code() == HttpURLConnection.HTTP_UNAVAILABLE && (!rec || !manager.endInterceptor())) {
             CookieInterceptor interceptor = new CookieInterceptor(manager);
             interceptor.intercept();
-            response = Global.client.newCall(request.newBuilder().build()).execute();
+            if (context != null) Global.reloadHttpClient(context);
+            response = Global.client.newCall(request.newBuilder().addHeader("rec", "1").build()).execute();
         }
         return response;
     }

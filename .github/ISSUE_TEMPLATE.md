@@ -29,3 +29,6 @@ Please search on the [issue tracker](../) before creating one.
 <!--- Include as many relevant details about the environment you experienced the bug in -->
 * Version used:
 * Operating System version:
+<!--- If a particular search or particular gallery causes problem you can post its URL -->
+<!--- The URL can be obtained by Opening in browser / Share -->
+* NHentai link (if relevant):

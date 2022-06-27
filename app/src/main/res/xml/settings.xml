@@ -145,6 +145,12 @@
             android:title="@string/keep_history"
             app:iconSpaceReserved="false" />
         <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="@string/key_exact_title_match"
+            android:summary="@string/exact_title_match_summary"
+            android:title="@string/exact_title_match_title"
+            app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/key_remove_ignored"
             android:summaryOff="@string/setting_off_remove_ignored"

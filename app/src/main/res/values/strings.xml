@@ -31,6 +31,7 @@
     <string name="key_column_land_favo" translatable="false">column_land_favo</string>
     <string name="key_column_port_stat" translatable="false">column_port_stat</string>
     <string name="key_column_land_stat" translatable="false">column_land_stat</string>
+    <string name="key_exact_title_match" translatable="false">precise_tag</string>
     <string name="key_infinite_scroll_main" translatable="false">key_infinite_scroll</string>
     <string name="key_infinite_scroll_favo" translatable="false">infinite_scroll_favo</string>
     <string name="key_hide_multitasking" translatable="false">hide_multitasking</string>
@@ -359,6 +360,8 @@
     <string name="system_default">System default</string>
     <string name="clear_cookies">Clear cookies</string>
     <string name="fetching_cloudflare_token">Fetching Cloudflare token …</string>
+    <string name="exact_title_match_title">Exact tag match only</string>
+    <string name="exact_title_match_summary">Hide galleries which would appear in the site but doesn\'t contains all the tags searched</string>
     <string-array name="scroll_type">
         <item>Horizontal</item>
         <item>Vertical</item>
