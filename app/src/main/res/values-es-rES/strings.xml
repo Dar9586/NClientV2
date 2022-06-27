@@ -301,6 +301,7 @@
     <string name="fetching_cloudflare_token">Fetching Cloudflare token …</string>
     <string name="exact_title_match_title">Exact tag match only</string>
     <string name="exact_title_match_summary">Hide galleries which would appear in the site but doesn\'t contains all the tags searched</string>
+    <string name="hide">Hide</string>
     <string-array name="scroll_type">
         <item>Horizontal</item>
         <item>Vertical</item>

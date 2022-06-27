@@ -1,15 +1,16 @@
 package com.dar.nclientv2.components.activities;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.webkit.WebView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dar.nclientv2.R;
+import com.dar.nclientv2.components.views.CFTokenView;
 import com.dar.nclientv2.settings.Global;
 
 import java.lang.ref.WeakReference;
@@ -17,24 +18,26 @@ import java.lang.ref.WeakReference;
 public abstract class GeneralActivity extends AppCompatActivity {
     private boolean isFastScrollerApplied = false;
     private static WeakReference<GeneralActivity> lastActivity;
-    private WebView webView = null;
+    private CFTokenView tokenView = null;
 
     public static @Nullable
-    WebView getLastWebView() {
+    CFTokenView getLastCFView() {
         GeneralActivity activity = lastActivity.get();
         if (activity != null) {
             activity.runOnUiThread(activity::inflateWebView);
-            return activity.webView;
+            return activity.tokenView;
         }
         return null;
     }
 
     private void inflateWebView() {
-        if (webView == null) {
-            webView = new WebView(this);
+        if (tokenView == null) {
+            ViewGroup rootView= (ViewGroup) findViewById(android.R.id.content).getRootView();
+            ViewGroup v= (ViewGroup) LayoutInflater.from(this).inflate(R.layout.cftoken_layout,rootView,false);
+            tokenView = new CFTokenView(v);
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            webView.setVisibility(View.GONE);
-            this.addContentView(webView, params);
+            tokenView.setVisibility(View.GONE);
+            this.addContentView(v, params);
         }
     }
 

@@ -8,6 +8,7 @@ import android.webkit.WebView;
 import androidx.annotation.NonNull;
 
 import com.dar.nclientv2.components.activities.GeneralActivity;
+import com.dar.nclientv2.components.views.CFTokenView;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
@@ -17,6 +18,16 @@ import java.util.HashMap;
 public class CookieInterceptor {
     private static volatile boolean intercepting = false;
     private static final int MAX_RETRIES = 100;
+    private static volatile boolean webViewHidden=false;
+
+    public static void hideWebView(){
+        webViewHidden=true;
+        CFTokenView tokenView = GeneralActivity.getLastCFView();
+        if (tokenView != null){
+            tokenView.post(() -> tokenView.setVisibility(View.GONE));
+        }
+    }
+
     @NonNull
     private final Manager manager;
     String cookies = null;
@@ -25,21 +36,22 @@ public class CookieInterceptor {
         this.manager = manager;
     }
 
-    private WebView setupWebView() {
-        WebView webView = GeneralActivity.getLastWebView();
-        if (webView == null) return null;
-        webView.post(() -> {
+    private CFTokenView setupWebView() {
+        CFTokenView tokenView = GeneralActivity.getLastCFView();
+        if (tokenView == null) return null;
+        tokenView.post(() -> {
+            WebView webView=tokenView.getWebView();
             WebSettings webSettings = webView.getSettings();
             webSettings.setJavaScriptEnabled(true);
             webSettings.setUserAgentString(Global.getUserAgent());
             webView.loadUrl(Utility.getBaseUrl());
         });
-        return webView;
+        return tokenView;
     }
 
     @NonNull
-    private WebView getWebView() {
-        WebView web = setupWebView();
+    private CFTokenView getWebView() {
+        CFTokenView web = setupWebView();
         while (web == null) {
             Utility.threadSleep(100);
             web = setupWebView();
@@ -48,8 +60,9 @@ public class CookieInterceptor {
     }
 
     private void interceptInternal() {
-        WebView web = getWebView();
-        web.post(() -> web.setVisibility(View.VISIBLE));
+        CFTokenView web = getWebView();
+        if(!webViewHidden)
+            web.post(() -> web.setVisibility(View.VISIBLE));
         CookieManager manager = CookieManager.getInstance();
         HashMap<String, String> cookiesMap = new HashMap<>();
         int retryCount = 0;
