@@ -16,7 +16,7 @@ import java.util.HashMap;
 
 public class CookieInterceptor {
     private static volatile boolean intercepting = false;
-    private static final int MAX_RETRIES = 50;
+    private static final int MAX_RETRIES = 100;
     @NonNull
     private final Manager manager;
     String cookies = null;
