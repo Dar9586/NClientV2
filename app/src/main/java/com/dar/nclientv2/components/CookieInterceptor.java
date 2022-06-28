@@ -96,8 +96,11 @@ public class CookieInterceptor {
             }
             intercepting = true;
             LogUtility.d("Starting intercept CF cookies");
-            if(!manager.endInterceptor())
-                interceptInternal();
+            synchronized (CookieInterceptor.class) {
+                if (!manager.endInterceptor()) {
+                    interceptInternal();
+                }
+            }
             this.manager.onFinish();
             intercepting = false;
         }
