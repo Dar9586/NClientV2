@@ -186,10 +186,10 @@ public class ZoomActivity extends GeneralActivity {
             switch (keyCode) {
                 case KeyEvent.KEYCODE_VOLUME_UP:
                     up = false;
-                    break;
+                    return true;
                 case KeyEvent.KEYCODE_VOLUME_DOWN:
                     down = false;
-                    break;
+                    return true;
             }
         }
         return super.onKeyUp(keyCode, event);
