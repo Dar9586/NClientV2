@@ -207,7 +207,7 @@
             android:title="@string/volume_change_setting"
             app:iconSpaceReserved="false" />
         <SwitchPreferenceCompat
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="@string/key_send_report"
             android:title="@string/send_crash_report"
             app:iconSpaceReserved="false" />
