@@ -6,8 +6,10 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.dar.nclientv2.StatusViewerActivity;
+import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.status.StatusManager;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -16,16 +18,24 @@ import java.util.List;
  */
 public class SectionsPagerAdapter extends FragmentStateAdapter {
     List<String> statuses;
+    HashMap<String, Integer> counts;
 
     public SectionsPagerAdapter(StatusViewerActivity context) {
         super(context.getSupportFragmentManager(), context.getLifecycle());
         statuses = StatusManager.getNames();
+        counts = Queries.StatusMangaTable.getCountsPerStatus();
     }
-
 
     @Nullable
     public CharSequence getPageTitle(int position) {
-        return statuses.get(position);
+        String status = statuses.get(position);
+        int count = 0;
+
+        if (counts.containsKey(status)) {
+            count = counts.get(status);
+        }
+
+        return String.format("%s - %d", status, count);
     }
 
     @NonNull
