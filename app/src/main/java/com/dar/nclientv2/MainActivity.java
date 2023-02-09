@@ -75,7 +75,6 @@ public class MainActivity extends BaseActivity
 
     private static final int CHANGE_LANGUAGE_DELAY = 1000;
     private static boolean firstTime = true;//true only when app starting
-    private int failCount = 0;
     private final InspectorV3.InspectorResponse startGallery = new MainInspectorResponse() {
         @Override
         public void onSuccess(List<GenericGallery> galleries) {

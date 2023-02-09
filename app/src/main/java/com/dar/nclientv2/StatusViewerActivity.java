@@ -49,7 +49,18 @@ public class StatusViewerActivity extends GeneralActivity {
         });
 
         TabLayout tabs = findViewById(R.id.tabs);
-        new TabLayoutMediator(tabs, viewPager, (tab, position) -> tab.setText(sectionsPagerAdapter.getPageTitle(position))).attach();
+        new TabLayoutMediator(tabs, viewPager, true, (tab, position) -> tab.setText(sectionsPagerAdapter.getPageTitle(position))).attach();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        TabLayout tabs = findViewById(R.id.tabs);
+        for (int i = 0; i < tabs.getTabCount(); i++) {
+            tabs.getTabAt(i).setText(sectionsPagerAdapter.getPageTitle(i));
+        }
+        PlaceholderFragment fragment = getActualFragment();
+        if (fragment != null) fragment.reload(query, sortByTitle);
     }
 
     @Override

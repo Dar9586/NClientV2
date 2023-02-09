@@ -128,6 +128,6 @@ public class CrashApplication extends MultiDexApplication {
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(newBase);
         ACRA.init(this);
-        ACRA.getErrorReporter().setEnabled(getSharedPreferences("Settings", 0).getBoolean(getString(R.string.key_send_report), true));
+        ACRA.getErrorReporter().setEnabled(getSharedPreferences("Settings", 0).getBoolean(getString(R.string.key_send_report), false));
     }
 }

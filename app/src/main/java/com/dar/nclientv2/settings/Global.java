@@ -149,7 +149,7 @@ public class Global {
     }
 
     public static void updateACRAReportStatus(Context context) {
-        ACRA.getErrorReporter().setEnabled(context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_send_report), true));
+        ACRA.getErrorReporter().setEnabled(context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_send_report), false));
     }
 
     public static boolean isDestroyed(Activity activity) {
