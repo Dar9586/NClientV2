@@ -1,8 +1,10 @@
 package com.dar.nclientv2.components.views;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
+import android.webkit.CookieManager;
 import android.webkit.WebView;
 import android.widget.Button;
 
@@ -17,7 +19,7 @@ import java.util.Date;
 public class CFTokenView {
 
     private final ViewGroup masterLayout;
-    private final WebView webView;
+    private final CFTokenWebView webView;
     private final Button button;
 
     public CFTokenView(ViewGroup masterLayout) {
@@ -31,7 +33,7 @@ public class CFTokenView {
         return button;
     }
 
-    public WebView getWebView() {
+    public CFTokenWebView getWebView() {
         return webView;
     }
 
@@ -61,8 +63,16 @@ public class CFTokenView {
             super(context, attrs, defStyleAttr);
             init();
         }
-        private void init(){
 
+        private void init() {
+            forceAcceptCookies();
+        }
+
+        private void forceAcceptCookies() {
+            CookieManager.getInstance().setAcceptCookie(true);
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                CookieManager.getInstance().setAcceptThirdPartyCookies(this, true);
+            }
         }
 
         @Override

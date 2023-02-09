@@ -17,13 +17,13 @@ import java.util.HashMap;
 
 public class CookieInterceptor {
     private static volatile boolean intercepting = false;
-    private static final int MAX_RETRIES = 100;
-    private static volatile boolean webViewHidden=false;
+    private static final int MAX_RETRIES = 200;
+    private static volatile boolean webViewHidden = false;
 
-    public static void hideWebView(){
-        webViewHidden=true;
+    public static void hideWebView() {
+        webViewHidden = true;
         CFTokenView tokenView = GeneralActivity.getLastCFView();
-        if (tokenView != null){
+        if (tokenView != null) {
             tokenView.post(() -> tokenView.setVisibility(View.GONE));
         }
     }
@@ -95,15 +95,14 @@ public class CookieInterceptor {
                 Utility.threadSleep(100);
             }
             intercepting = true;
-            LogUtility.d("Starting intercept CF cookies");
             synchronized (CookieInterceptor.class) {
                 if (!manager.endInterceptor()) {
                     interceptInternal();
                 }
             }
-            this.manager.onFinish();
             intercepting = false;
         }
+        this.manager.onFinish();
     }
 
     public interface Manager {

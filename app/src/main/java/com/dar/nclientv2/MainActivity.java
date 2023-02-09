@@ -13,6 +13,7 @@ import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.CookieManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -45,6 +46,7 @@ import com.dar.nclientv2.async.ScrapeTags;
 import com.dar.nclientv2.async.VersionChecker;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.async.downloader.DownloadGalleryV2;
+import com.dar.nclientv2.components.CookieInterceptor;
 import com.dar.nclientv2.components.GlideX;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.components.views.PageSwitcher;
@@ -60,14 +62,17 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import okhttp3.Cookie;
+
 public class MainActivity extends BaseActivity
     implements NavigationView.OnNavigationItemSelectedListener {
-    private static final int MAX_FAIL_BEFORE_CLEAR_COOKIE = 3;
+
     private static final int CHANGE_LANGUAGE_DELAY = 1000;
     private static boolean firstTime = true;//true only when app starting
     private int failCount = 0;
@@ -83,6 +88,30 @@ public class MainActivity extends BaseActivity
                 finish();
             });
             LogUtility.d("STARTED");
+        }
+    };
+    private final CookieInterceptor.Manager MANAGER = new CookieInterceptor.Manager() {
+        boolean tokenFound = false;
+
+        @Override
+        public void applyCookie(String key, String value) {
+            Cookie cookie = Cookie.parse(Login.BASE_HTTP_URL, key + "=" + value + "; Max-Age=31449600; Path=/; SameSite=Lax");
+            Global.client.cookieJar().saveFromResponse(Login.BASE_HTTP_URL, Collections.singletonList(cookie));
+            tokenFound |= key.equals("csrftoken");
+        }
+
+        @Override
+        public boolean endInterceptor() {
+            if (tokenFound) return true;
+            String cookies = CookieManager.getInstance().getCookie(Utility.getBaseUrl());
+            if (cookies == null) return false;
+            return cookies.contains("csrftoken");
+        }
+
+        @Override
+        public void onFinish() {
+            inspector = inspector.cloneInspector(MainActivity.this, resetDataset);
+            inspector.start();
         }
     };
     private final Handler changeLanguageTimeHandler = new Handler(Looper.myLooper());
@@ -102,7 +131,6 @@ public class MainActivity extends BaseActivity
     private boolean inspecting = false, filteringTag = false;
     private SortType temporaryType;
     private Snackbar snackbar = null;
-    private boolean showedCaptcha = false, noNeedForCaptcha = false;
     private PageSwitcher pageSwitcher;
     private final InspectorV3.InspectorResponse
         resetDataset = new MainInspectorResponse() {
@@ -501,13 +529,6 @@ public class MainActivity extends BaseActivity
         }
         loadStringLogin();
         onlineFavoriteManager.setVisible(com.dar.nclientv2.settings.Login.isLogged());
-        if (!noNeedForCaptcha) {
-            if (Login.hasCookie("csrftoken")) {
-                inspector = inspector.cloneInspector(this, resetDataset);
-                inspector.start();//restart inspector
-                noNeedForCaptcha = true;
-            }
-        }
         if (setting != null) {
             Global.initFromShared(this);//restart all settings
             inspector = inspector.cloneInspector(this, resetDataset);
@@ -792,7 +813,6 @@ public class MainActivity extends BaseActivity
         public void onSuccess(List<GenericGallery> galleries) {
             super.onSuccess(galleries);
             if (adapter != null) adapter.resetStatuses();
-            noNeedForCaptcha = true;
             if (galleries.size() == 0)
                 showError(R.string.no_entry_found, null);
         }
@@ -813,19 +833,8 @@ public class MainActivity extends BaseActivity
         public void onFailure(Exception e) {
             super.onFailure(e);
             if (e instanceof InspectorV3.InvalidResponseException) {
-                failCount += 1;
-                if (failCount == MAX_FAIL_BEFORE_CLEAR_COOKIE || (!noNeedForCaptcha && !showedCaptcha)) {
-                    Login.removeCloudflareCookies();
-                    failCount = 0;
-                    showedCaptcha = true;
-                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                    intent.putExtra(getPackageName() + ".IS_CAPTCHA", true);
-                    startActivity(intent);
-                }
-                showError(R.string.invalid_response, v -> {
-                    inspector = inspector.cloneInspector(MainActivity.this, inspector.getResponse());
-                    inspector.start();
-                });
+                CookieInterceptor interceptor = new CookieInterceptor(MANAGER);
+                interceptor.intercept();
             } else {
                 showError(R.string.unable_to_connect_to_the_site, v -> {
                     inspector = inspector.cloneInspector(MainActivity.this, inspector.getResponse());

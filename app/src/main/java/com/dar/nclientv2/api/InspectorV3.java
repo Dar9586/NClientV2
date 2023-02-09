@@ -31,6 +31,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -308,11 +309,12 @@ public class InspectorV3 extends Thread implements Parcelable {
         else return url.substring(0, url.lastIndexOf('=') + 1);
     }
 
-    public void createDocument() throws IOException {
-        if (htmlDocument != null) return;
+    public boolean createDocument() throws IOException {
+        if (htmlDocument != null) return true;
         Response response = Global.getClient(context.get()).newCall(new Request.Builder().url(url).build()).execute();
         setHtmlDocument(Jsoup.parse(response.body().byteStream(), "UTF-8", Utility.getBaseUrl()));
         response.close();
+        return response.code() == HttpURLConnection.HTTP_OK;
     }
 
     public void parseDocument() throws IOException, InvalidResponseException {
@@ -341,7 +343,8 @@ public class InspectorV3 extends Thread implements Parcelable {
         LogUtility.d("Starting download: " + url);
         if (response != null) response.onStart();
         try {
-            createDocument();
+            if (!createDocument())
+                throw new InvalidResponseException();
             parseDocument();
             if (response != null) {
                 response.onSuccess(galleries);
@@ -370,7 +373,7 @@ public class InspectorV3 extends Thread implements Parcelable {
     private void doSingle(Element document) throws IOException, InvalidResponseException {
         galleries = new ArrayList<>(1);
         Elements scripts = document.getElementsByTag("script");
-        if (scripts.size() == 0)
+        if (scripts.isEmpty())
             throw new InvalidResponseException();
         String json = trimScriptTag(scripts.last().html());
         if (json == null)

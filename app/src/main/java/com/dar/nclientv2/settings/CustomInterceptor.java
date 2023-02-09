@@ -21,7 +21,7 @@ import okhttp3.Response;
 
 public class CustomInterceptor implements Interceptor {
     private final boolean logRequests;
-    private static final CookieInterceptor.Manager manager = new CookieInterceptor.Manager() {
+    private static final CookieInterceptor.Manager MANAGER = new CookieInterceptor.Manager() {
         boolean tokenFound = false;
 
         @Override
@@ -63,8 +63,11 @@ public class CustomInterceptor implements Interceptor {
         r.removeHeader("rec");
         r.addHeader("User-Agent", Global.getUserAgent());
         Response response = chain.proceed(r.build());
-        if (response.code() == HttpURLConnection.HTTP_UNAVAILABLE && (!rec || !manager.endInterceptor())) {
-            CookieInterceptor interceptor = new CookieInterceptor(manager);
+        if (
+            (response.code() == HttpURLConnection.HTTP_UNAVAILABLE ||
+                response.code() == HttpURLConnection.HTTP_FORBIDDEN)
+                && (!rec || !MANAGER.endInterceptor())) {
+            CookieInterceptor interceptor = new CookieInterceptor(MANAGER);
             interceptor.intercept();
             if (context != null) Global.reloadHttpClient(context);
             response = Global.client.newCall(request.newBuilder().addHeader("rec", "1").build()).execute();

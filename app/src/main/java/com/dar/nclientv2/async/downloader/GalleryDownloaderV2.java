@@ -181,7 +181,7 @@ public class GalleryDownloaderV2 {
         if (this.gallery != null) return true;
         InspectorV3 inspector = InspectorV3.galleryInspector(context, id, null);
         try {
-            inspector.createDocument();
+            if (!inspector.createDocument()) return false;
             inspector.parseDocument();
             if (inspector.getGalleries() == null || inspector.getGalleries().size() == 0)
                 return false;

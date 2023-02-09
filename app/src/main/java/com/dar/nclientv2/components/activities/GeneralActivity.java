@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +33,7 @@ public abstract class GeneralActivity extends AppCompatActivity {
 
     private void inflateWebView() {
         if (tokenView == null) {
+            Toast.makeText(this, R.string.fetching_cloudflare_token, Toast.LENGTH_SHORT).show();
             ViewGroup rootView= (ViewGroup) findViewById(android.R.id.content).getRootView();
             ViewGroup v= (ViewGroup) LayoutInflater.from(this).inflate(R.layout.cftoken_layout,rootView,false);
             tokenView = new CFTokenView(v);
