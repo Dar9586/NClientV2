@@ -34,6 +34,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -975,6 +976,28 @@ public class Queries {
             String likeFilter = '%' + filter + '%';
             LogUtility.d(query);
             return db.rawQuery(query, new String[]{name, likeFilter, likeFilter, likeFilter});
+        }
+
+        public static HashMap<String, Integer> getCountsPerStatus() {
+            String query = String.format("select %s, count(%s) as count from %s group by %s;",
+                StatusMangaTable.NAME, StatusMangaTable.GALLERY, StatusMangaTable.TABLE_NAME, StatusMangaTable.NAME);
+            LogUtility.d(query);
+
+            Cursor cursor = db.rawQuery(query, null);
+            HashMap<String, Integer> counts = new HashMap<String, Integer>();
+
+            while (cursor.moveToNext()) {
+                try {
+                    String status = cursor.getString(0);
+                    int count = cursor.getInt(1);
+                    counts.put(status, count);
+                } catch (Exception e) {
+                    LogUtility.e(e);
+                }
+            }
+
+            cursor.close();
+            return counts;
         }
 
         public static void removeStatus(String name) {
