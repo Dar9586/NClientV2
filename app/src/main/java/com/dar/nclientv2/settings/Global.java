@@ -157,7 +157,7 @@ public class Global {
     }
 
     public static String getUserAgent() {
-        return "NClientV2 " + Global.getLastVersion(null);
+        return "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Mobile Safari/537.36";
     }
 
     public static String getDefaultFileParent(Context context) {

@@ -17,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <WebView
+    <view class="com.dar.nclientv2.components.views.CFTokenView$CFTokenWebView"
         android:id="@+id/webView"
         android:layout_width="0dp"
         android:layout_height="0dp"

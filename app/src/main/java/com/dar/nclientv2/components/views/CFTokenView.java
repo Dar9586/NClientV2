@@ -1,10 +1,12 @@
 package com.dar.nclientv2.components.views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
 
@@ -13,8 +15,7 @@ import androidx.annotation.Nullable;
 
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.components.CookieInterceptor;
-
-import java.util.Date;
+import com.dar.nclientv2.settings.Global;
 
 public class CFTokenView {
 
@@ -47,8 +48,6 @@ public class CFTokenView {
 
 
     public static class CFTokenWebView extends WebView{
-        private volatile long lastLoad=0;
-        private static final long MIN_TIME=5000;
         public CFTokenWebView(@NonNull Context context) {
             super(context);
             init();
@@ -66,6 +65,7 @@ public class CFTokenView {
 
         private void init() {
             forceAcceptCookies();
+            applyWebViewSettings();
         }
 
         private void forceAcceptCookies() {
@@ -75,16 +75,21 @@ public class CFTokenView {
             }
         }
 
-        @Override
-        public void loadUrl(@NonNull String url) {
-            long actualTime = new Date().getTime();
-            synchronized (this) {
-                if (lastLoad + MIN_TIME <= actualTime) {
-                    lastLoad = actualTime;
-                    super.loadUrl(url);
-                }
-            }
+        @SuppressLint("SetJavaScriptEnabled")
+        private void applyWebViewSettings() {
+            WebSettings webSettings = getSettings();
+            webSettings.setJavaScriptEnabled(true);
+            webSettings.setDomStorageEnabled(true);
+            webSettings.setDatabaseEnabled(true);
+            webSettings.setUseWideViewPort(true);
+            webSettings.setLoadWithOverviewMode(true);
+            webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+            webSettings.setSupportZoom(true);
+            webSettings.setBuiltInZoomControls(true);
+            webSettings.setDisplayZoomControls(false);
+            webSettings.setUserAgentString(Global.getUserAgent());
         }
+
     }
 
 }

@@ -2,14 +2,11 @@ package com.dar.nclientv2.components;
 
 import android.view.View;
 import android.webkit.CookieManager;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 
 import com.dar.nclientv2.components.activities.GeneralActivity;
 import com.dar.nclientv2.components.views.CFTokenView;
-import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 
@@ -17,7 +14,6 @@ import java.util.HashMap;
 
 public class CookieInterceptor {
     private static volatile boolean intercepting = false;
-    private static final int MAX_RETRIES = 200;
     private static volatile boolean webViewHidden = false;
 
     public static void hideWebView() {
@@ -31,6 +27,7 @@ public class CookieInterceptor {
     @NonNull
     private final Manager manager;
     String cookies = null;
+    private CFTokenView web = null;
 
     public CookieInterceptor(@NonNull Manager manager) {
         this.manager = manager;
@@ -40,10 +37,7 @@ public class CookieInterceptor {
         CFTokenView tokenView = GeneralActivity.getLastCFView();
         if (tokenView == null) return null;
         tokenView.post(() -> {
-            WebView webView=tokenView.getWebView();
-            WebSettings webSettings = webView.getSettings();
-            webSettings.setJavaScriptEnabled(true);
-            webSettings.setUserAgentString(Global.getUserAgent());
+            CFTokenView.CFTokenWebView webView = tokenView.getWebView();
             webView.loadUrl(Utility.getBaseUrl());
         });
         return tokenView;
@@ -51,7 +45,6 @@ public class CookieInterceptor {
 
     @NonNull
     private CFTokenView getWebView() {
-        CFTokenView web = setupWebView();
         while (web == null) {
             Utility.threadSleep(100);
             web = setupWebView();
@@ -65,7 +58,6 @@ public class CookieInterceptor {
             web.post(() -> web.setVisibility(View.VISIBLE));
         CookieManager manager = CookieManager.getInstance();
         HashMap<String, String> cookiesMap = new HashMap<>();
-        int retryCount = 0;
         do {
             Utility.threadSleep(100);
             cookies = manager.getCookie(Utility.getBaseUrl());
@@ -80,10 +72,6 @@ public class CookieInterceptor {
                         CookieInterceptor.this.manager.applyCookie(kv[0], kv[1]);
                     }
                 }
-            }
-            retryCount += 1;
-            if (retryCount == MAX_RETRIES) {
-                return;
             }
         } while (!this.manager.endInterceptor());
         web.post(() -> web.setVisibility(View.GONE));
