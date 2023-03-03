@@ -30,8 +30,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -263,6 +265,12 @@ public class InspectorV3 extends Thread implements Parcelable {
     }
 
     private void createUrl() {
+        String query;
+        try {
+            query = this.query == null ? null : URLEncoder.encode(this.query, "UTF-8");
+        } catch (UnsupportedEncodingException ignore) {
+            query = this.query;
+        }
         StringBuilder builder = new StringBuilder(Utility.getBaseUrl());
         if (requestType == ApiRequestType.BYALL) builder.append("?page=").append(page);
         else if (requestType == ApiRequestType.RANDOM) builder.append("random/");
@@ -274,19 +282,11 @@ public class InspectorV3 extends Thread implements Parcelable {
                 builder.append("?q=").append(query).append('&');
             else builder.append('?');
             builder.append("page=").append(page);
-        }/*else if(requestType==ApiRequestType.BYTAG){
-                 for(Tag tt:tags)t=tt;
-                 assert t!=null;
-                 builder.append(t.getTypeSingleName()).append('/')
-                         .append(t.getName().replace(' ','-').replace(".",""));
-                 if(byPopular)builder.append("/popular");
-                 else builder.append('/');
-                 builder.append("?page=").append(page);
-        }*/ else if (requestType == ApiRequestType.BYSEARCH || requestType == ApiRequestType.BYTAG) {
+        } else if (requestType == ApiRequestType.BYSEARCH || requestType == ApiRequestType.BYTAG) {
             builder.append("search/?q=").append(query);
             for (Tag tt : tags) {
                 if (builder.toString().contains(tt.toQueryTag(TagStatus.ACCEPTED))) continue;
-                builder.append('+').append(tt.toQueryTag());
+                builder.append('+').append(URLEncoder.encode(tt.toQueryTag()));
             }
             if (ranges != null)
                 builder.append('+').append(ranges.toQuery());
@@ -343,8 +343,7 @@ public class InspectorV3 extends Thread implements Parcelable {
         LogUtility.d("Starting download: " + url);
         if (response != null) response.onStart();
         try {
-            if (!createDocument())
-                throw new InvalidResponseException();
+            createDocument();
             parseDocument();
             if (response != null) {
                 response.onSuccess(galleries);

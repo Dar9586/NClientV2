@@ -831,15 +831,10 @@ public class MainActivity extends BaseActivity
         @Override
         public void onFailure(Exception e) {
             super.onFailure(e);
-            if (e instanceof InspectorV3.InvalidResponseException) {
-                CookieInterceptor interceptor = new CookieInterceptor(MANAGER);
-                interceptor.intercept();
-            } else {
-                showError(R.string.unable_to_connect_to_the_site, v -> {
-                    inspector = inspector.cloneInspector(MainActivity.this, inspector.getResponse());
-                    inspector.start();
-                });
-            }
+            showError(R.string.unable_to_connect_to_the_site, v -> {
+                inspector = inspector.cloneInspector(MainActivity.this, inspector.getResponse());
+                inspector.start();
+            });
         }
 
         @Override
