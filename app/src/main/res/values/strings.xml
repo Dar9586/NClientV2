@@ -7,6 +7,7 @@
     <string name="key_save_path" translatable="false">save_path</string>
     <string name="key_fake_icon" translatable="false">fake_icon</string>
     <string name="key_local_sort" translatable="false">local_sort_type</string>
+    <string name="key_user_agent" translatable="false">setting_user_agent</string>
     <string name="key_title_type" translatable="false">title_type_str</string>
     <string name="key_by_popular" translatable="false">is_by_popular</string>
     <string name="key_column_count" translatable="false">column_count</string>
@@ -61,6 +62,7 @@
     <string name="key_change_page_buttons" translatable="false">change_page_buttons</string>
     <string name="dash" translatable="false">-</string>
     <string name="slash" translatable="false">/</string>
+    <string name="default_user_agent" translatable="false">Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:110.0) Gecko/20100101 Firefox/110.0</string>
     <string name="setting_on_ignore_tags">Other tags won\'t be queried when a tag is selected from the gallery menu (except language)</string>
     <string name="setting_off_ignore_tags">Other tags will be queried when a tag is selected from the gallery menu</string>
     <string name="setting_on_use_account_tag">Use the account tags into the search query (Local tags will have priority)</string>
@@ -363,6 +365,9 @@
     <string name="exact_title_match_title">Exact tag match only</string>
     <string name="exact_title_match_summary">Hide galleries which would appear in the site but doesn\'t contains all the tags searched</string>
     <string name="hide">Hide</string>
+    <string name="title_user_agent">Change User-Agent</string>
+
+
     <string-array name="scroll_type">
         <item>Horizontal</item>
         <item>Vertical</item>

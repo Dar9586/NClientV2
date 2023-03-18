@@ -86,7 +86,7 @@ public class Global {
     private static boolean invertFix, buttonChangePage, hideMultitask, enableBeta, volumeOverride, zoomOneColumn, keepHistory, lockScreen, onlyTag, showTitles, removeAvoidedGalleries, useRtl;
     private static ThemeScheme theme;
     private static DataUsageType usageMobile, usageWifi;
-    private static String lastVersion, mirror;
+    private static String lastVersion, mirror, userAgent;
     private static int maxHistory, columnCount, maxId, galleryWidth = -1, galleryHeight = -1;
     private static int colPortStat, colLandStat, colPortHist, colLandHist, colPortMain, colLandMain, colPortDownload, colLandDownload, colLandFavorite, colPortFavorite;
     private static boolean infiniteScrollMain, infiniteScrollFavorite, exactTagMatch;
@@ -157,7 +157,7 @@ public class Global {
     }
 
     public static String getUserAgent() {
-        return "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Mobile Safari/537.36";
+        return userAgent;
     }
 
     public static String getDefaultFileParent(Context context) {
@@ -316,6 +316,7 @@ public class Global {
         colPortStat = shared.getInt(context.getString(R.string.key_column_port_stat), 2);
         colLandStat = shared.getInt(context.getString(R.string.key_column_land_stat), 4);
         zoomOneColumn = shared.getBoolean(context.getString(R.string.key_zoom_one_column), false);
+        userAgent = shared.getString(context.getString(R.string.key_user_agent),context.getString(R.string.default_user_agent));
         int x = Math.max(0, shared.getInt(context.getString(R.string.key_only_language), Language.ALL.ordinal()));
         sortType = SortType.values()[shared.getInt(context.getString(R.string.key_by_popular), SortType.RECENT_ALL_TIME.ordinal())];
         usageMobile = DataUsageType.values()[shared.getInt(context.getString(R.string.key_mobile_usage), DataUsageType.FULL.ordinal())];

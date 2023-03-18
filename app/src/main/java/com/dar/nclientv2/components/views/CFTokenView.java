@@ -6,8 +6,10 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
@@ -77,6 +79,8 @@ public class CFTokenView {
 
         @SuppressLint("SetJavaScriptEnabled")
         private void applyWebViewSettings() {
+            setWebChromeClient(new WebChromeClient());
+            setWebViewClient(new WebViewClient());
             WebSettings webSettings = getSettings();
             webSettings.setJavaScriptEnabled(true);
             webSettings.setDomStorageEnabled(true);
@@ -88,6 +92,7 @@ public class CFTokenView {
             webSettings.setBuiltInZoomControls(true);
             webSettings.setDisplayZoomControls(false);
             webSettings.setUserAgentString(Global.getUserAgent());
+            webSettings.setAllowContentAccess(true);
         }
 
     }
