@@ -67,6 +67,9 @@ public class CustomInterceptor implements Interceptor {
             (response.code() == HttpURLConnection.HTTP_UNAVAILABLE ||
                 response.code() == HttpURLConnection.HTTP_FORBIDDEN)
                 && (!rec || !MANAGER.endInterceptor())) {
+
+            CookieManager.getInstance().removeAllCookie();
+
             CookieInterceptor interceptor = new CookieInterceptor(MANAGER);
             interceptor.intercept();
             if (context != null) Global.reloadHttpClient(context);

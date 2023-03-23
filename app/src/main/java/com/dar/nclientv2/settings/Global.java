@@ -86,12 +86,13 @@ public class Global {
     private static boolean invertFix, buttonChangePage, hideMultitask, enableBeta, volumeOverride, zoomOneColumn, keepHistory, lockScreen, onlyTag, showTitles, removeAvoidedGalleries, useRtl;
     private static ThemeScheme theme;
     private static DataUsageType usageMobile, usageWifi;
-    private static String lastVersion, mirror, userAgent;
+    private static String lastVersion, mirror;
     private static int maxHistory, columnCount, maxId, galleryWidth = -1, galleryHeight = -1;
     private static int colPortStat, colLandStat, colPortHist, colLandHist, colPortMain, colLandMain, colPortDownload, colLandDownload, colLandFavorite, colPortFavorite;
     private static boolean infiniteScrollMain, infiniteScrollFavorite, exactTagMatch;
     private static int defaultZoom, offscreenLimit;
     private static Point screenSize;
+    private static String userAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:110.0) Gecko/20100101 Firefox/110.0";
 
     public static long recursiveSize(File path) {
         if (path.isFile()) return path.length();
