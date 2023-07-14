@@ -92,7 +92,8 @@ public class Global {
     private static boolean infiniteScrollMain, infiniteScrollFavorite, exactTagMatch;
     private static int defaultZoom, offscreenLimit;
     private static Point screenSize;
-    private static String userAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:110.0) Gecko/20100101 Firefox/110.0";
+    private static final String DEFAULT_USER_AGENT = "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N)";
+    private static String userAgent = DEFAULT_USER_AGENT;
 
     public static long recursiveSize(File path) {
         if (path.isFile()) return path.length();
@@ -157,8 +158,10 @@ public class Global {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && activity.isDestroyed();
     }
 
+    @NonNull
     public static String getUserAgent() {
-        return userAgent;
+        String agent = userAgent == null ? DEFAULT_USER_AGENT : userAgent;
+        return agent.replace("\n", " ").trim();
     }
 
     public static String getDefaultFileParent(Context context) {
@@ -317,7 +320,7 @@ public class Global {
         colPortStat = shared.getInt(context.getString(R.string.key_column_port_stat), 2);
         colLandStat = shared.getInt(context.getString(R.string.key_column_land_stat), 4);
         zoomOneColumn = shared.getBoolean(context.getString(R.string.key_zoom_one_column), false);
-        userAgent = shared.getString(context.getString(R.string.key_user_agent),context.getString(R.string.default_user_agent));
+        userAgent = shared.getString(context.getString(R.string.key_user_agent), DEFAULT_USER_AGENT);
         int x = Math.max(0, shared.getInt(context.getString(R.string.key_only_language), Language.ALL.ordinal()));
         sortType = SortType.values()[shared.getInt(context.getString(R.string.key_by_popular), SortType.RECENT_ALL_TIME.ordinal())];
         usageMobile = DataUsageType.values()[shared.getInt(context.getString(R.string.key_mobile_usage), DataUsageType.FULL.ordinal())];

@@ -23,6 +23,7 @@ public abstract class GeneralActivity extends AppCompatActivity {
 
     public static @Nullable
     CFTokenView getLastCFView() {
+        if (lastActivity == null) return null;
         GeneralActivity activity = lastActivity.get();
         if (activity != null) {
             activity.runOnUiThread(activity::inflateWebView);

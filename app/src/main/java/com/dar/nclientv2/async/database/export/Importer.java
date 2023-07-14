@@ -23,6 +23,10 @@ import java.util.zip.ZipInputStream;
 class Importer {
     private static void importSharedPreferences(Context context, String sharedName, InputStream stream) throws IOException {
         JsonReader reader = new JsonReader(new InputStreamReader(stream));
+        if (sharedName.contains("/")) {
+            String[] names = sharedName.split("/");
+            sharedName = names[names.length - 1];
+        }
         SharedPreferences.Editor editor = context.getSharedPreferences(sharedName, 0).edit();
         reader.beginObject();
         while (reader.hasNext()) {

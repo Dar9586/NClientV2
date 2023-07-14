@@ -76,15 +76,10 @@ public class LocalAdapter extends MultichoiceAdapter<Object, LocalAdapter.ViewHo
         boolean b1 = o1 instanceof LocalGallery;
         boolean b2 = o2 instanceof LocalGallery;
         //downloading manga are newer
-        if (b1 && !b2) return -1;
-        if (!b1 && b2) return 1;
-        if (b1/*&&b2*/) {
-            long res = ((LocalGallery) o1).getDirectory().lastModified() - ((LocalGallery) o2).getDirectory().lastModified();
-            if (res != 0) return res < 0 ? -1 : 1;
-        }
-        String s1 = b1 ? ((LocalGallery) o1).getTitle() : ((GalleryDownloaderV2) o1).getPathTitle();
-        String s2 = b2 ? ((LocalGallery) o2).getTitle() : ((GalleryDownloaderV2) o2).getPathTitle();
-        return s1.compareTo(s2);
+        long d1 = b1 ? ((LocalGallery) o1).getDirectory().lastModified() : Long.MAX_VALUE;
+        long d2 = b2 ? ((LocalGallery) o2).getDirectory().lastModified() : Long.MAX_VALUE;
+        if (d1 != d2) return Long.compare(d1, d2);
+        return comparatorByName.compare(o1, o2);
     };
 
     private List<Object> filter;
@@ -190,7 +185,10 @@ public class LocalAdapter extends MultichoiceAdapter<Object, LocalAdapter.ViewHo
         if (type.type == LocalSortType.Type.RANDOM) {
             Collections.shuffle(arr, Utility.RANDOM);
         } else {
-            Collections.sort(arr, getComparator(type.type));
+            try {
+                Collections.sort(arr, getComparator(type.type));
+            } catch (IllegalArgumentException ignore) {
+            }
             if (type.descending) Collections.reverse(arr);
         }
     }
