@@ -9,7 +9,7 @@ android {
         targetSdkVersion 33
         versionCode 302
         multiDexEnabled true
-        versionName "3.0.2-stable"
+        versionName "3.0.3-stable"
         vectorDrawables.useSupportLibrary true
         proguardFiles 'proguard-rules.pro'
     }
