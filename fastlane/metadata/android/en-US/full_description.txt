@@ -1,19 +1,16 @@
-An unofficial NHentai Android Client.
-This app  works for devices from API 14 (Android 4.0) and above.
+An unofficial NHentai Android Client. 
+This app works for devices from API 14 (Android 4.0) and above. 
 
-API Features
+API Features 
 
- - Browse main page
- - Search by query or tags
- - Include or exclude tags
- - Blur or hide excluded tags
- - Download galleries
- - Favorite galleries
- - Enable PIN to access the app
-
-Custom Features
-
- - Share galleries
- - Open in browser
- - Bookmark
- - Ability to disguise the app as calculator
+- Browse main page 
+- Search by query or tags 
+- Include or exclude tags 
+- Blur or hide excluded tags 
+- Download galleries 
+- Favorite galleries 
+- Enable PIN to access the app Custom Features 
+- Share galleries 
+- Open in browser 
+- Bookmark 
+- Ability to disguise the app as calculator
