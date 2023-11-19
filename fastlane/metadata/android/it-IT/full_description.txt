@@ -1,6 +1,6 @@
-Un client Android NHentai non ufficiale. Questa app funziona per dispositivi API 14 (Android 4.0) e versioni successive.
+Un client Android NHentai non ufficiale. Questa app funziona per dispositivi API 14 (Android 4.0) e versioni successive. 
 
-Funzionalità API: sfoglia la pagina principale 
+Funzionalità API: sfoglia la pagina principale
 
 - Ricerca per query o tag 
 - Includi o escludi tag 
