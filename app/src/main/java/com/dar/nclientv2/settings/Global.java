@@ -660,7 +660,11 @@ public class Global {
     }
 
     public static boolean hasStoragePermission(Context context) {
-        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            return true; //We don't check permission on Android 13
+        } else {
+            return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        }
     }
 
     public static boolean isJPEGCorrupted(String path) {
