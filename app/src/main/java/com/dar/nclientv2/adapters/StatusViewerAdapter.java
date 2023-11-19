@@ -17,6 +17,7 @@ import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.async.database.Queries;
+import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.ImageDownloadUtility;
 import com.dar.nclientv2.utility.LogUtility;
 
@@ -47,25 +48,12 @@ public class StatusViewerAdapter extends RecyclerView.Adapter<GenericAdapter.Vie
 
     @Override
     public void onBindViewHolder(@NonNull GenericAdapter.ViewHolder holder, int position) {
-        Gallery ent = positionToGallery(holder.getAdapterPosition());
+        Gallery ent = positionToGallery(holder.getBindingAdapterPosition());
         if (ent == null) return;
         ImageDownloadUtility.loadImage(context, ent.getThumbnail(), holder.imgView);
         holder.pages.setText(String.format(Locale.US, "%d", ent.getPageCount()));
         holder.title.setText(ent.getTitle());
-        switch (ent.getLanguage()) {
-            case CHINESE:
-                holder.flag.setText("\uD83C\uDDF9\uD83C\uDDFC");
-                break;
-            case ENGLISH:
-                holder.flag.setText("\uD83C\uDDEC\uD83C\uDDE7");
-                break;
-            case JAPANESE:
-                holder.flag.setText("\uD83C\uDDEF\uD83C\uDDF5");
-                break;
-            case UNKNOWN:
-                holder.flag.setText("\uD83C\uDFF3");
-                break;
-        }
+        holder.flag.setText(Global.getLanguageFlag(ent.getLanguage()));
         holder.title.setOnClickListener(v -> {
             Layout layout = holder.title.getLayout();
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {

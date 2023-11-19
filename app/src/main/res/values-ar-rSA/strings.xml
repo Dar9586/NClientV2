@@ -1,314 +1,320 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="setting_on_ignore_tags">Other tags won\'t be queried when a tag is selected from the gallery menu (except language)</string>
-    <string name="setting_off_ignore_tags">Other tags will be queried when a tag is selected from the gallery menu</string>
-    <string name="setting_on_use_account_tag">Use the account tags into the search query (Local tags will have priority)</string>
-    <string name="setting_off_use_account_tag">Account tags will be ignored for the query</string>
-    <string name="theme_summary">Select theme colors</string>
-    <string name="send_crash_report">Send crash report</string>
-    <string name="change_theme">Change theme</string>
-    <string name="clear_cache">Clear cache</string>
-    <string name="infinite_scroll">Infinite scroll</string>
-    <string name="ignore_tags">Ignore other tags</string>
-    <string name="use_account_tag">Use tags from account</string>
-    <string name="title_activity_gallery">Gallery</string>
-    <string name="title_activity_zoom">Zoom Activity</string>
-    <string name="title_activity_tag_filter">Tag Filter</string>
-    <string name="title_activity_login">Log in</string>
-    <string name="parodies">Parodies</string>
-    <string name="characters">Characters</string>
-    <string name="tags">Tags</string>
-    <string name="artists">Artists</string>
-    <string name="groups">Groups</string>
-    <string name="languages">Languages</string>
-    <string name="categories">Categories</string>
-    <string name="unknown">Unknown</string>
-    <string name="channel1_name">Download Gallery</string>
-    <string name="channel2_name">Create PDF</string>
-    <string name="channel3_name">Create ZIP</string>
-    <string name="channel1_description">Used to show progress of the download of a gallery</string>
-    <string name="channel2_description">Used to show progress of the creation of the PDF</string>
-    <string name="channel3_description">Used to show progress of the creation of the ZIP</string>
-    <string name="channel2_title">Creating PDF:</string>
-    <string name="channel3_title">Creating ZIP:</string>
-    <string name="favorite_max_reached" formatted="true">You can have a maximum of %d favorite manga.</string>
-    <string name="tags_max_reached" formatted="true">You can have a maximum of %d selected tags.</string>
-    <string name="only_english">Only english</string>
-    <string name="only_japanese">Only japanese</string>
-    <string name="only_chinese">Only chinese</string>
-    <string name="all_languages">All languages</string>
-    <string name="login">Log in</string>
-    <string name="login_formatted" formatted="true">Logged as %s</string>
-    <string name="logout">Logout</string>
-    <string name="favorite_online_manga">Favorite online manga</string>
-    <string name="online_tags">Online tags</string>
-    <string name="add_to_online_favorite">Add to online favorites</string>
-    <string name="remove_from_online_favorites">Remove from online favorites</string>
-    <string name="add_to_online_blacklist">Add to online blacklist?</string>
-    <string name="tag_already_in_blacklist">Tag already in blacklist</string>
-    <string name="are_you_sure">Are you sure?</string>
-    <string name="thumbnail">Thumbnail</string>
-    <string name="settings">Settings</string>
-    <string name="related">Related</string>
-    <string name="failed">Failed</string>
-    <string name="search">Search</string>
-    <string name="prev">Previous</string>
-    <string name="share">Share</string>
-    <string name="image">Image</string>
-    <string name="next">Next</string>
-    <string name="create_pdf">Create PDF</string>
-    <string name="create_pdf_format" formatted="true">Create PDF of: "%s"</string>
-    <string name="create_zip_format" formatted="true">Create ZIP of: "%s"</string>
-    <string name="created_pdf">Successful created PDF</string>
-    <string name="error_pdf">Error while creating PDF</string>
-    <string name="parsing_pages">Parsing pages</string>
-    <string name="writing_pdf">Writing PDF</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_subtitle">NHentai unofficial client</string>
-    <string name="change_page">Change page:</string>
-    <string name="prev_page">Previous page</string>
-    <string name="next_page">Next page</string>
-    <string name="downloaded_manga">Downloaded manga</string>
-    <string name="download_gallery">Download gallery</string>
-    <string name="delete_gallery_size_format">Delete gallery (%.2fMB)</string>
-    <string name="delete_gallery_format" formatted="true">Do you want to delete the gallery:\n%s</string>
-    <string name="share_with">Share with</string>
-    <string name="link_copied_to_clipboard">Link copied to clipboard</string>
-    <string name="open_in_browser">Open in browser</string>
-    <string name="go_online">Go online</string>
-    <string name="update_tag_status">Update tag status</string>
-    <string name="change_view">Change view</string>
-    <string name="tag_preference">Tag preference</string>
-    <string name="manage_tags">Manage tags</string>
-    <string name="applied_filters">Applied filters</string>
-    <string name="show_related">Show related galleries</string>
-    <string name="random_manga">Random manga</string>
-    <string name="save_page">Save page</string>
-    <string name="page_count_format" formatted="true">%d pages</string>
-    <string name="upload_date_format" formatted="true">Uploaded on %s at %s</string>
-    <string name="favorite_count_format" formatted="true">%d favorites</string>
-    <string name="favorite_manga">Favorite manga</string>
-    <string name="setting_on_remove_ignored">The galleries with ignored tags will not be shown</string>
-    <string name="setting_off_remove_ignored">The galleries with ignored tags will be blurred</string>
-    <string name="remove_ignored_galleries">Remove ignored galleries</string>
-    <string name="clear_tag_preferences">Clear tag preferences</string>
-    <string name="check_for_update_on_startup">Check for update on startup</string>
-    <string name="check_for_updates">Check for updates</string>
-    <string name="no_updates_found">No updates found</string>
-    <string name="error_retrieving">Error in retrieving latest version</string>
-    <string name="new_version_found">New version found</string>
-    <string name="update_version_format" formatted="true">Update from version %s to version %s?\n\nChangelog:\n%s</string>
-    <string name="clear_this_list">Clear this list?</string>
-    <string name="set_minimum_count">Set minimum count</string>
-    <string name="sort_by_title">Sort by title</string>
-    <string name="sort_by_popular">Sort by popular</string>
-    <string name="next_page_volume_up">Go to next page with up volume</string>
-    <string name="next_page_volume_down">Go to next page with down volume</string>
-    <string name="change_title_type">Change title type</string>
-    <string name="title_type_summary">Select the default title type for the galleries</string>
-    <string name="search_settings">Search settings</string>
-    <string name="global_settings">Global settings</string>
-    <string name="images_settings">Images settings</string>
-    <string name="miscellaneous">Miscellaneous</string>
-    <string name="update_settings">Update settings</string>
-    <string name="online_favorite_manga">Online favorite manga</string>
-    <string name="cache_size_formatted">Cache size: %.2f MB</string>
-    <string name="cache_cleared">Cache cleared</string>
-    <string name="sort_by_latest">Sort by latest</string>
-    <string name="edit">Edit</string>
-    <string name="options">Options</string>
-    <string name="keep_history">Keep search history</string>
-    <string name="add">Add</string>
-    <string name="insert_tag_name">Insert tag name:</string>
-    <string name="favorite_count">Favorite count</string>
-    <string name="comments">Comments</string>
-    <string name="send">Send</string>
-    <string name="send_comment">Send comment…</string>
-    <string name="profile_picture">Profile picture</string>
-    <string name="send_bug_on_github">Send bug on Github</string>
+    <string name="setting_on_ignore_tags">لن يُستعلم عن الوسوم الأخرى إذا اختير وسام من قائمة الأعمال (باستثناء اللغة)</string>
+    <string name="setting_off_ignore_tags">سيُستعلم عن الوسوم الأخرى إذا اختير وسام من قائمة الأعمال</string>
+    <string name="setting_on_use_account_tag">اِستخدم وسوم حسابك عند استعلام البحث (ستحظى الوسوم المحلية بالأولوية)</string>
+    <string name="setting_off_use_account_tag">ستُتَجاهل وسوم حسابك عند الاستعلام</string>
+    <string name="theme_summary">اِختر لون السِّمة</string>
+    <string name="send_crash_report">أَرسل تقارير الأعطاب</string>
+    <string name="change_theme">غيِّر السِّمة</string>
+    <string name="clear_cache">اِمح الذاكرة الخبيئة</string>
+    <string name="infinite_scroll">تمرير لامتناهي</string>
+    <string name="ignore_tags">تجاهَل باقي الوسوم</string>
+    <string name="use_account_tag">اِستخدم وسوم الحساب</string>
+    <string name="title_activity_gallery">عمل</string>
+    <string name="title_activity_zoom">نشاط التقريب</string>
+    <string name="title_activity_tag_filter">تصفية الوسوم</string>
+    <string name="title_activity_login">تسجيل الدخول</string>
+    <string name="parodies">مُحاكَيات</string>
+    <string name="characters">شخصيات</string>
+    <string name="tags">وسوم</string>
+    <string name="artists">فنَّانون</string>
+    <string name="groups">فِرَق</string>
+    <string name="languages">لغات</string>
+    <string name="categories">أصناف</string>
+    <string name="unknown">مجهول</string>
+    <string name="channel1_name">نزِّل العمل</string>
+    <string name="channel2_name">أَنشئ مستندًا محمولًا PDF</string>
+    <string name="channel3_name">أَنشئ ملفًّا مضغوطًا ZIP</string>
+    <string name="channel1_description">تُستخدم لإظهار مدى تقدُّم تنزيل العمل</string>
+    <string name="channel2_description">تُستخدم لإظهار مدى تقدُّم إنشاء المستند المحمول PDF</string>
+    <string name="channel3_description">تُستخدم لإظهار مدى تقدُّم إنشاء الملف المضغوط ZIP</string>
+    <string name="channel2_title">جارٍ إنشاء المستند المحمول:</string>
+    <string name="channel3_title">جارٍ إنشاء الملف المضغوط:</string>
+    <string name="tags_max_reached" formatted="true">يمكنك الحصول على %d كعددِ وسومٍ مختارةٍ قصويٍّ.</string>
+    <string name="only_english">الإنجليزية فقط</string>
+    <string name="only_japanese">اليابانية فقط</string>
+    <string name="only_chinese">الصينية فقط</string>
+    <string name="all_languages">كل اللغات</string>
+    <string name="login">سجِّل دخولك</string>
+    <string name="login_formatted" formatted="true">مُسجَّل بصفة %s</string>
+    <string name="logout">سجِّل خروجك</string>
+    <string name="favorite_online_manga">الأعمال المُفضَّلة عبر الشابكة</string>
+    <string name="online_tags">الوسوم عبر الشابكة</string>
+    <string name="add_to_online_favorite">أَضف إلى مفضَّلاتك عبر الشابكة</string>
+    <string name="remove_from_online_favorites">اِحذف من مفضَّلاتك عبر الشابكة</string>
+    <string name="add_to_online_blacklist">أتود الإضافة إلى لائحتك السوداء عبر الشابكة؟</string>
+    <string name="tag_already_in_blacklist">الوسم موجود في اللائحة السوداء سلفًا</string>
+    <string name="are_you_sure">أمتأكد؟</string>
+    <string name="thumbnail">صُويرة</string>
+    <string name="settings">إعدادات</string>
+    <string name="related">ذو صلة</string>
+    <string name="failed">فشِل</string>
+    <string name="search">بحث</string>
+    <string name="prev">السابق</string>
+    <string name="share">شارك</string>
+    <string name="image">صورة</string>
+    <string name="next">التالي</string>
+    <string name="create_pdf">أَنشئ مستندًا محمولًا PDF</string>
+    <string name="create_pdf_format" formatted="true">أَنشئ مستند \"%s\" المحمول</string>
+    <string name="create_zip_format" formatted="true">أَنشئ ملف \"%s\" المضغوط</string>
+    <string name="created_pdf">تم إنشاء المستند المحمول بنجاح</string>
+    <string name="error_pdf">طرأ خطأٌ أثناء إنشاء المستند المحمول</string>
+    <string name="parsing_pages">تجزئة الصفحات</string>
+    <string name="writing_pdf">كتابة مستندٍ محمولٍ</string>
+    <string name="navigation_drawer_open">اِفتح درج التصفح</string>
+    <string name="navigation_drawer_close">أَغلق درج التصفح</string>
+    <string name="nav_header_subtitle">عميل Nhentai غير الرسمي</string>
+    <string name="change_page">غيِّر الصفحة:</string>
+    <string name="prev_page">الصفحة السابقة</string>
+    <string name="next_page">الصفحة التالية</string>
+    <string name="downloaded_manga">الأعمال المُنزَّلة</string>
+    <string name="download_gallery">نزِّل العمل</string>
+    <string name="delete_gallery_size_format" formatted="true">اِحذف العمل (%.2fMB)</string>
+    <string name="delete_gallery_format" formatted="true">أتودّ حذف العمل:\n%s ؟</string>
+    <string name="share_with">شاركه مع</string>
+    <string name="link_copied_to_clipboard">تم نسخ الرابط إلى الحافظة</string>
+    <string name="open_in_browser">افتح في المُتصفِّح</string>
+    <string name="go_online">اتَّصل بالشابكة</string>
+    <string name="update_tag_status">حدِّث وضعية الوسم</string>
+    <string name="change_view">غيِّر المنظر</string>
+    <string name="tag_preference">إعداد الوسم</string>
+    <string name="manage_tags">سيِّر الوسوم</string>
+    <string name="applied_filters">التصفيات المُطبَّقة</string>
+    <string name="show_related">أَظهر أعمال ذات صلة</string>
+    <string name="random_manga">عمل عشوائي</string>
+    <string name="save_page">اِحفظ الصفحة</string>
+    <string name="page_count_format" formatted="true">%d صفحةً(صفحاتٍ)</string>
+    <string name="upload_date_format" formatted="true">رُفِع بتاريخ %s عند الـ %s</string>
+    <string name="favorite_count_format" formatted="true">مُفضَّل عند %d أشخاص(شخصًا)</string>
+    <string name="favorite_manga">الأعمال المُفضَّلة</string>
+    <string name="setting_on_remove_ignored">الأعمال ذات الوسوم المُتجاهَلة لن تُعرض</string>
+    <string name="setting_off_remove_ignored">الأعمال ذات الوسوم المُتجاهَلة ستُضبَّب</string>
+    <string name="remove_ignored_galleries">اِحذف الأعمال المُتجاهلة</string>
+    <string name="clear_tag_preferences">أَزِل إعدادات الوسم</string>
+    <string name="check_for_update_on_startup">اِلتمس التحديثات عند تشغيل التطبيق</string>
+    <string name="check_for_updates">اِلتمس التحديثات</string>
+    <string name="no_updates_found">لا يوجد تحديث مُتوفِّر</string>
+    <string name="error_retrieving">طرأ خطأٌ أثناء استرجاع الإصدار الأخير</string>
+    <string name="new_version_found">وُجد إصدار جديد</string>
+    <string name="update_version_format" formatted="true">أتود التحديث من الإصدار %s إلى الإصدار %s ؟\n\n سِجل التغييرات: \n%s</string>
+    <string name="clear_this_list">أتود محو هذه القائمة؟</string>
+    <string name="set_minimum_count">عيِّن حدًّا أدنى للعدِّ</string>
+    <string name="sort_by_title">ِاِفرِز حسب العنوان</string>
+    <string name="sort_by_popular">اِفرِز حسب الرَّواج</string>
+    <string name="next_page_volume_up">اِذهب للصفحة التالية بِزِر زيادة الصوت</string>
+    <string name="next_page_volume_down">اِذهب للصفحة التالية بِزِر نقصان الصوت</string>
+    <string name="change_title_type">غيِّر نَسَق العنوان</string>
+    <string name="title_type_summary">اِختر نَسَقًا لعنوان الأعمال لجعله اعتياديًا</string>
+    <string name="search_settings">إعدادات البحث</string>
+    <string name="global_settings">إعدادات عامة</string>
+    <string name="images_settings">إعدادات الصور</string>
+    <string name="miscellaneous">مُنوَّعات</string>
+    <string name="update_settings">إعدادات التحديثات</string>
+    <string name="online_favorite_manga">الأعمال المُفضَّلة عبر الشابكة</string>
+    <string name="cache_size_formatted">حجم الخبيئة: %.2f MB</string>
+    <string name="cache_cleared">مُحيت الخبيئة</string>
+    <string name="sort_by_latest">اِفرِز حسب الحداثة</string>
+    <string name="edit">عدِّل</string>
+    <string name="options">خيارات</string>
+    <string name="keep_history">أَبق على تأريخ البحث</string>
+    <string name="add">أَضف</string>
+    <string name="insert_tag_name">أَدخِل اسم الوسم:</string>
+    <string name="favorite_count">عدد المُفضَّلات</string>
+    <string name="comments">تعليقات</string>
+    <string name="send">أَرسل</string>
+    <string name="send_comment">أَرسل التعليق…</string>
+    <string name="profile_picture">صورة الملف الشخصي</string>
+    <string name="send_bug_on_github">أَبلغ عن عيب في Github</string>
     <string name="github">Github</string>
-    <string name="install">Install</string>
-    <string name="download_update_failed">Unable to download updated version</string>
-    <string name="copyURL">Copy URL</string>
-    <string name="add_bookmark">Add bookmark</string>
-    <string name="manage_bookmarks">Manage bookmarks</string>
-    <string name="bookmark_page_format">Page %d</string>
-    <string name="bookmark_description">Bookmark description</string>
-    <string name="enable_right_to_left">Enable right to left</string>
-    <string name="setting_on_use_rtl">Images will be shown right to left</string>
-    <string name="setting_off_use_rtl">Images will be shown left to right</string>
-    <string name="volume_change_setting">Change page with volume buttons</string>
-    <string name="popular_tag_count">The number of popular tags shown while in Advanced search</string>
-    <string name="show_gallery_titles">Show gallery titles</string>
-    <string name="use_column_port">Column count while in portrait</string>
-    <string name="use_column_land">Column count while in landscape</string>
-    <string name="change_language">Change language</string>
-    <string name="tag_artist_gallery">Artist:</string>
-    <string name="tag_character_gallery">Character:</string>
-    <string name="tag_parody_gallery">Parody:</string>
-    <string name="tag_language_gallery">Language:</string>
-    <string name="tag_category_gallery">Category:</string>
-    <string name="tag_group_gallery">Group:</string>
-    <string name="tag_tag_gallery">Tag:</string>
-    <string name="ok">OK</string>
-    <string name="cancel">Cancel</string>
-    <string name="no">No</string>
-    <string name="yes">Yes</string>
-    <string name="start_all_downloads">Start all downloads</string>
-    <string name="pause_all_downloads">Pause all downloads</string>
-    <string name="cancel_all_downloads">Cancel all downloads</string>
-    <string name="disable_lock_title">Disable screen off while reading</string>
-    <string name="download_all_galleries_in_this_page">Download all galleries in this page</string>
-    <string name="download_all_galleries">Download all galleries</string>
-    <string name="favorite_column_count">Select favorite column count</string>
-    <string name="download_column_count">Select download column count</string>
-    <string name="history_column_count">Select history column count</string>
-    <string name="main_column_count">Select main column count</string>
-    <string name="navigation_settings">Navigation settings</string>
-    <string name="stop_download">Stop download</string>
-    <string name="start_download">Start download</string>
-    <string name="create_zip">Create ZIP</string>
-    <string name="created_zip">Successfully created ZIP</string>
-    <string name="failed_zip">Failed to create ZIP: </string>
-    <string name="start_page">Start page</string>
-    <string name="end_page">End page</string>
-    <string name="invalid_range_selected">Invalid range selected</string>
-    <string name="column_count_select">Column count select</string>
-    <string name="send_with_title">Send with title?</string>
-    <string name="caption_send_with_title">Append url to the image as caption to the image?</string>
-    <string name="history_size">History size</string>
-    <string name="history_size_summary">Set the max number of entries for the history</string>
-    <string name="view_history">View history</string>
-    <string name="history">History</string>
-    <string name="clear_history">Clear history</string>
-    <string name="cancelled_format">Cancelled: %s</string>
-    <string name="completed_format">Completed: %s</string>
-    <string name="downloading_format">Downloading: %s</string>
-    <string name="toggle_favorite">Toggle favorite</string>
-    <string name="resume">Resume</string>
-    <string name="pause">Pause</string>
-    <string name="title_copied_to_clipboard">Title copied to clipboard</string>
-    <string name="setting_zoom_one_column">Enable zoom when in one column mode inside a gallery</string>
-    <string name="zoom_one_column">Enable zoom</string>
-    <string name="insert_pin">Insert PIN</string>
-    <string name="confirm_pin">Confirm PIN</string>
-    <string name="setting_pin">Enable PIN to enter the app</string>
-    <string name="use_pin">Use PIN</string>
-    <string name="wrong_pin">Wrong PIN</string>
-    <string name="rotate_image">Rotate image</string>
-    <string name="toggle_online_favorite">Toggle online favorite</string>
-    <string name="data_usage_settings">Change data usage settings</string>
-    <string name="mobile_data_usage_setting">Mobile data usage settings</string>
-    <string name="wifi_data_usage_setting">Wi-Fi data usage settings</string>
-    <string name="data_usage_thumb">Always download thumbnail</string>
-    <string name="data_usage_full">Download thumbnail or full images</string>
-    <string name="data_usage_no">Don\'t download images</string>
-    <string name="enable_network_to_continue">Enable image download or change network to open the image</string>
-    <string name="donate">Support the developer</string>
-    <string name="id_tag">ID:</string>
-    <string name="id_copied_to_clipboard">ID copied to clipboard</string>
-    <string name="copied_to_clipboard">Copied to clipboard</string>
-    <string name="maximum_notification_count">Maximum notification count</string>
-    <string name="copy_settings_to_clipboard">Copy settings to clipboard</string>
-
-    <string name="sort_popular_all_time">Popular</string>
-    <string name="sort_recent">Recent</string>
-    <string name="sort_popular_day">Daily popular</string>
-    <string name="sort_popular_week">Weekly popular</string>
-    <string name="sort_type_title_format" formatted="true">Choose sort type (%s)</string>
-    <string name="sort_select_type">Choose sort type:</string>
-    <string name="unable_to_connect_to_the_site">Unable to connect to the site</string>
-    <string name="no_entry_found">No entries found</string>
-    <string name="retry">Retry</string>
-    <string name="folder_location">Folder location</string>
-    <string name="default_zoom">Default zoom</string>
-    <string name="choose_directory">Choose directory</string>
-    <string name="bookmark_here">Bookmark here</string>
-    <string name="resume_from_page">Resume from page %d</string>
-    <string name="new_beta_version_found">New beta version found</string>
-    <string name="check_beta_releases">Check for beta releases</string>
-    <string name="page_range">Page range:</string>
-    <string name="upload_time">Upload time:</string>
-    <string name="from_page">From page:</string>
-    <string name="to_page">To page:</string>
-    <string name="from_time">From time:</string>
-    <string name="to_time">To time:</string>
-    <string name="reset">Reset</string>
-    <string name="hours">Hours</string>
-    <string name="years">Years</string>
-    <string name="months">Months</string>
-    <string name="days">Days</string>
-    <string name="weeks">Weeks</string>
-    <string name="choose_unit">Choose unit:</string>
-    <string name="change_status">Change status</string>
-    <string name="create_new_status">Create new status:</string>
-    <string name="invalid_color_selected">Black and white can not be used</string>
-    <string name="change_status_title">Select new status:</string>
-    <string name="remove_status">None</string>
-    <string name="name_too_short">Name too short</string>
-    <string name="duplicated_name">Duplicated name</string>
-    <string name="manage_statuses">Manage statuses</string>
-    <string name="update_status">Update status:</string>
-    <string name="view_statuses">View statuses</string>
-    <string name="status_column_count">Select status column count</string>
-    <string name="status_viewer">Status viewer</string>
-    <string name="title_hide_multitasking">Hide app content in multitasking</string>
-    <string name="title">Title</string>
-    <string name="download_date">Download date</string>
-    <string name="page_count">Page count</string>
-    <string name="size">Size</string>
-    <string name="descending_order">Descending order</string>
-    <string name="minimum_comment_length" formatted="true">The comment must be at least %d characters</string>
-    <string name="change_scroll_type">Change scroll type</string>
-    <string name="exported_backup_file_toast" formatted="true">Exported backup file in %s</string>
-    <string name="export_data">Export data</string>
-    <string name="import_data">Import data</string>
+    <string name="install">ثبِّت</string>
+    <string name="download_update_failed">تعذر تنزيل الإصدار المُحدَّث</string>
+    <string name="copyURL">اِنسَخ الرابط</string>
+    <string name="add_bookmark">أَضف إلى العلامات</string>
+    <string name="manage_bookmarks">سيِّر العلامات</string>
+    <string name="bookmark_page_format">الصفحة %d</string>
+    <string name="bookmark_description">وصف العلامة</string>
+    <string name="enable_right_to_left">عيِّن الاتجاه من اليسار إلى اليمين</string>
+    <string name="setting_on_use_rtl">ستُعرض الصور من اليسار إلى اليمين</string>
+    <string name="setting_off_use_rtl">ستُعرض الصور من اليمين إلى اليسار</string>
+    <string name="volume_change_setting">غيِّر الصفحة بأزرار الصوت</string>
+    <string name="popular_tag_count">عدد الوسوم الرائجة الظاهرة أثناء البحث المُتقدِّم</string>
+    <string name="show_gallery_titles">أَظهِر عناوين الأعمال</string>
+    <string name="use_column_port">عدد الأعمدة في الوضع الطولي</string>
+    <string name="use_column_land">عدد الأعمدة في الوضع العرضي</string>
+    <string name="change_language">غيِّر اللغة</string>
+    <string name="tag_artist_gallery">الفنانون:</string>
+    <string name="tag_character_gallery">الشخصيات:</string>
+    <string name="tag_parody_gallery">المُحاكَيات:</string>
+    <string name="tag_language_gallery">اللغات:</string>
+    <string name="tag_category_gallery">الأصناف:</string>
+    <string name="tag_group_gallery">الفِرَق:</string>
+    <string name="tag_tag_gallery">الوسوم:</string>
+    <string name="ok">حسنًا</string>
+    <string name="cancel">أَلغ</string>
+    <string name="no">لا</string>
+    <string name="yes">نعم</string>
+    <string name="start_all_downloads">اِبدأ كل التنزيلات</string>
+    <string name="pause_all_downloads">أَوقِف كل التنزيلات</string>
+    <string name="cancel_all_downloads">أَلغ كل التنزيلات</string>
+    <string name="disable_lock_title">عطِّل إغلاق الشاشة أثناء القراءة</string>
+    <string name="download_all_galleries_in_this_page">نزِّل كل الأعمال في هذه الصفحة</string>
+    <string name="download_all_galleries">نزِّل كل الأعمال</string>
+    <string name="favorite_column_count">اِختر عدد أعمدة المُفضَّلات</string>
+    <string name="download_column_count">اِختر عدد أعمدة التنزيلات</string>
+    <string name="history_column_count">اِختر عدد أعمدة التأريخ</string>
+    <string name="main_column_count">اِختر عدد أعمدة الصفحة الرئيسية</string>
+    <string name="navigation_settings">إعدادات التنقُّل</string>
+    <string name="stop_download">أَوقِف التنزيل</string>
+    <string name="start_download">اِبدأ التنزيل</string>
+    <string name="create_zip">أَنشئ ملفًّا مضغوطًا ZIP</string>
+    <string name="created_zip">تم إنشاء الملف المضغوط</string>
+    <string name="failed_zip">فشِل إنشاء الملف المضغوط: </string>
+    <string name="start_page">صفحة البداية</string>
+    <string name="end_page">صفحة النهاية</string>
+    <string name="invalid_range_selected">النطاق المُختار غير صالح</string>
+    <string name="column_count_select">اِختر عدد الأعمدة</string>
+    <string name="send_with_title">أتود إرساله بعنوانه؟</string>
+    <string name="caption_send_with_title">أتود إلحاق الرابط بالصورة كوصف لها؟</string>
+    <string name="history_size">حجم التأريخ</string>
+    <string name="history_size_summary">عيِّن عدد مدخلات التأريخ القصوي</string>
+    <string name="view_history">اِعرِض التأريخ</string>
+    <string name="history">تأريخ</string>
+    <string name="clear_history">اِمح التأريخ</string>
+    <string name="cancelled_format">مُلغى: %s</string>
+    <string name="completed_format">تام: %s</string>
+    <string name="downloading_format">قيد التنزيل: %s</string>
+    <string name="toggle_favorite">بدِّل التفضيل من عدمه</string>
+    <string name="resume">اِستأنِف</string>
+    <string name="pause">أَوقِف</string>
+    <string name="title_copied_to_clipboard">نُسخ العنوان إلى الحافظة</string>
+    <string name="setting_zoom_one_column">فعِّل التقريب في وضع العمود الواحد داخل عمل</string>
+    <string name="zoom_one_column">فعِّل التقريب</string>
+    <string name="insert_pin">أَدخِل الرقم السري</string>
+    <string name="confirm_pin">أَكد الرقم السري</string>
+    <string name="setting_pin">اُطلب الرقم السري عند الدخول إلى التطبيق</string>
+    <string name="use_pin">اِستخدم الرقم السري</string>
+    <string name="wrong_pin">الرقم المُدخَل خاطئ</string>
+    <string name="rotate_image">أَدر الصورة</string>
+    <string name="toggle_online_favorite">بدِّل التفضيل من عدمه عبر الشابكة</string>
+    <string name="data_usage_settings">غيِّر إعدادات استخدام البيانات</string>
+    <string name="mobile_data_usage_setting">إعدادات استخدام بيانات الجوال</string>
+    <string name="wifi_data_usage_setting">إعدادات استخدام بيانات الشبكة اللاسلكية</string>
+    <string name="data_usage_thumb">نزِّل الصُّويرات دائمًا</string>
+    <string name="data_usage_full">نزِّل الصُّويرات أو الصور كاملة</string>
+    <string name="data_usage_no">لا تُنزِّل الصور</string>
+    <string name="enable_network_to_continue">فعِّل تنزيل الصور أو تغيير الشبكة لفتحها</string>
+    <string name="donate">اِدعم المُطوِّر</string>
+    <string name="id_tag">المُعرِّف:</string>
+    <string name="id_copied_to_clipboard">نُسخ المُعرِّف إلى الحافظة</string>
+    <string name="copied_to_clipboard">نُسخ إلى الحافظة</string>
+    <string name="maximum_notification_count">عدد الإشعارات القصوي</string>
+    <string name="copy_settings_to_clipboard">اِنسَخ الإعدادات إلى الحافظة</string>
+    <string name="sort_popular_all_time">رائجة</string>
+    <string name="sort_recent">حديثة</string>
+    <string name="sort_popular_day">رائجة على مدار اليوم</string>
+    <string name="sort_popular_week">رائجة على مدار الأسبوع</string>
+    <string name="sort_type_title_format" formatted="true">اِختر نوع الفرز (%s)</string>
+    <string name="sort_select_type">اِختر نوع الفرز:</string>
+    <string name="unable_to_connect_to_the_site">تعذر الاتصال بالموقع</string>
+    <string name="no_entry_found">لم يُعثر على أي مُدخلَة</string>
+    <string name="retry">أَعدِ المحاولة</string>
+    <string name="folder_location">موقع المجلد</string>
+    <string name="default_zoom">مستوى التقريب الاعتيادي</string>
+    <string name="choose_directory">اِختر مجلدًا</string>
+    <string name="bookmark_here">علِّم هنا</string>
+    <string name="resume_from_page">اِستأنِف من الصفحة %d</string>
+    <string name="new_beta_version_found">هناك إصدار beta مُتوفِّر</string>
+    <string name="check_beta_releases">اِلتمس إصدارات beta</string>
+    <string name="page_range">نطاق الصفحات:</string>
+    <string name="upload_time">رُفع منذ:</string>
+    <string name="from_page">من الصفحة:</string>
+    <string name="to_page">إلى الصفحة:</string>
+    <string name="from_time">من الوقت:</string>
+    <string name="to_time">إلى الوقت:</string>
+    <string name="reset">أَعدِ التعيين</string>
+    <string name="hours">الساعات</string>
+    <string name="years">السنوات</string>
+    <string name="months">الأشهر</string>
+    <string name="days">الأيام</string>
+    <string name="weeks">الأسابيع</string>
+    <string name="choose_unit">اِختر وحدة:</string>
+    <string name="change_status">غيِّر الوضعية</string>
+    <string name="create_new_status">أَنشئ وضعية جديدة:</string>
+    <string name="invalid_color_selected">لا يمكن استخدام الأبيض والأسود</string>
+    <string name="change_status_title">اِختر وضعية جديدة:</string>
+    <string name="remove_status">بدون</string>
+    <string name="name_too_short">الاسم بالغ القِصر</string>
+    <string name="duplicated_name">الاسم موجود سلفًا</string>
+    <string name="manage_statuses">سيِّر الوضعيات</string>
+    <string name="update_status">حدِّث الوضعية:</string>
+    <string name="view_statuses">اِعرِض وضعيات الأعمال</string>
+    <string name="status_column_count">اِختر عدد أعمدة الوضعبات</string>
+    <string name="status_viewer">وضعيات الأعمال</string>
+    <string name="title_hide_multitasking">أَخف محتوى التطبيق عند تعدد المهام</string>
+    <string name="title">العنوان</string>
+    <string name="download_date">تاريخ التنزيل</string>
+    <string name="page_count">عدد الصفحات</string>
+    <string name="size">الحجم</string>
+    <string name="descending_order">تنازلي</string>
+    <string name="minimum_comment_length" formatted="true">يجب أن يحوي تعليقك على %d حروف على الأقل</string>
+    <string name="change_scroll_type">غيِّر نمط التمرير</string>
+    <string name="exported_backup_file_toast" formatted="true">صُدِّر ملف النسخ الاحتياطي إلى %s</string>
+    <string name="export_data">صدِّر البيانات</string>
+    <string name="import_data">اِستورد البيانات</string>
+    <string name="default_status_1">قيد القراءة</string>
+    <string name="default_status_2">تم</string>
+    <string name="default_status_3">مُعلَّق</string>
+    <string name="default_status_4">تُخلِّي عنه</string>
+    <string name="default_status_5">مُخطَّطة قراءته</string>
+    <string name="title_site_mirror">غيِّر الموقع المرآة</string>
+    <string name="disguise_app_in_drawer">موِّه التطبيق في درج التطبيقات</string>
+    <string name="summary_disguise_app">سيتنكَّر التطبيق بأيقونة آلة حاسبة (تجريبي)</string>
+    <string name="app_name_fake_calculator">آلة حاسبة</string>
+    <string name="delete_galleries">اِحذف الأعمال</string>
+    <string name="delete">اِحذف</string>
+    <string name="pause_selected_downloads">أَوقِف التنزيلات المُختارة</string>
+    <string name="start_selected_downloads">اِبدأ التنزيلات المُختارة</string>
+    <string name="custom_path">مسار مُخصَّص</string>
+    <string name="insert_path">أدخل المسار:</string>
+    <string name="requesting_storage_access">الولوج لوحدة التخزين مطلوب</string>
+    <string name="request_storage_manager_summary">بسبب بعض قيود الولوج لوحدة التخزين في نظام أندرويد 11، سيُطلب منك منح أذونات إضافية للتطبيق تمكُّنًا من استخدام المسارات المُخصَّصة. إذا أردت منح هذه الأذونات فالمرجو منك تفعيل الإعداد في الشاشة التالية.</string>
+    <string name="summary_beta">الانتقال إلى إصدار beta سيجعل من المستحيل عليك العودة إلى إصدار مُستقِر دون حذف التطبيق</string>
+    <string name="fix_inverted_title">أَصلِح الصور المقلوبة</string>
+    <string name="fix_inverted_summary">عليك بتفعيل هذا الإعداد إذا كانت ألوان الصور مقلوبة (في بعض الأجهزة، قد يؤدي إلى جعل سِمة الجهاز فاتحة، تعطيله سيُصلح هذه المشكلة)</string>
+    <string name="navigation_settings_per_screen">إعدادات التنقُّل حسب الشاشة</string>
+    <string name="downloaded_update_at" formatted="true">نُزِّل التحديث في %s</string>
+    <string name="summary_offscreen_limit">عيِّن عدد الصور المراد تحميلها استباقيًّا خارج الشاشة أثناء قراءة عمل ما</string>
+    <string name="title_offscreen_limit">الصور المراد تحميلها استباقيًّا</string>
+    <string name="sort_popoular_month">رائجة على مدار الشهر</string>
+    <string name="random">عشوائي</string>
+    <string name="summary_fetch_metadata">نزِّل البيانات الوصفية للأعمال المُنزَّلة قبل 2.3.0 والتي لا تحوي بيانات وصفية كالوسوم</string>
+    <string name="title_fetch_metadata">اُجلُب البيانات الوصفية للأعمال القديمة</string>
+    <string name="title_change_page_buttons">غيِّر الصفحة بالنقر على الصورة</string>
+    <string name="export_finished">Export finished</string>
+    <string name="import_finished">Import finished</string>
+    <string name="download_torrent">Download torrent</string>
+    <string name="title_activity_captcha">CAPTCHA</string>
+    <string name="invalid_response">Invalid response</string>
+    <string name="system_default">System default</string>
+    <string name="clear_cookies">Clear cookies</string>
+    <string name="fetching_cloudflare_token">Fetching Cloudflare token …</string>
+    <string name="exact_title_match_title">Exact tag match only</string>
+    <string name="exact_title_match_summary">Hide galleries which would appear in the site but doesn\'t contains all the tags searched</string>
+    <string name="hide">Hide</string>
+    <string name="title_user_agent">Change User-Agent</string>
 
     <string-array name="scroll_type">
-        <item>Horizontal</item>
-        <item>Vertical</item>
+        <item>أفقي</item>
+        <item>عمودي</item>
     </string-array>
-
-    <string-array name="language">
-        <item>System Default</item>
-        <item>English</item>
-        <item>Chinese (Traditional)</item>
-        <item>Chinese (Simplified)</item>
-        <item>Turkish</item>
-        <item>Italian</item>
-        <item>German</item>
-        <item>Arabic</item>
-        <item>Spanish</item>
-    </string-array>
-
     <string-array name="theme">
-        <item>Light</item>
-        <item>Dark</item>
+        <item>فاتحة</item>
+        <item>داكنة</item>
     </string-array>
-
-
     <string-array name="title_type_array">
-        <item>English</item>
-        <item>Japanese</item>
-        <item>Pretty</item>
+        <item>الإنجليزية</item>
+        <item>اليابانية</item>
+        <item>أنيق</item>
     </string-array>
-    <string name="default_status_1">Reading</string>
-    <string name="default_status_2">Completed</string>
-    <string name="default_status_3">On Hold</string>
-    <string name="default_status_4">Dropped</string>
-    <string name="default_status_5">Plan to read</string>
-    <string name="title_site_mirror">Change site mirror</string>
-    <string name="disguise_app_in_drawer">Disguise app in drawer</string>
-    <string name="summary_disguise_app">The app will be disguised as a calculator (experimental)</string>
-    <string name="app_name_fake_calculator">Calculator</string>
-    <string name="delete_galleries">Delete galleries</string>
-    <string name="delete">Delete</string>
-    <string name="pause_selected_downloads">Pause selected downloads</string>
-    <string name="start_selected_downloads">Start selected downloads</string>
-    <string name="custom_path">Custom path</string>
-    <string name="insert_path">Insert path:</string>
-    <string name="requesting_storage_access">Requesting storage access</string>
-    <string name="request_storage_manager_summary">Due to some restriction in Android 11 to the storage access this app will require you to give additional permission to use custom paths.\nIf you want to give those permission please enable the setting in the next dialog.</string>
-
 </resources>

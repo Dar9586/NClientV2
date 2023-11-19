@@ -19,6 +19,7 @@ import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.async.database.Queries;
+import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.ImageDownloadUtility;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
@@ -26,12 +27,14 @@ import com.dar.nclientv2.utility.Utility;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 import java.util.Locale;
 
 public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder> implements Filterable {
+    private final int perPage = FavoriteActivity.getEntryPerPage();
     private final SparseIntArray statuses = new SparseIntArray();
     private final FavoriteActivity activity;
+    private Gallery[] galleries;
     private CharSequence lastQuery;
     private Cursor cursor;
     private boolean force = false;
@@ -58,9 +61,12 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
 
     @Nullable
     private Gallery galleryFromPosition(int position) {
+        if (galleries[position] != null) return galleries[position];
         cursor.moveToPosition(position);
         try {
-            return Queries.GalleryTable.cursorToGallery(cursor);
+            Gallery g = Queries.GalleryTable.cursorToGallery(cursor);
+            galleries[position] = g;
+            return g;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -69,25 +75,12 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
 
     @Override
     public void onBindViewHolder(@NonNull final GenericAdapter.ViewHolder holder, int position) {
-        final Gallery ent = galleryFromPosition(holder.getAdapterPosition());
+        final Gallery ent = galleryFromPosition(holder.getBindingAdapterPosition());
         if (ent == null) return;
         ImageDownloadUtility.loadImage(activity, ent.getThumbnail(), holder.imgView);
         holder.pages.setText(String.format(Locale.US, "%d", ent.getPageCount()));
         holder.title.setText(ent.getTitle());
-        switch (ent.getLanguage()) {
-            case CHINESE:
-                holder.flag.setText("\uD83C\uDDF9\uD83C\uDDFC");
-                break;
-            case ENGLISH:
-                holder.flag.setText("\uD83C\uDDEC\uD83C\uDDE7");
-                break;
-            case JAPANESE:
-                holder.flag.setText("\uD83C\uDDEF\uD83C\uDDF5");
-                break;
-            case UNKNOWN:
-                holder.flag.setText("\uD83C\uDFF3");
-                break;
-        }
+        holder.flag.setText(Global.getLanguageFlag(ent.getLanguage()));
         holder.title.setOnClickListener(v -> {
             Layout layout = holder.title.getLayout();
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
@@ -123,6 +116,10 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
         activity.startActivity(intent);
     }
 
+    public void changePage() {
+        forceReload();
+    }
+
     public void updateColor(int position) {
         Gallery ent = galleryFromPosition(position);
         if (ent == null) return;
@@ -149,7 +146,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
                 lastQuery = constraint.toString();
                 LogUtility.d(lastQuery + "LASTQERY");
                 force = false;
-                Cursor c = Queries.FavoriteTable.getAllFavoriteGalleriesCursor(lastQuery, sortByTitle);
+                Cursor c = Queries.FavoriteTable.getAllFavoriteGalleriesCursor(lastQuery, sortByTitle, perPage, (activity.getActualPage() - 1) * perPage);
                 results.count = c.getCount();
                 results.values = c;
                 LogUtility.d("FILTERING3");
@@ -196,29 +193,23 @@ public class FavoriteAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHol
         activity.runOnUiThread(() -> notifyItemRangeRemoved(0, s));
     }
 
-    private void updateCursor(Cursor c) {
+    private void updateCursor(@Nullable Cursor c) {
         if (cursor != null) cursor.close();
+        galleries = new Gallery[c == null ? 0 : c.getCount()];
         cursor = c;
         statuses.clear();
     }
 
     public Collection<Gallery> getAllGalleries() {
-        List<Gallery> galleries = new ArrayList<>(cursor.getCount());
-        if (cursor.moveToFirst()) {
-            do {
-                try {
-                    Gallery ent = Queries.GalleryTable.cursorToGallery(cursor);
-                    galleries.add(ent);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } while (cursor.moveToNext());
-        }
+        if (cursor == null) return Collections.emptyList();
+        int count = cursor.getCount();
+        ArrayList<Gallery> galleries = new ArrayList<>(count);
+        for (int i = 0; i < count; i++) galleries.add(galleryFromPosition(i));
         return galleries;
     }
 
     public void randomGallery() {
-        if (cursor == null) return;
+        if (cursor == null || cursor.getCount() < 1) return;
         startGallery(galleryFromPosition(Utility.RANDOM.nextInt(cursor.getCount())));
     }
 }

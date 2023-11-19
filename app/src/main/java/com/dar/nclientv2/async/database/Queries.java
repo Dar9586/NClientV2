@@ -1,5 +1,6 @@
 package com.dar.nclientv2.async.database;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -36,6 +37,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+@SuppressLint("Range")
 public class Queries {
 
     static SQLiteDatabase db;
@@ -243,7 +245,7 @@ public class Queries {
     }
 
     public static class TagTable {
-        static final String TABLE_NAME = "Tags";
+        public static final String TABLE_NAME = "Tags";
         public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
         static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS `Tags` (" +
             " `idTag` INT  NOT NULL PRIMARY KEY," +
@@ -404,6 +406,12 @@ public class Queries {
             return t;
         }
 
+        public static int updateStatus(int id, TagStatus status) {
+            ContentValues values = new ContentValues(1);
+            values.put(STATUS, status.ordinal());
+            return db.updateWithOnConflict(TABLE_NAME, values, IDTAG + "=?", new String[]{"" + id}, SQLiteDatabase.CONFLICT_IGNORE);
+        }
+
         /**
          * Update status and count of a specific tag
          */
@@ -552,7 +560,7 @@ public class Queries {
         public static final String ID_GALLERY = "id_gallery";
         public static final String RANGE_START = "range_start";
         public static final String RANGE_END = "range_end";
-        static final String TABLE_NAME = "Downloads";
+        public static final String TABLE_NAME = "Downloads";
         public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
         static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS `Downloads` (" +
             "`id_gallery`  INT NOT NULL PRIMARY KEY , " +
@@ -603,7 +611,7 @@ public class Queries {
         public static final String TITLE = "title";
         public static final String THUMB = "thumbType";
         public static final String TIME = "time";
-        static final String TABLE_NAME = "History";
+        public static final String TABLE_NAME = "History";
         public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
         static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS `History`(" +
             "`id` INT NOT NULL PRIMARY KEY," +
@@ -622,7 +630,7 @@ public class Queries {
             values.put(THUMB, gallery.getThumb().ordinal());
             values.put(TIME, new Date().getTime());
             db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
-            cleanHistory(db);
+            cleanHistory();
         }
 
         public static List<SimpleGallery> getHistory() {
@@ -637,18 +645,18 @@ public class Queries {
             return galleries;
         }
 
-        public static void emptyHistory(SQLiteDatabase db) {
+        public static void emptyHistory() {
             db.delete(TABLE_NAME, null, null);
         }
 
-        private static void cleanHistory(SQLiteDatabase db) {
+        private static void cleanHistory() {
             while (db.delete(TABLE_NAME, "(SELECT COUNT(*) FROM " + TABLE_NAME + ")>? AND " + TIME + "=(SELECT MIN(" + TIME + ") FROM " + TABLE_NAME + ")", new String[]{"" + Global.getMaxHistory()}) == 1)
                 ;
         }
     }
 
     public static class BookmarkTable {
-        static final String TABLE_NAME = "Bookmark";
+        public static final String TABLE_NAME = "Bookmark";
         public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
         static final String URL = "url";
         static final String PAGE = "page";
@@ -699,7 +707,7 @@ public class Queries {
     }
 
     public static class GalleryBridgeTable {
-        static final String TABLE_NAME = "GalleryTags";
+        public static final String TABLE_NAME = "GalleryTags";
         public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
         static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS `GalleryTags` (" +
             "`id_gallery` INT NOT NULL , " +
@@ -744,7 +752,7 @@ public class Queries {
     }
 
     public static class FavoriteTable {
-        static final String TABLE_NAME = "Favorite";
+        public static final String TABLE_NAME = "Favorite";
         public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
         static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS `Favorite` (" +
             "`id_gallery` INT NOT NULL PRIMARY KEY , " +
@@ -753,6 +761,19 @@ public class Queries {
 
         static final String ID_GALLERY = "id_gallery";
         static final String TIME = "time";
+
+        private static final String TITLE_CLAUSE = String.format(Locale.US, "%s LIKE ? OR %s LIKE ? OR %s LIKE ?",
+            GalleryTable.TITLE_ENG,
+            GalleryTable.TITLE_JP,
+            GalleryTable.TITLE_PRETTY
+        );
+
+        private static final String FAVORITE_JOIN_GALLERY = String.format(Locale.US, "%s INNER JOIN %s ON %s=%s",
+            FavoriteTable.TABLE_NAME,
+            GalleryTable.TABLE_NAME,
+            FavoriteTable.ID_GALLERY,
+            GalleryTable.IDGALLERY
+        );
 
         public static void addFavorite(Gallery gallery) {
             GalleryTable.insert(gallery);
@@ -778,20 +799,11 @@ public class Queries {
          * @param orderByTitle true if order by title, false order by latest
          * @return cursor which points to the galleries
          */
-        public static Cursor getAllFavoriteGalleriesCursor(CharSequence query, boolean orderByTitle) {
-            String q = String.format(Locale.US, "SELECT * FROM %s INNER JOIN %s ON %s=%s WHERE %s LIKE ? OR %s LIKE ? OR %s LIKE ?",
-                FavoriteTable.TABLE_NAME,
-                GalleryTable.TABLE_NAME,
-                FavoriteTable.ID_GALLERY,
-                GalleryTable.IDGALLERY,
-                GalleryTable.TITLE_ENG,
-                GalleryTable.TITLE_JP,
-                GalleryTable.TITLE_PRETTY
-            );
-            if (orderByTitle) q += "ORDER BY " + titleTypeToColumn(Global.getTitleType());
-            else q += "ORDER BY " + FavoriteTable.TIME + " DESC";
+        public static Cursor getAllFavoriteGalleriesCursor(CharSequence query, boolean orderByTitle, int limit, int offset) {
+            String order = orderByTitle ? titleTypeToColumn(Global.getTitleType()) : FavoriteTable.TIME + " DESC";
             String param = "%" + query + "%";
-            return db.rawQuery(q, new String[]{param, param, param});
+            String limitString = String.format(Locale.US, " %d, %d ", offset, limit);
+            return db.query(FAVORITE_JOIN_GALLERY, null, TITLE_CLAUSE, new String[]{param, param, param}, null, null, order, limitString);
         }
 
         /**
@@ -830,10 +842,25 @@ public class Queries {
             db.delete(TABLE_NAME, ID_GALLERY + "=?", new String[]{"" + id});
         }
 
+        public static int countFavorite(@Nullable String text) {
+            if (text == null || text.trim().isEmpty()) return countFavorite();
+            int totalFavorite = 0;
+            String param = "%" + text + "%";
+            Cursor c = db.query(FAVORITE_JOIN_GALLERY, new String[]{"COUNT(*)"}, TITLE_CLAUSE, new String[]{param, param, param}, null, null, null);
+            if (c.moveToFirst()) {
+                totalFavorite = c.getInt(0);
+            }
+            c.close();
+            return totalFavorite;
+        }
+
         public static int countFavorite() {
-            String query = "SELECT * FROM " + TABLE_NAME;
+            int totalFavorite = 0;
+            String query = "SELECT COUNT(*) FROM " + TABLE_NAME;
             Cursor c = db.rawQuery(query, null);
-            int totalFavorite = c.getCount();
+            if (c.moveToFirst()) {
+                totalFavorite = c.getInt(0);
+            }
             c.close();
             return totalFavorite;
         }
@@ -852,7 +879,7 @@ public class Queries {
     }
 
     public static class ResumeTable {
-        static final String TABLE_NAME = "Resume";
+        public static final String TABLE_NAME = "Resume";
         public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
         static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS `Resume` (" +
             "`id_gallery` INT NOT NULL PRIMARY KEY , " +
@@ -887,7 +914,7 @@ public class Queries {
     }
 
     public static class StatusMangaTable {
-        static final String TABLE_NAME = "StatusManga";
+        public static final String TABLE_NAME = "StatusManga";
         public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
         static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS `StatusManga` (" +
             "`gallery` INT NOT NULL PRIMARY KEY, " +
@@ -920,7 +947,8 @@ public class Queries {
             Status status;
             if (cursor.moveToFirst())
                 status = StatusManager.getByName(cursor.getString(cursor.getColumnIndex(NAME)));
-            else status = StatusManager.getByName(StatusManager.DEFAULT_STATUS);
+            else
+                status = StatusManager.getByName(StatusManager.DEFAULT_STATUS);
             cursor.close();
             return status;
         }
@@ -949,13 +977,27 @@ public class Queries {
             return db.rawQuery(query, new String[]{name, likeFilter, likeFilter, likeFilter});
         }
 
+        public static int getCountPerStatus(String name) {
+            String query = String.format("SELECT COUNT(*) FROM %s WHERE %s = ?",
+                StatusMangaTable.TABLE_NAME,
+                StatusMangaTable.NAME);
+            LogUtility.d(query);
+            int value = -1;
+            Cursor cursor = db.rawQuery(query, new String[]{name});
+            if (cursor.moveToFirst()) {
+                value = cursor.getInt(0);
+            }
+            cursor.close();
+            return value;
+        }
+
         public static void removeStatus(String name) {
             db.delete(TABLE_NAME, NAME + "=?", new String[]{name});
         }
     }
 
     public static class StatusTable {
-        static final String TABLE_NAME = "Status";
+        public static final String TABLE_NAME = "Status";
         public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
         static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS `Status` (" +
             "`name` TINYTEXT NOT NULL PRIMARY KEY, " +
@@ -977,7 +1019,6 @@ public class Queries {
         }
 
         public static void initStatuses() {
-            db.execSQL(CREATE_TABLE);
             Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
             if (cursor.moveToFirst()) {
                 do {

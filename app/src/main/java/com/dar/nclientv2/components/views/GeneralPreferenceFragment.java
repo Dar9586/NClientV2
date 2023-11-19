@@ -9,7 +9,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.JsonWriter;
+import android.util.Pair;
 import android.view.View;
+import android.webkit.CookieManager;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
@@ -22,8 +24,9 @@ import com.dar.nclientv2.PINActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.SettingsActivity;
 import com.dar.nclientv2.StatusManagerActivity;
+import com.dar.nclientv2.async.MetadataFetcher;
 import com.dar.nclientv2.async.VersionChecker;
-import com.dar.nclientv2.async.database.Exporter;
+import com.dar.nclientv2.components.LocaleManager;
 import com.dar.nclientv2.components.launcher.LauncherCalculator;
 import com.dar.nclientv2.components.launcher.LauncherReal;
 import com.dar.nclientv2.settings.Global;
@@ -36,7 +39,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
@@ -90,8 +95,35 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
         return R.string.data_usage_full;
     }
 
+    private void fillRoba() {
+        ArrayList<Pair<String, String>> languages = new ArrayList<>(LocaleManager.LANGUAGES.length);
+        Locale actualLocale = Global.getLanguage(act);
+        for (Locale l : LocaleManager.LANGUAGES) {
+            languages.add(new Pair<>(l.toString(), l.getDisplayName(actualLocale)));
+        }
+        Collections.sort(languages, (o1, o2) -> o1.second.compareTo(o2.second));
+        languages.add(0, new Pair<>(getString(R.string.key_default_value), getString(R.string.system_default)));
+        ListPreference preference = findPreference(getString(R.string.key_language));
+        assert preference != null;
+
+        String[] languagesEntry = new String[languages.size()];
+        String[] languagesNames = new String[languages.size()];
+        for (int i = 0; i < languages.size(); i++) {
+            Pair<String, String> lang = languages.get(i);
+            languagesEntry[i] = lang.first;
+            languagesNames[i] = Character.toUpperCase(lang.second.charAt(0)) + lang.second.substring(1);
+        }
+
+        preference.setEntryValues(languagesEntry);
+        preference.setEntries(languagesNames);
+
+    }
+
     private void mainMenu() {
         addPreferencesFromResource(R.xml.settings);
+
+        fillRoba();
+
         findPreference("status_screen").setOnPreferenceClickListener(preference -> {
             Intent i = new Intent(act, StatusManagerActivity.class);
             act.runOnUiThread(() -> act.startActivity(i));
@@ -109,6 +141,14 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
             act.runOnUiThread(() -> act.startActivity(i));
             return false;
         });
+        findPreference("fetch_metadata").setVisible(Global.hasStoragePermission(act));
+        findPreference("fetch_metadata").setOnPreferenceClickListener(preference -> {
+            new Thread(new MetadataFetcher(act)).start();
+            return true;
+        });
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            findPreference(getString(R.string.key_use_rtl)).setVisible(false);
+        }
         findPreference(getString(R.string.key_fake_icon)).setOnPreferenceChangeListener((preference, newValue) -> {
             PackageManager pm = act.getPackageManager();
             ComponentName name1 = new ComponentName(act, LauncherReal.class);
@@ -159,6 +199,11 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
         });
         //clear cache if pressed
         findPreference(getString(R.string.key_cache)).setSummary(getString(R.string.cache_size_formatted, cacheSize));
+        findPreference(getString(R.string.key_cookie)).setOnPreferenceClickListener(preference -> {
+            Login.clearCookies();
+            CookieManager.getInstance().removeAllCookie();
+            return true;
+        });
         findPreference(getString(R.string.key_cache)).setOnPreferenceClickListener(preference -> {
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(act);
             builder.setTitle(R.string.clear_cache);
@@ -198,23 +243,11 @@ public class GeneralPreferenceFragment extends PreferenceFragmentCompat {
             return true;
         });
         findPreference("export").setOnPreferenceClickListener(preference -> {
-            try {
-                String path = Exporter.exportData(act);
-                Toast.makeText(act, act.getString(R.string.exported_backup_file_toast, path), Toast.LENGTH_SHORT).show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            act.exportSettings();
             return true;
         });
         findPreference("import").setOnPreferenceClickListener(preference -> {
-            try {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT).setType("application/zip");
-                act.startActivityForResult(intent, 132);
-                //ExporterV2.importData(act,new File(Global.BACKUPFOLDER,"Backup.zip"));
-                //System.exit(0);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            act.importSettings();
             return true;
         });
 

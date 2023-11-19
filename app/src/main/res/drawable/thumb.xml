@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
+    android:shape="rectangle"
+    android:tint="?colorControlActivated">
+
+    <size
+        android:width="8dp"
+        android:height="48dp" />
 
     <corners
         android:bottomLeftRadius="360dp"
@@ -8,10 +13,5 @@
         android:topLeftRadius="360dp"
         android:topRightRadius="360dp" />
 
-    <padding
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp" />
-
-    <solid android:color="?attr/colorAccent" />
-
+    <solid android:color="@android:color/white" />
 </shape>

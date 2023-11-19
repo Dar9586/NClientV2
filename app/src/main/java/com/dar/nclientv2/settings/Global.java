@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.UiModeManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,6 +27,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.dar.nclientv2.CopyToClipboardActivity;
 import com.dar.nclientv2.R;
@@ -36,11 +36,11 @@ import com.dar.nclientv2.api.enums.Language;
 import com.dar.nclientv2.api.enums.SortType;
 import com.dar.nclientv2.api.enums.TitleType;
 import com.dar.nclientv2.api.local.LocalSortType;
+import com.dar.nclientv2.components.CustomCookieJar;
 import com.dar.nclientv2.components.classes.CustomSSLSocketFactory;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 import com.dar.nclientv2.utility.network.NetworkUtil;
-import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 
@@ -54,6 +54,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import me.zhanghai.android.fastscroll.FastScrollerBuilder;
 import okhttp3.Cookie;
 import okhttp3.OkHttpClient;
 
@@ -66,6 +67,7 @@ public class Global {
     private static final String UPDATEFOLDER_NAME = "Update";
     private static final String ZIPFOLDER_NAME = "ZIP";
     private static final String BACKUPFOLDER_NAME = "Backup";
+    private static final String TORRENTFOLDER_NAME = "Torrents";
     private static final DisplayMetrics lastDisplay = new DisplayMetrics();
     public static OkHttpClient client = null;
     public static File OLD_GALLERYFOLDER;
@@ -75,19 +77,23 @@ public class Global {
     public static File PDFFOLDER;
     public static File UPDATEFOLDER;
     public static File ZIPFOLDER;
+    public static File TORRENTFOLDER;
     public static File BACKUPFOLDER;
     private static Language onlyLanguage;
     private static TitleType titleType;
     private static SortType sortType;
     private static LocalSortType localSortType;
-    private static boolean hideMultitask, enableBeta, volumeOverride, zoomOneColumn, keepHistory, lockScreen, onlyTag, showTitles, infiniteScroll, removeAvoidedGalleries, useRtl;
+    private static boolean invertFix, buttonChangePage, hideMultitask, enableBeta, volumeOverride, zoomOneColumn, keepHistory, lockScreen, onlyTag, showTitles, removeAvoidedGalleries, useRtl;
     private static ThemeScheme theme;
     private static DataUsageType usageMobile, usageWifi;
     private static String lastVersion, mirror;
     private static int maxHistory, columnCount, maxId, galleryWidth = -1, galleryHeight = -1;
     private static int colPortStat, colLandStat, colPortHist, colLandHist, colPortMain, colLandMain, colPortDownload, colLandDownload, colLandFavorite, colPortFavorite;
-    private static int defaultZoom;
+    private static boolean infiniteScrollMain, infiniteScrollFavorite, exactTagMatch;
+    private static int defaultZoom, offscreenLimit;
     private static Point screenSize;
+    private static final String DEFAULT_USER_AGENT = "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N)";
+    private static String userAgent = DEFAULT_USER_AGENT;
 
     public static long recursiveSize(File path) {
         if (path.isFile()) return path.length();
@@ -98,6 +104,10 @@ public class Global {
             size += f.isFile() ? f.length() : recursiveSize(f);
 
         return size;
+    }
+
+    public static boolean isExactTagMatch() {
+        return exactTagMatch;
     }
 
     public static int getFavoriteLimit(Context context) {
@@ -141,15 +151,17 @@ public class Global {
     }
 
     public static void updateACRAReportStatus(Context context) {
-        ACRA.getErrorReporter().setEnabled(context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_send_report), true));
+        ACRA.getErrorReporter().setEnabled(context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_send_report), false));
     }
 
     public static boolean isDestroyed(Activity activity) {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && activity.isDestroyed();
     }
 
+    @NonNull
     public static String getUserAgent() {
-        return "NClientV2 " + Global.getLastVersion(null);
+        String agent = userAgent == null ? DEFAULT_USER_AGENT : userAgent;
+        return agent.replace("\n", " ").trim();
     }
 
     public static String getDefaultFileParent(Context context) {
@@ -171,12 +183,14 @@ public class Global {
         if (!files.contains(ROOTFOLDER) && !isExternalStorageManager())
             ROOTFOLDER = new File(getDefaultFileParent(context));
         MAINFOLDER = new File(ROOTFOLDER, MAINFOLDER_NAME);
+        LogUtility.d(MAINFOLDER);
         OLD_GALLERYFOLDER = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), MAINFOLDER_NAME);
         DOWNLOADFOLDER = new File(MAINFOLDER, DOWNLOADFOLDER_NAME);
         SCREENFOLDER = new File(MAINFOLDER, SCREENFOLDER_NAME);
         PDFFOLDER = new File(MAINFOLDER, PDFFOLDER_NAME);
         UPDATEFOLDER = new File(MAINFOLDER, UPDATEFOLDER_NAME);
         ZIPFOLDER = new File(MAINFOLDER, ZIPFOLDER_NAME);
+        TORRENTFOLDER = new File(MAINFOLDER, TORRENTFOLDER_NAME);
         BACKUPFOLDER = new File(MAINFOLDER, BACKUPFOLDER_NAME);
     }
 
@@ -222,6 +236,15 @@ public class Global {
     public static int getMaxHistory() {
         return maxHistory;
     }
+
+    public static boolean isInfiniteScrollMain() {
+        return infiniteScrollMain;
+    }
+
+    public static boolean isInfiniteScrollFavorite() {
+        return infiniteScrollFavorite;
+    }
+
 
     private static void initTitleType(@NonNull Context context) {
         String s = context.getSharedPreferences("Settings", 0).getString(context.getString(R.string.key_title_type), "pretty");
@@ -269,16 +292,21 @@ public class Global {
         useRtl = shared.getBoolean(context.getString(R.string.key_use_rtl), false);
         mirror = shared.getString(context.getString(R.string.key_site_mirror), Utility.ORIGINAL_URL);
         keepHistory = shared.getBoolean(context.getString(R.string.key_keep_history), true);
-        infiniteScroll = shared.getBoolean(context.getString(R.string.key_infinite_scroll), false);
         removeAvoidedGalleries = shared.getBoolean(context.getString(R.string.key_remove_ignored), true);
+        invertFix = shared.getBoolean(context.getString(R.string.key_inverted_fix), true);
         onlyTag = shared.getBoolean(context.getString(R.string.key_ignore_tags), true);
         volumeOverride = shared.getBoolean(context.getString(R.string.key_override_volume), true);
         enableBeta = shared.getBoolean(context.getString(R.string.key_enable_beta), true);
         columnCount = shared.getInt(context.getString(R.string.key_column_count), 2);
         showTitles = shared.getBoolean(context.getString(R.string.key_show_titles), true);
+        exactTagMatch = shared.getBoolean(context.getString(R.string.key_exact_title_match), false);
+        buttonChangePage = shared.getBoolean(context.getString(R.string.key_change_page_buttons), true);
         lockScreen = shared.getBoolean(context.getString(R.string.key_disable_lock), false);
         hideMultitask = shared.getBoolean(context.getString(R.string.key_hide_multitasking), true);
+        infiniteScrollFavorite = shared.getBoolean(context.getString(R.string.key_infinite_scroll_favo), false);
+        infiniteScrollMain = shared.getBoolean(context.getString(R.string.key_infinite_scroll_main), false);
         maxId = shared.getInt(context.getString(R.string.key_max_id), 300000);
+        offscreenLimit = Math.max(1, shared.getInt(context.getString(R.string.key_offscreen_limit), 5));
         maxHistory = shared.getInt(context.getString(R.string.key_max_history_size), 2);
         defaultZoom = shared.getInt(context.getString(R.string.key_default_zoom), 100);
         colPortMain = shared.getInt(context.getString(R.string.key_column_port_main), 2);
@@ -292,6 +320,7 @@ public class Global {
         colPortStat = shared.getInt(context.getString(R.string.key_column_port_stat), 2);
         colLandStat = shared.getInt(context.getString(R.string.key_column_land_stat), 4);
         zoomOneColumn = shared.getBoolean(context.getString(R.string.key_zoom_one_column), false);
+        userAgent = shared.getString(context.getString(R.string.key_user_agent), DEFAULT_USER_AGENT);
         int x = Math.max(0, shared.getInt(context.getString(R.string.key_only_language), Language.ALL.ordinal()));
         sortType = SortType.values()[shared.getInt(context.getString(R.string.key_by_popular), SortType.RECENT_ALL_TIME.ordinal())];
         usageMobile = DataUsageType.values()[shared.getInt(context.getString(R.string.key_mobile_usage), DataUsageType.FULL.ordinal())];
@@ -302,6 +331,10 @@ public class Global {
         }
         onlyLanguage = Language.values()[x];
 
+    }
+
+    public static boolean isButtonChangePage() {
+        return buttonChangePage;
     }
 
     public static boolean hideMultitask() {
@@ -345,13 +378,13 @@ public class Global {
         Login.setLoginShared(preferences);
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
             .cookieJar(
-                new PersistentCookieJar(
+                new CustomCookieJar(
                     new SetCookieCache(),
                     new SharedPrefsCookiePersistor(preferences)
                 )
             );
         CustomSSLSocketFactory.enableTls12OnPreLollipop(builder);
-        builder.addInterceptor(new CustomInterceptor());
+        builder.addInterceptor(new CustomInterceptor(context.getApplicationContext(), true));
         client = builder.build();
         client.dispatcher().setMaxRequests(25);
         client.dispatcher().setMaxRequestsPerHost(25);
@@ -367,6 +400,19 @@ public class Global {
     }
 
     public static Locale initLanguage(Context context) {
+        Resources resources = context.getResources();
+        Locale l = getLanguage(context);
+        Configuration c = new Configuration(resources.getConfiguration());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            c.setLocale(l);
+        } else {
+            c.locale = l;
+        }
+        resources.updateConfiguration(c, resources.getDisplayMetrics());
+        return l;
+    }
+
+    public static Locale getLanguage(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("Settings", 0);
         String prefLangKey = context.getString(R.string.key_language);
         String defaultValue = context.getString(R.string.key_default_value);
@@ -374,34 +420,22 @@ public class Global {
         assert langCode != null;
         if (langCode.equalsIgnoreCase(defaultValue)) {
             Locale defaultLocale = Locale.getDefault();
-            if (isLocaleAvailable(context, defaultLocale)) return defaultLocale;
+            return defaultLocale;
         }
-        if (langCode.contains("-")) {
-            String[] regexSplit = langCode.split("-");
+        if (langCode.contains("-") || langCode.contains("_")) {
+            String[] regexSplit = langCode.split("[-_]");
             Locale targetLocale = new Locale(regexSplit[0], regexSplit[1]);
-            if (isLocaleAvailable(context, targetLocale)) return targetLocale;
+            return targetLocale;
         } else {
             Locale targetLocale = new Locale(langCode);
             System.out.println(targetLocale.getCountry());
-            if (isLocaleAvailable(context, targetLocale)) return targetLocale;
+            return targetLocale;
         }
-        return new Locale("en", "US");
     }
 
-    private static boolean isLocaleAvailable(Context context, Locale targetLocale) {
-        Locale[] availableLocales = Locale.getAvailableLocales();
-        String[] supportedLangCodes = context.getResources().getStringArray(R.array.language_data);
-        // array.stream is not supported on Android <6.0
-        for (Locale availableLocale : availableLocales) {
-            if ((availableLocale.getCountry().equalsIgnoreCase(targetLocale.getCountry()) &&
-                availableLocale.getLanguage().equalsIgnoreCase(targetLocale.getLanguage())) || targetLocale.getCountry().equals(""))
-                for (String supportedLangCode : supportedLangCodes) {
-                    if (getLocaleCode(targetLocale).equalsIgnoreCase(supportedLangCode))
-                        return true;
-                    if (targetLocale.getLanguage().equals(supportedLangCode)) return true;
-                }
-        }
-        return false;
+
+    public static int getOffscreenLimit() {
+        return offscreenLimit;
     }
 
     private static String getLocaleCode(Locale locale) {
@@ -495,9 +529,6 @@ public class Global {
         return sortType;
     }
 
-    public static boolean isInfiniteScroll() {
-        return infiniteScroll;
-    }
 
     public static int getColumnCount() {
         return columnCount;
@@ -517,6 +548,7 @@ public class Global {
             Global.UPDATEFOLDER.mkdir(),
             Global.SCREENFOLDER.mkdir(),
             Global.ZIPFOLDER.mkdir(),
+            Global.TORRENTFOLDER.mkdir(),
             Global.BACKUPFOLDER.mkdir(),
         };
         LogUtility.d(
@@ -527,6 +559,7 @@ public class Global {
                 "4:" + Global.UPDATEFOLDER + bools[3] + '\n' +
                 "5:" + Global.SCREENFOLDER + bools[4] + '\n' +
                 "5:" + Global.ZIPFOLDER + bools[5] + '\n' +
+                "5:" + Global.TORRENTFOLDER + bools[5] + '\n' +
                 "6:" + Global.BACKUPFOLDER + bools[6] + '\n'
         );
 
@@ -667,6 +700,7 @@ public class Global {
 
     @Nullable
     public static File findGalleryFolder(Context context, int id) {
+        if (id < 1) return null;
         if (context == null) return findGalleryFolder(id);
         for (File dir : getUsableFolders(context)) {
             dir = new File(dir, MAINFOLDER_NAME);
@@ -678,25 +712,24 @@ public class Global {
     }
 
     private static void updateConfigurationNightMode(AppCompatActivity activity, Configuration c) {
-        UiModeManager manager = (UiModeManager) activity.getSystemService(Context.UI_MODE_SERVICE);
-        if (manager != null) manager.setNightMode(UiModeManager.MODE_NIGHT_NO);
-
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         c.uiMode &= (~Configuration.UI_MODE_NIGHT_MASK);//clear night mode bits
         c.uiMode |= Configuration.UI_MODE_NIGHT_NO; //disable night mode
     }
 
-    public static void initActivity(AppCompatActivity context) {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+    private static void invertFix(AppCompatActivity context) {
+        if (!invertFix) return;
+        Resources resources = context.getResources();
+        Configuration c = new Configuration(resources.getConfiguration());
+        updateConfigurationNightMode(context, c);
+        resources.updateConfiguration(c, resources.getDisplayMetrics());
+    }
 
+    public static void initActivity(AppCompatActivity context) {
         initScreenSize(context);
         initGallerySize();
-        //Locale locale=new Locale()
-        Resources resources = context.getResources();
-        Locale locale = initLanguage(context);
-        Configuration c = new Configuration(context.getResources().getConfiguration());
-        updateConfigurationNightMode(context, c);
-        c.locale = locale;
-        resources.updateConfiguration(c, resources.getDisplayMetrics());
+        initLanguage(context);
+        invertFix(context);
 
         switch (initTheme(context)) {
             case LIGHT:
@@ -731,6 +764,29 @@ public class Global {
 
     public static boolean isExternalStorageManager() {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.R || Environment.isExternalStorageManager();
+    }
+
+    public static void applyFastScroller(RecyclerView recycler) {
+        if (recycler == null) return;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
+        Drawable drawable = ContextCompat.getDrawable(recycler.getContext(), R.drawable.thumb);
+        if (drawable == null) return;
+        new FastScrollerBuilder(recycler).setThumbDrawable(drawable).build();
+    }
+
+    @NonNull
+    public static String getLanguageFlag(Language language) {
+        switch (language) {
+            case CHINESE:
+                return "\uD83C\uDDE8\uD83C\uDDF3";
+            case ENGLISH:
+                return "\uD83C\uDDEC\uD83C\uDDE7";
+            case JAPANESE:
+                return "\uD83C\uDDEF\uD83C\uDDF5";
+            case UNKNOWN:
+                return "\uD83C\uDFF3";
+        }
+        return "";
     }
 
     public enum ThemeScheme {LIGHT, DARK}

@@ -26,11 +26,13 @@ public class TagType implements Parcelable {
     };
     private final byte id;
     private final String single, plural;
+
     private TagType(int id, String single, String plural) {
         this.id = (byte) id;
         this.single = single;
         this.plural = plural;
     }
+
     protected TagType(Parcel in) {
         id = in.readByte();
         single = in.readString();

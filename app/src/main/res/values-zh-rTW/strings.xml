@@ -1,25 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?><!--Thanks to ZerOri & Still34 for the Traditional Chinese translation-->
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--SUMMARY-->
     <string name="setting_on_ignore_tags">從圖庫功能表中選中一個標籤時不再查詢其它標籤（語言項除外）</string>
     <string name="setting_off_ignore_tags">從圖庫功能表中選中一個標籤時查詢其它標籤</string>
     <string name="setting_on_use_account_tag">帳戶標籤用於搜尋（本地標籤優先）</string>
     <string name="setting_off_use_account_tag">搜尋時忽略帳戶標籤</string>
     <string name="theme_summary">選擇主題顏色</string>
-
-    <!--SETTINGS NAME-->
     <string name="send_crash_report">發送錯誤報告</string>
     <string name="change_theme">更改主題</string>
     <string name="clear_cache">清除快取</string>
     <string name="infinite_scroll">無限滾動</string>
     <string name="ignore_tags">忽略其它標籤</string>
     <string name="use_account_tag">使用帳戶標籤</string>
-
     <string name="title_activity_gallery">圖庫</string>
     <string name="title_activity_zoom">啟用縮放</string>
     <string name="title_activity_tag_filter">標籤篩選</string>
     <string name="title_activity_login">登入</string>
-
     <string name="parodies">原作</string>
     <string name="characters">角色</string>
     <string name="tags">標籤</string>
@@ -28,35 +23,28 @@
     <string name="languages">語言</string>
     <string name="categories">類別</string>
     <string name="unknown">未知</string>
-
     <string name="channel1_name">下載圖庫</string>
     <string name="channel2_name">建立 PDF</string>
+    <string name="channel3_name">建立 ZIP</string>
     <string name="channel1_description">用於顯示圖庫下載進度</string>
     <string name="channel2_description">用於顯示 PDF 建立進度</string>
+    <string name="channel3_description">用於顯示 ZIP 的建立進度</string>
     <string name="channel2_title">正在建立的 PDF：</string>
-
-    <string name="favorite_max_reached" formatted="true">最多只能收藏 %d 部漫畫。</string>
+    <string name="channel3_title">建立 ZIP：</string>
     <string name="tags_max_reached" formatted="true">最多只能選擇 %d 個標籤。</string>
-
-
     <string name="only_english">僅英文</string>
     <string name="only_japanese">僅日文</string>
     <string name="only_chinese">僅中文</string>
     <string name="all_languages">所有語言</string>
-
-
     <string name="login">登入</string>
     <string name="login_formatted" formatted="true">以 %s 身份登入</string>
     <string name="logout">登出</string>
-
     <string name="favorite_online_manga">線上收藏漫畫</string>
     <string name="online_tags">線上標籤</string>
-
     <string name="add_to_online_favorite">添加至線上收藏</string>
     <string name="remove_from_online_favorites">從線上收藏移除</string>
     <string name="add_to_online_blacklist">列入線上黑名單？</string>
     <string name="tag_already_in_blacklist">標籤已列入黑名單</string>
-
     <string name="are_you_sure">你確定？</string>
     <string name="thumbnail">預覽</string>
     <string name="settings">設定</string>
@@ -67,31 +55,23 @@
     <string name="share">分享</string>
     <string name="image">圖像</string>
     <string name="next">下一個</string>
-
     <string name="create_pdf">建立 PDF</string>
-    <string name="create_pdf_format" formatted="true">建立的 PDF："%s"</string>
-    <string name="create_zip_format" formatted="true">建立的 ZIP："%s"</string>
+    <string name="create_pdf_format" formatted="true">建立的 PDF：\"%s\"</string>
+    <string name="create_zip_format" formatted="true">建立的 ZIP：\"%s\"</string>
     <string name="created_pdf">成功建立 PDF</string>
     <string name="error_pdf">建立 PDF 出錯</string>
     <string name="parsing_pages">正在分析頁面</string>
     <string name="writing_pdf">正在寫入 PDF</string>
-
-
     <string name="navigation_drawer_open">打開側邊欄</string>
     <string name="navigation_drawer_close">關閉側邊欄</string>
     <string name="nav_header_subtitle">NHentai非官方用戶端</string>
-
     <string name="change_page">跳頁：</string>
     <string name="prev_page">上一頁</string>
     <string name="next_page">下一頁</string>
-
     <string name="downloaded_manga">已下載漫畫</string>
     <string name="download_gallery">下載圖庫</string>
-
     <string name="delete_gallery_size_format" formatted="true">刪除圖庫 (%.2fMB)</string>
     <string name="delete_gallery_format" formatted="true">是否刪除圖庫：\n%s</string>
-
-
     <string name="share_with">分享</string>
     <string name="link_copied_to_clipboard">連結已複製到剪貼板</string>
     <string name="open_in_browser">在流覽器中打開</string>
@@ -126,7 +106,6 @@
     <string name="next_page_volume_down">音量-切換下一頁</string>
     <string name="change_title_type">更改標題類型</string>
     <string name="title_type_summary">為圖庫選擇默認標題類型</string>
-
     <string name="search_settings">搜尋設定</string>
     <string name="global_settings">全域設定</string>
     <string name="images_settings">圖像設定</string>
@@ -161,8 +140,9 @@
     <string name="volume_change_setting">音量鍵換頁</string>
     <string name="popular_tag_count">進階搜尋中顯示熱門標籤數</string>
     <string name="show_gallery_titles">顯示圖庫標題</string>
+    <string name="use_column_port">選擇豎屏每行列數</string>
+    <string name="use_column_land">選擇橫屏每行列數</string>
     <string name="change_language">更改語言</string>
-
     <string name="tag_artist_gallery">繪師：</string>
     <string name="tag_character_gallery">角色：</string>
     <string name="tag_parody_gallery">原作：</string>
@@ -174,26 +154,20 @@
     <string name="cancel">取消</string>
     <string name="no">否</string>
     <string name="yes">是</string>
-
-    <string name="use_column_port">選擇豎屏每行列數</string>
-    <string name="use_column_land">選擇橫屏每行列數</string>
     <string name="start_all_downloads">開始所有下載</string>
     <string name="pause_all_downloads">停止所有下載</string>
     <string name="cancel_all_downloads">取消所有下載</string>
     <string name="disable_lock_title">閱讀時常亮</string>
     <string name="download_all_galleries_in_this_page">下載此頁所有圖庫</string>
     <string name="download_all_galleries">下載所有圖庫</string>
-
     <string name="favorite_column_count">選擇收藏介面列數</string>
     <string name="download_column_count">選擇下載介面列數</string>
+    <string name="history_column_count">選擇歷史列數</string>
     <string name="main_column_count">選擇主介面列數</string>
     <string name="navigation_settings">巡覽列設定</string>
     <string name="stop_download">停止下載</string>
     <string name="start_download">開始下載</string>
     <string name="create_zip">建立 ZIP</string>
-    <string name="channel3_name">建立 ZIP</string>
-    <string name="channel3_description">用於顯示 ZIP 的建立進度</string>
-    <string name="channel3_title">建立 ZIP：</string>
     <string name="created_zip">成功建立 ZIP</string>
     <string name="failed_zip">無法建立 ZIP：</string>
     <string name="start_page">起始頁</string>
@@ -206,7 +180,6 @@
     <string name="history_size_summary">設定歷史記錄最大值</string>
     <string name="view_history">歷史記錄</string>
     <string name="history">歷史記錄</string>
-    <string name="history_column_count">選擇歷史列數</string>
     <string name="clear_history">清除歷史</string>
     <string name="cancelled_format">取消：%s</string>
     <string name="completed_format">完成：%s</string>
@@ -241,8 +214,8 @@
     <string name="sort_recent">最近</string>
     <string name="sort_popular_day">日榜</string>
     <string name="sort_popular_week">周榜</string>
-    <string name="sort_select_type">選擇排序類型：</string>
     <string name="sort_type_title_format" formatted="true">選擇排序類型（%s）</string>
+    <string name="sort_select_type">選擇排序類型：</string>
     <string name="unable_to_connect_to_the_site">無法連接網站</string>
     <string name="no_entry_found">找不到條目</string>
     <string name="retry">重試</string>
@@ -278,7 +251,6 @@
     <string name="view_statuses">漫畫狀態</string>
     <string name="status_column_count">選擇狀態列數</string>
     <string name="status_viewer">漫畫狀態</string>
-
     <string name="title_hide_multitasking">在多工介面中隱藏該應用的內容預覽</string>
     <string name="title">標題</string>
     <string name="download_date">下載日期</string>
@@ -287,38 +259,9 @@
     <string name="descending_order">降冪排列</string>
     <string name="minimum_comment_length" formatted="true">評論不得少於 %d 個字元</string>
     <string name="change_scroll_type">切換滾動類型</string>
-
     <string name="exported_backup_file_toast" formatted="true">Exported backup file in %s</string>
     <string name="export_data">Export data</string>
     <string name="import_data">Import data</string>
-
-
-    <string-array name="scroll_type">
-        <item>水準</item>
-        <item>垂直</item>
-    </string-array>
-
-    <string-array name="language">
-        <item>系統預設</item>
-        <item>English</item>
-        <item>中文</item>
-        <item>简体中文</item>
-        <item>Türkçe</item>
-        <item>Italiano</item>
-        <item>Deutsch</item>
-        <item>اَلْعَرَبِيَّةُ</item>
-        <item>Español</item>
-    </string-array>
-    <string-array name="theme">
-        <item>淺色</item>
-        <item>暗色</item>
-    </string-array>
-
-    <string-array name="title_type_array">
-        <item>英文</item>
-        <item>日文</item>
-        <item>簡約</item>
-    </string-array>
     <string name="default_status_1">Reading</string>
     <string name="default_status_2">Completed</string>
     <string name="default_status_3">On Hold</string>
@@ -336,6 +279,42 @@
     <string name="insert_path">Insert path:</string>
     <string name="requesting_storage_access">Requesting storage access</string>
     <string name="request_storage_manager_summary">Due to some restriction in Android 11 to the storage access this app will require you to give additional permission to use custom paths.\nIf you want to give those permission please enable the setting in the next dialog.</string>
+    <string name="summary_beta">Updating to a beta version can make you unable to return to a stable version without uninstalling</string>
+    <string name="fix_inverted_title">Fix inverted images</string>
+    <string name="fix_inverted_summary">Enable if the images are shown with inverted colors (in some devices can cause the system theme to be changed to light, disabling it will fix this issue)</string>
+    <string name="navigation_settings_per_screen">Navigation settings per screen</string>
+    <string name="downloaded_update_at" formatted="true">Downloaded update at %s</string>
+    <string name="summary_offscreen_limit">Set the number of images to preload offscreen when reading a gallery</string>
+    <string name="title_offscreen_limit">Image to preload</string>
+    <string name="sort_popoular_month">Monthly popular</string>
+    <string name="random">Random</string>
+    <string name="summary_fetch_metadata">Download metadata for galleries downloaded before 2.3.0 which didn\'t have metadata like tags included</string>
+    <string name="title_fetch_metadata">Fetch metadata for old galleries</string>
+    <string name="title_change_page_buttons">Change page clicking on the image</string>
+    <string name="export_finished">Export finished</string>
+    <string name="import_finished">Import finished</string>
+    <string name="download_torrent">Download torrent</string>
+    <string name="title_activity_captcha">CAPTCHA</string>
+    <string name="invalid_response">Invalid response</string>
+    <string name="system_default">System default</string>
+    <string name="clear_cookies">Clear cookies</string>
+    <string name="fetching_cloudflare_token">Fetching Cloudflare token …</string>
+    <string name="exact_title_match_title">Exact tag match only</string>
+    <string name="exact_title_match_summary">Hide galleries which would appear in the site but doesn\'t contains all the tags searched</string>
+    <string name="hide">Hide</string>
+    <string name="title_user_agent">Change User-Agent</string>
 
-
+    <string-array name="scroll_type">
+        <item>水準</item>
+        <item>垂直</item>
+    </string-array>
+    <string-array name="theme">
+        <item>淺色</item>
+        <item>暗色</item>
+    </string-array>
+    <string-array name="title_type_array">
+        <item>英文</item>
+        <item>日文</item>
+        <item>簡約</item>
+    </string-array>
 </resources>

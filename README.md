@@ -6,6 +6,10 @@ An unofficial NHentai Android Client.
 This app  works for devices from API 14 (Android 4.0) and above.
 Releases: <https://github.com/Dar9586/NClientV2/releases>
 
+## Translation
+
+You can translate this app on [Crowdin](https://crowdin.com/project/nclientv2)
+
 ## API Features
 
 - Browse main page
@@ -38,6 +42,13 @@ Search|Random manga
 - [ZerOri](https://github.com/ZerOri) and [linsui](https://github.com/linsui) for Chinese translation
 - [herrsunchess](https://github.com/herrsunchess) for German translation
 - [eme22](https://github.com/herrsunchess) for Spanish translation
+- [velosipedistufa](https://github.com/velosipedistufa) for Russian translation
+- [bottomtextboy](https://github.com/bottomtextboy) for Arabic translation
+- [MaticBabnik](https://github.com/MaticBabnik) for bug fixes
+- [DontPayAttention](https://github.com/DontPayAttention) for French translation
+- [kuragehimekurara1](https://github.com/kuragehimekurara1) for Japanese translation
+- [chayleaf](https://github.com/chayleaf) for Cloudflare bypass
+- [Atmosphelen](https://github.com/Atmosphelen) for Ukrainian translation
 
 
 

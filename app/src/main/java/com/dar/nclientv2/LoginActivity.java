@@ -3,7 +3,6 @@ package com.dar.nclientv2;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.webkit.CookieManager;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TextView;
 
@@ -33,7 +32,7 @@ public class LoginActivity extends GeneralActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.initActivity(this);
+        //Global.initActivity(this);
         setContentView(R.layout.activity_login);
         final Toolbar toolbar = findViewById(R.id.toolbar);
         webView = findViewById(R.id.webView);
@@ -42,9 +41,6 @@ public class LoginActivity extends GeneralActivity {
         assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
-        WebSettings webSettings = webView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webSettings.setUserAgentString(Global.getUserAgent());
         webView.loadUrl(Utility.getBaseUrl() + "login/");
         waiter = new CookieWaiter();
         waiter.start();

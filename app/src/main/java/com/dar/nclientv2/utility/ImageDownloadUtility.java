@@ -9,12 +9,13 @@ import android.widget.ImageView;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.resource.bitmap.Rotate;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.components.GlideX;
 import com.dar.nclientv2.settings.Global;
-import com.dar.nclientv2.targets.BitmapTarget;
 
 import java.io.File;
 
@@ -26,36 +27,39 @@ public class ImageDownloadUtility {
         if (manager != null) manager.load(url).preload();
     }
 
-    @Nullable
-    public static BitmapTarget loadImageOp(Context context, ImageView view, File file, int angle) {
+    public static void loadImageOp(Context context, ImageView view, File file, int angle) {
         RequestManager glide = GlideX.with(context);
-        if (glide == null) return null;
+        if (glide == null) return;
         Drawable logo = Global.getLogo(context.getResources());
-        BitmapTarget target = new BitmapTarget(view);
-        glide.asBitmap().transform(new Rotate(angle)).error(logo).placeholder(logo).load(file).into(target);
+        glide.load(file).transform(new Rotate(angle)).error(logo).placeholder(logo).into(view);
         LogUtility.d("Requested file glide: " + file);
-        return target;
     }
 
-    @Nullable
-    public static BitmapTarget loadImageOp(Context context, ImageView view, Gallery gallery, int page, int angle) {
+    public static void loadImageOp(Context context, ImageView view, Gallery gallery, int page, int angle) {
         Uri url = getUrlForGallery(gallery, page, true);
+        loadImageOp(context, view, url, angle);
+    }
+
+    public static void loadImageOp(Context context, ImageView view, Uri url, int angle) {
         LogUtility.d("Requested url glide: " + url);
         if (Global.getDownloadPolicy() == Global.DataUsageType.NONE) {
             loadLogo(view);
-            return null;
+            return;
         }
         RequestManager glide = GlideX.with(context);
-        if (glide == null) return null;
+        if (glide == null) return;
         Drawable logo = Global.getLogo(context.getResources());
-        BitmapTarget target = new BitmapTarget(view);
-        glide.asBitmap()
-            .transform(new Rotate(angle))
-            .error(logo)
+        RequestBuilder<Drawable> dra = glide.load(url);
+        if (angle != 0)
+            dra = dra.transform(new Rotate(angle));
+        dra.error(logo)
             .placeholder(logo)
-            .load(url)
-            .into(target);
-        return target;
+            .into(new ImageViewTarget<Drawable>(view) {
+                @Override
+                protected void setResource(@Nullable Drawable resource) {
+                    this.view.setImageDrawable(resource);
+                }
+            });
     }
 
     private static Uri getUrlForGallery(Gallery gallery, int page, boolean shouldFull) {
@@ -63,7 +67,8 @@ public class ImageDownloadUtility {
     }
 
     public static void downloadPage(Activity activity, ImageView imageView, Gallery gallery, int page, boolean shouldFull) {
-        loadImage(activity, getUrlForGallery(gallery, page, shouldFull), imageView);
+        shouldFull = gallery.getPageExtension(page).equals("gif") || shouldFull;
+        loadImageOp(activity, imageView, getUrlForGallery(gallery, page, shouldFull), 0);
     }
 
     private static void loadLogo(ImageView imageView) {
@@ -71,31 +76,11 @@ public class ImageDownloadUtility {
     }
 
     public static void loadImage(Activity activity, Uri url, ImageView imageView) {
-        LogUtility.d("Requested url glide: " + url);
-        if (activity.isFinishing() || Global.isDestroyed(activity)) return;
-        if (Global.getDownloadPolicy() == Global.DataUsageType.NONE) {
-            loadLogo(imageView);
-            return;
-        }
-        RequestManager glide = GlideX.with(activity);
-        if (glide == null) return;
-        int logo = Global.getLogo();
-        glide.load(url)
-            .placeholder(logo)
-            .error(logo)
-            .into(imageView);
+        loadImageOp(activity, imageView, url, 0);
     }
 
     public static void loadImage(Activity activity, File file, ImageView imageView) {
-        if (activity.isFinishing() || Global.isDestroyed(activity)) return;
-        RequestManager glide = GlideX.with(activity);
-        if (glide == null) return;
-        int logo = Global.getLogo();
-        glide.load(file)
-            .placeholder(logo)
-            .error(logo)
-            .into(imageView);
-        LogUtility.d("Requested file glide: " + file);
+        loadImage(activity, file == null ? null : Uri.fromFile(file), imageView);
     }
 
     /**

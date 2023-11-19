@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <!--DO NOT TRANSLATE-->
+    <string name="key_offscreen_limit" translatable="false">offscreen_limit</string>
     <string name="key_default_value" translatable="false">default_value</string>
     <string name="key_enable_beta" translatable="false">enable_beta</string>
     <string name="key_save_path" translatable="false">save_path</string>
     <string name="key_fake_icon" translatable="false">fake_icon</string>
     <string name="key_local_sort" translatable="false">local_sort_type</string>
+    <string name="key_user_agent" translatable="false">setting_user_agent</string>
     <string name="key_title_type" translatable="false">title_type_str</string>
     <string name="key_by_popular" translatable="false">is_by_popular</string>
     <string name="key_column_count" translatable="false">column_count</string>
@@ -14,8 +15,8 @@
     <string name="key_default_zoom" translatable="false">default_zoom</string>
     <string name="key_theme_select" translatable="false">theme_select</string>
     <string name="key_max_id" translatable="false">max_id</string>
-    <string name="key_infinite_scroll" translatable="false">infinite_scroll</string>
     <string name="key_cache" translatable="false">cache</string>
+    <string name="key_inverted_fix" translatable="false">fix_inverted_image</string>
     <string name="key_ignore_tags" translatable="false">ignore_tags</string>
     <string name="key_use_account_tag" translatable="false">use_account_tags</string>
     <string name="key_send_report" translatable="false">send_report</string>
@@ -31,6 +32,9 @@
     <string name="key_column_land_favo" translatable="false">column_land_favo</string>
     <string name="key_column_port_stat" translatable="false">column_port_stat</string>
     <string name="key_column_land_stat" translatable="false">column_land_stat</string>
+    <string name="key_exact_title_match" translatable="false">precise_tag</string>
+    <string name="key_infinite_scroll_main" translatable="false">key_infinite_scroll</string>
+    <string name="key_infinite_scroll_favo" translatable="false">infinite_scroll_favo</string>
     <string name="key_hide_multitasking" translatable="false">hide_multitasking</string>
     <string name="key_site_mirror" translatable="false">site_mirror</string>
     <string name="key_language" translatable="false">key_language</string>
@@ -54,10 +58,11 @@
     <string name="page_switcher_placeholder" translatable="false">0/0</string>
     <string name="page_placeholder" translatable="false">999/999</string>
     <string name="key_favorite_limit" translatable="false">favorite_limit</string>
+    <string name="key_cookie" translatable="false">cookie</string>
+    <string name="key_change_page_buttons" translatable="false">change_page_buttons</string>
     <string name="dash" translatable="false">-</string>
     <string name="slash" translatable="false">/</string>
-
-
+    <string name="default_user_agent" translatable="false">Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N)</string>
     <string name="setting_on_ignore_tags">Other tags won\'t be queried when a tag is selected from the gallery menu (except language)</string>
     <string name="setting_off_ignore_tags">Other tags will be queried when a tag is selected from the gallery menu</string>
     <string name="setting_on_use_account_tag">Use the account tags into the search query (Local tags will have priority)</string>
@@ -89,7 +94,6 @@
     <string name="channel3_description">Used to show progress of the creation of the ZIP</string>
     <string name="channel2_title">Creating PDF:</string>
     <string name="channel3_title">Creating ZIP:</string>
-    <string name="favorite_max_reached" formatted="true">You can have a maximum of %d favorite galleries.</string>
     <string name="tags_max_reached" formatted="true">You can have a maximum of %d selected tags.</string>
     <string name="only_english">Only english</string>
     <string name="only_japanese">Only japanese</string>
@@ -269,7 +273,6 @@
     <string name="copied_to_clipboard">Copied to clipboard</string>
     <string name="maximum_notification_count">Maximum notification count</string>
     <string name="copy_settings_to_clipboard">Copy settings to clipboard</string>
-
     <string name="sort_popular_all_time">Popular</string>
     <string name="sort_recent">Recent</string>
     <string name="sort_popular_day">Daily popular</string>
@@ -339,33 +342,35 @@
     <string name="insert_path">Insert path:</string>
     <string name="requesting_storage_access">Requesting storage access</string>
     <string name="request_storage_manager_summary">Due to some restriction in Android 11 to the storage access this app will require you to give additional permission to use custom paths.\nIf you want to give those permission please enable the setting in the next dialog.</string>
+    <string name="summary_beta">Switching to a beta version will make you unable to return to stable versions without uninstalling</string>
+    <string name="fix_inverted_title">Fix inverted images</string>
+    <string name="fix_inverted_summary">Enable if the images are shown with inverted colors (in some devices can cause the system theme to be changed to light, disabling it will fix this issue)</string>
+    <string name="navigation_settings_per_screen">Navigation settings per screen</string>
+    <string name="downloaded_update_at" formatted="true">Downloaded update at %s</string>
+    <string name="summary_offscreen_limit">Set the number of images to preload offscreen when reading a gallery</string>
+    <string name="title_offscreen_limit">Image to preload</string>
+    <string name="sort_popoular_month">Monthly popular</string>
+    <string name="random">Random</string>
+    <string name="summary_fetch_metadata">Download metadata for galleries downloaded before 2.3.0 which didn\'t have metadata like tags included</string>
+    <string name="title_fetch_metadata">Fetch metadata for old galleries</string>
+    <string name="title_change_page_buttons">Change page clicking on the image</string>
+    <string name="export_finished">Export finished</string>
+    <string name="import_finished">Import finished</string>
+    <string name="download_torrent">Download torrent</string>
+    <string name="title_activity_captcha">CAPTCHA</string>
+    <string name="invalid_response">Invalid response</string>
+    <string name="system_default">System default</string>
+    <string name="clear_cookies">Clear cookies</string>
+    <string name="fetching_cloudflare_token">Fetching Cloudflare token …</string>
+    <string name="exact_title_match_title">Exact tag match only</string>
+    <string name="exact_title_match_summary">Hide galleries which would appear in the site but doesn\'t contains all the tags searched</string>
+    <string name="hide">Hide</string>
+    <string name="title_user_agent">Change User-Agent</string>
+
 
     <string-array name="scroll_type">
         <item>Horizontal</item>
         <item>Vertical</item>
-    </string-array>
-    <string-array name="language">
-        <item>System Default</item>
-        <item>English</item>
-        <item>Chinese (Traditional)</item>
-        <item>Chinese (Simplified)</item>
-        <item>Turkish</item>
-        <item>Italian</item>
-        <item>German</item>
-        <item>Arabic</item>
-        <item>Spanish</item>
-    </string-array>
-
-    <string-array name="language_data"><!--DO NOT TRANSLATE-->
-        <item>@string/key_default_value</item>
-        <item>en-US</item>
-        <item>zh-TW</item>
-        <item>zh-CN</item>
-        <item>tr-TR</item>
-        <item>it-IT</item>
-        <item>de-DE</item>
-        <item>ar-SA</item>
-        <item>es</item>
     </string-array>
 
     <string-array name="theme">
@@ -373,20 +378,22 @@
         <item>Dark</item>
     </string-array>
 
-    <string-array name="theme_data"><!--DO NOT TRANSLATE-->
+    <string-array name="theme_data" translatable="false">
         <item>light</item>
         <item>dark</item>
     </string-array>
-    <string-array name="site_mirrors"><!--DO NOT TRANSLATE-->
+
+    <string-array name="site_mirrors" translatable="false">
         <item>nhentai.net</item>
     </string-array>
+
     <string-array name="title_type_array">
         <item>English</item>
         <item>Japanese</item>
         <item>Pretty</item>
     </string-array>
 
-    <string-array name="title_type_array_data"><!--DO NOT TRANSLATE-->
+    <string-array name="title_type_array_data" translatable="false">
         <item>english</item>
         <item>japanese</item>
         <item>pretty</item>

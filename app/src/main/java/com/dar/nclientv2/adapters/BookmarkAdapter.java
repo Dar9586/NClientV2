@@ -41,7 +41,7 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int pos) {
-        final int position = holder.getAdapterPosition();
+        final int position = holder.getBindingAdapterPosition();
         Bookmark bookmark = bookmarks.get(position);
 
         holder.queryText.setText(bookmark.toString());

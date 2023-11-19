@@ -1,0 +1,18 @@
+Un client Android non officiel de NHentai.
+Cette application fonctionne pour les appareils à partir de l'API 14 (Android 4.0) et au-delà.
+
+Fonctionnalités de l'API
+
+ - Naviguer sur la page principale
+ - Recherche par requête ou par tags
+ - Inclure ou exclure des balises
+ - Flouter ou masquer les balises exclues
+ - Télécharger des mangas
+ - Galeries favorites
+ - Activer le code PIN pour accéder à l'application
+
+Fonctionnalités personnalisées
+
+ - Partager des galeries
+ - Ouvrir dans le navigateur
+ - Ajouter aux favoris

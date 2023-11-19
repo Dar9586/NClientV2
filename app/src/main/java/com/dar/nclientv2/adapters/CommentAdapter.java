@@ -55,7 +55,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull CommentAdapter.ViewHolder holder, int pos) {
-        int position = holder.getAdapterPosition();
+        int position = holder.getBindingAdapterPosition();
         Comment c = comments.get(position);
         holder.layout.setOnClickListener(v1 -> {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {

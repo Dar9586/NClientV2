@@ -19,7 +19,6 @@ import com.dar.nclientv2.api.comments.Comment;
 import com.dar.nclientv2.api.comments.CommentsFetcher;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.settings.AuthRequest;
-import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.utility.Utility;
 
@@ -41,7 +40,7 @@ public class CommentActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.initActivity(this);
+        //Global.initActivity(this);
         setContentView(R.layout.activity_comment);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

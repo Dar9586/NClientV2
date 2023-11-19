@@ -1,5 +1,6 @@
 package com.dar.nclientv2.components.views;
 
+import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,62 +13,81 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
+import com.bumptech.glide.Priority;
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.bitmap.Rotate;
-import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.ImageViewTarget;
+import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.dar.nclientv2.R;
+import com.dar.nclientv2.ZoomActivity;
 import com.dar.nclientv2.api.components.Gallery;
 import com.dar.nclientv2.api.components.GenericGallery;
 import com.dar.nclientv2.components.GlideX;
 import com.dar.nclientv2.files.GalleryFolder;
+import com.dar.nclientv2.files.PageFile;
+import com.dar.nclientv2.github.chrisbanes.photoview.PhotoView;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.LogUtility;
-import com.github.chrisbanes.photoview.PhotoView;
-
-import java.io.File;
 
 public class ZoomFragment extends Fragment {
+
+    public interface OnZoomChangeListener {
+        void onZoomChange(View v, float zoomLevel);
+    }
+
     private static final float MAX_SCALE = 4f;
-    private int page, galleryId;
+    private static final float CHANGE_PAGE_THRESHOLD = .2f;
     private PhotoView photoView = null;
     private ImageButton retryButton;
-    private GalleryFolder galleryFolder = null;
+    private PageFile pageFile = null;
     private Uri url;
     private int degree = 0;
+    private boolean completedDownload = false;
     private View.OnClickListener clickListener;
-    private CustomTarget<Drawable> target = null;
+    private OnZoomChangeListener zoomChangeListener;
+    private ImageViewTarget<Drawable> target = null;
+
 
     public ZoomFragment() {
     }
 
     public static ZoomFragment newInstance(GenericGallery gallery, int page, @Nullable GalleryFolder directory) {
         Bundle args = new Bundle();
-        if (Global.useRtl()) page = gallery.getPageCount() - 1 - page;
-        args.putInt("PAGE", page);
-        args.putInt("ID", gallery.getId());
         args.putString("URL", gallery.isLocal() ? null : ((Gallery) gallery).getPageUrl(page).toString());
-        args.putParcelable("FOLDER", directory);
+        args.putParcelable("FOLDER", directory == null ? null : directory.getPage(page + 1));
         ZoomFragment fragment = new ZoomFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    private boolean isValueApproximate(final float expectedValue, final float value) {
+        final float errorMargin = 0.05f;
+        return Math.abs(expectedValue - value) < errorMargin;
     }
 
     public void setClickListener(View.OnClickListener clickListener) {
         this.clickListener = clickListener;
     }
 
+
+    public void setZoomChangeListener(OnZoomChangeListener zoomChangeListener) {
+        this.zoomChangeListener = zoomChangeListener;
+    }
+
     private float calculateScaleFactor(int width, int height) {
+        FragmentActivity activity = getActivity();
         if (height < width * 2) return Global.getDefaultZoom();
-        //width:1=dWidth:x
-        //float size=((float) Global.getDeviceHeight(getActivity()))/height;//the image has been resized size times
-        //float widthTrueSize=width*size;//so also the width has been resized
-        //float finalSize=((float)Global.getDeviceWidth(getActivity())/widthTrueSize);//scale the width
         float finalSize =
-            ((float) Global.getDeviceWidth(getActivity()) * height) /
-                ((float) Global.getDeviceHeight(getActivity()) * width);
+            ((float) Global.getDeviceWidth(activity) * height) /
+                ((float) Global.getDeviceHeight(activity) * width);
         finalSize = Math.max(finalSize, Global.getDefaultZoom());
         finalSize = Math.min(finalSize, MAX_SCALE);
         LogUtility.d("Final scale: " + finalSize);
@@ -78,20 +98,34 @@ public class ZoomFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_zoom, container, false);
+        ZoomActivity activity = (ZoomActivity) getActivity();
         assert getArguments() != null;
+        assert activity != null;
         //find views
         photoView = rootView.findViewById(R.id.image);
         retryButton = rootView.findViewById(R.id.imageView);
         //read arguments
-        page = getArguments().getInt("PAGE", 0);
-        galleryId = getArguments().getInt("ID", 0);
         String str = getArguments().getString("URL");
         url = str == null ? null : Uri.parse(str);
-        galleryFolder = getArguments().getParcelable("FOLDER");
+        pageFile = getArguments().getParcelable("FOLDER");
         photoView.setAllowParentInterceptOnEdge(true);
-        photoView.setOnClickListener(v -> {
-            if (clickListener != null) clickListener.onClick(v);
+        photoView.setOnPhotoTapListener((view, x, y) -> {
+            boolean prev = x < CHANGE_PAGE_THRESHOLD;
+            boolean next = x > 1f - CHANGE_PAGE_THRESHOLD;
+            if ((prev || next) && Global.isButtonChangePage()) {
+                activity.changeClosePage(next);
+            } else if (clickListener != null) {
+                clickListener.onClick(view);
+            }
+            LogUtility.d(view, x, y, prev, next);
         });
+
+        photoView.setOnScaleChangeListener((float scaleFactor, float focusX, float focusY)->{
+            if(this.zoomChangeListener!=null) {
+                this.zoomChangeListener.onZoomChange(rootView, photoView.getScale());
+            }
+            });
+
         photoView.setMaximumScale(MAX_SCALE);
         retryButton.setOnClickListener(v -> loadImage());
         createTarget();
@@ -100,7 +134,13 @@ public class ZoomFragment extends Fragment {
     }
 
     private void createTarget() {
-        target = new CustomTarget<Drawable>() {
+        target = new ImageViewTarget<Drawable>(photoView) {
+
+            @Override
+            protected void setResource(@Nullable Drawable resource) {
+                photoView.setImageDrawable(resource);
+            }
+
             void applyDrawable(ImageView toShow, ImageView toHide, Drawable drawable) {
                 toShow.setVisibility(View.VISIBLE);
                 toHide.setVisibility(View.GONE);
@@ -124,10 +164,13 @@ public class ZoomFragment extends Fragment {
             @Override
             public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                 applyDrawable(photoView, retryButton, resource);
+                if (resource instanceof Animatable)
+                    ((GifDrawable) resource).start();
             }
 
             @Override
             public void onLoadCleared(@Nullable Drawable placeholder) {
+                super.onLoadCleared(placeholder);
                 applyDrawable(photoView, retryButton, placeholder);
             }
         };
@@ -140,7 +183,12 @@ public class ZoomFragment extends Fragment {
         ), 0, 0, false);
     }
 
-    private void loadImage() {
+    public void loadImage() {
+        loadImage(Priority.NORMAL);
+    }
+
+    public void loadImage(Priority priority) {
+        if (completedDownload) return;
         cancelRequest();
         RequestBuilder<Drawable> dra = loadPage();
         if (dra == null) return;
@@ -148,6 +196,19 @@ public class ZoomFragment extends Fragment {
             .transform(new Rotate(degree))
             .placeholder(R.drawable.ic_launcher_foreground)
             .error(R.drawable.ic_refresh)
+            .priority(priority)
+            .addListener(new RequestListener<Drawable>() {
+                @Override
+                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                    return false;
+                }
+
+                @Override
+                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                    completedDownload = true;
+                    return false;
+                }
+            })
             .into(target);
     }
 
@@ -156,10 +217,9 @@ public class ZoomFragment extends Fragment {
         RequestBuilder<Drawable> request;
         RequestManager glide = GlideX.with(photoView);
         if (glide == null) return null;
-        File file = galleryFolder == null ? null : galleryFolder.getPage(page + 1);
-        if (file != null) {
-            request = glide.load(file);
-            LogUtility.d("Requested file glide: " + file);
+        if (pageFile != null) {
+            request = glide.load(pageFile);
+            LogUtility.d("Requested file glide: " + pageFile);
         } else {
             if (url == null) request = glide.load(R.mipmap.ic_launcher);
             else {
@@ -175,6 +235,7 @@ public class ZoomFragment extends Fragment {
     }
 
     public void cancelRequest() {
+        if (completedDownload) return;
         if (photoView != null && target != null) {
             RequestManager manager = GlideX.with(photoView);
             if (manager != null) manager.clear(target);

@@ -2,7 +2,6 @@ package com.dar.nclientv2;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -10,18 +9,17 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.CookieManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -48,11 +46,11 @@ import com.dar.nclientv2.async.ScrapeTags;
 import com.dar.nclientv2.async.VersionChecker;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.async.downloader.DownloadGalleryV2;
+import com.dar.nclientv2.components.CookieInterceptor;
 import com.dar.nclientv2.components.GlideX;
 import com.dar.nclientv2.components.activities.BaseActivity;
-import com.dar.nclientv2.components.views.CustomWebView;
+import com.dar.nclientv2.components.views.PageSwitcher;
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
-import com.dar.nclientv2.settings.DefaultDialogs;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.settings.TagV2;
@@ -64,12 +62,17 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+
+import okhttp3.Cookie;
 
 public class MainActivity extends BaseActivity
     implements NavigationView.OnNavigationItemSelectedListener {
+
     private static final int CHANGE_LANGUAGE_DELAY = 1000;
     private static boolean firstTime = true;//true only when app starting
     private final InspectorV3.InspectorResponse startGallery = new MainInspectorResponse() {
@@ -86,7 +89,31 @@ public class MainActivity extends BaseActivity
             LogUtility.d("STARTED");
         }
     };
-    private final Handler changeLanguageTimeHandler = new Handler();
+    private final CookieInterceptor.Manager MANAGER = new CookieInterceptor.Manager() {
+        boolean tokenFound = false;
+
+        @Override
+        public void applyCookie(String key, String value) {
+            Cookie cookie = Cookie.parse(Login.BASE_HTTP_URL, key + "=" + value + "; Max-Age=31449600; Path=/; SameSite=Lax");
+            Global.client.cookieJar().saveFromResponse(Login.BASE_HTTP_URL, Collections.singletonList(cookie));
+            tokenFound |= key.equals("csrftoken");
+        }
+
+        @Override
+        public boolean endInterceptor() {
+            if (tokenFound) return true;
+            String cookies = CookieManager.getInstance().getCookie(Utility.getBaseUrl());
+            if (cookies == null) return false;
+            return cookies.contains("csrftoken");
+        }
+
+        @Override
+        public void onFinish() {
+            inspector = inspector.cloneInspector(MainActivity.this, resetDataset);
+            inspector.start();
+        }
+    };
+    private final Handler changeLanguageTimeHandler = new Handler(Looper.myLooper());
     public ListAdapter adapter;
     private final InspectorV3.InspectorResponse addDataset = new MainInspectorResponse() {
         @Override
@@ -99,14 +126,11 @@ public class MainActivity extends BaseActivity
     private InspectorV3 inspector = null;
     private NavigationView navigationView;
     private ModeType modeType = ModeType.UNKNOWN;
-    private int actualPage = 1, totalPage;
-    private int positionOpenedGallery = -1;//Position in the recycler of the opened gallery
+    private int idOpenedGallery = -1;//Position in the recycler of the opened gallery
     private boolean inspecting = false, filteringTag = false;
     private SortType temporaryType;
     private Snackbar snackbar = null;
-    private ImageButton prevPageButton, nextPageButton;
-    private EditText pageIndexText;
-    private View pageSwitcher;
+    private PageSwitcher pageSwitcher;
     private final InspectorV3.InspectorResponse
         resetDataset = new MainInspectorResponse() {
         @Override
@@ -123,13 +147,11 @@ public class MainActivity extends BaseActivity
     };
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
-    private CustomWebView webView = null;
     private Setting setting = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.initActivity(this);
         setContentView(R.layout.activity_main);
         //load inspector
         selectStartMode(getIntent(), getPackageName());
@@ -143,7 +165,7 @@ public class MainActivity extends BaseActivity
         loadStringLogin();
         refresher.setOnRefreshListener(() -> {
             inspector = inspector.cloneInspector(MainActivity.this, resetDataset);
-            if (Global.isInfiniteScroll()) inspector.setPage(1);
+            if (Global.isInfiniteScrollMain()) inspector.setPage(1);
             inspector.start();
         });
 
@@ -196,21 +218,14 @@ public class MainActivity extends BaseActivity
     }
 
     private void initializePageSwitcherActions() {
-        prevPageButton.setOnClickListener(v -> {
-            if (actualPage > 1) {
+        pageSwitcher.setChanger(new PageSwitcher.DefaultPageChanger() {
+            @Override
+            public void pageChanged(PageSwitcher switcher, int page) {
                 inspector = inspector.cloneInspector(MainActivity.this, resetDataset);
-                inspector.setPage(inspector.getPage() - 1);
+                inspector.setPage(pageSwitcher.getActualPage());
                 inspector.start();
             }
         });
-        nextPageButton.setOnClickListener(v -> {
-            if (actualPage < totalPage) {
-                inspector = inspector.cloneInspector(MainActivity.this, resetDataset);
-                inspector.setPage(inspector.getPage() + 1);
-                inspector.start();
-            }
-        });
-        pageIndexText.setOnClickListener(v -> loadDialog());
     }
 
     private void initializeRecyclerView() {
@@ -222,11 +237,12 @@ public class MainActivity extends BaseActivity
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 if (inspecting) return;
-                if (!Global.isInfiniteScroll()) return;
+                if (!Global.isInfiniteScrollMain()) return;
                 if (refresher.isRefreshing()) return;
 
                 CustomGridLayoutManager manager = (CustomGridLayoutManager) recycler.getLayoutManager();
-                if (actualPage < totalPage && lastGalleryReached(manager)) {
+                assert manager != null;
+                if (!pageSwitcher.lastPageReached() && lastGalleryReached(manager)) {
                     inspecting = true;
                     inspector = inspector.cloneInspector(MainActivity.this, addDataset);
                     inspector.setPage(inspector.getPage() + 1);
@@ -252,8 +268,8 @@ public class MainActivity extends BaseActivity
         onlineFavoriteManager.setVisible(com.dar.nclientv2.settings.Login.isLogged());
     }
 
-    public void setPositionOpenedGallery(int positionOpenedGallery) {
-        this.positionOpenedGallery = positionOpenedGallery;
+    public void setIdOpenedGallery(int idOpenedGallery) {
+        this.idOpenedGallery = idOpenedGallery;
     }
 
     private void findUsefulViews() {
@@ -262,9 +278,6 @@ public class MainActivity extends BaseActivity
         navigationView = findViewById(R.id.nav_view);
         recycler = findViewById(R.id.recycler);
         refresher = findViewById(R.id.refresher);
-        prevPageButton = findViewById(R.id.prev);
-        nextPageButton = findViewById(R.id.next);
-        pageIndexText = findViewById(R.id.page_index);
         pageSwitcher = findViewById(R.id.page_switcher);
         drawerLayout = findViewById(R.id.drawer_layout);
         loginItem = navigationView.getMenu().findItem(R.id.action_login);
@@ -282,8 +295,12 @@ public class MainActivity extends BaseActivity
 
     private void hideError() {
         //errorText.setVisibility(View.GONE);
-        if (snackbar != null && snackbar.isShown()) snackbar.dismiss();
-        snackbar = null;
+        runOnUiThread(() -> {
+            if (snackbar != null && snackbar.isShown()) {
+                snackbar.dismiss();
+                snackbar = null;
+            }
+        });
     }
 
     private void showError(@Nullable String text, @Nullable View.OnClickListener listener) {
@@ -480,43 +497,15 @@ public class MainActivity extends BaseActivity
     }
 
     public void showPageSwitcher(final int actualPage, final int totalPage) {
-        this.actualPage = actualPage;
-        this.totalPage = totalPage;
+        pageSwitcher.setPages(totalPage, actualPage);
 
-        if (Global.isInfiniteScroll()) {
+
+        if (Global.isInfiniteScrollMain()) {
             hidePageSwitcher();
-            return;
         }
 
-        runOnUiThread(() -> {
-            pageSwitcher.setVisibility(totalPage <= 1 ? View.GONE : View.VISIBLE);
-            prevPageButton.setAlpha(actualPage > 1 ? 1f : .5f);
-            prevPageButton.setEnabled(actualPage > 1);
-            nextPageButton.setAlpha(actualPage < totalPage ? 1f : .5f);
-            nextPageButton.setEnabled(actualPage < totalPage);
-            pageIndexText.setText(String.format(Locale.US, "%d/%d", actualPage, totalPage));
-        });
-
     }
 
-    private void loadDialog() {
-        DefaultDialogs.pageChangerDialog(
-            new DefaultDialogs.Builder(this)
-                .setActual(actualPage)
-                .setMin(1)
-                .setMax(totalPage)
-                .setTitle(R.string.change_page)
-                .setDrawable(R.drawable.ic_find_in_page)
-                .setDialogs(new DefaultDialogs.CustomDialogResults() {
-                    @Override
-                    public void positive(int actual) {
-                        inspector = inspector.cloneInspector(MainActivity.this, resetDataset);
-                        inspector.setPage(actual);
-                        inspector.start();
-                    }
-                })
-        );
-    }
 
     private void showLogoutForm() {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
@@ -533,9 +522,9 @@ public class MainActivity extends BaseActivity
         super.onResume();
         Global.updateACRAReportStatus(this);
         com.dar.nclientv2.settings.Login.initLogin(this);
-        if (positionOpenedGallery != -1) {
-            adapter.updateColor(positionOpenedGallery);
-            positionOpenedGallery = -1;
+        if (idOpenedGallery != -1) {
+            adapter.updateColor(idOpenedGallery);
+            idOpenedGallery = -1;
         }
         loadStringLogin();
         onlineFavoriteManager.setVisible(com.dar.nclientv2.settings.Login.isLogged());
@@ -543,7 +532,7 @@ public class MainActivity extends BaseActivity
             Global.initFromShared(this);//restart all settings
             inspector = inspector.cloneInspector(this, resetDataset);
             inspector.start();//restart inspector
-            if (setting.theme != Global.getTheme() || !setting.locale.equals(Global.initLanguage(this))) {
+            if (setting.theme != Global.getTheme() || !Objects.equals(setting.locale, Global.initLanguage(this))) {
                 RequestManager manager = GlideX.with(getApplicationContext());
                 if (manager != null) manager.pauseAllRequestsRecursive();
                 recreate();
@@ -751,12 +740,8 @@ public class MainActivity extends BaseActivity
             intent = new Intent(this, BookmarkActivity.class);
             startActivity(intent);
         } else if (item.getItemId() == R.id.history) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                startActivityForResult(intent, 666);
-            }
+            intent = new Intent(this, HistoryActivity.class);
+            startActivity(intent);
 
         } else if (item.getItemId() == R.id.favorite_manager) {
             intent = new Intent(this, FavoriteActivity.class);
@@ -809,26 +794,6 @@ public class MainActivity extends BaseActivity
     private void startLocalActivity() {
         Intent i = new Intent(this, LocalActivity.class);
         startActivity(i);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        if (requestCode == 666
-            && resultCode == Activity.RESULT_OK) {
-
-            if (intent != null) {
-                Uri uri = intent.getData();
-                // Perform operations on the document using its URI.
-                final int takeFlags = intent.getFlags()
-                    & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                // Check for the freshest data.
-                getContentResolver().takePersistableUriPermission(uri, takeFlags);
-            }
-        }
-
-
     }
 
     /**

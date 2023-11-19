@@ -7,8 +7,6 @@
         app:iconSpaceReserved="false">
         <ListPreference
             android:defaultValue="@string/key_default_value"
-            android:entries="@array/language"
-            android:entryValues="@array/language_data"
             android:key="@string/key_language"
             android:title="@string/change_language"
             app:iconSpaceReserved="false"
@@ -69,11 +67,21 @@
             android:title="@string/maximum_notification_count"
             app:iconSpaceReserved="false"
             app:showSeekBarValue="true" />
+        <EditTextPreference
+            android:key="@string/key_user_agent"
+            android:title="@string/title_user_agent"
+            app:iconSpaceReserved="false"
+            android:defaultValue="@string/default_user_agent"/>
     </PreferenceCategory>
 
     <PreferenceCategory
         android:title="@string/navigation_settings"
         app:iconSpaceReserved="false">
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="@string/key_change_page_buttons"
+            android:title="@string/title_change_page_buttons"
+            app:iconSpaceReserved="false" />
         <SeekBarPreference
             android:defaultValue="25"
             android:key="@string/key_max_history_size"
@@ -84,13 +92,17 @@
             app:showSeekBarValue="true" />
         <Preference
             android:key="col_screen"
-            android:title="@string/column_count_select"
+            android:title="@string/navigation_settings_per_screen"
             app:iconSpaceReserved="false" />
-        <SwitchPreferenceCompat
-            android:defaultValue="false"
-            android:key="@string/key_infinite_scroll"
-            android:title="@string/infinite_scroll"
-            app:iconSpaceReserved="false" />
+        <SeekBarPreference
+            android:defaultValue="5"
+            android:key="@string/key_offscreen_limit"
+            android:max="20"
+            android:summary="@string/summary_offscreen_limit"
+            android:title="@string/title_offscreen_limit"
+            app:iconSpaceReserved="false"
+            app:min="1"
+            app:showSeekBarValue="true" />
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -138,6 +150,12 @@
             android:title="@string/keep_history"
             app:iconSpaceReserved="false" />
         <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="@string/key_exact_title_match"
+            android:summary="@string/exact_title_match_summary"
+            android:title="@string/exact_title_match_title"
+            app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/key_remove_ignored"
             android:summaryOff="@string/setting_off_remove_ignored"
@@ -173,6 +191,17 @@
         android:title="@string/miscellaneous"
         app:iconSpaceReserved="false">
         <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="@string/key_inverted_fix"
+            android:summary="@string/fix_inverted_summary"
+            android:title="@string/fix_inverted_title"
+            app:iconSpaceReserved="false" />
+        <Preference
+            android:key="fetch_metadata"
+            android:summary="@string/summary_fetch_metadata"
+            android:title="@string/title_fetch_metadata"
+            app:iconSpaceReserved="false" />
+        <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="@string/key_disable_lock"
             android:title="@string/disable_lock_title"
@@ -183,7 +212,7 @@
             android:title="@string/volume_change_setting"
             app:iconSpaceReserved="false" />
         <SwitchPreferenceCompat
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="@string/key_send_report"
             android:title="@string/send_crash_report"
             app:iconSpaceReserved="false" />
@@ -212,6 +241,7 @@
         <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="@string/key_enable_beta"
+            android:summary="@string/summary_beta"
             android:title="@string/check_beta_releases"
             app:iconSpaceReserved="false" />
         <Preference
@@ -224,6 +254,10 @@
         <Preference
             android:key="@string/key_cache"
             android:title="@string/clear_cache"
+            app:iconSpaceReserved="false" />
+        <Preference
+            android:key="@string/key_cookie"
+            android:title="@string/clear_cookies"
             app:iconSpaceReserved="false" />
         <Preference
             android:key="bug"

@@ -8,6 +8,7 @@ public class LocalSortType {
     @NonNull
     public final Type type;
     public final boolean descending;
+
     public LocalSortType(@NonNull Type type, boolean ascending) {
         this.type = type;
         this.descending = ascending;
@@ -45,5 +46,5 @@ public class LocalSortType {
             '}';
     }
 
-    public enum Type {TITLE, DATE, PAGE_COUNT}
+    public enum Type {TITLE, DATE, PAGE_COUNT, RANDOM}
 }

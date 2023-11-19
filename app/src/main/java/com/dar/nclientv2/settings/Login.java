@@ -14,11 +14,11 @@ import com.dar.nclientv2.MainActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.async.database.Queries;
+import com.dar.nclientv2.components.CustomCookieJar;
 import com.dar.nclientv2.loginapi.LoadTags;
 import com.dar.nclientv2.loginapi.User;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
-import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 
 import java.util.List;
 
@@ -26,6 +26,7 @@ import okhttp3.Cookie;
 import okhttp3.HttpUrl;
 
 public class Login {
+    public static final String LOGIN_COOKIE = "sessionid";
     public static HttpUrl BASE_HTTP_URL;
     private static User user;
     private static boolean accountTag;
@@ -45,9 +46,26 @@ public class Login {
         Login.loginShared = loginShared;
     }
 
+    private static void removeCookie(String cookieName) {
+        CustomCookieJar cookieJar = (CustomCookieJar) Global.client.cookieJar();
+        cookieJar.removeCookie(cookieName);
+    }
+
+
+    public static void removeCloudflareCookies() {
+        CustomCookieJar cookieJar = (CustomCookieJar) Global.client.cookieJar();
+        List<Cookie> cookies = cookieJar.loadForRequest(BASE_HTTP_URL);
+        for (Cookie cookie : cookies) {
+            if (cookie.name().equals(LOGIN_COOKIE)) {
+                continue;
+            }
+            cookieJar.removeCookie(cookie.name());
+        }
+    }
+
     public static void logout(Context context) {
-        PersistentCookieJar cookieJar = (PersistentCookieJar) Global.client.cookieJar();
-        cookieJar.clear();
+        CustomCookieJar cookieJar = (CustomCookieJar) Global.client.cookieJar();
+        removeCookie(LOGIN_COOKIE);
         cookieJar.clearSession();
         updateUser(null);//remove user
         clearOnlineTags();//remove online tags
@@ -55,22 +73,31 @@ public class Login {
     }
 
     public static void clearWebViewCookies(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-            CookieManager.getInstance().removeAllCookies(null);
-            CookieManager.getInstance().flush();
-        } else {
-            CookieSyncManager cookieSyncMngr = CookieSyncManager.createInstance(context);
-            cookieSyncMngr.startSync();
-            CookieManager cookieManager = CookieManager.getInstance();
-            cookieManager.removeAllCookie();
-            cookieManager.removeSessionCookie();
-            cookieSyncMngr.stopSync();
-            cookieSyncMngr.sync();
-        }
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                CookieManager.getInstance().removeAllCookies(null);
+                CookieManager.getInstance().flush();
+            } else {
+                CookieSyncManager cookieSyncMngr = CookieSyncManager.createInstance(context);
+                cookieSyncMngr.startSync();
+                CookieManager cookieManager = CookieManager.getInstance();
+                cookieManager.removeAllCookie();
+                cookieManager.removeSessionCookie();
+                cookieSyncMngr.stopSync();
+                cookieSyncMngr.sync();
+            }
+        } catch (Throwable ignore) {
+        }//catch InvocationTargetException randomly thrown
     }
 
     public static void clearOnlineTags() {
         Queries.TagTable.removeAllBlacklisted();
+    }
+
+    public static void clearCookies(){
+        CustomCookieJar cookieJar = (CustomCookieJar) Global.getClient().cookieJar();
+        cookieJar.clear();
+        cookieJar.clearSession();
     }
 
     public static void addOnlineTag(Tag tag) {
@@ -82,22 +109,31 @@ public class Login {
         Queries.TagTable.updateBlacklistedTag(tag, false);
     }
 
-    public static boolean isLogged(@Nullable Context context) {
+    public static boolean hasCookie(String name) {
         List<Cookie> cookies = Global.client.cookieJar().loadForRequest(BASE_HTTP_URL);
-        LogUtility.d("Cookies: " + cookies);
         for (Cookie c : cookies) {
-            if (c.name().equals("sessionid")) {
-                if (user == null) User.createUser(user -> {
-                    if (user != null) {
-                        new LoadTags(null).start();
-                        if (context instanceof MainActivity) {
-                            ((MainActivity) context).runOnUiThread(() -> ((MainActivity) context).loginItem.setTitle(context.getString(R.string.login_formatted, user.getUsername())));
-                        }
-                    }
-                });
+            if (c.name().equals(name)) {
                 return true;
             }
         }
+        return false;
+    }
+
+    public static boolean isLogged(@Nullable Context context) {
+        List<Cookie> cookies = Global.client.cookieJar().loadForRequest(BASE_HTTP_URL);
+        LogUtility.d("Cookies: " + cookies);
+        if (hasCookie(LOGIN_COOKIE)) {
+            if (user == null) User.createUser(user -> {
+                if (user != null) {
+                    new LoadTags(null).start();
+                    if (context instanceof MainActivity) {
+                        ((MainActivity) context).runOnUiThread(() -> ((MainActivity) context).loginItem.setTitle(context.getString(R.string.login_formatted, user.getUsername())));
+                    }
+                }
+            });
+            return true;
+        }
+        if (context != null) logout(context);
         return false;
         //return sessionId!=null;
     }

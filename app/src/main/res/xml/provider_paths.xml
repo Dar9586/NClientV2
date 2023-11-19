@@ -1,9 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
     <external-path
+        name="external"
+        path="." />
+    <external-files-path
         name="external_files"
         path="." />
     <cache-path
-        name="temp"
+        name="cache"
         path="." />
+    <external-cache-path
+        name="external_cache"
+        path="." />
+    <files-path
+        name="files"
+        path="." />
+    <external-media-path
+        name="external_media"
+        path="." />
+
+    <external-path
+        name="external_root"
+        path="/" />
+    <external-files-path
+        name="external_files_root"
+        path="/" />
+    <cache-path
+        name="cache_root"
+        path="/" />
+    <external-cache-path
+        name="external_cache_root"
+        path="/" />
+    <files-path
+        name="files_root"
+        path="/" />
+    <external-media-path
+        name="external_media_root"
+        path="/" />
 </paths>
+

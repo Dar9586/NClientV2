@@ -1,7 +1,6 @@
 package com.dar.nclientv2;
 
 import android.content.res.Configuration;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,6 +15,7 @@ import com.dar.nclientv2.adapters.LocalAdapter;
 import com.dar.nclientv2.api.local.FakeInspector;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.api.local.LocalSortType;
+import com.dar.nclientv2.async.converters.CreatePDF;
 import com.dar.nclientv2.async.downloader.GalleryDownloaderV2;
 import com.dar.nclientv2.components.activities.BaseActivity;
 import com.dar.nclientv2.components.classes.MultichoiceAdapter;
@@ -30,6 +30,7 @@ import java.util.List;
 
 public class LocalActivity extends BaseActivity {
     private Menu optionMenu;
+    private LocalAdapter adapter;
     private final MultichoiceAdapter.MultichoiceListener listener = new MultichoiceAdapter.DefaultMultichoiceListener() {
 
         @Override
@@ -37,17 +38,16 @@ public class LocalActivity extends BaseActivity {
             setMenuVisibility(optionMenu);
         }
     };
-    private LocalAdapter adapter;
     private Toolbar toolbar;
     private int colCount;
-    private int openedGalleryPosition = -1;
+    private int idGalleryPosition = -1;
     private File folder = Global.MAINFOLDER;
     private androidx.appcompat.widget.SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.initActivity(this);
+        //Global.initActivity(this);
         setContentView(R.layout.app_bar_main);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -57,9 +57,9 @@ public class LocalActivity extends BaseActivity {
         findViewById(R.id.page_switcher).setVisibility(View.GONE);
         recycler = findViewById(R.id.recycler);
         refresher = findViewById(R.id.refresher);
-        refresher.setOnRefreshListener(() -> new FakeInspector(folder).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, LocalActivity.this));
+        refresher.setOnRefreshListener(() -> new FakeInspector(this, folder).execute(this));
         changeLayout(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
-        new FakeInspector(folder).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this);
+        new FakeInspector(this, folder).execute(this);
     }
 
     public void setAdapter(LocalAdapter adapter) {
@@ -68,8 +68,8 @@ public class LocalActivity extends BaseActivity {
         recycler.setAdapter(adapter);
     }
 
-    public void setOpenedGalleryPosition(int openedGalleryPosition) {
-        this.openedGalleryPosition = openedGalleryPosition;
+    public void setIdGalleryPosition(int idGalleryPosition) {
+        this.idGalleryPosition = idGalleryPosition;
     }
 
     @Override
@@ -118,7 +118,7 @@ public class LocalActivity extends BaseActivity {
         menu.findItem(R.id.select_all).setVisible(mode == MultichoiceAdapter.Mode.SELECTING);
         menu.findItem(R.id.pause_all).setVisible(mode == MultichoiceAdapter.Mode.SELECTING && !hasGallery && hasDownloads);
         menu.findItem(R.id.start_all).setVisible(mode == MultichoiceAdapter.Mode.SELECTING && !hasGallery && hasDownloads);
-        menu.findItem(R.id.pdf_all).setVisible(mode == MultichoiceAdapter.Mode.SELECTING && hasGallery && !hasDownloads);
+        menu.findItem(R.id.pdf_all).setVisible(mode == MultichoiceAdapter.Mode.SELECTING && hasGallery && !hasDownloads && CreatePDF.hasPDFCapabilities());
         menu.findItem(R.id.zip_all).setVisible(mode == MultichoiceAdapter.Mode.SELECTING && hasGallery && !hasDownloads);
     }
 
@@ -142,9 +142,9 @@ public class LocalActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (openedGalleryPosition != -1) {
-            adapter.updateColor(openedGalleryPosition);
-            openedGalleryPosition = -1;
+        if (idGalleryPosition != -1) {
+            adapter.updateColor(idGalleryPosition);
+            idGalleryPosition = -1;
         }
     }
 
@@ -176,7 +176,7 @@ public class LocalActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (adapter.getMode() == MultichoiceAdapter.Mode.SELECTING)
+        if (adapter != null && adapter.getMode() == MultichoiceAdapter.Mode.SELECTING)
             adapter.deselectAll();
         else
             super.onBackPressed();
@@ -189,7 +189,7 @@ public class LocalActivity extends BaseActivity {
         builder.setTitle(R.string.choose_directory).setIcon(R.drawable.ic_folder);
         builder.setAdapter(adapter, (dialog, which) -> {
             folder = new File(strings.get(which), "NClientV2");
-            new FakeInspector(folder).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, LocalActivity.this);
+            new FakeInspector(this, folder).execute(this);
         }).setNegativeButton(R.string.cancel, null).show();
     }
 

@@ -13,7 +13,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.RequestManager;
 import com.dar.nclientv2.CopyToClipboardActivity;
 import com.dar.nclientv2.GalleryActivity;
 import com.dar.nclientv2.MainActivity;
@@ -26,26 +25,22 @@ import com.dar.nclientv2.api.components.Tag;
 import com.dar.nclientv2.api.components.TagList;
 import com.dar.nclientv2.api.enums.SpecialTagIds;
 import com.dar.nclientv2.api.enums.TagType;
+import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.database.Queries;
-import com.dar.nclientv2.components.GlideX;
 import com.dar.nclientv2.components.classes.Size;
 import com.dar.nclientv2.components.widgets.CustomGridLayoutManager;
 import com.dar.nclientv2.files.GalleryFolder;
+import com.dar.nclientv2.github.chrisbanes.photoview.PhotoView;
 import com.dar.nclientv2.settings.Global;
-import com.dar.nclientv2.targets.BitmapTarget;
 import com.dar.nclientv2.utility.ImageDownloadUtility;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
-import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Locale;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
@@ -65,9 +60,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     private final SparseIntArray angles = new SparseIntArray();
     private final GalleryActivity context;
     private final GenericGallery gallery;
-    private final GalleryFolder directory;
-    private final HashMap<ImageView, BitmapTarget> map = new HashMap<>(5);
-    private final HashSet<BitmapTarget> toDelete = new HashSet<>();
+    private GalleryFolder directory = null;
     private Size maxImageSize = null;
     private Policy policy;
     private int colCount;
@@ -78,13 +71,20 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         maxSize = gallery.getMaxSize();
         minSize = gallery.getMinSize();
         setColCount(colCount);
-        if (Global.hasStoragePermission(cont)) {
-            if (gallery.getId() != -1) {
-                File f = Global.findGalleryFolder(context, gallery.getId());
-                if (f != null) directory = new GalleryFolder(f);
-                else directory = null;
-            } else directory = new GalleryFolder(gallery.getTitle());
-        } else directory = null;
+        try {
+            if (gallery instanceof LocalGallery) {
+                directory = gallery.getGalleryFolder();
+            } else if (Global.hasStoragePermission(cont)) {
+                if (gallery.getId() != -1) {
+                    File f = Global.findGalleryFolder(context, gallery.getId());
+                    if (f != null) directory = new GalleryFolder(f);
+                } else {
+                    directory = new GalleryFolder(gallery.getTitle());
+                }
+            }
+        } catch (IllegalArgumentException ignore) {
+            directory = null;
+        }
         LogUtility.d("Max maxSize: " + maxSize + ", min maxSize: " + gallery.getMinSize());
     }
 
@@ -141,7 +141,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull final GalleryAdapter.ViewHolder holder, int position) {
 
-        switch (positionToType(holder.getAdapterPosition())) {
+        switch (positionToType(holder.getBindingAdapterPosition())) {
             case TAG:
                 loadTagLayout(holder);
                 break;
@@ -255,12 +255,12 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     }
 
     private void loadPageLayout(ViewHolder holder) {
-        final int pos = holder.getAdapterPosition();
+        final int pos = holder.getBindingAdapterPosition();
         final ImageView imgView = holder.master.findViewById(R.id.image);
 
-        imgView.setOnClickListener(v -> startGallery(holder.getAdapterPosition()));
+        imgView.setOnClickListener(v -> startGallery(holder.getBindingAdapterPosition()));
         imgView.setOnLongClickListener(null);
-        holder.master.setOnClickListener(v -> startGallery(holder.getAdapterPosition()));
+        holder.master.setOnClickListener(v -> startGallery(holder.getBindingAdapterPosition()));
         holder.master.setOnLongClickListener(null);
 
         holder.pageNumber.setText(String.format(Locale.US, "%d", pos));
@@ -291,7 +291,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             photoView.setOnMatrixChangeListener(rect -> photoView.setAllowParentInterceptOnEdge(photoView.getScale() <= 1f));
             photoView.setOnClickListener(v -> {
                 if (photoView.getScale() <= 1f)
-                    startGallery(holder.getAdapterPosition());
+                    startGallery(holder.getBindingAdapterPosition());
             });
             View.OnLongClickListener listener = v -> {
                 optionDialog(imgView, pos);
@@ -371,14 +371,12 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         int angle = angles.get(pos);
 
         if (policy == Policy.FULL) {
-            BitmapTarget target = null;
             if (file != null && file.exists())
-                target = ImageDownloadUtility.loadImageOp(context, imgView, file, angle);
+                ImageDownloadUtility.loadImageOp(context, imgView, file, angle);
             else if (!gallery.isLocal()) {
                 Gallery ent = (Gallery) gallery;
-                target = ImageDownloadUtility.loadImageOp(context, imgView, ent, pos - 1, angle);
+                ImageDownloadUtility.loadImageOp(context, imgView, ent, pos - 1, angle);
             } else ImageDownloadUtility.loadImage(R.mipmap.ic_launcher, imgView);
-            if (target != null) map.put(imgView, target);
         } else {
             if (file != null && file.exists())
                 ImageDownloadUtility.loadImage(context, file, imgView);
@@ -389,22 +387,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         }
     }
 
-    @Override
-    public void onViewRecycled(@NonNull ViewHolder holder) {
-        final ImageView imgView = holder.master.findViewById(R.id.image);
-        toDelete.add(map.remove(imgView));
-        for (Iterator<BitmapTarget> iterator = toDelete.iterator(); iterator.hasNext(); ) {
-            BitmapTarget target = iterator.next();
-            if (context.isFinishing() || Global.isDestroyed(context))
-                break;
-            if (!map.containsValue(target)) {
-                RequestManager manager = GlideX.with(context);
-                if (manager != null) manager.clear(target);
-            }
-            iterator.remove();
-        }
-        super.onViewRecycled(holder);
-    }
 
     private boolean hasTags() {
         return gallery.hasGalleryData();
@@ -433,6 +415,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             master = v.findViewById(R.id.master);
             pageNumber = v.findViewById(R.id.page_number);
             if (Global.useRtl()) v.setRotationY(180);
+            if (type == Type.RELATED) Global.applyFastScroller(master.findViewById(R.id.recycler));
         }
     }
 

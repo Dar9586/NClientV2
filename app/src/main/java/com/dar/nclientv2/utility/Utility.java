@@ -22,6 +22,7 @@ import com.dar.nclientv2.settings.Global;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -96,7 +97,6 @@ public class Utility {
         int x = menu.size();
         for (int i = 0; i < x; i++) {
             MenuItem item = menu.getItem(i);
-            LogUtility.d("Item " + i + ": " + item.getItemId() + "; " + item.getTitle());
             Global.setTint(item.getIcon());
         }
     }
@@ -122,6 +122,21 @@ public class Utility {
         } catch (IOException e) {
             LogUtility.e(e.getLocalizedMessage(), e);
         }
+    }
+
+    public static long writeStreamToFile(InputStream inputStream, File filePath) throws IOException {
+        FileOutputStream outputStream = new FileOutputStream(filePath);
+        int read;
+        long totalByte = 0;
+        byte[] bytes = new byte[1024];
+        while ((read = inputStream.read(bytes)) != -1) {
+            outputStream.write(bytes, 0, read);
+            totalByte += read;
+        }
+        outputStream.flush();
+        outputStream.close();
+        inputStream.close();
+        return totalByte;
     }
 
     public static void sendImage(Context context, Drawable drawable, String text) {

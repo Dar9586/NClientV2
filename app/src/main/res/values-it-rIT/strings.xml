@@ -1,26 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <!--SUMMARY-->
     <string name="setting_on_ignore_tags">Non verranno aggiunti ulteriori tag quando un tag è scelto da una galleria (tranne la lingua)</string>
     <string name="setting_off_ignore_tags">Verranno aggiunti ulteriori tag quando un tag è scelto da una galleria (tranne la lingua)</string>
     <string name="setting_on_use_account_tag">Usa i tag online per la ricerca (i tag locali avranno priorità)</string>
     <string name="setting_off_use_account_tag">I tag online verranno ignorati</string>
     <string name="theme_summary">Seleziona schema colori</string>
-
-    <!--SETTINGS NAME-->
     <string name="send_crash_report">Invia report in caso di errori</string>
     <string name="change_theme">Cambia temi</string>
     <string name="clear_cache">Pulisci cache</string>
     <string name="infinite_scroll">Scorrimento infinito</string>
     <string name="ignore_tags">Ignora altri tag</string>
     <string name="use_account_tag">Usa i tag dall\'account</string>
-
     <string name="title_activity_gallery">Galleria</string>
     <string name="title_activity_zoom">Zoom</string>
     <string name="title_activity_tag_filter">Filtro tag</string>
     <string name="title_activity_login">Accedi</string>
-
     <string name="parodies">Parodie</string>
     <string name="characters">Personaggi</string>
     <string name="tags">Tag</string>
@@ -29,7 +23,6 @@
     <string name="languages">Lingue</string>
     <string name="categories">Categorie</string>
     <string name="unknown">Sconosciuto</string>
-
     <string name="channel1_name">Scarica galleria</string>
     <string name="channel2_name">Crea PDF</string>
     <string name="channel3_name">Crea ZIP</string>
@@ -38,29 +31,20 @@
     <string name="channel3_description">Usato per visualizzare l\'avanzamento della creazione di ZIP</string>
     <string name="channel2_title">Creando PDF:</string>
     <string name="channel3_title">Creando ZIP:</string>
-
-    <string name="favorite_max_reached" formatted="true">Puoi avere al massimo %d manga preferiti.</string>
     <string name="tags_max_reached" formatted="true">Puoi selezionare al massimo %d tag.</string>
-
-
     <string name="only_english">Solo inglese</string>
     <string name="only_japanese">Solo giapponese</string>
     <string name="only_chinese">Solo cinese</string>
     <string name="all_languages">Tutte le lingue</string>
-
-
     <string name="login">Accedi</string>
     <string name="login_formatted" formatted="true">Entrato come %s</string>
     <string name="logout">Logout</string>
-
     <string name="favorite_online_manga">Manga online preferiti</string>
     <string name="online_tags">Online tag</string>
-
     <string name="add_to_online_favorite">Aggiungi ai preferiti online</string>
     <string name="remove_from_online_favorites">Rimuovi dai preferiti online</string>
     <string name="add_to_online_blacklist">Aggiungere alla blacklist online?</string>
     <string name="tag_already_in_blacklist">Tag già in blacklist</string>
-
     <string name="are_you_sure">Sei sicuro?</string>
     <string name="thumbnail">Miniatura</string>
     <string name="settings">Impostazioni</string>
@@ -71,29 +55,23 @@
     <string name="share">Condividi</string>
     <string name="image">Immagine</string>
     <string name="next">Prossimo</string>
-
     <string name="create_pdf">Crea PDF</string>
-    <string name="create_pdf_format" formatted="true">Crea PDF di: "%s"</string>
-    <string name="create_zip_format" formatted="true">Crea ZIP di: "%s"</string>
+    <string name="create_pdf_format" formatted="true">Crea PDF di: \"%s\"</string>
+    <string name="create_zip_format" formatted="true">Crea ZIP di: \"%s\"</string>
     <string name="created_pdf">PDF creato con successo</string>
     <string name="error_pdf">Errore nella creazione del PDF</string>
     <string name="parsing_pages">Elaborazione pagine</string>
     <string name="writing_pdf">Scrivendo PDF</string>
-
     <string name="navigation_drawer_open">Apri menù</string>
     <string name="navigation_drawer_close">Chiudi menù</string>
-    <string name="nav_header_subtitle">NHentai client non ufficiale</string>
-
+    <string name="nav_header_subtitle">Client NHentai non ufficiale</string>
     <string name="change_page">Cambia pagina:</string>
     <string name="prev_page">Pagina precedente</string>
     <string name="next_page">Pagina successiva</string>
-
     <string name="downloaded_manga">Manga scaricati</string>
     <string name="download_gallery">Scarica galleria</string>
-
     <string name="delete_gallery_size_format" formatted="true">Cancella galleria (%.2fMB)</string>
     <string name="delete_gallery_format" formatted="true">Vuoi cancellare la gallerria:\n%s</string>
-
     <string name="share_with">Condividi con…</string>
     <string name="link_copied_to_clipboard">Link copiato nella clipboard</string>
     <string name="open_in_browser">Apri nel browser</string>
@@ -128,7 +106,6 @@
     <string name="next_page_volume_down">Vai alla pagina successiva con pulsante volume giù</string>
     <string name="change_title_type">Cambia tipo titolo</string>
     <string name="title_type_summary">Seleziona il tipo predefinito di titolo da usare</string>
-
     <string name="search_settings">Impostazioni di ricerca</string>
     <string name="global_settings">Impostazioni globali</string>
     <string name="images_settings">Impostazioni sulle immagini</string>
@@ -163,11 +140,9 @@
     <string name="volume_change_setting">Cambia pagina coi pulsanti volume</string>
     <string name="popular_tag_count">Il numero di tag popolari da mostrare mentre in modalità di ricerca avanzata</string>
     <string name="show_gallery_titles">Mostra titoli gallerie</string>
-
     <string name="use_column_port">Numero colonne mentre in modalità verticale</string>
     <string name="use_column_land">Numero colonne mentre in modalità orizzontale</string>
     <string name="change_language">Cambia lingua</string>
-
     <string name="tag_artist_gallery">Artista:</string>
     <string name="tag_character_gallery">Personaggio:</string>
     <string name="tag_parody_gallery">Parodia:</string>
@@ -287,39 +262,11 @@
     <string name="exported_backup_file_toast" formatted="true">File di backup esportato in %s</string>
     <string name="export_data">Esporta dati</string>
     <string name="import_data">Importa dati</string>
-
-    <string-array name="scroll_type">
-        <item>Orizzontale</item>
-        <item>Verticale</item>
-    </string-array>
-
-    <string-array name="language">
-        <item>Predefinito</item>
-        <item>Inglese</item>
-        <item>Cinese (Tradizionale)</item>
-        <item>Cinese (Semplificate)</item>
-        <item>Turco</item>
-        <item>Italiano</item>
-        <item>Tedesco</item>
-        <item>Arabo</item>
-        <item>Spagnolo</item>
-    </string-array>
-
-    <string-array name="theme">
-        <item>Chiaro</item>
-        <item>Scuro</item>
-    </string-array>
-
-    <string-array name="title_type_array">
-        <item>Inglese</item>
-        <item>Giapponese</item>
-        <item>Semplice</item>
-    </string-array>
     <string name="default_status_1">Leggendo</string>
     <string name="default_status_2">Completati</string>
-    <string name="default_status_5">Da leggere</string>
-    <string name="default_status_4">Scartati</string>
     <string name="default_status_3">In pausa</string>
+    <string name="default_status_4">Scartati</string>
+    <string name="default_status_5">Da leggere</string>
     <string name="title_site_mirror">Cambia mirror sito</string>
     <string name="disguise_app_in_drawer">Nascondi app nel drawer</string>
     <string name="summary_disguise_app">L\'app verrà trasformata in una calcolatrice (experimental)</string>
@@ -332,5 +279,42 @@
     <string name="insert_path">Inserisci percorso</string>
     <string name="requesting_storage_access">Richiesta accesso alla memoria</string>
     <string name="request_storage_manager_summary">Per via di alcune restrizioni sull\'accesso alla memoria su Android 11 sono richiesti ulteriori permessi per usare i percorsi personalizzati.\nSe vuoi dare questi permessi abilitali nella prossima schermata.</string>
+    <string name="summary_beta">Aggiornare ad una versione beta può impedirti di ritornare ad una versione stabile senza disinstallare</string>
+    <string name="fix_inverted_title">Ripara immagini invertite</string>
+    <string name="fix_inverted_summary">Abilita se le immagini sono mostrate a colori invertiti (in qualche dispositivo può cambiare il tema di sistema in chiaro, disabilitarlo riparerà il problema)</string>
+    <string name="navigation_settings_per_screen">Impostazioni di navigazione per schermata</string>
+    <string name="downloaded_update_at" formatted="true">Scaricamento aggiornamento al %s</string>
+    <string name="summary_offscreen_limit">Imposta il numero di immagini da preacricare quando si sta leggendo una galleria</string>
+    <string name="title_offscreen_limit">Immagini da precaricare</string>
+    <string name="sort_popoular_month">Popolarità mensile</string>
+    <string name="random">Casuale</string>
+    <string name="summary_fetch_metadata">Scarica metadati per gallerie scaricate prima della versione 2.3.0 che non avevano metadati come i tag inclusi</string>
+    <string name="title_fetch_metadata">Ottieni metadati per le vecchie gallerie</string>
+    <string name="title_change_page_buttons">Cambia pagina cliccando sull\'immagine</string>
+    <string name="export_finished">Esportazione completata</string>
+    <string name="import_finished">Importazione completata</string>
+    <string name="download_torrent">Download torrent</string>
+    <string name="title_activity_captcha">CAPTCHA</string>
+    <string name="invalid_response">Risposta invalida</string>
+    <string name="system_default">System default</string>
+    <string name="clear_cookies">Clear cookies</string>
+    <string name="fetching_cloudflare_token">Fetching Cloudflare token …</string>
+    <string name="exact_title_match_title">Exact tag match only</string>
+    <string name="exact_title_match_summary">Hide galleries which would appear in the site but doesn\'t contains all the tags searched</string>
+    <string name="hide">Hide</string>
+    <string name="title_user_agent">Cambia User-Agent</string>
 
+    <string-array name="scroll_type">
+        <item>Orizzontale</item>
+        <item>Verticale</item>
+    </string-array>
+    <string-array name="theme">
+        <item>Chiaro</item>
+        <item>Scuro</item>
+    </string-array>
+    <string-array name="title_type_array">
+        <item>Inglese</item>
+        <item>Giapponese</item>
+        <item>Semplice</item>
+    </string-array>
 </resources>

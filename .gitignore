@@ -12,4 +12,5 @@ output.json
 /app/debug
 /app/schemas
 .externalNativeBuild
+/crowdin.properties
 

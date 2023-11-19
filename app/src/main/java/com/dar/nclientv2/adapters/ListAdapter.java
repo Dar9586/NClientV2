@@ -41,7 +41,16 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
 
     public ListAdapter(BaseActivity cont) {
         this.context = cont;
-        this.mDataset = new ArrayList<>();
+        this.mDataset = new ArrayList<SimpleGallery>(){
+            @Override
+            public SimpleGallery get(int index) {
+                try {
+                    return super.get(index);
+                }catch (ArrayIndexOutOfBoundsException ignore){
+                    return null;
+                }
+            }
+        };
         storagePermission = Global.hasStoragePermission(context);
         queryString = TagV2.getAvoidedTags();
     }
@@ -56,6 +65,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         if (context.isFinishing()) return;
         try {
             if (Global.isDestroyed(context)) return;
+
             ImageDownloadUtility.loadImage(context, ent.getThumbnail(), holder.imgView);
         } catch (VerifyError ignore) {
         }
@@ -63,8 +73,9 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull final GenericAdapter.ViewHolder holder, int position) {
-        if (position >= mDataset.size()) return;
-        final SimpleGallery ent = mDataset.get(holder.getAdapterPosition());
+        int holderPos = holder.getBindingAdapterPosition();
+        if (holderPos >= mDataset.size()) return;
+        final SimpleGallery ent = mDataset.get(holderPos);
         if (ent == null) return;
         if (!Global.showTitles()) {
             holder.title.setAlpha(0f);
@@ -86,20 +97,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         holder.title.setText(ent.getTitle());
         holder.flag.setVisibility(View.VISIBLE);
         if (Global.getOnlyLanguage() == Language.ALL || context instanceof GalleryActivity) {
-            switch (ent.getLanguage()) {
-                case CHINESE:
-                    holder.flag.setText("\uD83C\uDDE8\uD83C\uDDF3");
-                    break;
-                case ENGLISH:
-                    holder.flag.setText("\uD83C\uDDEC\uD83C\uDDE7");
-                    break;
-                case JAPANESE:
-                    holder.flag.setText("\uD83C\uDDEF\uD83C\uDDF5");
-                    break;
-                case UNKNOWN:
-                    holder.flag.setText("\uD83C\uDFF3");
-                    break;
-            }
+            holder.flag.setText(Global.getLanguageFlag(ent.getLanguage()));
         } else holder.flag.setVisibility(View.GONE);
         holder.title.setOnClickListener(v -> {
             Layout layout = holder.title.getLayout();
@@ -115,7 +113,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
               intent.putExtra(context.getPackageName() + ".ID", ent.getId());
               context.startActivity(intent);*/
             if (context instanceof MainActivity)
-                ((MainActivity) context).setPositionOpenedGallery(holder.getAdapterPosition());
+                ((MainActivity) context).setIdOpenedGallery(ent.getId());
             downloadGallery(ent);
             holder.overlay.setVisibility((queryString != null && ent.hasIgnoredTags(queryString)) ? View.VISIBLE : View.GONE);
         });
@@ -134,10 +132,18 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
         holder.title.setBackgroundColor(statusColor);
     }
 
-    public void updateColor(int position) {
-        int id = mDataset.get(position).getId();
+    public void updateColor(int id) {
+        if (id < 0) return;
+        int position = -1;
         statuses.put(id, Queries.StatusMangaTable.getStatus(id).color);
-        notifyItemChanged(position);
+        for (int i = 0; i < mDataset.size(); i++) {
+            SimpleGallery gallery= mDataset.get(i);
+            if (gallery != null && gallery.getId() == id) {
+                position = id;
+                break;
+            }
+        }
+        if (position >= 0) notifyItemChanged(position);
     }
 
     private void downloadGallery(final SimpleGallery ent) {
@@ -160,10 +166,12 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
 
             @Override
             public void onSuccess(List<GenericGallery> galleries) {
-                if (context.getMasterLayout() != null && galleries.size() != 1) {
-                    context.runOnUiThread(() ->
-                        Snackbar.make(context.getMasterLayout(), R.string.no_entry_found, Snackbar.LENGTH_SHORT).show()
-                    );
+                if (galleries.size() != 1) {
+                    if (context.getMasterLayout() != null) {
+                        context.runOnUiThread(() ->
+                            Snackbar.make(context.getMasterLayout(), R.string.no_entry_found, Snackbar.LENGTH_SHORT).show()
+                        );
+                    }
                     return;
                 }
                 Intent intent = new Intent(context, GalleryActivity.class);

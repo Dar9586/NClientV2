@@ -18,10 +18,8 @@ import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -45,12 +43,14 @@ public class GalleryDownloaderV2 {
     private Gallery gallery;
     private File folder;
     private boolean initialized = false;
+
     public GalleryDownloaderV2(Context context, @Nullable String title, @Nullable Uri thumbnail, int id) {
         this.context = context;
         this.id = id;
         this.thumbnail = thumbnail;
         this.title = Gallery.getPathTitle(title, context.getString(R.string.download_gallery));
     }
+
     public GalleryDownloaderV2(Context context, Gallery gallery, int start, int end) {
         this(context, gallery.getTitle(), gallery.getCover(), gallery.getId());
         this.start = start;
@@ -181,7 +181,7 @@ public class GalleryDownloaderV2 {
         if (this.gallery != null) return true;
         InspectorV3 inspector = InspectorV3.galleryInspector(context, id, null);
         try {
-            inspector.createDocument();
+            if (!inspector.createDocument()) return false;
             inspector.parseDocument();
             if (inspector.getGalleries() == null || inspector.getGalleries().size() == 0)
                 return false;
@@ -189,7 +189,7 @@ public class GalleryDownloaderV2 {
             if (g.isValid())
                 setGallery(g);
             return g.isValid();
-        } catch (IOException e) {
+        } catch (Exception e) {
             LogUtility.e("Error while downloading", e);
             return false;
         }
@@ -275,7 +275,7 @@ public class GalleryDownloaderV2 {
                 r.close();
                 return false;
             }
-            long written = writeStreamToFile(r.body().byteStream(), filePath);
+            long written = Utility.writeStreamToFile(r.body().byteStream(), filePath);
             r.close();
             if (written != len) {
                 filePath.delete();
@@ -288,20 +288,6 @@ public class GalleryDownloaderV2 {
         return false;
     }
 
-    private long writeStreamToFile(InputStream inputStream, File filePath) throws IOException {
-        FileOutputStream outputStream = new FileOutputStream(filePath);
-        int read;
-        long totalByte = 0;
-        byte[] bytes = new byte[1024];
-        while ((read = inputStream.read(bytes)) != -1) {
-            outputStream.write(bytes, 0, read);
-            totalByte += read;
-        }
-        outputStream.flush();
-        outputStream.close();
-        inputStream.close();
-        return totalByte;
-    }
 
     public void initDownload() {
         if (initialized) return;
@@ -314,6 +300,10 @@ public class GalleryDownloaderV2 {
     private void checkPages() {
         File filePath;
         for (int i = 0; i < urls.size(); i++) {
+            if(urls.get(i)==null){
+                urls.remove(i--);
+                continue;
+            }
             filePath = new File(folder, urls.get(i).getPageName());
             if (filePath.exists() && !isCorrupted(filePath))
                 urls.remove(i--);
@@ -349,23 +339,6 @@ public class GalleryDownloaderV2 {
         writer.close();
     }
 
-    public enum Status {NOT_STARTED, DOWNLOADING, PAUSED, FINISHED, CANCELED}
-
-    public static class PageContainer {
-        public final int page;
-        public final String url, ext;
-
-        public PageContainer(int page, String url, String ext) {
-            this.page = page;
-            this.url = url;
-            this.ext = ext;
-        }
-
-        public String getPageName() {
-            return String.format(Locale.US, "%03d.%s", page, ext);
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -382,5 +355,22 @@ public class GalleryDownloaderV2 {
         int result = id;
         result = 31 * result + (folder != null ? folder.hashCode() : 0);
         return result;
+    }
+
+    public enum Status {NOT_STARTED, DOWNLOADING, PAUSED, FINISHED, CANCELED}
+
+    public static class PageContainer {
+        public final int page;
+        public final String url, ext;
+
+        public PageContainer(int page, String url, String ext) {
+            this.page = page;
+            this.url = url;
+            this.ext = ext;
+        }
+
+        public String getPageName() {
+            return String.format(Locale.US, "%03d.%s", page, ext);
+        }
     }
 }

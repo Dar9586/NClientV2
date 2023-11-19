@@ -42,11 +42,8 @@ public class Gallery extends GenericGallery {
     public static final Creator<Gallery> CREATOR = new Creator<Gallery>() {
         @Override
         public Gallery createFromParcel(Parcel in) {
-
             LogUtility.d("Reading to parcel");
             return new Gallery(in);
-
-
         }
 
         @Override
@@ -56,12 +53,12 @@ public class Gallery extends GenericGallery {
     };
     @NonNull
     private final GalleryData galleryData;
-    private final @Nullable
-    GalleryFolder folder;
+    @Nullable
+    private final GalleryFolder folder;
+    private final boolean onlineFavorite;
     private List<SimpleGallery> related = new ArrayList<>();
     private Language language = Language.UNKNOWN;
     private Size maxSize = new Size(0, 0), minSize = new Size(Integer.MAX_VALUE, Integer.MAX_VALUE);
-    private boolean onlineFavorite;
 
     public Gallery(Context context, String json, Elements related, boolean isFavorite) throws IOException {
         LogUtility.d("Found JSON: " + json);
@@ -108,7 +105,7 @@ public class Gallery extends GenericGallery {
         String pathTitle = title.replace('/', ' ').replaceAll("[/|\\\\*\"'?:<>]", " ");
         while (pathTitle.contains("  "))
             pathTitle = pathTitle.replace("  ", " ");
-        return pathTitle;
+        return pathTitle.trim();
     }
 
     public static String getPathTitle(@Nullable String title) {
@@ -130,8 +127,7 @@ public class Gallery extends GenericGallery {
     }
 
     public static Gallery emptyGallery() {
-        Gallery g = new Gallery();
-        return g;
+        return new Gallery();
     }
 
     private void calculateSizes(GalleryData galleryData) {
@@ -158,6 +154,7 @@ public class Gallery extends GenericGallery {
 
     public Uri getCover() {
         if (Global.getDownloadPolicy() == Global.DataUsageType.THUMBNAIL) return getThumbnail();
+        if (galleryData.getCover().getImageExt() == ImageExt.GIF) return getHighPage(0);
         return Uri.parse(String.format(Locale.US, "https://t." + Utility.getHost() + "/galleries/%d/cover.%s", getMediaId(), galleryData.getCover().extToString()));
     }
 
@@ -166,6 +163,7 @@ public class Gallery extends GenericGallery {
     }
 
     public Uri getThumbnail() {
+        if (galleryData.getCover().getImageExt() == ImageExt.GIF) return getHighPage(0);
         return Uri.parse(String.format(Locale.US, "https://t." + Utility.getHost() + "/galleries/%d/thumb.%s", getMediaId(), galleryData.getThumbnail().extToString()));
     }
 
@@ -284,14 +282,6 @@ public class Gallery extends GenericGallery {
         return galleryData.getMediaId();
     }
 
-    public int getTagCount(@NonNull TagType type) {
-        return getTags().getCount(type);
-    }
-
-    public Tag getTag(@NonNull TagType type, int index) {
-        return getTags().getTag(type, index);
-    }
-
     public boolean hasIgnoredTags(Set<Tag> s) {
         for (Tag t : getTags().getAllTagsSet())
             if (s.contains(t)) {
@@ -368,10 +358,6 @@ public class Gallery extends GenericGallery {
         dest.writeParcelable(folder, flags);
         dest.writeTypedList(related);
         dest.writeByte((byte) (onlineFavorite ? 1 : 0));
-    }
-
-    public String createPagePath() {
-        return galleryData.createPagePath();
     }
 
     @NonNull

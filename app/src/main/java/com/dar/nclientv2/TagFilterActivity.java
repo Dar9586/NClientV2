@@ -6,14 +6,15 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.dar.nclientv2.adapters.TagsAdapter;
 import com.dar.nclientv2.components.activities.GeneralActivity;
@@ -26,6 +27,7 @@ import com.dar.nclientv2.settings.TagV2;
 import com.dar.nclientv2.utility.LogUtility;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.List;
 
@@ -35,16 +37,12 @@ public class TagFilterActivity extends GeneralActivity {
     }
 
     private SearchView searchView;
-    private ViewPager mViewPager;
-
-    public ViewPager getViewPager() {
-        return mViewPager;
-    }
+    private ViewPager2 mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.initActivity(this);
+        //Global.initActivity(this);
         setContentView(R.layout.activity_tag_filter);
 
         //init toolbar
@@ -54,40 +52,65 @@ public class TagFilterActivity extends GeneralActivity {
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        TagTypePageAdapter mTagTypePageAdapter = new TagTypePageAdapter(getSupportFragmentManager());
-        // Set up the ViewPager with the sections adapter.
+        TagTypePageAdapter mTagTypePageAdapter = new TagTypePageAdapter(this);
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mTagTypePageAdapter);
         mViewPager.setOffscreenPageLimit(1);
 
         TabLayout tabLayout = findViewById(R.id.tabs);
-        if (Login.isLogged()) tabLayout.addTab(tabLayout.newTab().setText(R.string.online_tags));
+
 
         LogUtility.d("ISNULL?" + (tabLayout == null));
-        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
+        mViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
-                TagTypePage page = (TagTypePage) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + position);
+                TagTypePage page = getFragment(position);
                 if (page != null) {
                     ((TagsAdapter) page.getRecyclerView().getAdapter()).addItem();
                 }
             }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
         });
-        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+
+
+        new TabLayoutMediator(tabLayout, mViewPager, (tab, position) -> {
+            int id = 0;
+            switch (position) {
+                case 0:
+                    id = R.string.applied_filters;
+                    break;
+                case 1:
+                    id = R.string.tags;
+                    break;
+                case 2:
+                    id = R.string.artists;
+                    break;
+                case 3:
+                    id = R.string.characters;
+                    break;
+                case 4:
+                    id = R.string.parodies;
+                    break;
+                case 5:
+                    id = R.string.groups;
+                    break;
+                case 6:
+                    id = R.string.online_tags;
+                    break;
+            }
+            tab.setText(id);
+        }).attach();
         mViewPager.setCurrentItem(getPage());
     }
 
+    @Nullable
+    private TagTypePage getActualFragment() {
+        return getFragment(mViewPager.getCurrentItem());
+    }
+
+    @Nullable
+    private TagTypePage getFragment(int position) {
+        return (TagTypePage) getSupportFragmentManager().findFragmentByTag("f" + position);
+    }
 
     private int getPage() {
         Uri data = getIntent().getData();
@@ -132,9 +155,9 @@ public class TagFilterActivity extends GeneralActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
+                TagTypePage page = getActualFragment();
                 if (page != null) {
-                    ((TagTypePage) page).refilter(newText);
+                    page.refilter(newText);
                 }
                 return true;
             }
@@ -146,9 +169,9 @@ public class TagFilterActivity extends GeneralActivity {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
         builder.setTitle(R.string.are_you_sure).setMessage(getString(R.string.clear_this_list)).setIcon(R.drawable.ic_help);
         builder.setPositiveButton(R.string.yes, (dialog, which) -> {
-            Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
+            TagTypePage page = getActualFragment();
             if (page != null) {
-                ((TagTypePage) page).reset();
+                page.reset();
 
             }
         }).setNegativeButton(R.string.no, null).setCancelable(true);
@@ -161,13 +184,14 @@ public class TagFilterActivity extends GeneralActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        TagTypePage page = (TagTypePage) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
+        TagTypePage page = getActualFragment();
         if (id == R.id.reset_tags) createDialog();
         else if (id == R.id.set_min_count) minCountBuild();
         else if (id == R.id.sort_by_name) {
             TagV2.updateSortByName(this);
             updateSortItem(item);
-            page.refilter(searchView.getQuery().toString());
+            if (page != null)
+                page.refilter(searchView.getQuery().toString());
         }
 
         return super.onOptionsItemSelected(item);
@@ -183,7 +207,7 @@ public class TagFilterActivity extends GeneralActivity {
             public void positive(int actual) {
                 LogUtility.d("ACTUAL: " + actual);
                 TagV2.updateMinCount(TagFilterActivity.this, actual);
-                TagTypePage page = (TagTypePage) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
+                TagTypePage page = getActualFragment();
                 if (page != null) {
                     page.changeSize();
                 }
@@ -194,7 +218,7 @@ public class TagFilterActivity extends GeneralActivity {
 
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             changeLayout(true);
@@ -205,9 +229,9 @@ public class TagFilterActivity extends GeneralActivity {
 
     private void changeLayout(boolean landscape) {
         final int count = landscape ? 4 : 2;
-        Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
+        TagTypePage page = getActualFragment();
         if (page != null) {
-            RecyclerView recycler = ((TagTypePage) page).getRecyclerView();
+            RecyclerView recycler = page.getRecyclerView();
             if (recycler != null) {
                 RecyclerView.Adapter adapter = recycler.getAdapter();
                 CustomGridLayoutManager gridLayoutManager = new CustomGridLayoutManager(this, count);
@@ -218,20 +242,20 @@ public class TagFilterActivity extends GeneralActivity {
     }
 
 
-    static class TagTypePageAdapter extends FragmentPagerAdapter {
+    static class TagTypePageAdapter extends FragmentStateAdapter {
 
-        TagTypePageAdapter(FragmentManager fm) {
-            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        TagTypePageAdapter(TagFilterActivity activity) {
+            super(activity.getSupportFragmentManager(), activity.getLifecycle());
         }
 
+        @NonNull
         @Override
-        public Fragment getItem(int position) {
-            LogUtility.d("creating at: " + position);
+        public Fragment createFragment(int position) {
             return TagTypePage.newInstance(position);
         }
 
         @Override
-        public int getCount() {
+        public int getItemCount() {
             return Login.isLogged() ? 7 : 6;
         }
     }

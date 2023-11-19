@@ -17,7 +17,7 @@ import androidx.annotation.NonNull;
 import com.dar.nclientv2.utility.LogUtility;
 
 public class NetworkUtil {
-    private volatile static ConnectionType type = ConnectionType.CELLULAR;
+    private volatile static ConnectionType type = ConnectionType.WIFI;
 
     public static ConnectionType getType() {
         return type;
@@ -68,10 +68,14 @@ public class NetworkUtil {
                     setType(getConnectivityPostLollipop(cm, network));
                 }
             };
-            cm.registerNetworkCallback(builder.build(), callback);
-            Network[] networks = cm.getAllNetworks();
-            if (networks.length > 0)
-                setType(getConnectivityPostLollipop(cm, networks[0]));
+            try {
+                cm.registerNetworkCallback(builder.build(), callback);
+                Network[] networks = cm.getAllNetworks();
+                if (networks.length > 0)
+                    setType(getConnectivityPostLollipop(cm, networks[0]));
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
         } else {
             IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
             BroadcastReceiver receiver = new BroadcastReceiver() {

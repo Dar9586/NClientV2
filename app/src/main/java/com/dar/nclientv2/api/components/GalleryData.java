@@ -303,7 +303,7 @@ public class GalleryData implements Parcelable {
         return writer.toString();
     }
 
-    public void readPagePath(String path) throws IOException {
+    private void readPagePath(String path) throws IOException {
         System.out.println(path);
         StringReader reader = new StringReader(path + "e");//flag for the end
         int absolutePage = 0;

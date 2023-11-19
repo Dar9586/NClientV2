@@ -4,21 +4,24 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.dar.nclientv2.components.activities.GeneralActivity;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.ui.main.PlaceholderFragment;
 import com.dar.nclientv2.ui.main.SectionsPagerAdapter;
+import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 public class StatusViewerActivity extends GeneralActivity {
     private boolean sortByTitle = false;
     private String query;
-    private ViewPager viewPager;
+    private ViewPager2 viewPager;
     private Toolbar toolbar;
     private SectionsPagerAdapter sectionsPagerAdapter;
 
@@ -31,27 +34,33 @@ public class StatusViewerActivity extends GeneralActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setTitle(R.string.manage_statuses);
-        sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         viewPager = findViewById(R.id.view_pager);
-        viewPager.setAdapter(sectionsPagerAdapter);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        sectionsPagerAdapter = new SectionsPagerAdapter(this);
 
-            }
+        viewPager.setAdapter(sectionsPagerAdapter);
+
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
 
             @Override
             public void onPageSelected(int position) {
-                getPositionFragment(position).reload(query, sortByTitle);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
+                PlaceholderFragment fragment = getPositionFragment(position);
+                if (fragment != null) fragment.reload(query, sortByTitle);
             }
         });
+
         TabLayout tabs = findViewById(R.id.tabs);
-        tabs.setupWithViewPager(viewPager);
+        new TabLayoutMediator(tabs, viewPager, true, (tab, position) -> tab.setText(sectionsPagerAdapter.getPageTitle(position))).attach();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        TabLayout tabs = findViewById(R.id.tabs);
+        for (int i = 0; i < tabs.getTabCount(); i++) {
+            tabs.getTabAt(i).setText(sectionsPagerAdapter.getPageTitle(i));
+        }
+        PlaceholderFragment fragment = getActualFragment();
+        if (fragment != null) fragment.reload(query, sortByTitle);
     }
 
     @Override
@@ -61,7 +70,8 @@ public class StatusViewerActivity extends GeneralActivity {
             return true;
         } else if (item.getItemId() == R.id.sort_by_name) {
             sortByTitle = !sortByTitle;
-            getActualFragment().changeSort(sortByTitle);
+            PlaceholderFragment fragment = getActualFragment();
+            if (fragment != null) fragment.changeSort(sortByTitle);
             item.setTitle(sortByTitle ? R.string.sort_by_latest : R.string.sort_by_title);
             item.setIcon(sortByTitle ? R.drawable.ic_sort_by_alpha : R.drawable.ic_access_time);
             Global.setTint(item.getIcon());
@@ -69,12 +79,16 @@ public class StatusViewerActivity extends GeneralActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Nullable
     private PlaceholderFragment getActualFragment() {
         return getPositionFragment(viewPager.getCurrentItem());
     }
 
+    @Nullable
     private PlaceholderFragment getPositionFragment(int position) {
-        return (PlaceholderFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.view_pager + ":" + position);
+        PlaceholderFragment f = (PlaceholderFragment) getSupportFragmentManager().findFragmentByTag("f" + position);
+        LogUtility.d(f);
+        return f;
     }
 
     @Override
@@ -90,7 +104,8 @@ public class StatusViewerActivity extends GeneralActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 query = newText;
-                getActualFragment().changeQuery(query);
+                PlaceholderFragment fragment = getActualFragment();
+                if (fragment != null) fragment.changeQuery(query);
                 return true;
             }
         });

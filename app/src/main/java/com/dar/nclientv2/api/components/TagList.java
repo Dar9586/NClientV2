@@ -97,6 +97,19 @@ public class TagList implements Parcelable {
         for (Tags t : tagList) Collections.sort(t, comparator);
     }
 
+    public boolean hasTag(Tag tag) {
+        return tagList[tag.getType().getId()].contains(tag);
+    }
+
+    public boolean hasTags(Collection<Tag> tags) {
+        for (Tag tag : tags) {
+            if (!hasTag(tag)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static class Tags extends ArrayList<Tag> {
         public Tags(int initialCapacity) {
             super(initialCapacity);

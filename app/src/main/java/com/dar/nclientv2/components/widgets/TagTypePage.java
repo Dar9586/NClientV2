@@ -16,6 +16,7 @@ import com.dar.nclientv2.TagFilterActivity;
 import com.dar.nclientv2.adapters.TagsAdapter;
 import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.async.ScrapeTags;
+import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.settings.TagV2;
 
 public class TagTypePage extends Fragment {
@@ -73,7 +74,7 @@ public class TagTypePage extends Fragment {
         type = TagType.values[getArguments().getInt("TAGTYPE")];
         View rootView = inflater.inflate(R.layout.fragment_tag_filter, container, false);
         recyclerView = rootView.findViewById(R.id.recycler);
-
+        Global.applyFastScroller(recyclerView);
         loadTags();
         return rootView;
     }

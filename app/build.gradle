@@ -1,14 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 33
     buildToolsVersion '30.0.3'
     defaultConfig {
         applicationId "com.dar.nclientv2"
         minSdkVersion 14
-        targetSdkVersion 30
-        versionCode 271
-        versionName "2.7.1"
+        targetSdkVersion 33
+        versionCode 302
+        multiDexEnabled true
+        versionName "3.0.2-stable"
         vectorDrawables.useSupportLibrary true
         proguardFiles 'proguard-rules.pro'
     }
@@ -17,6 +18,7 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
+            versionNameSuffix "-release"
             resValue "string", "app_name", "NClientV2"
         }
         debug {
@@ -29,33 +31,39 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    lintOptions {
-        checkReleaseBuilds false
+    lint {
         abortOnError false
+        checkReleaseBuilds false
     }
+    namespace 'com.dar.nclientv2'
 }
 
 dependencies {
 // AndroidX
-    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation 'androidx.fragment:fragment:1.2.5'
-    implementation 'androidx.preference:preference:1.1.1'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.fragment:fragment:1.5.6'
+    implementation 'androidx.preference:preference:1.2.0'
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.3.0'
+    implementation 'com.google.android.material:material:1.9.0'
 
 // Other
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.12.12'//Because of min SDK
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
-    implementation 'net.opacapp:multiline-collapsingtoolbar:27.1.1'
-    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
-    implementation 'org.jsoup:jsoup:1.13.1'
+    //implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+    implementation 'org.jsoup:jsoup:1.16.1'
     implementation 'ch.acra:acra-core:5.7.0'
-    implementation("com.github.bumptech.glide:glide:4.11.0") {
+    implementation('com.github.bumptech.glide:glide:4.15.1') {
         exclude group: "com.android.support"
     }
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
-    implementation 'com.github.bumptech.glide:okhttp3-integration:4.11.0'
+    implementation "androidx.multidex:multidex:2.0.1"
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.15.1'
     implementation 'com.github.yukuku:ambilwarna:2.0.1'
+    implementation 'me.zhanghai.android.fastscroll:library:1.2.0'
+
+    implementation 'net.opacapp:multiline-collapsingtoolbar:27.1.1'
+    implementation 'com.zeugmasolutions.localehelper:locale-helper-android:1.5.1'
 }

@@ -68,7 +68,7 @@ public class VersionChecker {
                 downloadUrl = release.downloadUrl;
                 GitHubRelease finalRelease = release;
                 context.runOnUiThread(() -> {
-                    if (extractVersion(actualVersionName) >= extractVersion(finalRelease.versionCode)) {
+                    if (downloadUrl == null || extractVersion(actualVersionName) >= extractVersion(finalRelease.versionCode)) {
                         if (!silent)
                             Toast.makeText(context, R.string.no_updates_found, Toast.LENGTH_SHORT).show();
                     } else {
@@ -81,6 +81,8 @@ public class VersionChecker {
     }
 
     private static int extractVersion(String version) {
+        int index = version.indexOf('-');
+        if (index >= 0) version = version.substring(0, index);
         return Integer.parseInt(version.replace(".", ""));
     }
 
@@ -166,7 +168,7 @@ public class VersionChecker {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
         LogUtility.d("" + context);
         builder.setTitle(beta ? R.string.new_beta_version_found : R.string.new_version_found);
-        builder.setIcon(R.drawable.ic_file_download);
+        builder.setIcon(R.drawable.ic_file);
         builder.setMessage(context.getString(R.string.update_version_format, versionName, latestVersion, finalBody));
         builder.setPositiveButton(R.string.install, (dialog, which) -> {
             if (Global.hasStoragePermission(context)) downloadVersion(latestVersion);
@@ -191,6 +193,7 @@ public class VersionChecker {
             }
             f.delete();
         }
+        if (downloadUrl == null) return;
         LogUtility.d(f.getAbsolutePath());
         Global.getClient(context).newCall(new Request.Builder().url(downloadUrl).build()).enqueue(new Callback() {
             @Override
@@ -201,7 +204,10 @@ public class VersionChecker {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 context.getSharedPreferences("Settings", 0).edit().putBoolean("downloaded", false).apply();
-                f.getParentFile().mkdirs();
+                if (Global.UPDATEFOLDER == null) {
+                    Global.initStorage(context);
+                }
+                Global.UPDATEFOLDER.mkdirs();
                 f.createNewFile();
                 FileOutputStream stream = new FileOutputStream(f);
                 InputStream stream1 = response.body().byteStream();
@@ -221,11 +227,16 @@ public class VersionChecker {
 
     private void installApp(File f) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Uri apkUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", f);
-            Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
-            intent.setData(apkUri);
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            context.startActivity(intent);
+            try {
+                Uri apkUri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", f);
+                Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+                intent.setData(apkUri);
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                context.startActivity(intent);
+            } catch (IllegalArgumentException ignore) {
+                context.runOnUiThread(() -> Toast.makeText(context, context.getString(R.string.downloaded_update_at, f.getAbsolutePath()), Toast.LENGTH_SHORT).show());
+
+            }
         } else {
             Uri apkUri = Uri.fromFile(f);
             Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -234,6 +245,7 @@ public class VersionChecker {
             context.startActivity(intent);
         }
     }
+
 
     public static class GitHubRelease {
         String versionCode, body, downloadUrl;

@@ -25,6 +25,7 @@ import com.dar.nclientv2.utility.Utility;
 
 import org.jsoup.nodes.Element;
 
+import java.util.Collection;
 import java.util.Locale;
 
 public class SimpleGallery extends GenericGallery {
@@ -51,6 +52,14 @@ public class SimpleGallery extends GenericGallery {
         mediaId = in.readInt();
         thumbnail = ImageExt.values()[in.readByte()];
         language = Language.values()[in.readByte()];
+    }
+
+    public boolean hasTag(Tag tag) {
+        return tags.hasTag(tag);
+    }
+
+    public boolean hasTags(Collection<Tag> tags) {
+        return this.tags.hasTags(tags);
     }
 
     public SimpleGallery(Cursor c) {
@@ -161,6 +170,9 @@ public class SimpleGallery extends GenericGallery {
     }
 
     public Uri getThumbnail() {
+        if (thumbnail == ImageExt.GIF) {
+            return Uri.parse(String.format(Locale.US, "https://i." + Utility.getHost() + "/galleries/%d/1.gif", mediaId));
+        }
         return Uri.parse(String.format(Locale.US, "https://t." + Utility.getHost() + "/galleries/%d/thumb.%s", mediaId, extToString(thumbnail)));
     }
 

@@ -25,8 +25,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.dar.nclientv2.components.views.VerticalViewPager
-
+        <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/container"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -35,10 +34,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:context=".ZoomActivity">
-
-
-        </com.dar.nclientv2.components.views.VerticalViewPager>
+            tools:context=".ZoomActivity"></androidx.viewpager2.widget.ViewPager2>
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"

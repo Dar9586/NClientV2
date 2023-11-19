@@ -39,29 +39,29 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ImageDownloadUtility.loadImage(remove == holder.getAdapterPosition() ? R.drawable.ic_close : R.drawable.ic_mode_edit, holder.imageButton);
-        String entry = history.get(holder.getAdapterPosition()).getValue();
+        ImageDownloadUtility.loadImage(remove == holder.getBindingAdapterPosition() ? R.drawable.ic_close : R.drawable.ic_mode_edit, holder.imageButton);
+        String entry = history.get(holder.getBindingAdapterPosition()).getValue();
         holder.text.setText(entry);
         holder.master.setOnClickListener(v -> context.setQuery(entry, true));
         holder.imageButton.setOnLongClickListener(v -> {
             context.runOnUiThread(() -> {
-                if (remove == holder.getAdapterPosition()) {
+                if (remove == holder.getBindingAdapterPosition()) {
                     remove = -1;
-                    notifyItemChanged(holder.getAdapterPosition());
+                    notifyItemChanged(holder.getBindingAdapterPosition());
                 } else {
                     if (remove != -1) {
                         int l = remove;
                         remove = -1;
                         notifyItemChanged(l);
                     }
-                    remove = holder.getAdapterPosition();
-                    notifyItemChanged(holder.getAdapterPosition());
+                    remove = holder.getBindingAdapterPosition();
+                    notifyItemChanged(holder.getBindingAdapterPosition());
                 }
             });
             return true;
         });
         holder.imageButton.setOnClickListener(v -> {
-            if (remove == holder.getAdapterPosition()) {
+            if (remove == holder.getBindingAdapterPosition()) {
                 removeHistory(remove);
                 remove = -1;
             } else {

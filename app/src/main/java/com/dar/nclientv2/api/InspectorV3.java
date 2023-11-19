@@ -21,7 +21,6 @@ import com.dar.nclientv2.api.enums.TagType;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.settings.Global;
-import com.dar.nclientv2.settings.Login;
 import com.dar.nclientv2.utility.LogUtility;
 import com.dar.nclientv2.utility.Utility;
 
@@ -31,7 +30,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -60,7 +62,7 @@ public class InspectorV3 extends Thread implements Parcelable {
     private String query, url;
     private ApiRequestType requestType;
     private Set<Tag> tags;
-    private List<GenericGallery> galleries = null;
+    private ArrayList<GenericGallery> galleries = null;
     private Ranges ranges = null;
     private InspectorResponse response;
     private WeakReference<Context> context;
@@ -179,7 +181,7 @@ public class InspectorV3 extends Thread implements Parcelable {
         tags.addAll(getLanguageTags(Global.getOnlyLanguage()));
         if (Global.removeAvoidedGalleries())
             tags.addAll(Queries.TagTable.getAllStatus(TagStatus.AVOIDED));
-        if (Login.isLogged()) tags.addAll(Queries.TagTable.getAllOnlineBlacklisted());
+        tags.addAll(Queries.TagTable.getAllOnlineBlacklisted());
         return tags;
     }
 
@@ -263,6 +265,12 @@ public class InspectorV3 extends Thread implements Parcelable {
     }
 
     private void createUrl() {
+        String query;
+        try {
+            query = this.query == null ? null : URLEncoder.encode(this.query, "UTF-8");
+        } catch (UnsupportedEncodingException ignore) {
+            query = this.query;
+        }
         StringBuilder builder = new StringBuilder(Utility.getBaseUrl());
         if (requestType == ApiRequestType.BYALL) builder.append("?page=").append(page);
         else if (requestType == ApiRequestType.RANDOM) builder.append("random/");
@@ -274,19 +282,11 @@ public class InspectorV3 extends Thread implements Parcelable {
                 builder.append("?q=").append(query).append('&');
             else builder.append('?');
             builder.append("page=").append(page);
-        }/*else if(requestType==ApiRequestType.BYTAG){
-                 for(Tag tt:tags)t=tt;
-                 assert t!=null;
-                 builder.append(t.getTypeSingleName()).append('/')
-                         .append(t.getName().replace(' ','-').replace(".",""));
-                 if(byPopular)builder.append("/popular");
-                 else builder.append('/');
-                 builder.append("?page=").append(page);
-        }*/ else if (requestType == ApiRequestType.BYSEARCH || requestType == ApiRequestType.BYTAG) {
+        } else if (requestType == ApiRequestType.BYSEARCH || requestType == ApiRequestType.BYTAG) {
             builder.append("search/?q=").append(query);
             for (Tag tt : tags) {
                 if (builder.toString().contains(tt.toQueryTag(TagStatus.ACCEPTED))) continue;
-                builder.append('+').append(tt.toQueryTag());
+                builder.append('+').append(URLEncoder.encode(tt.toQueryTag()));
             }
             if (ranges != null)
                 builder.append('+').append(ranges.toQuery());
@@ -309,14 +309,15 @@ public class InspectorV3 extends Thread implements Parcelable {
         else return url.substring(0, url.lastIndexOf('=') + 1);
     }
 
-    public void createDocument() throws IOException {
-        if (htmlDocument != null) return;
+    public boolean createDocument() throws IOException {
+        if (htmlDocument != null) return true;
         Response response = Global.getClient(context.get()).newCall(new Request.Builder().url(url).build()).execute();
         setHtmlDocument(Jsoup.parse(response.body().byteStream(), "UTF-8", Utility.getBaseUrl()));
         response.close();
+        return response.code() == HttpURLConnection.HTTP_OK;
     }
 
-    public void parseDocument() throws IOException {
+    public void parseDocument() throws IOException, InvalidResponseException {
         if (requestType.isSingle()) doSingle(htmlDocument.body());
         else doSearch(htmlDocument.body());
         htmlDocument = null;
@@ -332,6 +333,7 @@ public class InspectorV3 extends Thread implements Parcelable {
 
     @Override
     public synchronized void start() {
+        if (getState() != State.NEW) return;
         if (forceStart || response.shouldStart(this))
             super.start();
     }
@@ -343,20 +345,38 @@ public class InspectorV3 extends Thread implements Parcelable {
         try {
             createDocument();
             parseDocument();
-            if (response != null) response.onSuccess(galleries);
-        } catch (IOException e) {
+            if (response != null) {
+                response.onSuccess(galleries);
+            }
+        } catch (Exception e) {
             if (response != null) response.onFailure(e);
         }
         if (response != null) response.onEnd();
         LogUtility.d("Finished download: " + url);
     }
 
-    private void doSingle(Element document) throws IOException {
+    private void filterDocumentTags() {
+        if (galleries == null || tags == null) return;
+        ArrayList<SimpleGallery> galleryTag = new ArrayList<>(galleries.size());
+        for (GenericGallery gal : galleries) {
+            assert gal instanceof SimpleGallery;
+            SimpleGallery gallery = (SimpleGallery) gal;
+            if (gallery.hasTags(tags)) {
+                galleryTag.add(gallery);
+            }
+        }
+        galleries.clear();
+        galleries.addAll(galleryTag);
+    }
+
+    private void doSingle(Element document) throws IOException, InvalidResponseException {
         galleries = new ArrayList<>(1);
         Elements scripts = document.getElementsByTag("script");
-        if (scripts.size() == 0) return;
+        if (scripts.isEmpty())
+            throw new InvalidResponseException();
         String json = trimScriptTag(scripts.last().html());
-        if (json == null) return;
+        if (json == null)
+            throw new InvalidResponseException();
         Element relContainer = document.getElementById("related-container");
         Elements rel;
         if (relContainer != null)
@@ -384,12 +404,16 @@ public class InspectorV3 extends Thread implements Parcelable {
         return scriptHtml;
     }
 
-    private void doSearch(Element document) {
+    private void doSearch(Element document) throws InvalidResponseException {
         Elements gal = document.getElementsByClass("gallery");
         galleries = new ArrayList<>(gal.size());
         for (Element e : gal) galleries.add(new SimpleGallery(context.get(), e));
         gal = document.getElementsByClass("last");
         pageCount = gal.size() == 0 ? Math.max(1, page) : findTotal(gal.last());
+        if (document.getElementById("content") == null)
+            throw new InvalidResponseException();
+        if (Global.isExactTagMatch())
+            filterDocumentTags();
     }
 
     private int findTotal(Element e) {
@@ -449,6 +473,12 @@ public class InspectorV3 extends Thread implements Parcelable {
             t = tt;
         }
         return t;
+    }
+
+    public static class InvalidResponseException extends Exception {
+        public InvalidResponseException() {
+            super();
+        }
     }
 
     public interface InspectorResponse {

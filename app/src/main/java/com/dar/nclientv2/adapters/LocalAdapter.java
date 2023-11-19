@@ -23,8 +23,8 @@ import com.dar.nclientv2.LocalActivity;
 import com.dar.nclientv2.R;
 import com.dar.nclientv2.api.local.LocalGallery;
 import com.dar.nclientv2.api.local.LocalSortType;
-import com.dar.nclientv2.async.CreatePDF;
-import com.dar.nclientv2.async.CreateZIP;
+import com.dar.nclientv2.async.converters.CreatePDF;
+import com.dar.nclientv2.async.converters.CreateZIP;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.async.downloader.DownloadGalleryV2;
 import com.dar.nclientv2.async.downloader.DownloadObserver;
@@ -76,15 +76,10 @@ public class LocalAdapter extends MultichoiceAdapter<Object, LocalAdapter.ViewHo
         boolean b1 = o1 instanceof LocalGallery;
         boolean b2 = o2 instanceof LocalGallery;
         //downloading manga are newer
-        if (b1 && !b2) return -1;
-        if (!b1 && b2) return 1;
-        if (b1/*&&b2*/) {
-            long res = ((LocalGallery) o1).getDirectory().lastModified() - ((LocalGallery) o2).getDirectory().lastModified();
-            if (res != 0) return res < 0 ? -1 : 1;
-        }
-        String s1 = b1 ? ((LocalGallery) o1).getTitle() : ((GalleryDownloaderV2) o1).getPathTitle();
-        String s2 = b2 ? ((LocalGallery) o2).getTitle() : ((GalleryDownloaderV2) o2).getPathTitle();
-        return s1.compareTo(s2);
+        long d1 = b1 ? ((LocalGallery) o1).getDirectory().lastModified() : Long.MAX_VALUE;
+        long d2 = b2 ? ((LocalGallery) o2).getDirectory().lastModified() : Long.MAX_VALUE;
+        if (d1 != d2) return Long.compare(d1, d2);
+        return comparatorByName.compare(o1, o2);
     };
 
     private List<Object> filter;
@@ -110,10 +105,12 @@ public class LocalAdapter extends MultichoiceAdapter<Object, LocalAdapter.ViewHo
         public void triggerEndDownload(GalleryDownloaderV2 downloader) {
             LocalGallery l = downloader.localGallery();
             galleryDownloaders.remove(downloader);
-            dataset.remove(l);
-            dataset.add(l);
-            LogUtility.d(l);
-            sortElements();
+            if (l != null) {
+                dataset.remove(l);
+                dataset.add(l);
+                LogUtility.d(l);
+                sortElements();
+            }
             context.runOnUiThread(() -> notifyItemRangeChanged(0, getItemCount()));
         }
 
@@ -143,6 +140,7 @@ public class LocalAdapter extends MultichoiceAdapter<Object, LocalAdapter.ViewHo
     }
 
     static void startGallery(Activity context, File directory) {
+        if (!directory.isDirectory()) return;
         LocalGallery ent = new LocalGallery(directory);
         ent.calculateSizes();
         new Thread(() -> {
@@ -184,8 +182,15 @@ public class LocalAdapter extends MultichoiceAdapter<Object, LocalAdapter.ViewHo
 
     private void sortItems(ArrayList<Object> arr) {
         LocalSortType type = Global.getLocalSortType();
-        Collections.sort(arr, getComparator(type.type));
-        if (type.descending) Collections.reverse(arr);
+        if (type.type == LocalSortType.Type.RANDOM) {
+            Collections.shuffle(arr, Utility.RANDOM);
+        } else {
+            try {
+                Collections.sort(arr, getComparator(type.type));
+            } catch (IllegalArgumentException ignore) {
+            }
+            if (type.descending) Collections.reverse(arr);
+        }
     }
 
     private Comparator<Object> getComparator(LocalSortType.Type type) {
@@ -230,7 +235,7 @@ public class LocalAdapter extends MultichoiceAdapter<Object, LocalAdapter.ViewHo
     }
 
     private void bindGallery(@NonNull final ViewHolder holder, int position, LocalGallery ent) {
-        holder.flag.setVisibility(View.GONE);
+        if (holder.flag != null) holder.flag.setVisibility(View.GONE);
         ImageDownloadUtility.loadImage(context, ent.getPage(ent.getMin()), holder.imgView);
         holder.title.setText(ent.getTitle());
         if (colCount == 1)
@@ -259,18 +264,24 @@ public class LocalAdapter extends MultichoiceAdapter<Object, LocalAdapter.ViewHo
         holder.title.setBackgroundColor(statusColor);
     }
 
-    public void updateColor(int position) {
-        Object o = filter.get(position);
-        if (!(o instanceof LocalGallery)) return;
-        int id = ((LocalGallery) filter.get(position)).getId();
+    public void updateColor(int id) {
+        if (id < 0) return;
         statuses.put(id, Queries.StatusMangaTable.getStatus(id).color);
-        notifyItemChanged(position);
+        for (int i = 0; i < filter.size(); i++) {
+            Object o = filter.get(i);
+            if (!(o instanceof LocalGallery)) continue;
+            LocalGallery lg = (LocalGallery) o;
+            if (lg.getId() == id) notifyItemChanged(i);
+        }
     }
 
     @Override
     protected void defaultMasterAction(int position) {
-        startGallery(context, ((LocalGallery) filter.get(position)).getDirectory());
-        context.setOpenedGalleryPosition(position);
+        if (position < 0 || filter.size() <= position) return;
+        if (!(filter.get(position) instanceof LocalGallery)) return;
+        LocalGallery lg = (LocalGallery) filter.get(position);
+        startGallery(context, lg.getDirectory());
+        context.setIdGalleryPosition(lg.getId());
     }
 
     private void bindDownload(@NonNull final ViewHolder holder, int position, GalleryDownloaderV2 downloader) {
@@ -320,6 +331,7 @@ public class LocalAdapter extends MultichoiceAdapter<Object, LocalAdapter.ViewHo
 
     @Override
     public long getItemId(int position) {
+        if (position == -1) return -1;
         return filter.get(position).hashCode();
     }
 
@@ -365,6 +377,7 @@ public class LocalAdapter extends MultichoiceAdapter<Object, LocalAdapter.ViewHo
         builder.setTitle(R.string.create_pdf).setMessage(getAllGalleries());
         builder.setPositiveButton(R.string.yes, (dialog, which) -> {
             for (Object o : getSelected()) {
+                if (!(o instanceof LocalGallery)) continue;
                 CreatePDF.startWork(context, (LocalGallery) o);
             }
         }).setNegativeButton(R.string.no, null).setCancelable(true);
@@ -377,6 +390,7 @@ public class LocalAdapter extends MultichoiceAdapter<Object, LocalAdapter.ViewHo
         builder.setTitle(R.string.create_zip).setMessage(getAllGalleries());
         builder.setPositiveButton(R.string.yes, (dialog, which) -> {
             for (Object o : getSelected()) {
+                if (!(o instanceof LocalGallery)) continue;
                 CreateZIP.startWork(context, (LocalGallery) o);
             }
         }).setNegativeButton(R.string.no, null).setCancelable(true);

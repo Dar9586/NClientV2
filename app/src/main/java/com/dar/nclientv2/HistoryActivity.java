@@ -10,7 +10,6 @@ import androidx.appcompat.widget.Toolbar;
 import com.dar.nclientv2.adapters.ListAdapter;
 import com.dar.nclientv2.async.database.Queries;
 import com.dar.nclientv2.components.activities.BaseActivity;
-import com.dar.nclientv2.settings.Database;
 import com.dar.nclientv2.settings.Global;
 import com.dar.nclientv2.utility.Utility;
 
@@ -22,7 +21,7 @@ public class HistoryActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.initActivity(this);
+        //Global.initActivity(this);
         setContentView(R.layout.activity_bookmark);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -43,7 +42,7 @@ public class HistoryActivity extends BaseActivity {
             finish();
             return true;
         } else if (item.getItemId() == R.id.cancelAll) {
-            Queries.HistoryTable.emptyHistory(Database.getDatabase());
+            Queries.HistoryTable.emptyHistory();
             adapter.restartDataset(new ArrayList<>(1));
             return true;
 

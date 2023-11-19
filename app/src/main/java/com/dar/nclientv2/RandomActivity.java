@@ -34,7 +34,7 @@ public class RandomActivity extends GeneralActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Global.initActivity(this);
+        //Global.initActivity(this);
         setContentView(R.layout.activity_random);
         loader = new RandomLoader(this);
 
@@ -107,20 +107,7 @@ public class RandomActivity extends GeneralActivity {
         loadedGallery = gallery;
         if (Global.isDestroyed(this)) return;
         ImageDownloadUtility.loadImage(this, gallery.getCover(), thumbnail);
-        switch (gallery.getLanguage()) {
-            case CHINESE:
-                language.setText("\uD83C\uDDE8\uD83C\uDDF3");
-                break;
-            case ENGLISH:
-                language.setText("\uD83C\uDDEC\uD83C\uDDE7");
-                break;
-            case JAPANESE:
-                language.setText("\uD83C\uDDEF\uD83C\uDDF5");
-                break;
-            case UNKNOWN:
-                language.setText("\uD83C\uDFF3");
-                break;
-        }
+        language.setText(Global.getLanguageFlag(gallery.getLanguage()));
         isFavorite = Favorites.isFavorite(loadedGallery);
         favoriteUpdateButton();
         title.setText(gallery.getTitle());
