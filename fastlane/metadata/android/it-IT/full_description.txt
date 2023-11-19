@@ -1,18 +1,14 @@
-Un client non ufficiale di NHentai.
-Quest'app funziona per dispositivi dall'API 14 (Android 4.0) e superiori.
+Un client Android NHentai non ufficiale. Questa app funziona per dispositivi API 14 (Android 4.0) e versioni successive. 
 
-Funzionalità:
+Funzionalità API: sfoglia la pagina principale
 
- - Naviga tra le gallerie
- - Cerca gallerie
- - Includi o escludi tag
- - Sfoca o nascondi tag
- - Download dei manga
- - Gallerie preferiti
- - Abilita PIN per accedere l'app
-
-Custom feature
-
- - Condividi gallerie
- - Apri in un browser
- - Segnalibri
+- Ricerca per query o tag 
+- Includi o escludi tag 
+- Sfoca o nascondi i tag esclusi 
+- Scarica gallerie 
+- Gallerie preferite 
+- Abilita il PIN per accedere alle funzionalità personalizzate dell'app 
+- Condividi gallerie 
+- Apri nel browser 
+- Segnalibro 
+- Possibilità di mascherare l'app da calcolatrice
