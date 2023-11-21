@@ -1,18 +1,19 @@
-非官方 NHentai Android 客户端。
-此应用在 API 14 (Android 4.0) 及以上的设备上工作。
+An unofficial NHentai Android Client.
+This app  works for devices from API 14 (Android 4.0) and above.
 
-API 功能:
+API Features
 
- - 浏览主页面
- - 按请求或标签搜索
- - 包含或排除标签
- - 模糊或隐藏排除的标签
- - 下载漫画
- - 收藏画廊
+ - Browse main page
+ - Search by query or tags
+ - Include or exclude tags
+ - Blur or hide excluded tags
+ - Download galleries
+ - Favorite galleries
+ - Enable PIN to access the app
 
-自定义功能
+Custom Features
 
- - 分享画廊
- - 在浏览器中打开
- - 书签
- 
+ - Share galleries
+ - Open in browser
+ - Bookmark
+ - Ability to disguise the app as calculator
