@@ -24,12 +24,12 @@
     <string name="categories">أصناف</string>
     <string name="unknown">مجهول</string>
     <string name="channel1_name">نزِّل العمل</string>
-    <string name="channel2_name">أَنشئ مستندًا محمولًا PDF</string>
+    <string name="channel2_name">أَنشئ مُستَندًا محمولًا PDF</string>
     <string name="channel3_name">أَنشئ ملفًّا مضغوطًا ZIP</string>
     <string name="channel1_description">تُستخدم لإظهار مدى تقدُّم تنزيل العمل</string>
-    <string name="channel2_description">تُستخدم لإظهار مدى تقدُّم إنشاء المستند المحمول PDF</string>
+    <string name="channel2_description">تُستخدم لإظهار مدى تقدُّم إنشاء المُستنَد المحمول PDF</string>
     <string name="channel3_description">تُستخدم لإظهار مدى تقدُّم إنشاء الملف المضغوط ZIP</string>
-    <string name="channel2_title">جارٍ إنشاء المستند المحمول:</string>
+    <string name="channel2_title">جارٍ إنشاء المُستَند المحمول:</string>
     <string name="channel3_title">جارٍ إنشاء الملف المضغوط:</string>
     <string name="tags_max_reached" formatted="true">يمكنك الحصول على %d كعددِ وسومٍ مختارةٍ قصويٍّ.</string>
     <string name="only_english">الإنجليزية فقط</string>
@@ -55,13 +55,13 @@
     <string name="share">شارك</string>
     <string name="image">صورة</string>
     <string name="next">التالي</string>
-    <string name="create_pdf">أَنشئ مستندًا محمولًا PDF</string>
-    <string name="create_pdf_format" formatted="true">أَنشئ مستند \"%s\" المحمول</string>
+    <string name="create_pdf">أَنشئ مُستَندًا محمولًا PDF</string>
+    <string name="create_pdf_format" formatted="true">أَنشئ مُستَند \"%s\" المحمول</string>
     <string name="create_zip_format" formatted="true">أَنشئ ملف \"%s\" المضغوط</string>
-    <string name="created_pdf">تم إنشاء المستند المحمول بنجاح</string>
-    <string name="error_pdf">طرأ خطأٌ أثناء إنشاء المستند المحمول</string>
+    <string name="created_pdf">تم إنشاء المُستَند المحمول بنجاح</string>
+    <string name="error_pdf">طرأ خطأٌ أثناء إنشاء المُستَند المحمول</string>
     <string name="parsing_pages">تجزئة الصفحات</string>
-    <string name="writing_pdf">كتابة مستندٍ محمولٍ</string>
+    <string name="writing_pdf">كتابة مُستَندٍ محمولٍ</string>
     <string name="navigation_drawer_open">اِفتح درج التصفح</string>
     <string name="navigation_drawer_close">أَغلق درج التصفح</string>
     <string name="nav_header_subtitle">عميل Nhentai غير الرسمي</string>
@@ -251,7 +251,7 @@
     <string name="view_statuses">اِعرِض وضعيات الأعمال</string>
     <string name="status_column_count">اِختر عدد أعمدة الوضعبات</string>
     <string name="status_viewer">وضعيات الأعمال</string>
-    <string name="title_hide_multitasking">أَخف محتوى التطبيق عند تعدد المهام</string>
+    <string name="title_hide_multitasking">أَخفِ محتوى التطبيق عند تعدد المهام</string>
     <string name="title">العنوان</string>
     <string name="download_date">تاريخ التنزيل</string>
     <string name="page_count">عدد الصفحات</string>
@@ -291,18 +291,18 @@
     <string name="summary_fetch_metadata">نزِّل البيانات الوصفية للأعمال المُنزَّلة قبل 2.3.0 والتي لا تحوي بيانات وصفية كالوسوم</string>
     <string name="title_fetch_metadata">اُجلُب البيانات الوصفية للأعمال القديمة</string>
     <string name="title_change_page_buttons">غيِّر الصفحة بالنقر على الصورة</string>
-    <string name="export_finished">Export finished</string>
-    <string name="import_finished">Import finished</string>
-    <string name="download_torrent">Download torrent</string>
+    <string name="export_finished">تم التصدير</string>
+    <string name="import_finished">تم الاستيراد</string>
+    <string name="download_torrent">نزِّل التورنت</string>
     <string name="title_activity_captcha">CAPTCHA</string>
-    <string name="invalid_response">Invalid response</string>
-    <string name="system_default">System default</string>
-    <string name="clear_cookies">Clear cookies</string>
-    <string name="fetching_cloudflare_token">Fetching Cloudflare token …</string>
-    <string name="exact_title_match_title">Exact tag match only</string>
-    <string name="exact_title_match_summary">Hide galleries which would appear in the site but doesn\'t contains all the tags searched</string>
-    <string name="hide">Hide</string>
-    <string name="title_user_agent">Change User-Agent</string>
+    <string name="invalid_response">الجواب غير صالح</string>
+    <string name="system_default">افتراضي النظام</string>
+    <string name="clear_cookies">اِمح مُعرِّفات الارتباط</string>
+    <string name="fetching_cloudflare_token">جارٍ جلب رمز Cloudfare...</string>
+    <string name="exact_title_match_title">تطابق الوسوم التام فقط</string>
+    <string name="exact_title_match_summary">أَخفِ الأعمال التي قد تظهر في الموقع ولكن لا تحمل كافّة الوسوم المبحوث عنها</string>
+    <string name="hide">أَخفِ</string>
+    <string name="title_user_agent">غيِّر وكيل المُستخدِم</string>
 
     <string-array name="scroll_type">
         <item>أفقي</item>
