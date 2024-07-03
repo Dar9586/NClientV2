@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.dar.nclientv2.ZoomActivity">
+    tools:context="com.dar.nclientv3.ZoomActivity">
     <item
         android:id="@+id/save_page"
         android:icon="@drawable/ic_save"

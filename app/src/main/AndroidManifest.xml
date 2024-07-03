@@ -117,7 +117,7 @@
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.dar.nclientv2.MainActivity" />
+                android:value="com.dar.nclientv3.MainActivity" />
         </activity>
         <activity
             android:name=".ZoomActivity"
@@ -155,7 +155,7 @@
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.dar.nclientv2.MainActivity" />
+                android:value="com.dar.nclientv3.MainActivity" />
         </activity>
         <activity android:name=".SettingsActivity" />
         <activity
@@ -187,7 +187,7 @@
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.dar.nclientv2.MainActivity" />
+                android:value="com.dar.nclientv3.MainActivity" />
         </activity>
 
         <provider
@@ -229,6 +229,6 @@
         </intent>
     </queries>
     <meta-data
-        android:name="com.dar.nclientv2.components.classes.integration.OkHttpGlideModule"
+        android:name="com.dar.nclientv3.components.classes.integration.OkHttpGlideModule"
         android:value="GlideModule" />
 </manifest>

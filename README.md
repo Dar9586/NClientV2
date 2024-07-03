@@ -1,14 +1,14 @@
-# NClientV2
+# NClientV3
 
-[![Github](https://img.shields.io/github/v/release/Dar9586/NClientV2.svg?logo=github)](https://github.com/Dar9586/NClientV2/releases/latest) [![F-Droid](https://img.shields.io/f-droid/v/com.dar.nclientv2)](https://f-droid.org/en/packages/com.dar.nclientv2/) ![Bitrise](https://img.shields.io/bitrise/0a79e29cfda80c5f?token=BrSKdUUfKb97MHigL9nA1w)
+[![Github](https://img.shields.io/github/v/release/Dar9586/NClientV3.svg?logo=github)](https://github.com/Dar9586/NClientV3/releases/latest) [![F-Droid](https://img.shields.io/f-droid/v/com.dar.nclientv3)](https://f-droid.org/en/packages/com.dar.nclientv3/) ![Bitrise](https://img.shields.io/bitrise/0a79e29cfda80c5f?token=BrSKdUUfKb97MHigL9nA1w)
 
 An unofficial NHentai Android Client.
 This app  works for devices from API 14 (Android 4.0) and above.
-Releases: <https://github.com/Dar9586/NClientV2/releases>
+Releases: <https://github.com/Dar9586/NClientV3/releases>
 
 ## Translation
 
-You can translate this app on [Crowdin](https://crowdin.com/project/nclientv2)
+You can translate this app on [Crowdin](https://crowdin.com/project/nclientv3)
 
 ## API Features
 
@@ -30,12 +30,13 @@ You can translate this app on [Crowdin](https://crowdin.com/project/nclientv2)
 
 Main page|Lateral menu
 :-:|:-:
-![Main page](https://raw.githubusercontent.com/Dar9586/NClientV2/master/fastlane/metadata/android/en-US/images/phoneScreenshots/img1.jpg)|![Lateral menu](https://media.discordapp.net/attachments/608725424092086280/720369411030253578/Screenshot_20200610-230229_NClientV2.jpg?width=360&height=658)
+![Main page](https://raw.githubusercontent.com/Dar9586/NClientV3/master/fastlane/metadata/android/en-US/images/phoneScreenshots/img1.jpg)|![Lateral menu](https://media.discordapp.net/attachments/608725424092086280/720369411030253578/Screenshot_20200610-230229_NClientV3.jpg?width=360&height=658)
 Search|Random manga
-![Search](https://media.discordapp.net/attachments/608725424092086280/720369411030253578/Screenshot_20200610-230229_NClientV2.jpg?width=360&height=658)|![Random manga](https://raw.githubusercontent.com/Dar9586/NClientV2/master/fastlane/metadata/android/en-US/images/phoneScreenshots/img4.jpg)
+![Search](https://media.discordapp.net/attachments/608725424092086280/720369411030253578/Screenshot_20200610-230229_NClientV3.jpg?width=360&height=658)|![Random manga](https://raw.githubusercontent.com/Dar9586/NClientV3/master/fastlane/metadata/android/en-US/images/phoneScreenshots/img4.jpg)
 
 ## Contributors
 
+- [TheBearodactyl](https://github.com/TheBearodactyl) for Kotlin migration, UI revamp, and optimization
 - [Still34](https://github.com/Still34) for code cleanup & Traditional Chinese translation
 - [TacoTheDank](https://github.com/TacoTheDank) for XML and gradle cleanup
 - [hmaltr](https://github.com/hmaltr) for Turkish translation and issue moderation

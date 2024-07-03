@@ -47,7 +47,7 @@
     <string name="key_wifi_usage" translatable="false">wifi_usage</string>
     <string name="key_maximum_notification" translatable="false">maximum_notification</string>
     <string name="key_keep_history" translatable="false">keep_history</string>
-    <string name="app_version_format" formatted="true" translatable="false">NClientV2 %s</string>
+    <string name="app_version_format" formatted="true" translatable="false">NClientV3 %s</string>
     <string name="key_override_volume" translatable="false">volume_override</string>
     <string name="key_remove_ignored" translatable="false">remove_ignored</string>
     <string name="key_check_update" translatable="false">check_update</string>
