@@ -1,15 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 33
-    buildToolsVersion '30.0.3'
+    compileSdkVersion 34
     defaultConfig {
         applicationId "com.dar.nclientv2"
-        minSdkVersion 14
-        targetSdkVersion 29
-        versionCode 305
+        minSdkVersion 21
+        targetSdkVersion 35
+        versionCode 400
         multiDexEnabled true
-        versionName "3.0.5-stable"
+        versionName "4.0.0-stable"
         vectorDrawables.useSupportLibrary true
         proguardFiles 'proguard-rules.pro'
     }
@@ -40,19 +39,18 @@ android {
 
 dependencies {
 // AndroidX
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.fragment:fragment:1.5.6'
-    implementation 'androidx.preference:preference:1.2.0'
-    implementation 'androidx.viewpager2:viewpager2:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.3.0'
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
+    implementation 'androidx.fragment:fragment:1.8.5'
+    implementation 'androidx.preference:preference:1.2.1'
+    implementation 'androidx.viewpager2:viewpager2:1.1.0'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+    implementation 'com.google.android.material:material:1.12.0'
 
 // Other
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.12.12'//Because of min SDK
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
-    //implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation 'org.jsoup:jsoup:1.16.1'
     implementation 'ch.acra:acra-core:5.7.0'
     implementation('com.github.bumptech.glide:glide:4.15.1') {
@@ -64,6 +62,6 @@ dependencies {
     implementation 'com.github.yukuku:ambilwarna:2.0.1'
     implementation 'me.zhanghai.android.fastscroll:library:1.2.0'
 
-    implementation 'net.opacapp:multiline-collapsingtoolbar:27.1.1'
+    implementation 'com.github.opacapp:multiline-collapsingtoolbar:v27.1.0'
     implementation 'com.zeugmasolutions.localehelper:locale-helper-android:1.5.1'
 }

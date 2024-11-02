@@ -35,8 +35,8 @@ public abstract class GeneralActivity extends AppCompatActivity {
     private void inflateWebView() {
         if (tokenView == null) {
             Toast.makeText(this, R.string.fetching_cloudflare_token, Toast.LENGTH_SHORT).show();
-            ViewGroup rootView= (ViewGroup) findViewById(android.R.id.content).getRootView();
-            ViewGroup v= (ViewGroup) LayoutInflater.from(this).inflate(R.layout.cftoken_layout,rootView,false);
+            ViewGroup rootView = (ViewGroup) findViewById(android.R.id.content).getRootView();
+            ViewGroup v = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.cftoken_layout, rootView, false);
             tokenView = new CFTokenView(v);
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             tokenView.setVisibility(View.GONE);

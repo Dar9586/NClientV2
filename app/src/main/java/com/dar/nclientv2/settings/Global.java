@@ -49,6 +49,7 @@ import org.acra.ACRA;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -385,6 +386,7 @@ public class Global {
             );
         CustomSSLSocketFactory.enableTls12OnPreLollipop(builder);
         builder.addInterceptor(new CustomInterceptor(context.getApplicationContext(), true));
+        builder.callTimeout(Duration.ofSeconds(10));
         client = builder.build();
         client.dispatcher().setMaxRequests(25);
         client.dispatcher().setMaxRequestsPerHost(25);
@@ -660,7 +662,7 @@ public class Global {
     }
 
     public static boolean hasStoragePermission(Context context) {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             return true; //We don't check permission on Android 13
         } else {
             return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;

@@ -558,7 +558,7 @@ public class MainActivity extends BaseActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        popularItemDispay(menu.findItem(R.id.by_popular));
+        popularItemDisplay(menu.findItem(R.id.by_popular));
 
         showLanguageIcon(menu.findItem(R.id.only_language));
 
@@ -599,7 +599,7 @@ public class MainActivity extends BaseActivity
         }
     }
 
-    private void popularItemDispay(MenuItem item) {
+    private void popularItemDisplay(MenuItem item) {
         item.setTitle(getString(R.string.sort_type_title_format, getString(Global.getSortType().getNameId())));
         Global.setTint(item.getIcon());
     }
@@ -693,7 +693,7 @@ public class MainActivity extends BaseActivity
         });
         builder.setPositiveButton(R.string.ok, (dialog, which) -> {
             Global.updateSortType(MainActivity.this, temporaryType);
-            popularItemDispay(item);
+            popularItemDisplay(item);
             inspector = inspector.cloneInspector(MainActivity.this, resetDataset);
             inspector.setSortType(temporaryType);
             inspector.start();

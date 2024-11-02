@@ -203,14 +203,14 @@ public class LocalActivity extends BaseActivity {
         switchMaterial.setChecked(sortType.descending);
         builder.setView(view);
         builder.setPositiveButton(R.string.ok, (dialog, which) -> {
-            int typeSelectedIndex = group.indexOfChild(group.findViewById(group.getCheckedChipId()));
-            LocalSortType.Type typeSelected = LocalSortType.Type.values()[typeSelectedIndex];
-            boolean descending = switchMaterial.isChecked();
-            LocalSortType newSortType = new LocalSortType(typeSelected, descending);
-            if (sortType.equals(newSortType)) return;
-            Global.setLocalSortType(LocalActivity.this, newSortType);
-            if (adapter != null) adapter.sortChanged();
-        })
+                int typeSelectedIndex = group.indexOfChild(group.findViewById(group.getCheckedChipId()));
+                LocalSortType.Type typeSelected = LocalSortType.Type.values()[typeSelectedIndex];
+                boolean descending = switchMaterial.isChecked();
+                LocalSortType newSortType = new LocalSortType(typeSelected, descending);
+                if (sortType.equals(newSortType)) return;
+                Global.setLocalSortType(LocalActivity.this, newSortType);
+                if (adapter != null) adapter.sortChanged();
+            })
             .setNeutralButton(R.string.cancel, null)
             .setTitle(R.string.sort_select_type)
             .show();

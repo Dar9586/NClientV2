@@ -79,7 +79,8 @@ public class CrashApplication extends MultiDexApplication {
                 LogUtility.d("Find signature: " + hash);
                 if (SIGNATURE_GITHUB.equals(hash)) return true;
             }
-        } catch (NullPointerException | PackageManager.NameNotFoundException | NoSuchAlgorithmException e) {
+        } catch (NullPointerException | PackageManager.NameNotFoundException |
+                 NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
         return false;

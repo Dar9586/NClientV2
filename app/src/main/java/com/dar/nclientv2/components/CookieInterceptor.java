@@ -54,7 +54,7 @@ public class CookieInterceptor {
 
     private void interceptInternal() {
         CFTokenView web = getWebView();
-        if(!webViewHidden)
+        if (!webViewHidden)
             web.post(() -> web.setVisibility(View.VISIBLE));
         CookieManager manager = CookieManager.getInstance();
         HashMap<String, String> cookiesMap = new HashMap<>();
@@ -78,7 +78,7 @@ public class CookieInterceptor {
     }
 
     public void intercept() {
-        while(!manager.endInterceptor()){
+        while (!manager.endInterceptor()) {
             while (intercepting) {
                 Utility.threadSleep(100);
             }

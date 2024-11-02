@@ -54,7 +54,7 @@ public class CommentsFetcher extends Thread {
                 return;
             }
             JsonReader reader = new JsonReader(new InputStreamReader(body.byteStream()));
-            if(reader.peek() == JsonToken.BEGIN_ARRAY) {
+            if (reader.peek() == JsonToken.BEGIN_ARRAY) {
                 reader.beginArray();
                 while (reader.hasNext())
                     comments.add(new Comment(reader));

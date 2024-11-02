@@ -80,7 +80,7 @@ public class DownloadGalleryV2 extends JobIntentService {
         if (intent != null) {
             int id = intent.getIntExtra(getPackageName() + ".ID", -1);
             String mode = intent.getStringExtra(getPackageName() + ".MODE");
-            LogUtility.d("" + mode);
+            LogUtility.d(mode);
             GalleryDownloaderManager manager = DownloadQueue.managerFromId(id);
             if (manager != null) {
                 LogUtility.d("IntentAction: " + mode + " for id " + id);

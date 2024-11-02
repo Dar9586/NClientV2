@@ -304,7 +304,7 @@ public class GalleryActivity extends BaseActivity {
     }
 
     private void downloadTorrent() {
-        if(!Global.hasStoragePermission(this)){
+        if (!Global.hasStoragePermission(this)) {
             return;
         }
 
@@ -313,28 +313,28 @@ public class GalleryActivity extends BaseActivity {
 
         new AuthRequest(referer, url, new Callback() {
             @Override
-            public void onFailure(@NonNull Call call,@NonNull  IOException e) {
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 GalleryActivity.this.runOnUiThread(() ->
                     Toast.makeText(GalleryActivity.this, R.string.failed, Toast.LENGTH_SHORT).show()
                 );
             }
 
             @Override
-            public void onResponse(@NonNull Call call,@NonNull Response response) throws IOException {
-                File file=new File(Global.TORRENTFOLDER,gallery.getId()+".torrent");
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                File file = new File(Global.TORRENTFOLDER, gallery.getId() + ".torrent");
                 Utility.writeStreamToFile(response.body().byteStream(), file);
-                Intent intent=new Intent(Intent.ACTION_VIEW);
+                Intent intent = new Intent(Intent.ACTION_VIEW);
                 Uri torrentUri;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     torrentUri = FileProvider.getUriForFile(GalleryActivity.this, GalleryActivity.this.getPackageName() + ".provider", file);
                     intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                }else{
-                    torrentUri=Uri.fromFile(file);
+                } else {
+                    torrentUri = Uri.fromFile(file);
                 }
                 intent.setDataAndType(torrentUri, "application/x-bittorrent");
                 try {
                     GalleryActivity.this.startActivity(intent);
-                }catch (RuntimeException ignore){
+                } catch (RuntimeException ignore) {
                     runOnUiThread(() ->
                         Toast.makeText(GalleryActivity.this, R.string.failed, Toast.LENGTH_SHORT).show()
                     );
@@ -342,7 +342,7 @@ public class GalleryActivity extends BaseActivity {
                 }
                 file.deleteOnExit();
             }
-        }).setMethod("GET",null).start();
+        }).setMethod("GET", null).start();
     }
 
     private void updateStatus() {

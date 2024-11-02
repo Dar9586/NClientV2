@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.regex.Pattern;
 
@@ -300,7 +301,7 @@ public class GalleryDownloaderV2 {
     private void checkPages() {
         File filePath;
         for (int i = 0; i < urls.size(); i++) {
-            if(urls.get(i)==null){
+            if (urls.get(i) == null) {
                 urls.remove(i--);
                 continue;
             }
@@ -347,7 +348,7 @@ public class GalleryDownloaderV2 {
         GalleryDownloaderV2 that = (GalleryDownloaderV2) o;
 
         if (id != that.id) return false;
-        return folder != null ? folder.equals(that.folder) : that.folder == null;
+        return Objects.equals(folder, that.folder);
     }
 
     @Override

@@ -106,24 +106,24 @@ public class Queries {
 
         static void clearGalleries() {
             db.delete(GalleryTable.TABLE_NAME, String.format(Locale.US,
-                "%s NOT IN (SELECT %s FROM %s) AND " +
                     "%s NOT IN (SELECT %s FROM %s) AND " +
-                    "%s NOT IN (SELECT %s FROM %s)",
-                GalleryTable.IDGALLERY, DownloadTable.ID_GALLERY, DownloadTable.TABLE_NAME,
-                GalleryTable.IDGALLERY, FavoriteTable.ID_GALLERY, FavoriteTable.TABLE_NAME,
-                GalleryTable.IDGALLERY, StatusMangaTable.GALLERY, StatusMangaTable.TABLE_NAME)
+                        "%s NOT IN (SELECT %s FROM %s) AND " +
+                        "%s NOT IN (SELECT %s FROM %s)",
+                    GalleryTable.IDGALLERY, DownloadTable.ID_GALLERY, DownloadTable.TABLE_NAME,
+                    GalleryTable.IDGALLERY, FavoriteTable.ID_GALLERY, FavoriteTable.TABLE_NAME,
+                    GalleryTable.IDGALLERY, StatusMangaTable.GALLERY, StatusMangaTable.TABLE_NAME)
                 , null);
             db.delete(GalleryBridgeTable.TABLE_NAME, String.format(Locale.US,
-                "%s NOT IN (SELECT %s FROM %s)",
-                GalleryBridgeTable.ID_GALLERY, GalleryTable.IDGALLERY, GalleryTable.TABLE_NAME)
+                    "%s NOT IN (SELECT %s FROM %s)",
+                    GalleryBridgeTable.ID_GALLERY, GalleryTable.IDGALLERY, GalleryTable.TABLE_NAME)
                 , null);
             db.delete(FavoriteTable.TABLE_NAME, String.format(Locale.US,
-                "%s NOT IN (SELECT %s FROM %s)",
-                FavoriteTable.ID_GALLERY, GalleryTable.IDGALLERY, GalleryTable.TABLE_NAME)
+                    "%s NOT IN (SELECT %s FROM %s)",
+                    FavoriteTable.ID_GALLERY, GalleryTable.IDGALLERY, GalleryTable.TABLE_NAME)
                 , null);
             db.delete(DownloadTable.TABLE_NAME, String.format(Locale.US,
-                "%s NOT IN (SELECT %s FROM %s)",
-                DownloadTable.ID_GALLERY, GalleryTable.IDGALLERY, GalleryTable.TABLE_NAME)
+                    "%s NOT IN (SELECT %s FROM %s)",
+                    DownloadTable.ID_GALLERY, GalleryTable.IDGALLERY, GalleryTable.TABLE_NAME)
                 , null);
         }
 

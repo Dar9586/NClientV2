@@ -107,9 +107,6 @@ public class VersionChecker {
 
         while (jr.peek() != JsonToken.END_OBJECT) {
             switch (jr.nextName()) {
-                default:
-                    jr.skipValue();
-                    break;
                 case "tag_name":
                     release.versionCode = jr.nextString();
                     break;
@@ -133,6 +130,9 @@ public class VersionChecker {
                             release.downloadUrl = null;
                     }
                     jr.endArray();
+                    break;
+                default:
+                    jr.skipValue();
                     break;
             }
         }
@@ -171,12 +171,12 @@ public class VersionChecker {
         builder.setIcon(R.drawable.ic_file);
         builder.setMessage(context.getString(R.string.update_version_format, versionName, latestVersion, finalBody));
         builder.setPositiveButton(R.string.install, (dialog, which) -> {
-            if (Global.hasStoragePermission(context)) downloadVersion(latestVersion);
-            else {
-                latest = latestVersion;
-                context.runOnUiThread(() -> context.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 2));
-            }
-        }).setNegativeButton(R.string.cancel, null)
+                if (Global.hasStoragePermission(context)) downloadVersion(latestVersion);
+                else {
+                    latest = latestVersion;
+                    context.runOnUiThread(() -> context.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 2));
+                }
+            }).setNegativeButton(R.string.cancel, null)
             .setNeutralButton(R.string.github, (dialog, which) -> {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(LATEST_RELEASE_URL));
                 context.startActivity(browserIntent);

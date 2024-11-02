@@ -27,8 +27,8 @@ public class CFTokenView {
 
     public CFTokenView(ViewGroup masterLayout) {
         this.masterLayout = masterLayout;
-        webView=masterLayout.findViewById(R.id.webView);
-        button=masterLayout.findViewById(R.id.hideWebView);
+        webView = masterLayout.findViewById(R.id.webView);
+        button = masterLayout.findViewById(R.id.hideWebView);
         button.setOnClickListener(v -> CookieInterceptor.hideWebView());
     }
 
@@ -49,7 +49,7 @@ public class CFTokenView {
     }
 
 
-    public static class CFTokenWebView extends WebView{
+    public static class CFTokenWebView extends WebView {
         public CFTokenWebView(@NonNull Context context) {
             super(context);
             init();

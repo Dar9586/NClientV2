@@ -94,7 +94,7 @@ public class Login {
         Queries.TagTable.removeAllBlacklisted();
     }
 
-    public static void clearCookies(){
+    public static void clearCookies() {
         CustomCookieJar cookieJar = (CustomCookieJar) Global.getClient().cookieJar();
         cookieJar.clear();
         cookieJar.clearSession();

@@ -8,6 +8,7 @@ public abstract class ThreadAsyncTask<Params, Progress, Result> {
 
     private final AppCompatActivity activity;
     private Thread thread;
+
     public ThreadAsyncTask(AppCompatActivity activity) {
         this.activity = activity;
     }
