@@ -93,6 +93,9 @@ public class SimpleGallery extends GenericGallery {
     }
 
     private static String extToString(ImageExt ext) {
+        if (ext == null) {
+            return null;
+        }
         switch (ext) {
             case GIF:
                 return "gif";
