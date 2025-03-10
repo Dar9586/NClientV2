@@ -155,7 +155,7 @@ public class Gallery extends GenericGallery {
     public Uri getCover() {
         if (Global.getDownloadPolicy() == Global.DataUsageType.THUMBNAIL) return getThumbnail();
         if (galleryData.getCover().getImageExt() == ImageExt.GIF) return getHighPage(0);
-        return Uri.parse(String.format(Locale.US, "https://t." + Utility.getHost() + "/galleries/%d/cover.%s", getMediaId(), galleryData.getCover().extToString()));
+        return Uri.parse(String.format(Locale.US, "https://t1." + Utility.getHost() + "/galleries/%d/cover.%s", getMediaId(), galleryData.getCover().extToString()));
     }
 
     public ImageExt getThumb() {
@@ -164,7 +164,7 @@ public class Gallery extends GenericGallery {
 
     public Uri getThumbnail() {
         if (galleryData.getCover().getImageExt() == ImageExt.GIF) return getHighPage(0);
-        return Uri.parse(String.format(Locale.US, "https://t." + Utility.getHost() + "/galleries/%d/thumb.%s", getMediaId(), galleryData.getThumbnail().extToString()));
+        return Uri.parse(String.format(Locale.US, "https://t1." + Utility.getHost() + "/galleries/%d/thumb.%s", getMediaId(), galleryData.getThumbnail().extToString()));
     }
 
     private @Nullable
@@ -183,13 +183,13 @@ public class Gallery extends GenericGallery {
     }
 
     public Uri getHighPage(int page) {
-        return Uri.parse(String.format(Locale.US, "https://i." + Utility.getHost() + "/galleries/%d/%d.%s", getMediaId(), page + 1, getPageExtension(page)));
+        return Uri.parse(String.format(Locale.US, "https://i1." + Utility.getHost() + "/galleries/%d/%d.%s", getMediaId(), page + 1, getPageExtension(page)));
     }
 
     public Uri getLowPage(int page) {
         Uri uri = getFileUri(page);
         if (uri != null) return uri;
-        return Uri.parse(String.format(Locale.US, "https://t." + Utility.getHost() + "/galleries/%d/%dt.%s", getMediaId(), page + 1, getPageExtension(page)));
+        return Uri.parse(String.format(Locale.US, "https://t1." + Utility.getHost() + "/galleries/%d/%dt.%s", getMediaId(), page + 1, getPageExtension(page)));
     }
 
     public String getPageExtension(int page) {

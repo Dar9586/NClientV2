@@ -79,8 +79,13 @@ public class SimpleGallery extends GenericGallery {
         id = Integer.parseInt(temp.substring(3, temp.length() - 1));
         a = e.getElementsByTag("img").first();
         temp = a.hasAttr("data-src") ? a.attr("data-src") : a.attr("src");
+        //temp = a.attr("src");
         mediaId = Integer.parseInt(temp.substring(temp.indexOf("galleries") + 10, temp.lastIndexOf('/')));
-        thumbnail = Page.charToExt(temp.charAt(temp.length() - 3));
+        if (temp.endsWith(".jpg.webp")) {
+            temp = temp.substring(0, temp.length() - 5); // Quita ".webp"
+        }
+        String extension = temp.substring(temp.lastIndexOf('.') + 1);
+        thumbnail = Page.charToExt(extension.charAt(0));//thumbnail = Page.charToExt(temp.charAt(temp.length() - 3));
         title = e.getElementsByTag("div").first().text();
         if (context != null && id > Global.getMaxId()) Global.updateMaxId(context, id);
     }
@@ -93,6 +98,10 @@ public class SimpleGallery extends GenericGallery {
     }
 
     private static String extToString(ImageExt ext) {
+        //just in case
+        if (ext == null) {
+            return null;
+        }
         switch (ext) {
             case GIF:
                 return "gif";
@@ -100,6 +109,8 @@ public class SimpleGallery extends GenericGallery {
                 return "png";
             case JPG:
                 return "jpg";
+            case WEBP:
+                return "webp";
         }
         return null;
     }
@@ -171,9 +182,9 @@ public class SimpleGallery extends GenericGallery {
 
     public Uri getThumbnail() {
         if (thumbnail == ImageExt.GIF) {
-            return Uri.parse(String.format(Locale.US, "https://i." + Utility.getHost() + "/galleries/%d/1.gif", mediaId));
+            return Uri.parse(String.format(Locale.US, "https://i1." + Utility.getHost() + "/galleries/%d/1.gif", mediaId));
         }
-        return Uri.parse(String.format(Locale.US, "https://t." + Utility.getHost() + "/galleries/%d/thumb.%s", mediaId, extToString(thumbnail)));
+        return Uri.parse(String.format(Locale.US, "https://t1." + Utility.getHost() + "/galleries/%d/thumb.%s", mediaId, extToString(thumbnail)));
     }
 
     public int getMediaId() {

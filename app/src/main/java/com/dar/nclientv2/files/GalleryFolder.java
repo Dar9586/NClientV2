@@ -32,7 +32,7 @@ public class GalleryFolder implements Parcelable, Iterable<PageFile> {
             return new GalleryFolder[size];
         }
     };
-    private static final Pattern FILE_PATTERN = Pattern.compile("^0*(\\d{1,9})\\.(gif|png|jpg)$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern FILE_PATTERN = Pattern.compile("^0*(\\d{1,9})\\.(gif|png|jpg|webp)$", Pattern.CASE_INSENSITIVE);
     private static final Pattern IDFILE_PATTERN = Pattern.compile("^\\.(\\d{1,6})$");
     private static final String NOMEDIA_FILE = ".nomedia";
     private final SparseArrayCompat<PageFile> pageArray = new SparseArrayCompat<>();

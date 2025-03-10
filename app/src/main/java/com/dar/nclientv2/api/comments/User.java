@@ -70,7 +70,7 @@ public class User implements Parcelable {
     }
 
     public Uri getAvatarUrl() {
-        return Uri.parse(String.format(Locale.US, "https://i.%s/%s", Utility.getHost(), avatarUrl));
+        return Uri.parse(String.format(Locale.US, "https://i1.%s/%s", Utility.getHost(), avatarUrl));
     }
 
     public String getUsername() {

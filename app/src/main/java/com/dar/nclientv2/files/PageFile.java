@@ -28,8 +28,8 @@ public class PageFile extends File implements Parcelable {
             return new PageFile[size];
         }
     };
-    private static final Pattern DEFAULT_THUMBNAIL = Pattern.compile("^0*1\\.(gif|png|jpg)$", Pattern.CASE_INSENSITIVE);
-    private static final Pattern VALID_PAGE = Pattern.compile("^0*(\\d+)\\.(gif|png|jpg)$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern DEFAULT_THUMBNAIL = Pattern.compile("^0*1\\.(gif|png|jpg|webp)$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern VALID_PAGE = Pattern.compile("^0*(\\d+)\\.(gif|png|jpg|webp)$", Pattern.CASE_INSENSITIVE);
     private final ImageExt ext;
     private final int page;
 

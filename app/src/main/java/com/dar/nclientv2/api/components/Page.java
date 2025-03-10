@@ -90,6 +90,8 @@ public class Page implements Parcelable {
                 return "png";
             case JPG:
                 return "jpg";
+            case WEBP:
+                return "webp";
         }
         return null;
     }
@@ -102,6 +104,8 @@ public class Page implements Parcelable {
                 return 'p';
             case JPG:
                 return 'j';
+            case WEBP:
+                return 'w';
         }
         return '\0';
     }
@@ -114,6 +118,8 @@ public class Page implements Parcelable {
                 return ImageExt.PNG;
             case 'j':
                 return ImageExt.JPG;
+            case 'w':
+                return ImageExt.WEBP;
         }
         return null;
     }

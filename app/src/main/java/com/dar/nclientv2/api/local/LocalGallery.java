@@ -34,7 +34,7 @@ public class LocalGallery extends GenericGallery {
             return new LocalGallery[size];
         }
     };
-    private static final Pattern FILE_PATTERN = Pattern.compile("^(\\d{1,9})\\.(gif|png|jpg)$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern FILE_PATTERN = Pattern.compile("^(\\d{1,9})\\.(gif|png|jpg|webp)$", Pattern.CASE_INSENSITIVE);
     private static final Pattern DUP_PATTERN = Pattern.compile("^(.*)\\.DUP\\d+$");
     private static final Pattern IDFILE_PATTERN = Pattern.compile("^\\.\\d{1,6}$");
     private final GalleryFolder folder;
@@ -106,6 +106,8 @@ public class LocalGallery extends GenericGallery {
         if (dir == null || !dir.exists()) return null;
         String pag = String.format(Locale.US, "%03d.", page);
         File x;
+        x = new File(dir, pag + "webp");
+        if (x.exists()) return x;
         x = new File(dir, pag + "jpg");
         if (x.exists()) return x;
         x = new File(dir, pag + "png");
