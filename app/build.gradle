@@ -1,11 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 33
-    buildToolsVersion '30.0.3'
+    compileSdkVersion 34
     defaultConfig {
         applicationId "com.dar.nclientv2"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 29
         versionCode 305
         multiDexEnabled true
@@ -20,6 +19,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
             versionNameSuffix "-release"
             resValue "string", "app_name", "NClientV2"
+            signingConfig signingConfigs.debug
         }
         debug {
             applicationIdSuffix ".debug"
@@ -60,10 +60,10 @@ dependencies {
     }
     implementation "androidx.multidex:multidex:2.0.1"
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.15.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:5.0.5'
     implementation 'com.github.yukuku:ambilwarna:2.0.1'
-    implementation 'me.zhanghai.android.fastscroll:library:1.2.0'
+    implementation 'me.zhanghai.android.fastscroll:library:1.3.0'
 
-    implementation 'net.opacapp:multiline-collapsingtoolbar:27.1.1'
+    implementation 'com.github.jhavatar:multiline-collapsingtoolbar:27.1.3'
     implementation 'com.zeugmasolutions.localehelper:locale-helper-android:1.5.1'
 }

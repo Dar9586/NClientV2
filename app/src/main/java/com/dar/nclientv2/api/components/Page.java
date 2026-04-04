@@ -53,15 +53,25 @@ public class Page implements Parcelable {
         this.page = page;
         reader.beginObject();
         while (reader.peek() != JsonToken.END_OBJECT) {
-            switch (reader.nextName()) {
+            String name = reader.nextName();
+            switch (name) {
                 case "t":
                     imageExt = stringToExt(reader.nextString());
                     break;
                 case "w":
+                case "width":
                     size.setWidth(reader.nextInt());
                     break;
                 case "h":
+                case "height":
                     size.setHeight(reader.nextInt());
+                    break;
+                case "path":
+                    String path = reader.nextString();
+                    if (path != null && path.contains(".")) {
+                        String ext = path.substring(path.lastIndexOf('.') + 1);
+                        imageExt = stringToExt(ext);
+                    }
                     break;
                 default:
                     reader.skipValue();
@@ -88,6 +98,8 @@ public class Page implements Parcelable {
                 return "gif";
             case PNG:
                 return "png";
+            case WEBP:
+                return "webp";
             case JPG:
                 return "jpg";
         }
@@ -114,6 +126,9 @@ public class Page implements Parcelable {
                 return ImageExt.PNG;
             case 'j':
                 return ImageExt.JPG;
+            case 'w':
+            case 'e':
+                return ImageExt.WEBP;
         }
         return null;
     }
@@ -131,7 +146,7 @@ public class Page implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(page);
         dest.writeParcelable(size, flags);
-        dest.writeByte((byte) (imageExt == null ? ImageExt.JPG.ordinal() : imageExt.ordinal()));
+        dest.writeByte((byte) (imageExt == null ? ImageExt.WEBP.ordinal() : imageExt.ordinal()));
         dest.writeByte((byte) (imageType == null ? ImageType.PAGE.ordinal() : imageType.ordinal()));
     }
 

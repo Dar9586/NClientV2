@@ -1,7 +1,7 @@
 package com.dar.nclientv2.api.enums;
 
 public enum ImageExt {
-    JPG("jpg"), PNG("png"), GIF("gif");
+    JPG("jpg"), PNG("png"), GIF("gif"), WEBP("webp");
 
     private final char firstLetter;
     private final String name;

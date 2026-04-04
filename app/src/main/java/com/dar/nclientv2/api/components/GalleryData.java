@@ -117,6 +117,20 @@ public class GalleryData implements Parcelable {
                 case "images":
                     readImages(jr);
                     break;
+                case "cover":
+                    cover = new Page(ImageType.COVER, jr);
+                    break;
+                case "thumbnail":
+                    thumbnail = new Page(ImageType.THUMBNAIL, jr);
+                    break;
+                case "pages":
+                    jr.beginArray();
+                    int actualPage = 0;
+                    while (jr.hasNext())
+                        pages.add(new Page(ImageType.PAGE, jr, actualPage++));
+                    jr.endArray();
+                    pages.trimToSize();
+                    break;
                 case "title":
                     readTitles(jr);
                     break;
