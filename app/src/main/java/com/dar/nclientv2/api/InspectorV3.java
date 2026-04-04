@@ -257,6 +257,129 @@ public class InspectorV3 extends Thread implements Parcelable {
         return inspectorV3;
     }
 
+
+    @Nullable
+    private String trimScriptTag(String scriptHtml) {
+        if (scriptHtml == null) return null;
+
+        // Strategy 0 (SvelteKit response envelope):
+        // {"status":200,"statusText":"OK","headers":{...},"body":"{\"id\":641740,...}"}
+        // The gallery JSON is inside the "body" field as an escaped JSON string.
+        // We detect it by looking for escaped gallery markers like \"media_id\"
+        if (scriptHtml.contains("\"body\":\"") && scriptHtml.contains("\\\"media_id\\\"")) {
+            String body = extractJsonStringValue(scriptHtml, "body");
+            if (body != null && body.contains("\"id\"") && body.contains("\"media_id\"")) {
+                LogUtility.d("[trimScriptTag] Extracted gallery JSON via SvelteKit body envelope");
+                return body;
+            }
+        }
+
+        // Strategy 1 (variable assignment): window._gallery = { ... };
+        for (String varName : new String[]{"window._gallery", "window._n_gallery", "_gallery"}) {
+            int varIdx = scriptHtml.indexOf(varName);
+            if (varIdx < 0) continue;
+            int eqIdx = scriptHtml.indexOf('=', varIdx + varName.length());
+            if (eqIdx < 0) continue;
+            int braceStart = scriptHtml.indexOf('{', eqIdx + 1);
+            if (braceStart < 0) continue;
+            int depth = 0;
+            for (int i = braceStart; i < scriptHtml.length(); i++) {
+                char c = scriptHtml.charAt(i);
+                if (c == '{') depth++;
+                else if (c == '}') {
+                    depth--;
+                    if (depth == 0) {
+                        String json = scriptHtml.substring(braceStart, i + 1);
+                        if (json.contains("\"id\"") || json.contains("\"media_id\"")) {
+                            LogUtility.d("[trimScriptTag] Extracted gallery JSON via " + varName);
+                            return json;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Strategy 2: look for JSON.parse(<quote>...<quote>) with any quote style
+        int s = scriptHtml.indexOf("parse(");
+        if (s >= 0) {
+            for (char q : new char[]{'"', '\'', '`'}) {
+                int startQuote = scriptHtml.indexOf(q, s);
+                if (startQuote < 0) continue;
+                int endQuote = scriptHtml.lastIndexOf(q);
+                if (endQuote <= startQuote) continue;
+                String json = scriptHtml.substring(startQuote + 1, endQuote);
+                json = Utility.unescapeUnicodeString(json);
+                if (!json.isEmpty() && json.contains("\"id\"")) return json;
+            }
+        }
+
+        // Strategy 3: direct JSON object embedded in script (try both key orders)
+        for (String marker : new String[]{"{'id':", "{\"id\":", "{\"media_id\":", "{'media_id':"}) {
+            int startJson = scriptHtml.indexOf(marker);
+            if (startJson < 0) continue;
+            int endJson = scriptHtml.lastIndexOf('}');
+            if (endJson <= startJson) continue;
+            String json = scriptHtml.substring(startJson, endJson + 1);
+            if (json.contains("\"id\"") || json.contains("'id'")) return json;
+        }
+
+        return null;
+    }
+
+    /**
+     * Extract and unescape a JSON string value from a JSON document.
+     * Finds "key":"..." and properly handles escape sequences within the value.
+     *
+     * @param json the raw JSON text
+     * @param key  the key whose string value to extract
+     * @return the unescaped string value, or null if not found
+     */
+    @Nullable
+    private String extractJsonStringValue(String json, String key) {
+        String needle = "\"" + key + "\":\"";
+        int idx = json.indexOf(needle);
+        if (idx < 0) return null;
+        int valueStart = idx + needle.length();
+        StringBuilder sb = new StringBuilder();
+        for (int i = valueStart; i < json.length(); i++) {
+            char c = json.charAt(i);
+            if (c == '\\' && i + 1 < json.length()) {
+                char next = json.charAt(i + 1);
+                switch (next) {
+                    case '"': sb.append('"'); i++; break;
+                    case '\\': sb.append('\\'); i++; break;
+                    case '/': sb.append('/'); i++; break;
+                    case 'n': sb.append('\n'); i++; break;
+                    case 'r': sb.append('\r'); i++; break;
+                    case 't': sb.append('\t'); i++; break;
+                    case 'u':
+                        if (i + 5 < json.length()) {
+                            try {
+                                int codePoint = Integer.parseInt(json.substring(i + 2, i + 6), 16);
+                                sb.append((char) codePoint);
+                                i += 5;
+                            } catch (NumberFormatException e) {
+                                sb.append(c);
+                            }
+                        } else {
+                            sb.append(c);
+                        }
+                        break;
+                    default:
+                        sb.append(c);
+                        break;
+                }
+            } else if (c == '"') {
+                // Unescaped quote = end of the JSON string value
+                break;
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
     private void tryByAllPopular() {
         if (sortType != SortType.RECENT_ALL_TIME) {
             requestType = ApiRequestType.BYSEARCH;
@@ -343,7 +466,9 @@ public class InspectorV3 extends Thread implements Parcelable {
         LogUtility.d("Starting download: " + url);
         if (response != null) response.onStart();
         try {
-            createDocument();
+            if (!createDocument()) {
+                throw new InvalidResponseException();
+            }
             parseDocument();
             if (response != null) {
                 response.onSuccess(galleries);
@@ -372,11 +497,40 @@ public class InspectorV3 extends Thread implements Parcelable {
     private void doSingle(Element document) throws IOException, InvalidResponseException {
         galleries = new ArrayList<>(1);
         Elements scripts = document.getElementsByTag("script");
-        if (scripts.isEmpty())
+        String json = null;
+
+        // Strategy 1: search all inline script tags
+        for (Element script : scripts) {
+            String scriptHtml = script.html();
+            if (!scriptHtml.isEmpty()) {
+                // Log a truncated preview so logcat shows what the site embeds
+                LogUtility.d("[doSingle] script tag (" + scriptHtml.length() + " chars): "
+                        + scriptHtml.substring(0, Math.min(300, scriptHtml.length())));
+            }
+            json = trimScriptTag(scriptHtml);
+            if (json != null) break;
+        }
+
+        // Strategy 2: Next.js __NEXT_DATA__ pattern (e.g. after a site migration)
+        if (json == null) {
+            Element nextData = document.getElementById("__NEXT_DATA__");
+            if (nextData != null) {
+                LogUtility.d("[doSingle] Found __NEXT_DATA__, trying to extract gallery JSON");
+                json = extractGalleryJsonFromNextData(nextData.html());
+            }
+        }
+
+        // Strategy 3: fall back to the JSON API endpoint (bypasses HTML entirely)
+        if (json == null) {
+            LogUtility.d("[doSingle] HTML parse exhausted, trying API endpoint for id=" + id);
+            json = tryApiEndpoint();
+        }
+
+        if (json == null) {
+            LogUtility.e("[doSingle] Unable to find gallery JSON for: " + url);
             throw new InvalidResponseException();
-        String json = trimScriptTag(scripts.get(1).html());
-        if (json == null)
-            throw new InvalidResponseException();
+        }
+
         Element relContainer = document.getElementById("related-container");
         Elements rel;
         if (relContainer != null)
@@ -393,16 +547,73 @@ public class InspectorV3 extends Thread implements Parcelable {
         galleries.add(new Gallery(context.get(), json, rel, isFavorite));
     }
 
+    /**
+     * Attempt to pull the gallery JSON out of a Next.js __NEXT_DATA__ blob.
+     * The gallery object is typically at props.pageProps.gallery (or similar).
+     * We look for the first {"id": substring and take everything up to the
+     * balanced closing brace so GalleryData can parse it normally.
+     */
     @Nullable
-    private String trimScriptTag(String scriptHtml) {
-        int s = scriptHtml.indexOf("parse");
-        if (s < 0) return null;
-        s += 7;
-        scriptHtml = scriptHtml.substring(s, scriptHtml.lastIndexOf(");") - 1);
-        scriptHtml = Utility.unescapeUnicodeString(scriptHtml);
-        if (scriptHtml.isEmpty()) return null;
-        return scriptHtml;
+    private String extractGalleryJsonFromNextData(String nextDataJson) {
+        if (nextDataJson == null || nextDataJson.isEmpty()) return null;
+        // Gallery object always starts with an "id" integer field
+        int start = nextDataJson.indexOf("{\"id\":");
+        if (start < 0) return null;
+        // Walk forward counting braces to find the balanced closing brace
+        int depth = 0;
+        for (int i = start; i < nextDataJson.length(); i++) {
+            char c = nextDataJson.charAt(i);
+            if (c == '{') depth++;
+            else if (c == '}') {
+                depth--;
+                if (depth == 0) {
+                    String candidate = nextDataJson.substring(start, i + 1);
+                    if (candidate.contains("\"media_id\"")) return candidate;
+                    // wrong object, keep searching
+                    start = nextDataJson.indexOf("{\"id\":", i + 1);
+                    if (start < 0) return null;
+                    i = start - 1;
+                    depth = 0;
+                }
+            }
+        }
+        return null;
     }
+
+    /**
+     * Direct JSON API fallback: nhentai exposes /api/gallery/<id> which returns
+     * the gallery JSON without any HTML wrapping.
+     */
+    @Nullable
+    private String tryApiEndpoint() {
+        // Try multiple known API URL patterns (the site may change endpoints)
+        String[] apiUrls = {
+            Utility.getBaseUrl() + "api/v2/gallery/" + id,
+            Utility.getBaseUrl() + "api/gallery/" + id,
+        };
+        for (String apiUrl : apiUrls) {
+            try {
+                LogUtility.d("[doSingle] API call: " + apiUrl);
+                Response apiResponse = Global.getClient(context.get())
+                        .newCall(new Request.Builder().url(apiUrl).build()).execute();
+                String body = apiResponse.body() != null ? apiResponse.body().string() : null;
+                int code = apiResponse.code();
+                apiResponse.close();
+                LogUtility.d("[doSingle] API response code: " + code);
+                if (code == HttpURLConnection.HTTP_OK && body != null && body.contains("\"id\"")) {
+                    return body;
+                }
+                if (body != null) {
+                    LogUtility.d("[doSingle] API body (truncated): "
+                            + body.substring(0, Math.min(300, body.length())));
+                }
+            } catch (Exception e) {
+                LogUtility.e("[doSingle] API fallback exception for " + apiUrl + ": " + e.getMessage(), e);
+            }
+        }
+        return null;
+    }
+
 
     private void doSearch(Element document) throws InvalidResponseException {
         Elements gal = document.getElementsByClass("gallery");

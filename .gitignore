@@ -1,16 +1,41 @@
-*.iml
+# Built application files
 *.apk
-.gradle
-/local.properties
-/.idea
-output.json
-.DS_Store
-/build
-/captures
-/svgs
-/app/release
-/app/debug
-/app/schemas
-.externalNativeBuild
-/crowdin.properties
+*.ap_
+*.aab
 
+# Files for the ART/Dalvik VM
+*.dex
+
+# Java class files
+*.class
+
+# Generated files
+bin/
+gen/
+out/
+release/
+
+# Gradle
+.gradle/
+build/
+
+# Local configuration
+local.properties
+
+# Android Studio / IntelliJ
+*.iml
+.idea/
+
+# Keystore files (do not commit)
+*.jks
+*.keystore
+
+# OS
+.DS_Store
+
+# NDK / external native
+.externalNativeBuild
+.cxx/
+
+# Cursor (optional local state)
+.cursor/

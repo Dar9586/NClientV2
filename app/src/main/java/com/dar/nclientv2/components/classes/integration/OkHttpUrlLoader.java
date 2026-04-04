@@ -11,6 +11,7 @@ import com.dar.nclientv2.components.classes.CustomSSLSocketFactory;
 import com.dar.nclientv2.settings.CustomInterceptor;
 
 import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
@@ -68,7 +69,10 @@ public class OkHttpUrlLoader implements ModelLoader<GlideUrl, InputStream> {
             if (internalClient == null) {
                 synchronized (Factory.class) {
                     if (internalClient == null) {
-                        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+                        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                            .connectTimeout(30, TimeUnit.SECONDS)
+                            .readTimeout(30, TimeUnit.SECONDS)
+                            .writeTimeout(30, TimeUnit.SECONDS);
                         CustomSSLSocketFactory.enableTls12OnPreLollipop(builder);
                         builder.addInterceptor(new CustomInterceptor(null, false));
                         OkHttpClient client = builder.build();

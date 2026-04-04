@@ -93,6 +93,11 @@ public class SimpleGallery extends GenericGallery {
     }
 
     private static String extToString(ImageExt ext) {
+        // Si es nulo, usamos webp como fallback
+        if (ext == null) {
+            return "webp";
+        }
+
         switch (ext) {
             case GIF:
                 return "gif";
@@ -100,8 +105,11 @@ public class SimpleGallery extends GenericGallery {
                 return "png";
             case JPG:
                 return "jpg";
+            case WEBP:
+                return "webp";
+            default:
+                return "webp"; // Por si aparece un formato nuevo en el futuro
         }
-        return null;
     }
 
     public Language getLanguage() {
@@ -164,7 +172,7 @@ public class SimpleGallery extends GenericGallery {
         dest.writeString(title);
         dest.writeInt(id);
         dest.writeInt(mediaId);
-        dest.writeByte((byte) thumbnail.ordinal());
+        dest.writeByte((byte) (thumbnail == null ? ImageExt.WEBP.ordinal() : thumbnail.ordinal()));
         dest.writeByte((byte) language.ordinal());
         //TAGS AREN'T WRITTEN
     }

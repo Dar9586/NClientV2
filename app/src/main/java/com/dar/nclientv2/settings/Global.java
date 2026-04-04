@@ -53,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import me.zhanghai.android.fastscroll.FastScrollerBuilder;
 import okhttp3.Cookie;
@@ -377,6 +378,9 @@ public class Global {
         SharedPreferences preferences = context.getSharedPreferences("Login", 0);
         Login.setLoginShared(preferences);
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
             .cookieJar(
                 new CustomCookieJar(
                     new SetCookieCache(),
